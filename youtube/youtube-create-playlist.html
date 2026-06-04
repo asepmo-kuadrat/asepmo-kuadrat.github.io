@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YT Playlist & Downloader Studio</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ytred: '#FF0000',
+                        darkbg: '#0F0F13',
+                        panelbg: '#1A1A24',
+                        cardbg: '#252535'
+                    }
+                }
+            }
+        }
+</script>
+<style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0F0F13; color: #e2e8f0; }
+        .glass-panel {
+            background: rgba(26, 26, 36, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #3f3f5a; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #5a5a7c; }
+        
+        /* Toast Animation */
+        @keyframes slideInUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+        .toast-enter { animation: slideInUp 0.3s ease-out forwards; }
+        .toast-exit { animation: fadeOut 0.3s ease-out forwards; }
+</style>
+  </head>
+  <body class="min-h-screen flex flex-col text-sm md:text-base selection:bg-ytred selection:text-white overflow-hidden">
+
+    <!-- Header -->
+    <header class="glass-panel p-4 flex justify-between items-center z-10 shadow-lg">
+	  <div class="flex items-center gap-3">
+		<div class="bg-ytred text-white p-2 rounded-xl shadow-[0_0_15px_rgba(255,0,0,0.4)]">
+		  <i class="ph-fill ph-youtube-logo text-2xl"></i>
+		</div>
+		<h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">Media Studio Pro</h1>
+	  </div>
+	  <div class="flex gap-2">
+		<button onclick="exportJSON()" class="p-2 rounded-lg bg-cardbg hover:bg-gray-700 transition flex items-center gap-2 text-xs md:text-sm" title="Simpan ke Perangkat">
+		  <i class="ph ph-export"></i> <span class="hidden md:inline">Export .json</span>
+		</button>
+		<label class="p-2 rounded-lg bg-cardbg hover:bg-gray-700 transition flex items-center gap-2 text-xs md:text-sm cursor-pointer" title="Buka dari Perangkat">
+		  <i class="ph ph-import"></i> <span class="hidden md:inline">Import .json</span>
+		  <input type="file" id="importFile" accept=".json" class="hidden" onchange="importJSON(event)">
+		</label>
+	  </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 h-[calc(100vh-76px)] overflow-y-auto lg:overflow-hidden">
+
+	  <!-- KOLOM 1: Input URL & Info -->
+	  <section class="glass-panel rounded-2xl lg:col-span-3 flex flex-col shadow-xl overflow-hidden h-full">
+		<div class="p-4 border-b border-gray-700/50 bg-white/5">
+		  <h2 class="font-semibold text-lg flex items-center gap-2">
+			<i class="ph-fill ph-link text-ytred"></i> Tambah URL
+		  </h2>
+		</div>
+		<div class="p-4 flex-1 flex flex-col gap-4">
+		  <div class="flex flex-col gap-2">
+			<label class="text-gray-400 text-xs">YouTube Video URL</label>
+			<div class="flex gap-2">
+			  <input type="text" id="ytUrlInput" placeholder="https://youtu.be/..." class="flex-1 bg-darkbg border border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:border-ytred focus:ring-1 focus:ring-ytred transition text-sm">
+			  <button onclick="addVideo()" class="bg-ytred hover:bg-red-600 text-white rounded-lg px-4 py-2 transition shadow-lg flex items-center justify-center">
+				<i class="ph-bold ph-plus"></i>
+			  </button>
+			</div>
+		  </div>
+
+		  <div id="loadingIndicator" class="hidden flex-col items-center justify-center py-8 gap-3 text-gray-400">
+			<i class="ph ph-spinner-gap animate-spin text-3xl text-ytred"></i>
+			<span class="text-xs">Mengambil Data Google API...</span>
+		  </div>
+
+		  <div id="previewCard" class="hidden flex-col gap-3 mt-2 bg-darkbg p-3 rounded-xl border border-gray-800">
+			<p class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Preview Terakhir</p>
+			<div class="relative rounded-lg overflow-hidden aspect-video bg-black group">
+			  <img id="previewImg" src="" alt="Thumbnail" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition">
+			  <div class="absolute inset-0 flex items-center justify-center">
+				<i class="ph-fill ph-play-circle text-4xl text-white opacity-80 drop-shadow-md"></i>
+			  </div>
+			</div>
+			<div class="flex flex-col">
+			  <h3 id="previewTitle" class="text-sm font-semibold line-clamp-2" title="">Judul Video</h3>
+			  <p id="previewChannel" class="text-xs text-gray-400 mt-1">Channel Name</p>
+			</div>
+		  </div>
+
+		  <div class="mt-auto bg-blue-900/20 border border-blue-500/30 p-3 rounded-xl flex gap-3 items-start">
+			<i class="ph-fill ph-info text-blue-400 text-lg shrink-0"></i>
+			<p class="text-[11px] text-blue-200/80 leading-relaxed">
+			  Data otomatis tersimpan di LocalStorage web. Gunakan tombol Export di atas untuk menyimpan sebagai file <b>.json</b> ke memori perangkat.
+			</p>
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- KOLOM 2: Playlist & Player -->
+	  <section class="glass-panel rounded-2xl lg:col-span-5 flex flex-col shadow-xl overflow-hidden h-full">
+		<!-- Player Area -->
+		<div class="w-full aspect-video bg-black relative shadow-lg z-10 border-b border-gray-800">
+		  <iframe id="ytPlayer" class="w-full h-full absolute inset-0" src="https://www.youtube.com/embed/?enablejsapi=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+		  <div id="playerOverlay" class="absolute inset-0 bg-darkbg flex flex-col items-center justify-center gap-4 z-20">
+			<i class="ph-fill ph-youtube-logo text-6xl text-gray-600"></i>
+			<p class="text-gray-500 text-sm">Pilih video dari playlist untuk memutar</p>
+		  </div>
+		</div>
+
+		<!-- Playlist Area -->
+		<div class="p-3 border-b border-gray-700/50 bg-white/5 flex justify-between items-center">
+		  <h2 class="font-semibold flex items-center gap-2">
+			<i class="ph-fill ph-list-video text-ytred"></i> Playlist Tersimpan
+		  </h2>
+		  <span id="playlistCount" class="bg-cardbg text-xs px-2 py-1 rounded-md text-gray-400 font-mono">0 Item</span>
+		</div>
+
+		<div id="playlistContainer" class="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-2 relative">
+		  <!-- Playlist Items go here -->
+		  <div id="emptyPlaylistMsg" class="absolute inset-0 flex flex-col items-center justify-center text-gray-500 gap-2 h-full">
+			<i class="ph-fill ph-folder-open text-4xl mb-2 opacity-50"></i>
+			<p class="text-sm">Playlist masih kosong.</p>
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- KOLOM 3: Downloader Extractor -->
+	  <section class="glass-panel rounded-2xl lg:col-span-4 flex flex-col shadow-xl overflow-hidden h-full">
+		<div class="p-4 border-b border-gray-700/50 bg-white/5 flex justify-between items-center">
+		  <h2 class="font-semibold text-lg flex items-center gap-2">
+			<i class="ph-fill ph-download-simple text-ytred"></i> Ekstrak & Unduh
+		  </h2>
+		</div>
+
+		<div class="flex-1 flex flex-col p-4 gap-4 overflow-hidden">
+
+		  <div id="downloadTargetInfo" class="hidden flex gap-3 items-center bg-cardbg p-3 rounded-xl border border-gray-700">
+			<img id="dlThumb" src="" class="w-16 h-12 object-cover rounded shadow-md">
+			<div class="flex-1 min-w-0">
+			  <p id="dlTitle" class="text-xs font-semibold truncate">Judul</p>
+			  <p class="text-[10px] text-green-400 mt-1 flex items-center gap-1"><i class="ph-fill ph-check-circle"></i> Siap Diekstrak</p>
+			</div>
+		  </div>
+
+		  <div id="downloadEmptyState" class="flex-1 flex flex-col items-center justify-center text-gray-500 gap-3">
+			<i class="ph-fill ph-file-video text-5xl opacity-30"></i>
+			<p class="text-xs text-center px-4 leading-relaxed">Pilih video dari playlist untuk melihat opsi unduhan (Simulasi).</p>
+		  </div>
+
+		  <!-- Tabs -->
+		  <div id="downloadTabs" class="hidden flex flex-col h-full gap-4">
+			<div class="flex bg-darkbg p-1 rounded-lg border border-gray-700 w-full">
+			  <button onclick="switchTab('video')" id="tabBtnVideo" class="flex-1 py-1.5 text-xs font-medium rounded-md bg-gray-700 text-white shadow transition flex items-center justify-center gap-1">
+				<i class="ph-fill ph-video-camera"></i> Video (MP4)
+			  </button>
+			  <button onclick="switchTab('audio')" id="tabBtnAudio" class="flex-1 py-1.5 text-xs font-medium rounded-md text-gray-400 hover:text-white transition flex items-center justify-center gap-1">
+				<i class="ph-fill ph-headphones"></i> Audio (MP3)
+			  </button>
+			</div>
+
+			<!-- Video Links -->
+			<div id="tabVideo" class="flex-1 overflow-y-auto custom-scrollbar space-y-2 pr-1">
+			  <!-- Injected via JS -->
+			</div>
+
+			<!-- Audio Links -->
+			<div id="tabAudio" class="hidden flex-1 overflow-y-auto custom-scrollbar space-y-2 pr-1">
+			  <!-- Injected via JS -->
+			</div>
+		  </div>
+		</div>
+	  </section>
+
+    </main>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed bottom-4 right-4 flex flex-col gap-2 z-50 pointer-events-none"></div>
+
+<script>
+        /** * ==========================================
+ * KONFIGURASI API & STATE
+ * ==========================================
+ * Masukkan Google API Key Anda di sini untuk menarik data asli dari YouTube.
+ * Jika kosong, sistem akan menggunakan mock-data/fallback berdasarkan ID video.
+ */
+        const YOUTUBE_API_KEY = ""; 
+        const STORAGE_KEY = "yt_playlist_data";
+        
+        let playlistData = [];
+        let currentPlayingId = null;
+
+        // Inisialisasi saat dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFromStorage();
+        });
+
+        /** ==========================================
+ * FUNGSI UTAMA KOLOM 1 (TAMBAH URL)
+ * ========================================== */
+        
+        async function addVideo() {
+            const input = document.getElementById('ytUrlInput');
+            const url = input.value.trim();
+            
+            if (!url) {
+                showToast("Masukkan URL YouTube terlebih dahulu!", "error");
+                return;
+            }
+
+            const videoId = extractYouTubeID(url);
+            if (!videoId) {
+                showToast("Format URL YouTube tidak valid.", "error");
+                return;
+            }
+
+            // Cek duplikat
+            if (playlistData.some(v => v.id === videoId)) {
+                showToast("Video ini sudah ada di playlist.", "warning");
+                return;
+            }
+
+            toggleLoading(true);
+
+            try {
+                const videoInfo = await fetchVideoInfo(videoId);
+                
+                // Update Preview UI
+                document.getElementById('previewCard').classList.remove('hidden');
+                document.getElementById('previewImg').src = videoInfo.thumbnail;
+                document.getElementById('previewTitle').textContent = videoInfo.title;
+                document.getElementById('previewChannel').textContent = videoInfo.channel;
+
+                // Tambahkan ke State & Storage
+                playlistData.unshift(videoInfo); // Add to top
+                saveToStorage();
+                renderPlaylist();
+                
+                showToast("Berhasil ditambahkan ke Playlist!", "success");
+                input.value = ''; // Reset input
+
+            } catch (error) {
+                showToast("Gagal mengambil info: " + error.message, "error");
+            } finally {
+                toggleLoading(false);
+            }
+        }
+
+        function extractYouTubeID(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        async function fetchVideoInfo(videoId) {
+            // Jika ada API key, gunakan Google API v3
+            if (YOUTUBE_API_KEY) {
+                const apiUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${YOUTUBE_API_KEY}`;
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                
+                if (data.items && data.items.length > 0) {
+                    const snippet = data.items[0].snippet;
+                    return {
+                        id: videoId,
+                        title: snippet.title,
+                        channel: snippet.channelTitle,
+                        thumbnail: snippet.thumbnails.medium ? snippet.thumbnails.medium.url : snippet.thumbnails.default.url,
+                        addedAt: new Date().toISOString()
+                    };
+                }
+                throw new Error("Video tidak ditemukan atau privat.");
+            } else {
+                // Fallback (Simulasi) jika API Key tidak ada
+                // Simulasi delay jaringan
+                await new Promise(r => setTimeout(r, 800)); 
+                return {
+                    id: videoId,
+                    title: `YouTube Video (${videoId})`,
+                    channel: "Channel Name",
+                    thumbnail: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+                    addedAt: new Date().toISOString()
+                };
+            }
+        }
+
+        function toggleLoading(show) {
+            document.getElementById('loadingIndicator').style.display = show ? 'flex' : 'none';
+        }
+
+        /** ==========================================
+ * FUNGSI UTAMA KOLOM 2 (PLAYLIST)
+ * ========================================== */
+
+        function renderPlaylist() {
+            const container = document.getElementById('playlistContainer');
+            const countBadge = document.getElementById('playlistCount');
+            const emptyMsg = document.getElementById('emptyPlaylistMsg');
+            
+            container.innerHTML = '';
+            countBadge.textContent = `${playlistData.length} Item`;
+
+            if (playlistData.length === 0) {
+                container.appendChild(emptyMsg);
+                emptyMsg.style.display = 'flex';
+                return;
+            }
+            
+            emptyMsg.style.display = 'none';
+
+            playlistData.forEach((video, index) => {
+                const isActive = video.id === currentPlayingId;
+                
+                const item = document.createElement('div');
+                item.className = `group flex gap-3 p-2 rounded-xl border transition-all cursor-pointer 
+                                ${isActive ? 'bg-ytred/10 border-ytred/50 shadow-[0_0_10px_rgba(255,0,0,0.1)]' : 'bg-cardbg border-gray-700/50 hover:bg-gray-700'}`;
+                
+                item.innerHTML = `
+                    <div class="relative w-24 h-[54px] rounded-lg overflow-hidden shrink-0 bg-black">
+                        <img src="${video.thumbnail}" class="w-full h-full object-cover opacity-90">
+                        ${isActive ? 
+                            `<div class="absolute inset-0 bg-ytred/40 flex items-center justify-center backdrop-blur-[1px]">
+                                <div class="flex gap-1 items-end h-4">
+                                    <div class="w-1 bg-white animate-[bounce_1s_infinite] h-4"></div>
+                                    <div class="w-1 bg-white animate-[bounce_1s_infinite_0.2s] h-2"></div>
+                                    <div class="w-1 bg-white animate-[bounce_1s_infinite_0.4s] h-3"></div>
+                                </div>
+                             </div>` : 
+                            `<div class="absolute inset-0 bg-black/40 hidden group-hover:flex items-center justify-center transition">
+                                <i class="ph-fill ph-play text-white"></i>
+                             </div>`
+                        }
+                    </div>
+                    <div class="flex-1 min-w-0 flex flex-col justify-center">
+                        <h3 class="text-sm font-semibold truncate ${isActive ? 'text-white' : 'text-gray-200 group-hover:text-white'}">${video.title}</h3>
+                        <p class="text-xs text-gray-400 truncate">${video.channel}</p>
+                    </div>
+                    <button onclick="deleteVideo('${video.id}', event)" class="p-2 text-gray-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg self-center opacity-0 group-hover:opacity-100 transition">
+                        <i class="ph-fill ph-trash"></i>
+                    </button>
+                `;
+
+                // Handle click untuk Play & Ekstrak
+                item.addEventListener('click', (e) => {
+                    // Cegah play jika klik tombol delete
+                    if(!e.target.closest('button')) {
+                        playVideo(video);
+                    }
+                });
+
+                container.appendChild(item);
+            });
+        }
+
+        function playVideo(videoObj) {
+            currentPlayingId = videoObj.id;
+            
+            // Sembunyikan overlay
+            document.getElementById('playerOverlay').style.display = 'none';
+            
+            // Set iFrame src dan auto play
+            const player = document.getElementById('ytPlayer');
+            player.src = `https://www.youtube.com/embed/${videoObj.id}?autoplay=1&enablejsapi=1&rel=0`;
+            
+            // Update UI Playlist
+            renderPlaylist();
+
+            // Trigger Kolom 3 (Ekstrak Info)
+            generateDownloadLinks(videoObj);
+        }
+
+        function deleteVideo(id, event) {
+            event.stopPropagation();
+            playlistData = playlistData.filter(v => v.id !== id);
+            saveToStorage();
+            renderPlaylist();
+            showToast("Video dihapus dari playlist", "info");
+        }
+
+        /** ==========================================
+ * FUNGSI UTAMA KOLOM 3 (DOWNLOADER MOCK)
+ * ========================================== */
+        
+        function generateDownloadLinks(videoObj) {
+            // Tampilkan Info Target
+            document.getElementById('downloadEmptyState').style.display = 'none';
+            document.getElementById('downloadTargetInfo').classList.remove('hidden');
+            document.getElementById('downloadTabs').classList.remove('hidden');
+            document.getElementById('downloadTabs').classList.add('flex');
+            
+            document.getElementById('dlThumb').src = videoObj.thumbnail;
+            document.getElementById('dlTitle').textContent = videoObj.title;
+
+            // Simulasi script ekstraktor youtube-downloader.js 
+            // PENTING: Murni client-side tidak bisa ekstrak link direct MP4/MP3 asli karena CORS.
+            // Ini adalah representasi UI dari hasil yang diharapkan.
+            
+            const videoQualities = [
+                { res: '1080p', type: 'MP4', size: '~45 MB', icon: 'ph-monitor-play', color: 'text-blue-400' },
+                { res: '720p', type: 'MP4', size: '~25 MB', icon: 'ph-monitor', color: 'text-green-400' },
+                { res: '480p', type: 'MP4', size: '~12 MB', icon: 'ph-device-mobile', color: 'text-yellow-400' },
+                { res: '360p', type: 'MP4', size: '~8 MB', icon: 'ph-device-mobile', color: 'text-gray-400' }
+            ];
+
+            const audioQualities = [
+                { res: '320kbps', type: 'MP3', size: '~8 MB', icon: 'ph-speaker-high', color: 'text-purple-400' },
+                { res: '128kbps', type: 'MP3', size: '~3.5 MB', icon: 'ph-speaker-low', color: 'text-pink-400' },
+                { res: 'M4A', type: 'M4A', size: '~3 MB', icon: 'ph-music-notes', color: 'text-indigo-400' }
+            ];
+
+            const videoContainer = document.getElementById('tabVideo');
+            const audioContainer = document.getElementById('tabAudio');
+            
+            videoContainer.innerHTML = '';
+            audioContainer.innerHTML = '';
+
+            const createLinkElement = (q) => {
+                return `
+                    <div class="flex items-center justify-between bg-cardbg p-3 rounded-xl border border-gray-700/50 hover:border-gray-500 transition group">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-darkbg rounded-lg group-hover:bg-gray-700 transition">
+                                <i class="ph-fill ${q.icon} ${q.color} text-lg"></i>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-bold text-sm">${q.res} <span class="text-xs font-normal text-gray-400 ml-1">${q.type}</span></span>
+                                <span class="text-[10px] text-gray-500">${q.size} • Siap diunduh</span>
+                            </div>
+                        </div>
+                        <button onclick="simulateDownload('${q.res}')" class="px-3 py-1.5 bg-gray-700 hover:bg-ytred text-white text-xs font-semibold rounded-lg transition flex items-center gap-1 shadow">
+                            <i class="ph-bold ph-download-simple"></i> Unduh
+                        </button>
+                    </div>
+                `;
+            };
+
+            videoQualities.forEach(q => videoContainer.innerHTML += createLinkElement(q));
+            audioQualities.forEach(q => audioContainer.innerHTML += createLinkElement(q));
+        }
+
+        function switchTab(type) {
+            const btnVideo = document.getElementById('tabBtnVideo');
+            const btnAudio = document.getElementById('tabBtnAudio');
+            const tabVideo = document.getElementById('tabVideo');
+            const tabAudio = document.getElementById('tabAudio');
+
+            const activeClass = "bg-gray-700 text-white shadow";
+            const inactiveClass = "text-gray-400 hover:text-white";
+
+            if (type === 'video') {
+                btnVideo.className = `flex-1 py-1.5 text-xs font-medium rounded-md flex items-center justify-center gap-1 transition ${activeClass}`;
+                btnAudio.className = `flex-1 py-1.5 text-xs font-medium rounded-md flex items-center justify-center gap-1 transition ${inactiveClass}`;
+                tabVideo.classList.remove('hidden');
+                tabAudio.classList.add('hidden');
+            } else {
+                btnAudio.className = `flex-1 py-1.5 text-xs font-medium rounded-md flex items-center justify-center gap-1 transition ${activeClass}`;
+                btnVideo.className = `flex-1 py-1.5 text-xs font-medium rounded-md flex items-center justify-center gap-1 transition ${inactiveClass}`;
+                tabAudio.classList.remove('hidden');
+                tabVideo.classList.add('hidden');
+            }
+        }
+
+        function simulateDownload(res) {
+            showToast(`Mempersiapkan file ${res}... (Simulasi)`, "info");
+            setTimeout(() => {
+                showToast(`Server Mock: File tidak dapat diunduh tanpa backend proxy.`, "error");
+            }, 1500);
+        }
+
+        /** ==========================================
+ * FUNGSI STORAGE & FILESYSTEM (JSON)
+ * ========================================== */
+
+        function saveToStorage() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(playlistData));
+        }
+
+        function loadFromStorage() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            if (data) {
+                try {
+                    playlistData = JSON.parse(data);
+                    renderPlaylist();
+                } catch (e) {
+                    console.error("Gagal membaca LocalStorage", e);
+                }
+            }
+        }
+
+        function exportJSON() {
+            if (playlistData.length === 0) {
+                showToast("Playlist kosong, tidak ada yang disimpan.", "warning");
+                return;
+            }
+            // Membuat file blob JSON untuk diunduh (Solusi aman web untuk simpan ke perangkat)
+            const dataStr = JSON.stringify(playlistData, null, 2);
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Youtubelist_${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast("File JSON berhasil diunduh ke perangkat.", "success");
+        }
+
+        function importJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (Array.isArray(importedData)) {
+                        // Gabungkan dan hilangkan duplikat berdasarkan ID
+                        const currentIds = new Set(playlistData.map(v => v.id));
+                        let addedCount = 0;
+                        
+                        importedData.forEach(item => {
+                            if (item.id && item.title && !currentIds.has(item.id)) {
+                                playlistData.push(item);
+                                addedCount++;
+                            }
+                        });
+                        
+                        if(addedCount > 0) {
+                            saveToStorage();
+                            renderPlaylist();
+                            showToast(`Berhasil mengimpor ${addedCount} video baru!`, "success");
+                        } else {
+                            showToast("Tidak ada video baru untuk diimpor (Duplikat).", "info");
+                        }
+                    } else {
+                        throw new Error("Format JSON tidak sesuai.");
+                    }
+                } catch (error) {
+                    showToast("Gagal membaca file JSON. Format tidak valid.", "error");
+                }
+                // Reset input
+                event.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+
+        /** ==========================================
+ * FUNGSI UTILITAS (UI TOAST)
+ * ========================================== */
+         
+        function showToast(message, type = "info") {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            let bgClass = "bg-gray-800 border-gray-700";
+            let icon = "ph-info text-blue-400";
+            
+            if (type === "success") { icon = "ph-check-circle text-green-400"; }
+            else if (type === "error") { icon = "ph-warning-circle text-red-400"; bgClass = "bg-red-950 border-red-900"; }
+            else if (type === "warning") { icon = "ph-warning text-yellow-400"; }
+
+            toast.className = `toast-enter flex items-center gap-3 px-4 py-3 rounded-xl border shadow-2xl pointer-events-auto ${bgClass}`;
+            toast.innerHTML = `
+                <i class="ph-fill ${icon} text-xl"></i>
+                <p class="text-sm font-medium text-white">${message}</p>
+            `;
+            
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.replace('toast-enter', 'toast-exit');
+                setTimeout(() => toast.remove(), 300); // Tunggu animasi selesai
+            }, 3000);
+        }
+</script>
+  </body>
+</html>

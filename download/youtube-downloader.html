@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YTGrabber - Modern YouTube Downloader</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        yt: {
+                            red: '#FF0000',
+                            dark: '#0f0f0f',
+                            card: '#272727',
+                            hover: '#3f3f3f',
+                            text: '#f1f1f1',
+                            muted: '#aaaaaa'
+                        }
+                    }
+                }
+            }
+        }
+</script>
+<style>
+        body { background-color: #0f0f0f; color: #f1f1f1; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f0f0f; }
+        ::-webkit-scrollbar-thumb { background: #3f3f3f; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #aaaaaa; }
+        
+        .glass-panel {
+            background: rgba(39, 39, 39, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+</style>
+  </head>
+  <body class="font-sans min-h-screen flex flex-col antialiased selection:bg-yt-red selection:text-white">
+
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 glass-panel border-b border-white/10">
+	  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+		<div class="flex items-center gap-2">
+		  <i class="fa-brands fa-youtube text-yt-red text-3xl"></i>
+		  <span class="text-xl font-bold tracking-wide">YT<span class="text-yt-red">Grabber</span></span>
+		</div>
+		<div class="hidden sm:flex items-center gap-6 text-sm font-medium text-yt-muted">
+		  <a href="#" class="hover:text-white transition-colors">Home</a>
+		  <a href="#how-to" class="hover:text-white transition-colors">Cara Penggunaan</a>
+		  <a href="#" class="hover:text-white transition-colors">API</a>
+		</div>
+	  </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col items-center pt-12 pb-24 px-4 sm:px-6 relative overflow-hidden">
+	  <!-- Background Glow -->
+	  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-64 bg-yt-red/20 blur-[100px] rounded-full -z-10 pointer-events-none"></div>
+
+	  <div class="max-w-3xl w-full text-center mb-10 text-white z-10">
+		<h1 class="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">Unduh Video & Audio YouTube</h1>
+		<p class="text-yt-muted text-lg">Konversi dan unduh video YouTube ke format MP4 atau MP3 dengan kualitas terbaik secara gratis.</p>
+	  </div>
+
+	  <!-- Search / Input Box -->
+	  <div class="max-w-2xl w-full glass-panel p-2 sm:p-3 rounded-2xl flex flex-col sm:flex-row items-center gap-3 shadow-2xl z-10 relative">
+		<div class="flex-grow w-full relative flex items-center">
+		  <i class="fa-solid fa-link absolute left-4 text-yt-muted"></i>
+		  <input type="text" id="url-input" placeholder="Tempel URL YouTube di sini..." 
+			class="w-full bg-yt-dark text-white rounded-xl py-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-yt-red/50 transition-all border border-transparent focus:border-yt-red/30">
+
+		  <!-- Paste Button inside input -->
+		  <button onclick="pasteFromClipboard()" class="absolute right-3 text-yt-muted hover:text-white transition-colors p-2" title="Paste dari Clipboard">
+			<i class="fa-solid fa-clipboard"></i>
+		  </button>
+		</div>
+		<button onclick="processUrl()" id="btn-process" class="w-full sm:w-auto px-8 py-4 bg-yt-red hover:bg-red-700 text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-yt-red/20 shrink-0">
+		  <span>Mulai</span> <i class="fa-solid fa-arrow-right"></i>
+		</button>
+	  </div>
+
+	  <!-- Error Message -->
+	  <div id="error-msg" class="hidden max-w-2xl w-full mt-4 p-4 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl text-sm text-center flex items-center justify-center gap-2">
+		<i class="fa-solid fa-circle-exclamation"></i>
+		<span id="error-text">URL tidak valid. Harap masukkan link YouTube yang benar.</span>
+	  </div>
+
+	  <!-- Loader -->
+	  <div id="loader" class="hidden mt-12 flex-col items-center gap-4">
+		<div class="w-10 h-10 border-4 border-yt-card border-t-yt-red rounded-full animate-spin"></div>
+		<p class="text-yt-muted text-sm animate-pulse">Menganalisis tautan video...</p>
+	  </div>
+
+	  <!-- RESULT SECTION (Hidden by default) -->
+	  <div id="result-section" class="hidden max-w-4xl w-full mt-10 glass-panel rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 opacity-0 translate-y-4">
+		<div class="flex flex-col md:flex-row">
+		  <!-- Thumbnail & Meta -->
+		  <div class="md:w-5/12 bg-yt-dark relative p-4 sm:p-6 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-white/10">
+			<div class="relative w-full aspect-video rounded-xl overflow-hidden bg-black shadow-lg">
+			  <img id="video-thumb" src="" alt="Thumbnail" class="w-full h-full object-cover">
+			  <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
+				<span class="bg-black/80 text-white text-xs px-2 py-1 rounded font-mono">YouTube</span>
+			  </div>
+			</div>
+			<h3 id="video-title" class="text-lg font-bold mt-4 text-center line-clamp-2 leading-snug">Judul Video Memuat...</h3>
+			<p class="text-sm text-yt-muted mt-2 flex items-center gap-2">
+			  <i class="fa-solid fa-circle-check text-yt-red text-xs"></i> Video Siap Diunduh
+			</p>
+		  </div>
+
+		  <!-- Download Options -->
+		  <div class="md:w-7/12 p-4 sm:p-6 bg-yt-card/50 flex flex-col">
+
+			<!-- Tabs -->
+			<div class="flex p-1 bg-yt-dark rounded-xl mb-6">
+			  <button onclick="switchTab('video')" id="tab-video" class="flex-1 py-2 text-sm font-bold bg-yt-card text-white rounded-lg transition-all shadow">
+				<i class="fa-solid fa-video mr-2"></i> Video (MP4)
+			  </button>
+			  <button onclick="switchTab('audio')" id="tab-audio" class="flex-1 py-2 text-sm font-bold text-yt-muted hover:text-white transition-all rounded-lg">
+				<i class="fa-solid fa-music mr-2"></i> Audio (MP3)
+			  </button>
+			</div>
+
+			<!-- Video Options Tab -->
+			<div id="options-video" class="space-y-3 flex-grow">
+			  <!-- Option Item -->
+			  <div class="flex items-center justify-between p-3 rounded-xl border border-white/10 bg-yt-dark hover:border-white/30 transition-colors">
+				<div class="flex items-center gap-3">
+				  <div class="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
+					<i class="fa-solid fa-desktop"></i>
+				  </div>
+				  <div>
+					<p class="font-bold text-sm">1080p (FHD)</p>
+					<p class="text-xs text-yt-muted">MP4 • ~45 MB</p>
+				  </div>
+				</div>
+				<button onclick="startDownload('1080p MP4')" class="px-4 py-2 bg-yt-card hover:bg-yt-hover text-white text-sm font-bold rounded-lg border border-white/10 transition-colors flex items-center gap-2">
+				  <i class="fa-solid fa-download"></i> Unduh
+				</button>
+			  </div>
+
+			  <!-- Option Item -->
+			  <div class="flex items-center justify-between p-3 rounded-xl border border-white/10 bg-yt-dark hover:border-white/30 transition-colors">
+				<div class="flex items-center gap-3">
+				  <div class="w-10 h-10 rounded-lg bg-green-500/10 text-green-400 flex items-center justify-center">
+					<i class="fa-solid fa-laptop"></i>
+				  </div>
+				  <div>
+					<p class="font-bold text-sm">720p (HD)</p>
+					<p class="text-xs text-yt-muted">MP4 • ~22 MB</p>
+				  </div>
+				</div>
+				<button onclick="startDownload('720p MP4')" class="px-4 py-2 bg-yt-card hover:bg-yt-hover text-white text-sm font-bold rounded-lg border border-white/10 transition-colors flex items-center gap-2">
+				  <i class="fa-solid fa-download"></i> Unduh
+				</button>
+			  </div>
+
+			  <!-- Option Item -->
+			  <div class="flex items-center justify-between p-3 rounded-xl border border-white/10 bg-yt-dark hover:border-white/30 transition-colors">
+				<div class="flex items-center gap-3">
+				  <div class="w-10 h-10 rounded-lg bg-yt-muted/10 text-yt-muted flex items-center justify-center">
+					<i class="fa-solid fa-mobile-screen"></i>
+				  </div>
+				  <div>
+					<p class="font-bold text-sm">360p (SD)</p>
+					<p class="text-xs text-yt-muted">MP4 • ~8 MB</p>
+				  </div>
+				</div>
+				<button onclick="startDownload('360p MP4')" class="px-4 py-2 bg-yt-card hover:bg-yt-hover text-white text-sm font-bold rounded-lg border border-white/10 transition-colors flex items-center gap-2">
+				  <i class="fa-solid fa-download"></i> Unduh
+				</button>
+			  </div>
+			</div>
+
+			<!-- Audio Options Tab -->
+			<div id="options-audio" class="space-y-3 flex-grow hidden">
+			  <!-- Option Item -->
+			  <div class="flex items-center justify-between p-3 rounded-xl border border-white/10 bg-yt-dark hover:border-white/30 transition-colors">
+				<div class="flex items-center gap-3">
+				  <div class="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center">
+					<i class="fa-solid fa-headphones"></i>
+				  </div>
+				  <div>
+					<p class="font-bold text-sm">MP3 (320kbps)</p>
+					<p class="text-xs text-yt-muted">Kualitas Tinggi • ~5 MB</p>
+				  </div>
+				</div>
+				<button onclick="startDownload('320kbps MP3')" class="px-4 py-2 bg-yt-card hover:bg-yt-hover text-white text-sm font-bold rounded-lg border border-white/10 transition-colors flex items-center gap-2">
+				  <i class="fa-solid fa-download"></i> Unduh
+				</button>
+			  </div>
+
+			  <!-- Option Item -->
+			  <div class="flex items-center justify-between p-3 rounded-xl border border-white/10 bg-yt-dark hover:border-white/30 transition-colors">
+				<div class="flex items-center gap-3">
+				  <div class="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center">
+					<i class="fa-solid fa-music"></i>
+				  </div>
+				  <div>
+					<p class="font-bold text-sm">MP3 (128kbps)</p>
+					<p class="text-xs text-yt-muted">Standar • ~2 MB</p>
+				  </div>
+				</div>
+				<button onclick="startDownload('128kbps MP3')" class="px-4 py-2 bg-yt-card hover:bg-yt-hover text-white text-sm font-bold rounded-lg border border-white/10 transition-colors flex items-center gap-2">
+				  <i class="fa-solid fa-download"></i> Unduh
+				</button>
+			  </div>
+			</div>
+
+			<!-- Download Progress Bar (Hidden initially) -->
+			<div id="download-progress" class="hidden mt-6 pt-4 border-t border-white/10">
+			  <div class="flex justify-between text-xs mb-2">
+				<span class="font-bold text-yt-red" id="dl-status">Menyiapkan unduhan...</span>
+				<span class="text-yt-muted" id="dl-percentage">0%</span>
+			  </div>
+			  <div class="w-full h-2 bg-yt-dark rounded-full overflow-hidden">
+				<div id="dl-bar" class="h-full bg-yt-red w-0 transition-all duration-300"></div>
+			  </div>
+			</div>
+
+		  </div>
+		</div>
+	  </div>
+
+	  <!-- HOW TO USE SECTION -->
+	  <section id="how-to" class="max-w-4xl w-full mt-24 mb-10">
+		<div class="text-center mb-10">
+		  <h2 class="text-2xl font-bold mb-2">Cara Mendapatkan URL Video</h2>
+		  <p class="text-yt-muted text-sm">Ikuti langkah mudah di bawah ini sesuai dengan platform yang Anda gunakan.</p>
+		</div>
+
+		<div class="grid md:grid-cols-2 gap-6">
+		  <!-- App Guide -->
+		  <div class="glass-panel p-6 rounded-2xl border border-white/10 hover:border-yt-red/30 transition-colors">
+			<div class="w-12 h-12 bg-yt-red/10 text-yt-red rounded-xl flex items-center justify-center text-xl mb-4">
+			  <i class="fa-solid fa-mobile-screen-button"></i>
+			</div>
+			<h3 class="text-lg font-bold mb-3">Dari Aplikasi YouTube (HP)</h3>
+			<ul class="space-y-3 text-sm text-yt-muted">
+			  <li class="flex items-start gap-2">
+				<span class="bg-yt-card text-white w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold mt-0.5">1</span>
+				Buka aplikasi YouTube dan cari video yang ingin diunduh.
+			  </li>
+			  <li class="flex items-start gap-2">
+				<span class="bg-yt-card text-white w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold mt-0.5">2</span>
+				Ketuk tombol <strong>Bagi (Share)</strong> <i class="fa-solid fa-share text-white ml-1"></i> di bawah pemutar video.
+			  </li>
+			  <li class="flex items-start gap-2">
+				<span class="bg-yt-card text-white w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold mt-0.5">3</span>
+				Pilih menu <strong>Salin Tautan (Copy Link)</strong> <i class="fa-solid fa-link text-white ml-1"></i>.
+			  </li>
+			  <li class="flex items-start gap-2">
+				<span class="bg-yt-card text-white w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold mt-0.5">4</span>
+				Kembali ke web ini dan tempelkan (paste) di kotak isian.
+			  </li>
+			</ul>
+		  </div>
+
+		  <!-- Web Guide -->
+		  <div class="glass-panel p-6 rounded-2xl border border-white/10 hover:border-yt-red/30 transition-colors">
+			<div class="w-12 h-12 bg-yt-red/10 text-yt-red rounded-xl flex items-center justify-center text-xl mb-4">
+			  <i class="fa-solid fa-desktop"></i>
+			</div>
+			<h3 class="text-lg font-bold mb-3">Dari Website YouTube (PC/Laptop)</h3>
+			<ul class="space-y-3 text-sm text-yt-muted">
+			  <li class="flex items-start gap-2">
+				<span class="bg-yt-card text-white w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold mt-0.5">1</span>
+				Buka browser dan akses video di youtube.com.
+			  </li>
+			  <li class="flex items-start gap-2">
+				<span class="bg-yt-card text-white w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold mt-0.5">2</span>
+				Klik pada <strong>Bilah Alamat (Address Bar)</strong> di bagian atas browser Anda.
+			  </li>
+			  <li class="flex items-start gap-2">
+				<span class="bg-yt-card text-white w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold mt-0.5">3</span>
+				Blok seluruh URL (misal: <em>https://www.youtube.com/watch?v=...</em>) lalu tekan <strong>Ctrl + C</strong>.
+			  </li>
+			  <li class="flex items-start gap-2">
+				<span class="bg-yt-card text-white w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold mt-0.5">4</span>
+				Buka web ini dan tekan <strong>Ctrl + V</strong> pada kotak isian di atas.
+			  </li>
+			</ul>
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- Terms & Disclaimer -->
+	  <p class="mt-8 text-xs text-yt-muted text-center max-w-2xl">
+		Dengan menggunakan layanan ini, Anda menyetujui Ketentuan Penggunaan kami. Harap hargai hak cipta intelektual. Anda dilarang mengunduh materi berhak cipta tanpa izin dari pembuat aslinya. Alat ini didesain untuk mengunduh video non-copyright, open-source, atau milik Anda sendiri.
+	  </p>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-panel border-t border-white/10 py-6 text-center text-sm text-yt-muted">
+	  <p>&copy; 2026 YTGrabber. Antarmuka Web Downloader.</p>
+    </footer>
+
+    <!-- Logic Script -->
+<script>
+        // Utilities
+        function hide(id) { document.getElementById(id).classList.add('hidden'); }
+        function show(id) { document.getElementById(id).classList.remove('hidden'); }
+        function showFlex(id) { document.getElementById(id).classList.remove('hidden'); document.getElementById(id).classList.add('flex'); }
+
+        // Paste from clipboard API
+        async function pasteFromClipboard() {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('url-input').value = text;
+                // Auto process if it looks like a valid URL
+                if(extractVideoID(text)) {
+                    processUrl();
+                }
+            } catch (err) {
+                alert('Gagal mengakses clipboard. Silakan paste secara manual (Ctrl+V).');
+            }
+        }
+
+        // Tab Switcher inside Result
+        function switchTab(tab) {
+            const btnVideo = document.getElementById('tab-video');
+            const btnAudio = document.getElementById('tab-audio');
+            const optVideo = document.getElementById('options-video');
+            const optAudio = document.getElementById('options-audio');
+
+            // Reset progress UI if switching tabs
+            hide('download-progress');
+
+            if(tab === 'video') {
+                btnVideo.className = "flex-1 py-2 text-sm font-bold bg-yt-card text-white rounded-lg transition-all shadow";
+                btnAudio.className = "flex-1 py-2 text-sm font-bold text-yt-muted hover:text-white transition-all rounded-lg";
+                show('options-video');
+                hide('options-audio');
+            } else {
+                btnAudio.className = "flex-1 py-2 text-sm font-bold bg-yt-card text-white rounded-lg transition-all shadow";
+                btnVideo.className = "flex-1 py-2 text-sm font-bold text-yt-muted hover:text-white transition-all rounded-lg";
+                show('options-audio');
+                hide('options-video');
+            }
+        }
+
+        // Extract YouTube Video ID from URL (Supports web, mobile app shortlinks, shorts)
+        function extractVideoID(url) {
+            const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=|shorts\/)|youtu\.be\/)([^"&?\/\s]{11})/i;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+
+        // Main Process Logic
+        function processUrl() {
+            const input = document.getElementById('url-input').value.trim();
+            const errorMsg = document.getElementById('error-msg');
+            const resultSec = document.getElementById('result-section');
+            const btnProcess = document.getElementById('btn-process');
+            
+            // Hide previous states
+            hide('error-msg');
+            hide('download-progress');
+            resultSec.classList.remove('opacity-100', 'translate-y-0');
+            resultSec.classList.add('opacity-0', 'translate-y-4');
+            
+            setTimeout(() => { hide('result-section'); }, 300); // Wait for transition
+
+            if (!input) {
+                document.getElementById('error-text').innerText = "Mohon masukkan URL YouTube terlebih dahulu.";
+                showFlex('error-msg');
+                return;
+            }
+
+            const videoId = extractVideoID(input);
+
+            if (!videoId) {
+                document.getElementById('error-text').innerText = "URL tidak valid. Pastikan Anda menyalin link YouTube yang benar.";
+                showFlex('error-msg');
+                return;
+            }
+
+            // Simulate loading
+            btnProcess.disabled = true;
+            btnProcess.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin"></i> Proses...`;
+            showFlex('loader');
+
+            // Simulate fetching data (In a real app, send URL to backend)
+            setTimeout(() => {
+                // Populate Thumbnail using YouTube's standard image server
+                const thumbUrl = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
+                const fallbackThumb = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+                
+                const imgEl = document.getElementById('video-thumb');
+                imgEl.src = thumbUrl;
+                // If maxresdefault is 404 (not all videos have it), fallback to hqdefault
+                imgEl.onerror = function() {
+                    this.onerror = null;
+                    this.src = fallbackThumb;
+                };
+
+                // Due to CORS, we can't easily fetch title client-side without an API key or Proxy.
+                // For UI demo purposes, we will mock the title. 
+                document.getElementById('video-title').innerText = "Video YouTube Ditemukan (ID: " + videoId + ")";
+
+                // Hide loader, show results
+                hide('loader');
+                btnProcess.disabled = false;
+                btnProcess.innerHTML = `<span>Mulai</span> <i class="fa-solid fa-arrow-right"></i>`;
+                
+                show('result-section');
+                setTimeout(() => {
+                    resultSec.classList.remove('opacity-0', 'translate-y-4');
+                    resultSec.classList.add('opacity-100', 'translate-y-0');
+                }, 50);
+
+            }, 1500); // 1.5 second fake delay
+        }
+
+        // Simulate Download Process
+        function startDownload(format) {
+            show('download-progress');
+            const bar = document.getElementById('dl-bar');
+            const status = document.getElementById('dl-status');
+            const pct = document.getElementById('dl-percentage');
+            
+            bar.style.width = '0%';
+            status.innerText = `Menghubungkan server...`;
+            status.className = "font-bold text-yt-red";
+            pct.innerText = '0%';
+
+            let progress = 0;
+            
+            // Randomly increase progress to simulate download
+            const interval = setInterval(() => {
+                // Random jump between 1 and 15
+                progress += Math.floor(Math.random() * 15) + 1;
+                
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    
+                    // Final State
+                    bar.style.width = '100%';
+                    pct.innerText = '100%';
+                    status.innerText = `Selesai! ${format} siap disimpan.`;
+                    status.className = "font-bold text-green-400";
+                    
+                    // Simulate triggering file save dialog
+                    setTimeout(() => {
+                        alert(`[Simulasi] Pengunduhan file ${format} berhasil dimulai. (Catatan: Ini adalah demo antarmuka. Backend diperlukan untuk pengunduhan asli).`);
+                    }, 500);
+                } else {
+                    bar.style.width = `${progress}%`;
+                    pct.innerText = `${progress}%`;
+                    status.innerText = `Mengunduh ${format}...`;
+                }
+            }, 300); // Update every 300ms
+        }
+
+        // Allow 'Enter' key to trigger search
+        document.getElementById('url-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                processUrl();
+            }
+        });
+</script>
+  </body>
+</html>

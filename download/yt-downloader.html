@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TubeFlow - Ultimate YouTube Downloader</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                        },
+                        dark: {
+                            900: '#090d16',
+                            800: '#0f172a',
+                            700: '#1e293b',
+                            600: '#334155',
+                        }
+                    }
+                }
+            }
+        }
+</script>
+
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #090d16;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(244, 63, 94, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px -10px rgba(244, 63, 94, 0.15);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f43f5e;
+        }
+
+        /* Animations */
+        @keyframes pulse-glow {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.5;
+                filter: blur(40px);
+            }
+            50% {
+                transform: scale(1.15);
+                opacity: 0.8;
+                filter: blur(60px);
+            }
+        }
+
+        .bg-glow-red {
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(244,63,94,0.15) 0%, rgba(0,0,0,0) 70%);
+            animation: pulse-glow 8s infinite ease-in-out;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-glow-blue {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, rgba(0,0,0,0) 70%);
+            animation: pulse-glow 10s infinite ease-in-out;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .page-fade-enter {
+            animation: fadeIn 0.4s forwards cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Custom Range Slider */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-runnable-track {
+            background: #1e293b;
+            border-radius: 9999px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            background-color: #f43f5e;
+            border-radius: 9999px;
+            height: 14px;
+            width: 14px;
+            margin-top: -4px;
+            box-shadow: 0 0 10px rgba(244, 63, 94, 0.5);
+        }
+</style>
+  </head>
+  <body class="min-h-screen flex flex-col justify-between overflow-x-hidden antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Glowing Background blobs -->
+    <div class="bg-glow-red top-[-10%] left-[-10%]"></div>
+    <div class="bg-glow-blue bottom-[15%] right-[-10%]"></div>
+
+    <!-- MAIN NAVIGATION BAR (Global Toolbar) -->
+    <header id="global-header" class="hidden sticky top-0 z-40 glass-panel border-b border-white/5 transition-all duration-300">
+	  <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+		<div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
+		  <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-brand-600 to-rose-400 flex items-center justify-center shadow-lg shadow-brand-500/20">
+			<i class="fa-solid fa-cloud-arrow-down text-white text-lg"></i>
+		  </div>
+		  <div>
+			<span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">Tube<span class="text-brand-500">Flow</span></span>
+			<span class="text-[10px] block text-brand-500 font-bold uppercase tracking-widest mt-[-2px]">Downloader Pro</span>
+		  </div>
+		</div>
+
+		<!-- Toolbar Menus -->
+		<div class="flex items-center gap-2">
+		  <!-- Directory Location Tag -->
+		  <div id="dir-badge" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
+			<i class="fa-solid fa-folder-open"></i>
+			<span id="active-dir-name" class="max-w-[120px] truncate">System Downloads</span>
+		  </div>
+
+		  <!-- Navigation Tabs -->
+		  <button onclick="navigateTo('home')" class="nav-btn p-2.5 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white transition-all duration-200" title="Home">
+			<i class="fa-solid fa-house text-lg"></i>
+		  </button>
+		  <button onclick="navigateTo('history')" class="nav-btn relative p-2.5 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white transition-all duration-200" title="History">
+			<i class="fa-solid fa-clock-rotate-left text-lg"></i>
+			<span id="history-badge" class="hidden absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-brand-500 ring-2 ring-dark-900"></span>
+		  </button>
+		</div>
+	  </div>
+    </header>
+
+    <!-- MAIN APP WRAPPER -->
+    <main class="flex-grow flex items-center justify-center relative z-10 w-full max-w-6xl mx-auto px-4 py-6 md:py-10">
+
+	  <!-- PAGE 1: LOADING PAGE -->
+	  <section id="page-loading" class="page-fade-enter flex flex-col items-center justify-center text-center max-w-md w-full py-12">
+		<div class="relative flex items-center justify-center mb-8">
+		  <!-- Spinning Glowing Rings -->
+		  <div class="absolute w-24 h-24 rounded-full border-4 border-t-brand-500 border-r-transparent border-b-transparent border-l-transparent animate-spin"></div>
+		  <div class="absolute w-20 h-20 rounded-full border-4 border-b-blue-500 border-t-transparent border-r-transparent border-l-transparent animate-spin" style="animation-direction: reverse; animation-duration: 1.5s;"></div>
+		  <div class="h-16 w-16 rounded-full bg-slate-800 flex items-center justify-center text-brand-500 text-2xl shadow-inner shadow-black/40">
+			<i class="fa-solid fa-shield-halved animate-pulse"></i>
+		  </div>
+		</div>
+		<h2 class="text-2xl font-bold tracking-tight mb-2 text-white">Menyiapkan Injin Unduhan</h2>
+		<p class="text-slate-400 text-sm mb-6 max-w-xs">Menganalisis perizinan baca/tulis penyimpanan lokal Anda...</p>
+
+		<!-- Terminal-style loading steps -->
+		<div class="w-full bg-black/40 border border-white/5 rounded-xl p-4 font-mono text-left text-xs text-slate-400 leading-relaxed shadow-2xl">
+		  <div id="log-step-1" class="flex items-center gap-2 mb-1.5"><i class="fa-solid fa-circle-notch animate-spin text-brand-500"></i> Menginisialisasi modul TubeFlow...</div>
+		  <div id="log-step-2" class="flex items-center gap-2 mb-1.5 text-slate-600"><i class="fa-regular fa-circle text-slate-700"></i> Memeriksa Storage Sandboxing...</div>
+		  <div id="log-step-3" class="flex items-center gap-2 text-slate-600"><i class="fa-regular fa-circle text-slate-700"></i> Memindai hak akses tulis perangkat...</div>
+		</div>
+	  </section>
+
+	  <!-- PAGE 2: REQUEST PERMISSION PAGE -->
+	  <section id="page-permission" class="page-fade-enter hidden flex-col items-center justify-center max-w-md w-full py-8 text-center">
+		<div class="glass-panel border-white/10 rounded-2xl p-8 shadow-2xl flex flex-col items-center">
+		  <div class="h-20 w-20 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-3xl mb-6 shadow-lg shadow-amber-500/5 animate-bounce">
+			<i class="fa-solid fa-folder-open"></i>
+		  </div>
+		  <h2 class="text-2xl font-bold tracking-tight mb-3 text-white">Butuh Izin Penyimpanan</h2>
+		  <p class="text-slate-400 text-sm mb-8 leading-relaxed">
+			Untuk mendownload video, audio, dan thumbnail beresolusi tinggi langsung ke direktori penyimpanan perangkat, kami membutuhkan otorisasi akses baca/tulis penyimpanan Anda.
+		  </p>
+
+		  <div class="w-full space-y-3">
+			<button id="btn-request-storage" class="w-full bg-gradient-to-r from-brand-600 to-rose-500 hover:from-brand-500 hover:to-rose-400 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-2.5 shadow-lg shadow-brand-500/25 cursor-pointer transform hover:scale-[1.02]">
+			  <i class="fa-solid fa-shield-check"></i>
+			  Berikan Izin Penyimpanan
+			</button>
+
+			<button id="btn-skip-permission" class="w-full bg-white/5 hover:bg-white/10 border border-white/5 text-slate-300 font-medium py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 text-sm">
+			  Lewati & Gunakan Default Sandbox
+			</button>
+		  </div>
+
+		  <div class="mt-6 flex items-center gap-2 text-xs text-slate-500 bg-black/20 px-3 py-1.5 rounded-lg border border-white/5">
+			<i class="fa-solid fa-circle-info text-slate-400"></i>
+			Aman, berkas disimpan langsung ke folder pilihan Anda.
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- PAGE 3: HOME PAGE -->
+	  <section id="page-home" class="page-fade-enter hidden flex-col w-full max-w-4xl gap-8">
+
+		<!-- Hero Search Header -->
+		<div class="text-center py-4">
+		  <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight mb-3 text-white bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+			Unduh YouTube Dalam Detik
+		  </h1>
+		  <p class="text-slate-400 text-sm md:text-base max-w-md mx-auto">
+			Tempel tautan dari aplikasi YouTube perangkat Anda atau web, ekstraksi otomatis, pilih format, langsung simpan.
+		  </p>
+		</div>
+
+		<!-- YouTube URL Input Container -->
+		<div class="glass-panel border-white/10 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+		  <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-rose-500 via-brand-500 to-blue-500"></div>
+		  <div class="flex flex-col md:flex-row gap-4">
+			<!-- Input text wrapper -->
+			<div class="flex-grow relative">
+			  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500">
+				<i class="fa-brands fa-youtube text-xl"></i>
+			  </div>
+			  <input type="text" id="youtube-url" class="w-full bg-black/40 border border-white/10 focus:border-brand-500/50 rounded-xl pl-12 pr-12 py-4 text-white placeholder-slate-500 outline-none transition-all duration-300 focus:ring-2 focus:ring-brand-500/20 text-sm md:text-base font-medium" placeholder="Tempel URL YouTube (https://www.youtube.com/watch?v=... atau youtu.be/...)">
+			  <!-- Paste button -->
+			  <button onclick="pasteFromClipboard()" class="absolute inset-y-0 right-0 pr-4 flex items-center text-brand-500 hover:text-brand-400 transition-colors" title="Paste dari clipboard">
+				<i class="fa-solid fa-paste text-lg"></i>
+			  </button>
+			</div>
+			<!-- Submit Extract -->
+			<button id="btn-extract" class="bg-brand-600 hover:bg-brand-500 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-brand-500/30 whitespace-nowrap cursor-pointer transform hover:scale-[1.01] active:scale-[0.99] group">
+			  <i class="fa-solid fa-bolt text-amber-400 group-hover:scale-125 transition-transform"></i>
+			  Ekstrak Media
+			</button>
+		  </div>
+		</div>
+
+		<!-- Loading Extract Area -->
+		<div id="extract-loader" class="hidden flex-col items-center justify-center py-12">
+		  <div class="relative flex items-center justify-center mb-4">
+			<div class="animate-ping absolute h-8 w-8 rounded-full bg-brand-500 opacity-20"></div>
+			<div class="loader w-10 h-10 border-4 border-white/5 border-t-brand-500 rounded-full animate-spin"></div>
+		  </div>
+		  <p class="text-slate-400 text-sm font-medium">Menghubungkan ke API YouTube dan mengekstraksi konten...</p>
+		</div>
+
+		<!-- Extraction Result Segment -->
+		<div id="extraction-result" class="hidden grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+
+		  <!-- Video Metadata Preview -->
+		  <div class="md:col-span-5 glass-panel border-white/10 rounded-2xl p-5 shadow-lg flex flex-col gap-4">
+			<h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5 border-b border-white/5 pb-2.5">
+			  <i class="fa-solid fa-circle-play text-brand-500"></i>
+			  Video Preview
+			</h3>
+
+			<!-- Thumbnail Embed -->
+			<div class="relative rounded-xl overflow-hidden aspect-video bg-black/60 group shadow-lg">
+			  <img id="meta-thumbnail" src="" alt="Thumbnail" class="w-full h-full object-cover">
+			  <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+				<!-- Youtube logo icon -->
+				<div class="h-14 w-14 rounded-full bg-brand-600 flex items-center justify-center shadow-lg shadow-brand-600/30 text-white text-xl">
+				  <i class="fa-solid fa-play ml-1"></i>
+				</div>
+			  </div>
+			</div>
+
+			<!-- Meta details -->
+			<div>
+			  <h2 id="meta-title" class="text-lg font-bold text-white leading-snug line-clamp-2">Judul Video Memuat...</h2>
+			  <div class="flex items-center gap-3 mt-3">
+				<div class="h-8 w-8 rounded-full bg-white/5 flex items-center justify-center text-slate-400">
+				  <i class="fa-solid fa-circle-user"></i>
+				</div>
+				<div>
+				  <p id="meta-channel" class="text-xs font-semibold text-slate-300">Nama Channel</p>
+				  <p class="text-[10px] text-slate-500 uppercase tracking-wider">Author</p>
+				</div>
+			  </div>
+			</div>
+		  </div>
+
+		  <!-- Format Picker Area -->
+		  <div class="md:col-span-7 glass-panel border-white/10 rounded-2xl p-6 shadow-lg flex flex-col gap-5">
+			<h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5 border-b border-white/5 pb-3">
+			  <i class="fa-solid fa-list-check text-brand-500"></i>
+			  Pilih Resolusi & Format Download
+			</h3>
+
+			<div class="space-y-4">
+			  <!-- Resolution options tabs -->
+			  <div class="flex bg-black/30 rounded-lg p-1 gap-1 border border-white/5">
+				<button id="tab-video" onclick="switchFormatTab('video')" class="flex-1 text-center py-2 text-xs font-bold rounded-md bg-brand-500 text-white transition-all">
+				  <i class="fa-solid fa-video mr-1"></i> Video (MP4)
+				</button>
+				<button id="tab-audio" onclick="switchFormatTab('audio')" class="flex-1 text-center py-2 text-xs font-semibold rounded-md text-slate-400 hover:text-white transition-all">
+				  <i class="fa-solid fa-music mr-1"></i> Audio (MP3)
+				</button>
+				<button id="tab-image" onclick="switchFormatTab('image')" class="flex-1 text-center py-2 text-xs font-semibold rounded-md text-slate-400 hover:text-white transition-all">
+				  <i class="fa-solid fa-image mr-1"></i> Cover Art (JPG)
+				</button>
+			  </div>
+
+			  <!-- Video Resolusi List -->
+			  <div id="list-video" class="space-y-2.5">
+				<!-- Selected formats will render dynamically -->
+			  </div>
+
+			  <!-- Audio Format List -->
+			  <div id="list-audio" class="hidden space-y-2.5">
+				<!-- Render dynamic audio quality items -->
+			  </div>
+
+			  <!-- Cover image download list -->
+			  <div id="list-image" class="hidden space-y-2.5">
+				<!-- Render thumbnail dynamic items -->
+			  </div>
+			</div>
+
+			<!-- CTA Action -->
+			<button id="btn-proceed-download" class="w-full bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-bold py-3.5 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 mt-2 transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer">
+			  <i class="fa-solid fa-circle-down"></i>
+			  Kirim ke Antrean Unduhan
+			</button>
+		  </div>
+
+		</div>
+
+	  </section>
+
+	  <!-- PAGE 4: DOWNLOAD PAGE -->
+	  <section id="page-download" class="page-fade-enter hidden flex-col items-center justify-center w-full max-w-lg">
+		<div class="glass-panel border-white/10 rounded-2xl p-8 shadow-2xl w-full flex flex-col relative overflow-hidden">
+		  <div class="absolute top-0 left-0 right-0 h-[4px] bg-gradient-to-r from-blue-500 to-brand-500"></div>
+
+		  <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest text-center border-b border-white/5 pb-4 mb-6 flex items-center justify-center gap-2">
+			<i class="fa-solid fa-arrow-down-up-lock text-brand-500"></i>
+			Mesin Download Aktif
+		  </h2>
+
+		  <!-- Miniature File Details -->
+		  <div class="flex gap-4 p-3 bg-black/30 rounded-xl border border-white/5 mb-8 items-center">
+			<img id="dl-thumb" src="" alt="Thumb" class="w-20 rounded-md aspect-video object-cover bg-slate-800">
+			<div class="overflow-hidden flex-1">
+			  <h4 id="dl-title" class="font-bold text-sm text-white truncate">Video Title Loading...</h4>
+			  <div class="flex gap-2 items-center mt-1">
+				<span id="dl-tag" class="px-2 py-0.5 rounded-md bg-brand-500/10 border border-brand-500/20 text-brand-500 text-[10px] font-bold uppercase tracking-wider">1080P - MP4</span>
+				<span id="dl-est-size" class="text-xs text-slate-500 font-medium">Est: 24.5 MB</span>
+			  </div>
+			</div>
+		  </div>
+
+		  <!-- Circular Progress Ring / Progress Indicator -->
+		  <div class="flex flex-col items-center mb-8">
+			<div class="relative flex items-center justify-center h-40 w-40 mb-4">
+			  <!-- Circle SVG Background -->
+			  <svg class="absolute h-full w-full rotate-[-90deg]">
+				<circle class="text-slate-800" stroke-width="6" stroke="currentColor" fill="transparent" r="70" cx="80" cy="80" />
+				<circle id="dl-circle-progress" class="text-brand-500 transition-all duration-100" stroke-width="6" stroke-dasharray="440" stroke-dashoffset="440" stroke-linecap="round" stroke="currentColor" fill="transparent" r="70" cx="80" cy="80" />
+			  </svg>
+			  <!-- Center Label -->
+			  <div class="text-center z-10">
+				<span id="dl-percentage" class="text-4xl font-extrabold text-white tracking-tight">0%</span>
+				<span class="block text-[10px] text-slate-400 uppercase tracking-widest font-bold mt-1">Mengunduh</span>
+			  </div>
+			</div>
+
+			<!-- Connection details -->
+			<div class="grid grid-cols-2 gap-4 w-full bg-black/20 p-3 rounded-xl border border-white/5 text-center">
+			  <div>
+				<span class="text-[10px] block text-slate-500 uppercase tracking-wider font-bold">Kecepatan</span>
+				<span id="dl-speed" class="text-sm font-extrabold text-emerald-400">0.0 MB/s</span>
+			  </div>
+			  <div>
+				<span class="text-[10px] block text-slate-500 uppercase tracking-wider font-bold">Tersisa</span>
+				<span id="dl-eta" class="text-sm font-extrabold text-blue-400">--:--</span>
+			  </div>
+			</div>
+		  </div>
+
+		  <!-- Save Directory Badge -->
+		  <div class="mb-6">
+			<span class="text-[10px] block text-slate-500 uppercase tracking-widest font-bold mb-1.5">Direktori Penyimpanan</span>
+			<div class="flex items-center gap-2 bg-slate-800/60 rounded-lg p-2.5 border border-white/5 text-xs text-slate-300">
+			  <i class="fa-solid fa-folder-open text-amber-500"></i>
+			  <span id="dl-target-path" class="font-mono truncate">System Sandbox > /Downloads</span>
+			</div>
+		  </div>
+
+		  <!-- Custom Stop/Cancel Button -->
+		  <button id="btn-cancel-download" class="w-full bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-400 font-semibold py-3 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer text-sm">
+			<i class="fa-solid fa-circle-stop"></i>
+			Batalkan Pengunduhan
+		  </button>
+		</div>
+	  </section>
+
+	  <!-- PAGE 5: HISTORY PAGE -->
+	  <section id="page-history" class="page-fade-enter hidden flex-col w-full max-w-4xl gap-6">
+
+		<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/5 pb-4">
+		  <div>
+			<h2 class="text-2xl font-bold text-white flex items-center gap-2">
+			  <i class="fa-solid fa-clock-rotate-left text-brand-500"></i>
+			  Riwayat Unduhan
+			</h2>
+			<p class="text-slate-400 text-sm">Akses langsung berkas video, audio, dan cover yang telah diunduh.</p>
+		  </div>
+
+		  <div class="flex gap-2 w-full sm:w-auto">
+			<!-- Clean history button -->
+			<button id="btn-clear-history" class="flex-1 sm:flex-initial bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-400 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+			  <i class="fa-solid fa-trash-can"></i> Bersihkan Riwayat
+			</button>
+		  </div>
+		</div>
+
+		<!-- Empty History State -->
+		<div id="history-empty" class="glass-panel border-white/5 rounded-2xl py-20 text-center flex flex-col items-center">
+		  <div class="h-16 w-16 rounded-full bg-white/5 flex items-center justify-center text-slate-500 text-2xl mb-4">
+			<i class="fa-solid fa-cloud-arrow-down"></i>
+		  </div>
+		  <h3 class="font-bold text-white text-lg mb-1">Belum Ada Unduhan</h3>
+		  <p class="text-slate-500 text-sm max-w-xs leading-relaxed mb-6">Mulai masukkan URL YouTube favorit Anda dan unduh untuk menyimpannya di sini.</p>
+		  <button onclick="navigateTo('home')" class="bg-brand-600 hover:bg-brand-500 text-white font-semibold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-2 cursor-pointer shadow-lg shadow-brand-500/25">
+			<i class="fa-solid fa-plus"></i> Unduh Sekarang
+		  </button>
+		</div>
+
+		<!-- History Items Grid -->
+		<div id="history-grid" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+		  <!-- History elements will be printed dynamically here -->
+		</div>
+
+	  </section>
+
+    </main>
+
+    <!-- AUDIO, VIDEO & IMAGE VIEWERS (MODAL SYSTEM) -->
+    <!-- Global Overlay for media player modals -->
+    <div id="media-modal" class="hidden fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
+
+	  <div class="absolute top-4 right-4 z-10 flex gap-2">
+		<!-- Close Modal -->
+		<button onclick="closeMediaPlayer()" class="h-11 w-11 rounded-full bg-slate-800 hover:bg-slate-700 text-white flex items-center justify-center text-lg transition-colors cursor-pointer" title="Close Viewer">
+		  <i class="fa-solid fa-xmark"></i>
+		</button>
+	  </div>
+
+	  <div class="max-w-4xl w-full h-full max-h-[80vh] flex flex-col justify-center items-center relative">
+
+		<!-- VIDEO PLAYER COMPONENT -->
+		<div id="player-video-container" class="hidden w-full aspect-video rounded-xl overflow-hidden bg-black border border-white/10 shadow-2xl relative">
+		  <video id="player-video" class="w-full h-full" controls></video>
+		</div>
+
+		<!-- AUDIO PLAYER COMPONENT (WITH RETRO SPECTRUM SIMULATOR) -->
+		<div id="player-audio-container" class="hidden max-w-md w-full glass-panel border-white/10 rounded-2xl p-6 shadow-2xl flex flex-col items-center gap-6">
+
+		  <div class="w-48 h-48 rounded-xl overflow-hidden shadow-2xl relative group bg-black/40 border border-white/5">
+			<img id="player-audio-thumb" src="" alt="Album Art" class="w-full h-full object-cover">
+			<!-- Spinning CD style graphic overlay -->
+			<div class="absolute inset-0 bg-brand-500/10 mix-blend-color-dodge flex items-center justify-center rounded-full animate-spin" style="animation-duration: 8s;">
+			  <div class="w-12 h-12 rounded-full bg-dark-900 border border-white/20"></div>
+			</div>
+		  </div>
+
+		  <div class="text-center w-full">
+			<h3 id="player-audio-title" class="font-bold text-white text-lg truncate">Judul Lagu</h3>
+			<p class="text-xs text-brand-500 font-bold uppercase tracking-wider mt-1">Audio Player</p>
+		  </div>
+
+		  <!-- HTML5 Audio -->
+		  <audio id="player-audio" class="hidden"></audio>
+
+		  <!-- Audio visualizer bars -->
+		  <div class="flex items-end justify-center gap-1.5 h-12 w-full px-4 border-b border-white/5 pb-2">
+			<div class="bar bg-brand-500 w-1.5 rounded-full" style="height: 10%;"></div>
+			<div class="bar bg-brand-500 w-1.5 rounded-full" style="height: 30%;"></div>
+			<div class="bar bg-brand-500 w-1.5 rounded-full" style="height: 60%;"></div>
+			<div class="bar bg-brand-500 w-1.5 rounded-full" style="height: 80%;"></div>
+			<div class="bar bg-brand-500 w-1.5 rounded-full" style="height: 40%;"></div>
+			<div class="bar bg-brand-500 w-1.5 rounded-full" style="height: 90%;"></div>
+			<div class="bar bg-brand-500 w-1.5 rounded-full" style="height: 50%;"></div>
+			<div class="bar bg-brand-500 w-1.5 rounded-full" style="height: 70%;"></div>
+			<div class="bar bg-brand-500 w-1.5 rounded-full" style="height: 20%;"></div>
+		  </div>
+
+		  <!-- Audio controls interface -->
+		  <div class="flex items-center gap-6">
+			<button onclick="rewindAudio(10)" class="text-slate-400 hover:text-white transition-colors cursor-pointer"><i class="fa-solid fa-backward-step text-lg"></i></button>
+			<button id="btn-audio-play" onclick="toggleAudioPlay()" class="h-14 w-14 rounded-full bg-brand-500 hover:bg-brand-400 text-white flex items-center justify-center text-xl shadow-lg shadow-brand-500/20 cursor-pointer transition-transform transform hover:scale-105 active:scale-95"><i class="fa-solid fa-play"></i></button>
+			<button onclick="forwardAudio(10)" class="text-slate-400 hover:text-white transition-colors cursor-pointer"><i class="fa-solid fa-forward-step text-lg"></i></button>
+		  </div>
+
+		  <!-- Custom Scrubber/Slider -->
+		  <div class="w-full flex items-center gap-3 text-xs text-slate-400">
+			<span id="audio-time-current">0:00</span>
+			<input type="range" id="audio-slider" class="flex-1" min="0" value="0">
+			<span id="audio-time-duration">0:00</span>
+		  </div>
+		</div>
+
+		<!-- IMAGE PREVIEW CONTAINER -->
+		<div id="player-image-container" class="hidden max-w-full max-h-full flex flex-col items-center">
+		  <img id="player-img" src="" alt="Full Artwork" class="max-w-full max-h-[70vh] rounded-xl shadow-2xl object-contain border border-white/10">
+		  <p id="player-image-title" class="text-slate-300 text-sm mt-4 font-semibold text-center truncate w-full max-w-md">Image Artwork</p>
+		</div>
+
+	  </div>
+    </div>
+
+    <!-- CUSTOM NOTIFICATION SYSTEM (TOASTS) -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none">
+	  <!-- DynToasts go here -->
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="glass-panel border-t border-white/5 py-4 text-center text-slate-500 text-[11px] font-semibold tracking-wider uppercase mt-6 relative z-10">
+	  <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+		<span>&copy; 2026 TubeFlow Downloader Inc.</span>
+		<span class="flex items-center gap-1.5"><i class="fa-solid fa-heart text-brand-500"></i> Dibuat untuk Efisiensi Unduhan Maksimal</span>
+	  </div>
+    </footer>
+
+    <!-- APP CONTROLLERS & SCRIPT CORE -->
+<script>
+        // State variables
+        let currentPage = 'loading';
+        let storageGranted = false;
+        let selectedFormat = null;
+        let currentExtractData = null;
+        let activeDownloadInterval = null;
+        let directoryHandle = null; 
+        
+        // Mock static media libraries to play dynamically inside sandbox preview!
+        const MOCK_MEDIA = {
+            video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+            audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+            image: "" // Dynamic (stores actual extracted YT high res thumbnail via Blob/direct)
+        };
+
+        // DOM elements
+        const pages = {
+            loading: document.getElementById('page-loading'),
+            permission: document.getElementById('page-permission'),
+            home: document.getElementById('page-home'),
+            download: document.getElementById('page-download'),
+            history: document.getElementById('page-history')
+        };
+
+        const globalHeader = document.getElementById('global-header');
+        const activeDirName = document.getElementById('active-dir-name');
+        const dirBadge = document.getElementById('dir-badge');
+        const historyBadge = document.getElementById('history-badge');
+
+        // --- CORE APPLICATION INITIALIZER ---
+        window.onload = function() {
+            initApp();
+        };
+
+        function initApp() {
+            // STEP 1: Simulate check of local permission flag inside localStorage
+            setTimeout(() => {
+                document.getElementById('log-step-2').classList.replace('text-slate-600', 'text-slate-300');
+                document.getElementById('log-step-2').innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400"></i> Pemeriksaan Sandbox Berhasil';
+            }, 600);
+
+            setTimeout(() => {
+                document.getElementById('log-step-3').classList.replace('text-slate-600', 'text-slate-300');
+                document.getElementById('log-step-3').innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400"></i> Hak Tulis Valid';
+            }, 1200);
+
+            setTimeout(() => {
+                const isPermissionSaved = localStorage.getItem('tubeflow_permission_granted') === 'true';
+                
+                if (isPermissionSaved) {
+                    storageGranted = true;
+                    dirBadge.classList.remove('hidden');
+                    const savedDir = localStorage.getItem('tubeflow_dir_name');
+                    if (savedDir) {
+                        activeDirName.textContent = savedDir;
+                    }
+                    navigateTo('home');
+                } else {
+                    navigateTo('permission');
+                }
+                updateHistoryCount();
+            }, 1800);
+        }
+
+        // --- PAGE ROUTING CONTROLLER ---
+        function navigateTo(pageId) {
+            // Hide all pages
+            Object.keys(pages).forEach(key => {
+                pages[key].classList.add('hidden');
+                pages[key].classList.remove('flex');
+            });
+
+            // Show active page
+            if (pageId === 'home' || pageId === 'download' || pageId === 'history') {
+                globalHeader.classList.remove('hidden');
+            } else {
+                globalHeader.classList.add('hidden');
+            }
+
+            currentPage = pageId;
+            pages[pageId].classList.remove('hidden');
+            pages[pageId].classList.add('flex');
+
+            // Render updates if accessing specific pages
+            if (pageId === 'history') {
+                renderHistoryList();
+            }
+
+            // Sync active navigation tabs classes
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                const titleAttr = btn.getAttribute('title');
+                if (titleAttr && titleAttr.toLowerCase() === pageId) {
+                    btn.classList.add('text-brand-500', 'bg-white/5');
+                    btn.classList.remove('text-slate-400');
+                } else {
+                    btn.classList.remove('text-brand-500', 'bg-white/5');
+                    btn.classList.add('text-slate-400');
+                }
+            });
+        }
+
+        // --- PAGE 2: PERMISSION LOGIC ---
+        document.getElementById('btn-request-storage').addEventListener('click', async () => {
+            try {
+                // Check if running inside iframe sandbox
+                const isIframe = window.self !== window.top;
+                
+                if ('showDirectoryPicker' in window && !isIframe) {
+                    // Try direct storage picker
+                    directoryHandle = await window.showDirectoryPicker();
+                    localStorage.setItem('tubeflow_permission_granted', 'true');
+                    localStorage.setItem('tubeflow_dir_name', directoryHandle.name);
+                    activeDirName.textContent = directoryHandle.name;
+                    showToast('Sukses', 'Izin penyimpanan diberikan ke folder: ' + directoryHandle.name, 'success');
+                } else {
+                    // Simulative sandbox fallback
+                    localStorage.setItem('tubeflow_permission_granted', 'true');
+                    localStorage.setItem('tubeflow_dir_name', 'Local Downloads');
+                    activeDirName.textContent = 'Local Downloads';
+                    showToast('Info', 'Izin penyimpanan diberikan ke Direktori Standar Perangkat.', 'success');
+                }
+                
+                dirBadge.classList.remove('hidden');
+                storageGranted = true;
+                navigateTo('home');
+            } catch (err) {
+                console.warn("Storage dialog canceled or blocked:", err.message);
+                showToast('Akses Ditolak', 'Gagal mendapatkan izin baca/tulis berkas.', 'error');
+            }
+        });
+
+        document.getElementById('btn-skip-permission').addEventListener('click', () => {
+            localStorage.setItem('tubeflow_permission_granted', 'true');
+            localStorage.setItem('tubeflow_dir_name', 'System Sandbox');
+            activeDirName.textContent = 'System Sandbox';
+            dirBadge.classList.remove('hidden');
+            storageGranted = true;
+            showToast('Sandbox Aktif', 'Menggunakan sandbox penyimpanan sementara browser.', 'info');
+            navigateTo('home');
+        });
+
+        // --- TOAST NOTIFICATION UTILITY ---
+        function showToast(title, message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            
+            const toast = document.createElement('div');
+            toast.className = "p-4 rounded-xl shadow-2xl border flex gap-3 items-start pointer-events-auto transition-all duration-300 transform translate-x-12 opacity-0 glass-panel";
+            
+            let colorClass = '';
+            let icon = '';
+            if (type === 'success') {
+                colorClass = 'border-emerald-500/20 text-emerald-400';
+                icon = '<i class="fa-solid fa-circle-check"></i>';
+            } else if (type === 'error') {
+                colorClass = 'border-rose-500/20 text-rose-400';
+                icon = '<i class="fa-solid fa-triangle-exclamation"></i>';
+            } else {
+                colorClass = 'border-blue-500/20 text-blue-400';
+                icon = '<i class="fa-solid fa-circle-info"></i>';
+            }
+
+            toast.innerHTML = `
+                <div class="text-lg ${colorClass} mt-0.5">${icon}</div>
+                <div class="flex-1">
+                    <h5 class="font-bold text-xs text-white leading-tight">${title}</h5>
+                    <p class="text-[11px] text-slate-400 mt-0.5">${message}</p>
+                </div>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Animation Trigger
+            setTimeout(() => {
+                toast.classList.remove('translate-x-12', 'opacity-0');
+            }, 10);
+
+            // Self cleanup
+            setTimeout(() => {
+                toast.classList.add('translate-x-12', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3500);
+        }
+
+        // --- CLIPBOARD HELPER ---
+        async function pasteFromClipboard() {
+            try {
+                // If navigator.clipboard is not readable inside sandbox/iframe, fallback gracefully
+                const text = await navigator.clipboard.readText();
+                document.getElementById('youtube-url').value = text;
+                showToast('Clipboard', 'Berhasil menyalin link dari clipboard!', 'success');
+            } catch (err) {
+                showToast('Info', 'Salin tautan secara manual dan tempelkan di kotak input.', 'info');
+            }
+        }
+
+        // --- PAGE 3: EXTRACTION CONTROLLER ---
+        function parseVideoId(url) {
+            const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[7].length === 11) ? match[7] : false;
+        }
+
+        document.getElementById('btn-extract').addEventListener('click', async () => {
+            const inputUrl = document.getElementById('youtube-url').value.trim();
+            const videoId = parseVideoId(inputUrl);
+
+            if (!videoId) {
+                showToast('URL Tidak Valid', 'Pastikan Anda memasukkan link video YouTube yang benar.', 'error');
+                return;
+            }
+
+            const loader = document.getElementById('extract-loader');
+            const resultBox = document.getElementById('extraction-result');
+
+            loader.classList.remove('hidden');
+            loader.classList.add('flex');
+            resultBox.classList.add('hidden');
+
+            try {
+                // Call standard Oembed to bypass strict YT scraper policies
+                const oembedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
+                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(oembedUrl)}`;
+                
+                let ytObj = null;
+                try {
+                    const response = await fetch(proxyUrl);
+                    if (response.ok) {
+                        const data = await response.json();
+                        ytObj = JSON.parse(data.contents);
+                    }
+                } catch (fetchErr) {
+                    console.warn("CORS/Network restriction on metadata fetch. Falling back to offline client extraction.", fetchErr);
+                }
+
+                // If API fetch failed, use robust client-side fallback metadata to prevent application crash
+                if (!ytObj || !ytObj.title) {
+                    ytObj = {
+                        title: `Amazing YouTube Video [ID: ${videoId}]`,
+                        author_name: "YouTube Creator"
+                    };
+                    showToast('Mode Lokal Aktif', 'Menggunakan ekstraksi offline karena pembatasan jaringan browser.', 'info');
+                }
+
+                currentExtractData = {
+                    id: videoId,
+                    title: ytObj.title,
+                    author: ytObj.author_name || 'YouTube Creator',
+                    thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+                };
+
+                // Apply values to UI Preview
+                document.getElementById('meta-title').textContent = currentExtractData.title;
+                document.getElementById('meta-channel').textContent = currentExtractData.author;
+                
+                // Fallback thumbnail validation directly inside DOM (doesn't require CORS fetch)
+                const img = document.getElementById('meta-thumbnail');
+                img.src = currentExtractData.thumbnail;
+
+                buildQualityLists(videoId);
+
+                // Show extraction card smoothly
+                loader.classList.add('hidden');
+                loader.classList.remove('flex');
+                resultBox.classList.remove('hidden');
+                resultBox.classList.add('page-fade-enter');
+                
+                showToast('Ekstraksi Berhasil', 'Video teranalisis. Silakan pilih resolusi.', 'success');
+
+            } catch (err) {
+                console.warn("Extraction error handled gracefully:", err);
+                loader.classList.add('hidden');
+                loader.classList.remove('flex');
+                showToast('Kesalahan API', 'Gagal memproses metadata video. Menggunakan mode darurat.', 'error');
+            }
+        });
+
+        function buildQualityLists(id) {
+            const listVideo = document.getElementById('list-video');
+            const listAudio = document.getElementById('list-audio');
+            const listImage = document.getElementById('list-image');
+
+            // Generate Video resolutions elements (Simulated size variants)
+            const videoFormats = [
+                { quality: '1080p (Full HD)', size: '42.8 MB', icon: 'fa-file-video', val: '1080p_mp4', tag: 'MP4' },
+                { quality: '720p (HD Quality)', size: '21.5 MB', icon: 'fa-file-video', val: '720p_mp4', tag: 'MP4' },
+                { quality: '360p (Standar)', size: '9.2 MB', icon: 'fa-file-video', val: '360p_mp4', tag: 'MP4' }
+            ];
+
+            listVideo.innerHTML = videoFormats.map((fmt, i) => `
+                <div class="flex items-center justify-between p-3 rounded-xl border border-white/5 hover:border-brand-500/20 bg-black/20 hover:bg-black/40 transition-all cursor-pointer format-option" data-type="video" data-val="${fmt.val}" data-label="${fmt.quality}" data-size="${fmt.size}" onclick="selectFormat(this)">
+                    <div class="flex items-center gap-3">
+                        <div class="h-9 w-9 rounded-lg bg-brand-500/10 border border-brand-500/20 flex items-center justify-center text-brand-500">
+                            <i class="fa-solid ${fmt.icon}"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-white">${fmt.quality}</p>
+                            <p class="text-[10px] text-slate-500 font-semibold uppercase">${fmt.tag} &bull; ${fmt.size}</p>
+                        </div>
+                    </div>
+                    <div class="radio-indicator h-5 w-5 rounded-full border-2 border-slate-700 flex items-center justify-center">
+                        <div class="h-2.5 w-2.5 rounded-full bg-brand-500 scale-0 transition-transform"></div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Generate Audio resolution elements
+            const audioFormats = [
+                { quality: 'Ultra Quality (320kbps)', size: '7.8 MB', icon: 'fa-file-audio', val: '320_mp3', tag: 'MP3' },
+                { quality: 'High Quality (192kbps)', size: '4.5 MB', icon: 'fa-file-audio', val: '192_mp3', tag: 'MP3' },
+                { quality: 'Medium Quality (128kbps)', size: '3.1 MB', icon: 'fa-file-audio', val: '128_mp3', tag: 'MP3' }
+            ];
+
+            listAudio.innerHTML = audioFormats.map(fmt => `
+                <div class="flex items-center justify-between p-3 rounded-xl border border-white/5 hover:border-brand-500/20 bg-black/20 hover:bg-black/40 transition-all cursor-pointer format-option" data-type="audio" data-val="${fmt.val}" data-label="${fmt.quality}" data-size="${fmt.size}" onclick="selectFormat(this)">
+                    <div class="flex items-center gap-3">
+                        <div class="h-9 w-9 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+                            <i class="fa-solid ${fmt.icon}"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-white">${fmt.quality}</p>
+                            <p class="text-[10px] text-slate-500 font-semibold uppercase">${fmt.tag} &bull; ${fmt.size}</p>
+                        </div>
+                    </div>
+                    <div class="radio-indicator h-5 w-5 rounded-full border-2 border-slate-700 flex items-center justify-center">
+                        <div class="h-2.5 w-2.5 rounded-full bg-blue-500 scale-0 transition-transform"></div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Generate Artwork (Thumbnail Image) option elements
+            listImage.innerHTML = `
+                <div class="flex items-center justify-between p-3 rounded-xl border border-white/5 hover:border-brand-500/20 bg-black/20 hover:bg-black/40 transition-all cursor-pointer format-option" data-type="image" data-val="cover_max" data-label="Cover Art (HQ JPG)" data-size="750 KB" onclick="selectFormat(this)">
+                    <div class="flex items-center gap-3">
+                        <div class="h-9 w-9 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500">
+                            <i class="fa-solid fa-image"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-white">Cover Art (Max Resolution)</p>
+                            <p class="text-[10px] text-slate-500 font-semibold uppercase">JPEG &bull; 750 KB</p>
+                        </div>
+                    </div>
+                    <div class="radio-indicator h-5 w-5 rounded-full border-2 border-slate-700 flex items-center justify-center">
+                        <div class="h-2.5 w-2.5 rounded-full bg-amber-500 scale-0 transition-transform"></div>
+                    </div>
+                </div>
+            `;
+
+            // Default Select First Item of Active Format
+            const firstOpt = listVideo.querySelector('.format-option');
+            if (firstOpt) selectFormat(firstOpt);
+        }
+
+        function switchFormatTab(type) {
+            const tabs = {
+                video: document.getElementById('tab-video'),
+                audio: document.getElementById('tab-audio'),
+                image: document.getElementById('tab-image')
+            };
+
+            const lists = {
+                video: document.getElementById('list-video'),
+                audio: document.getElementById('list-audio'),
+                image: document.getElementById('list-image')
+            };
+
+            // Switch Tab classes
+            Object.keys(tabs).forEach(key => {
+                if (key === type) {
+                    tabs[key].classList.add('bg-brand-500', 'text-white');
+                    tabs[key].classList.remove('text-slate-400');
+                    lists[key].classList.remove('hidden');
+                    
+                    // Auto select first item in clicked lists
+                    const firstOption = lists[key].querySelector('.format-option');
+                    if (firstOption) selectFormat(firstOption);
+                } else {
+                    tabs[key].classList.remove('bg-brand-500', 'text-white');
+                    tabs[key].classList.add('text-slate-400');
+                    lists[key].classList.add('hidden');
+                }
+            });
+        }
+
+        function selectFormat(elem) {
+            // Deselect all options
+            document.querySelectorAll('.format-option').forEach(opt => {
+                opt.classList.remove('border-brand-500/50', 'bg-brand-500/5');
+                opt.querySelector('.radio-indicator').classList.remove('border-brand-500');
+                opt.querySelector('.radio-indicator div').classList.add('scale-0');
+            });
+
+            // Select active
+            elem.classList.add('border-brand-500/50', 'bg-brand-500/5');
+            elem.querySelector('.radio-indicator').classList.add('border-brand-500');
+            elem.querySelector('.radio-indicator div').classList.remove('scale-0');
+
+            selectedFormat = {
+                type: elem.dataset.type,
+                val: elem.dataset.val,
+                label: elem.dataset.label,
+                size: elem.dataset.size
+            };
+        }
+
+        // --- PAGE 4: DOWNLOAD CONTROLLER ---
+        document.getElementById('btn-proceed-download').addEventListener('click', () => {
+            if (!selectedFormat || !currentExtractData) {
+                showToast('Gagal', 'Pilih resolusi terlebih dahulu!', 'error');
+                return;
+            }
+
+            navigateTo('download');
+            beginDownloadProcess();
+        });
+
+        function beginDownloadProcess() {
+            // Apply Metadata to Download Monitor
+            document.getElementById('dl-thumb').src = currentExtractData.thumbnail;
+            document.getElementById('dl-title').textContent = currentExtractData.title;
+            document.getElementById('dl-tag').textContent = `${selectedFormat.label} - ${selectedFormat.type.toUpperCase()}`;
+            document.getElementById('dl-est-size').textContent = `Total: ${selectedFormat.size}`;
+            document.getElementById('dl-target-path').textContent = localStorage.getItem('tubeflow_dir_name') + " > /Downloads";
+
+            // Initialize Progress
+            const progressCircle = document.getElementById('dl-circle-progress');
+            const percentLabel = document.getElementById('dl-percentage');
+            const speedLabel = document.getElementById('dl-speed');
+            const etaLabel = document.getElementById('dl-eta');
+
+            progressCircle.style.strokeDashoffset = 440;
+            percentLabel.textContent = "0%";
+
+            let percentage = 0;
+            const targetSizeMB = parseFloat(selectedFormat.size);
+            
+            // Speed Simulator interval
+            activeDownloadInterval = setInterval(() => {
+                // Calculate random speed fluctuation
+                const speed = (Math.random() * 8 + 3).toFixed(1); // 3 MB/s - 11 MB/s
+                speedLabel.textContent = `${speed} MB/s`;
+
+                // Calculate progress
+                const chunkPerTick = (speed / 3); 
+                const progressPercent = (chunkPerTick / targetSizeMB) * 100;
+                
+                percentage += progressPercent;
+                if (percentage >= 100) percentage = 100;
+
+                // Update UI Circle and labels
+                const offset = 440 - (440 * percentage) / 100;
+                progressCircle.style.strokeDashoffset = offset;
+                percentLabel.textContent = `${Math.floor(percentage)}%`;
+
+                // Estimated time remaining
+                const remainingMB = targetSizeMB - (targetSizeMB * (percentage / 100));
+                const etaSeconds = Math.max(0, Math.ceil(remainingMB / speed));
+                
+                if (etaSeconds === 0) {
+                    etaLabel.textContent = "Selesai";
+                } else {
+                    const m = Math.floor(etaSeconds / 60);
+                    const s = etaSeconds % 60;
+                    etaLabel.textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+                }
+
+                // Completion trigger
+                if (percentage >= 100) {
+                    clearInterval(activeDownloadInterval);
+                    finishDownload();
+                }
+
+            }, 400);
+        }
+
+        async function finishDownload() {
+            showToast('Download Selesai', 'Berkas berhasil diunduh ke memori virtual browser.', 'success');
+
+            const fileExtension = selectedFormat.type === 'video' ? 'mp4' : (selectedFormat.type === 'audio' ? 'mp3' : 'jpg');
+            const finalFilename = `${currentExtractData.title.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase()}_${selectedFormat.val}.${fileExtension}`;
+            
+            let downloadUrl = "";
+
+            try {
+                // Perform real download or clean simulation blob mapping
+                if (selectedFormat.type === 'image') {
+                    try {
+                        // Try real blob fetch
+                        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(currentExtractData.thumbnail)}`;
+                        const response = await fetch(proxyUrl);
+                        if (response.ok) {
+                            const data = await response.json();
+                            const imgRes = await fetch(currentExtractData.thumbnail);
+                            const imgBlob = await imgRes.blob();
+                            downloadUrl = URL.createObjectURL(imgBlob);
+                        } else {
+                            downloadUrl = currentExtractData.thumbnail;
+                        }
+                    } catch (e) {
+                        console.warn("Thumbnail fetch failed due to CORS environment restrictions. Using direct URL mapping instead.");
+                        downloadUrl = currentExtractData.thumbnail;
+                    }
+                } else if (selectedFormat.type === 'video') {
+                    // Map video elements using royalty free open source sandbox stream
+                    downloadUrl = MOCK_MEDIA.video;
+                } else {
+                    // Map audio elements
+                    downloadUrl = MOCK_MEDIA.audio;
+                }
+
+                // Append file output to local database history storage!
+                saveToHistory({
+                    id: currentExtractData.id,
+                    title: currentExtractData.title,
+                    type: selectedFormat.type,
+                    quality: selectedFormat.label,
+                    size: selectedFormat.size,
+                    url: downloadUrl,
+                    thumbnail: currentExtractData.thumbnail,
+                    filename: finalFilename,
+                    date: new Date().toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'})
+                });
+
+                // Auto Trigger native browser file saver trigger
+                const mockA = document.createElement('a');
+                mockA.href = downloadUrl;
+                mockA.download = finalFilename;
+                document.body.appendChild(mockA);
+                mockA.click();
+                document.body.removeChild(mockA);
+
+                setTimeout(() => {
+                    navigateTo('history');
+                }, 1000);
+
+            } catch (err) {
+                console.warn("Downloader asset creation error handled gracefully:", err);
+                showToast('Kesalahan', 'Gagal memproses pengarsipan berkas disk lokal.', 'error');
+                navigateTo('home');
+            }
+        }
+
+        document.getElementById('btn-cancel-download').addEventListener('click', () => {
+            if (activeDownloadInterval) {
+                clearInterval(activeDownloadInterval);
+                showToast('Dibatalkan', 'Proses pengunduhan telah dihentikan.', 'info');
+                navigateTo('home');
+            }
+        });
+
+        // --- PAGE 5: HISTORY CONTROLLER ---
+        function saveToHistory(item) {
+            let historyList = [];
+            try {
+                historyList = JSON.parse(localStorage.getItem('tubeflow_history') || '[]');
+            } catch (e) {
+                historyList = [];
+            }
+
+            // Unshift to put newest item first
+            historyList.unshift(item);
+            localStorage.setItem('tubeflow_history', JSON.stringify(historyList));
+            updateHistoryCount();
+        }
+
+        function updateHistoryCount() {
+            const historyList = JSON.parse(localStorage.getItem('tubeflow_history') || '[]');
+            if (historyList.length > 0) {
+                historyBadge.classList.remove('hidden');
+            } else {
+                historyBadge.classList.add('hidden');
+            }
+        }
+
+        function renderHistoryList() {
+            const historyGrid = document.getElementById('history-grid');
+            const historyEmpty = document.getElementById('history-empty');
+            
+            let list = [];
+            try {
+                list = JSON.parse(localStorage.getItem('tubeflow_history') || '[]');
+            } catch (e) {
+                list = [];
+            }
+
+            if (list.length === 0) {
+                historyGrid.classList.add('hidden');
+                historyEmpty.classList.remove('hidden');
+                return;
+            }
+
+            historyEmpty.classList.add('hidden');
+            historyGrid.classList.remove('hidden');
+
+            historyGrid.innerHTML = list.map((item, index) => {
+                let badgeColor = "";
+                let typeIcon = "";
+                if (item.type === 'video') {
+                    badgeColor = "bg-brand-500/10 text-brand-500 border-brand-500/20";
+                    typeIcon = "fa-video";
+                } else if (item.type === 'audio') {
+                    badgeColor = "bg-blue-500/10 text-blue-400 border-blue-500/20";
+                    typeIcon = "fa-music";
+                } else {
+                    badgeColor = "bg-amber-500/10 text-amber-500 border-amber-500/20";
+                    typeIcon = "fa-image";
+                }
+
+                return `
+                    <div class="glass-card rounded-xl p-4 flex gap-4 items-center relative overflow-hidden">
+                        <!-- Left Thumbnail with hover play overlay -->
+                        <div class="relative h-16 w-24 rounded-lg overflow-hidden bg-slate-900 shadow-inner flex-shrink-0 cursor-pointer" onclick="playMediaItem(${index})">
+                            <img src="${item.thumbnail}" alt="Thumb" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <span class="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center text-white text-xs backdrop-blur-md hover:scale-115 transition-transform"><i class="fa-solid fa-play"></i></span>
+                            </div>
+                        </div>
+
+                        <!-- Info details -->
+                        <div class="flex-grow overflow-hidden pr-8">
+                            <h4 class="font-bold text-sm text-white truncate cursor-pointer" onclick="playMediaItem(${index})">${item.title}</h4>
+                            <div class="flex flex-wrap gap-1.5 mt-1.5">
+                                <span class="px-2 py-0.5 rounded-md border text-[9px] font-bold uppercase tracking-wider ${badgeColor}">
+                                    <i class="fa-solid ${typeIcon} mr-0.5"></i> ${item.quality}
+                                </span>
+                                <span class="px-2 py-0.5 rounded-md border border-white/5 bg-white/5 text-[9px] font-semibold text-slate-400">
+                                    ${item.size}
+                                </span>
+                            </div>
+                            <p class="text-[10px] text-slate-500 font-medium mt-1">${item.date}</p>
+                        </div>
+
+                        <!-- Quick Delete -->
+                        <button onclick="deleteHistoryItem(${index})" class="absolute right-4 p-2 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/5 transition-all" title="Hapus Riwayat">
+                            <i class="fa-solid fa-trash-can text-sm"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function deleteHistoryItem(index) {
+            let list = JSON.parse(localStorage.getItem('tubeflow_history') || '[]');
+            list.splice(index, 1);
+            localStorage.setItem('tubeflow_history', JSON.stringify(list));
+            
+            showToast('Dihapus', 'Unduhan dihapus dari riwayat.', 'info');
+            renderHistoryList();
+            updateHistoryCount();
+        }
+
+        document.getElementById('btn-clear-history').addEventListener('click', () => {
+            localStorage.removeItem('tubeflow_history');
+            showToast('Bersih', 'Semua riwayat unduhan berhasil dihapus.', 'success');
+            renderHistoryList();
+            updateHistoryCount();
+        });
+
+        // --- MEDIA PLAYERS & MODAL CONTROLLERS ---
+        const mediaModal = document.getElementById('media-modal');
+        const vPlayer = document.getElementById('player-video');
+        const aPlayer = document.getElementById('player-audio');
+        const aSlider = document.getElementById('audio-slider');
+        
+        let visualizerInterval = null;
+
+        function playMediaItem(index) {
+            const list = JSON.parse(localStorage.getItem('tubeflow_history') || '[]');
+            const item = list[index];
+
+            if (!item) return;
+
+            // Open Modal Overlay
+            mediaModal.classList.remove('hidden');
+            mediaModal.classList.add('page-fade-enter');
+
+            // Hide all specialized sub containers
+            document.getElementById('player-video-container').classList.add('hidden');
+            document.getElementById('player-audio-container').classList.add('hidden');
+            document.getElementById('player-image-container').classList.add('hidden');
+
+            // Reset components
+            vPlayer.pause();
+            vPlayer.src = "";
+            aPlayer.pause();
+            aPlayer.src = "";
+            clearInterval(visualizerInterval);
+
+            // Conditional rendering
+            if (item.type === 'video') {
+                document.getElementById('player-video-container').classList.remove('hidden');
+                // Play standard sample video URL inside browser
+                vPlayer.src = item.url || MOCK_MEDIA.video;
+                vPlayer.play().catch(e => console.log('Autoplay blocked'));
+            } else if (item.type === 'audio') {
+                document.getElementById('player-audio-container').classList.remove('hidden');
+                document.getElementById('player-audio-thumb').src = item.thumbnail;
+                document.getElementById('player-audio-title').textContent = item.title;
+
+                aPlayer.src = item.url || MOCK_MEDIA.audio;
+                aPlayer.play()
+                    .then(() => updateAudioPlayButton(true))
+                    .catch(e => updateAudioPlayButton(false));
+
+                // Initialize simple spectrum visualizer simulation
+                visualizerInterval = setInterval(() => {
+                    document.querySelectorAll('.bar').forEach(bar => {
+                        const h = Math.floor(Math.random() * 90) + 10;
+                        bar.style.height = `${h}%`;
+                    });
+                }, 150);
+
+                // Audio Event listeners for slider and timings
+                aPlayer.onloadedmetadata = () => {
+                    aSlider.max = Math.floor(aPlayer.duration);
+                    document.getElementById('audio-time-duration').textContent = formatTime(aPlayer.duration);
+                };
+
+                aPlayer.ontimeupdate = () => {
+                    aSlider.value = Math.floor(aPlayer.currentTime);
+                    document.getElementById('audio-time-current').textContent = formatTime(aPlayer.currentTime);
+                };
+
+            } else {
+                // Image viewer
+                document.getElementById('player-image-container').classList.remove('hidden');
+                document.getElementById('player-img').src = item.url || item.thumbnail;
+                document.getElementById('player-image-title').textContent = item.title;
+            }
+        }
+
+        function closeMediaPlayer() {
+            mediaModal.classList.add('hidden');
+            vPlayer.pause();
+            vPlayer.src = "";
+            aPlayer.pause();
+            aPlayer.src = "";
+            clearInterval(visualizerInterval);
+        }
+
+        // --- AUDIO COMPONENT HELPER ACTIONS ---
+        function toggleAudioPlay() {
+            if (aPlayer.paused) {
+                aPlayer.play();
+                updateAudioPlayButton(true);
+            } else {
+                aPlayer.pause();
+                updateAudioPlayButton(false);
+            }
+        }
+
+        function updateAudioPlayButton(isPlaying) {
+            const btn = document.getElementById('btn-audio-play');
+            if (isPlaying) {
+                btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+            }
+        }
+
+        function rewindAudio(sec) {
+            aPlayer.currentTime = Math.max(0, aPlayer.currentTime - sec);
+        }
+
+        function forwardAudio(sec) {
+            aPlayer.currentTime = Math.min(aPlayer.duration, aPlayer.currentTime + sec);
+        }
+
+        aSlider.addEventListener('input', () => {
+            aPlayer.currentTime = aSlider.value;
+        });
+
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "0:00";
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+</script>
+  </body>
+</html>

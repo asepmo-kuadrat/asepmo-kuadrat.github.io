@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium YouTube Channel Explorer with Playlists</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter & Syne -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .heading-font {
+            font-family: 'Syne', sans-serif;
+        }
+        /* Custom dynamic scrollbar styling for premium dark look */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #09090b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f3f46;
+        }
+</style>
+  </head>
+  <body class="bg-black text-zinc-100 min-h-screen flex flex-col antialiased selection:bg-red-500 selection:text-white">
+
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-40 w-full border-b border-zinc-900 bg-black/80 backdrop-blur-md px-4 py-3 md:px-8">
+	  <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+		<!-- Brand Logo -->
+		<div class="flex items-center gap-3">
+		  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-red-600 to-rose-500 flex items-center justify-center shadow-lg shadow-red-900/30">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-white">
+			  <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.517 3.545 12 3.545 12 3.545s-7.517 0-9.388.508a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.871.508 9.388.508 9.388.508s7.517 0 9.388-.508a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+			</svg>
+		  </div>
+		  <div>
+			<h1 class="text-lg font-bold tracking-tight heading-font bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">NEXUS PLAY</h1>
+			<p class="text-[10px] text-zinc-500 uppercase tracking-widest font-semibold">Channel Engine</p>
+		  </div>
+		</div>
+
+		<!-- Search bar with Channel option -->
+		<div class="flex-1 max-w-xl w-full">
+		  <form id="search-form" class="relative group" onsubmit="handleChannelSearch(event)">
+			<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-500 group-focus-within:text-red-500 transition-colors">
+			  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+				<path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.637 10.637z" />
+			  </svg>
+			</div>
+			<input 
+			  type="text" 
+			  id="search-input" 
+			  placeholder="Cari & jelajahi nama channel di sini..." 
+			  class="w-full pl-11 pr-24 py-2.5 bg-zinc-950/80 border border-zinc-800 rounded-xl text-sm focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500/30 transition-all text-white placeholder-zinc-500 shadow-inner"
+			/>
+			<button type="submit" class="absolute right-1.5 top-1.5 bottom-1.5 px-3 bg-red-600 hover:bg-red-700 text-xs text-white font-medium rounded-lg transition-colors shadow-md shadow-red-900/20">
+			  Cari
+			</button>
+		  </form>
+		</div>
+
+		<!-- Configurations Trigger / Status -->
+		<div class="flex items-center gap-3">
+		  <button 
+			onclick="toggleConfigModal(true)"
+			class="flex items-center gap-2 px-3.5 py-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 rounded-xl text-xs font-semibold transition-all"
+		  >
+			<span id="api-status-dot" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+			<span id="api-status-text">Setup API v3 Key</span>
+		  </button>
+		</div>
+	  </div>
+    </header>
+
+    <!-- Main Showcase Layout -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 lg:p-8 space-y-6">
+
+	  <!-- Info/Alert banner when using Sandbox Mode -->
+	  <div id="sandbox-banner" class="flex flex-col sm:flex-row items-center justify-between p-4 bg-gradient-to-r from-amber-500/10 to-transparent border border-amber-500/20 rounded-xl gap-4">
+		<div class="flex items-start gap-3">
+		  <div class="p-2 bg-amber-500/20 rounded-lg text-amber-500 shrink-0">
+			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+			  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+			</svg>
+		  </div>
+		  <div>
+			<h4 class="font-bold text-amber-500 text-sm">Mode Sandbox Aktif (Tanpa API Key)</h4>
+			<p class="text-xs text-zinc-400 mt-0.5">Aplikasi saat ini berjalan menggunakan data simulasi lokal. Masukkan Google API Key Anda untuk menghubungkan langsung ke data real-time YouTube.</p>
+		  </div>
+		</div>
+		<button onclick="toggleConfigModal(true)" class="px-3.5 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-500 hover:text-amber-400 rounded-lg text-xs font-bold transition-all shrink-0">
+		  Hubungkan API Key
+		</button>
+	  </div>
+
+	  <!-- Quick Explorer Chips -->
+	  <div>
+		<p class="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-2.5">Pilih Rekomendasi Channel Demo:</p>
+		<div class="flex flex-wrap gap-2" id="channel-chips-container">
+		  <!-- Dynamically loaded channel chips -->
+		</div>
+	  </div>
+
+	  <!-- Channel Header (Banner, Avatar, Statistics) -->
+	  <section class="bg-zinc-950 border border-zinc-900 rounded-3xl overflow-hidden shadow-2xl relative">
+		<!-- Channel Banner Cover -->
+		<div class="relative w-full h-36 sm:h-48 md:h-64 overflow-hidden bg-zinc-900">
+		  <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/30 z-10"></div>
+		  <img id="channel-banner" src="" alt="Channel Banner" class="w-full h-full object-cover transition-opacity duration-300" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&q=80'">
+		</div>
+
+		<!-- Profile & Branding Area -->
+		<div class="px-6 pb-6 pt-0 relative z-20 flex flex-col md:flex-row md:items-end justify-between gap-6 -mt-12 sm:-mt-16 md:-mt-20">
+		  <div class="flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6 text-center sm:text-left">
+			<!-- Channel Avatar / Photo -->
+			<div class="relative w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-2xl overflow-hidden border-4 border-black shadow-xl shrink-0 bg-zinc-800">
+			  <img id="channel-avatar" src="" alt="Channel Avatar" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/150x150/1c1917/ffffff?text=C'">
+			</div>
+			<!-- Brand info -->
+			<div class="space-y-1 mb-2">
+			  <div class="flex items-center justify-center sm:justify-start gap-2">
+				<h2 id="channel-title" class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-white heading-font">Loading Channel Name...</h2>
+				<span class="inline-flex items-center justify-center bg-blue-500 text-white rounded-full p-0.5" title="Verified Channel" id="channel-verified">
+				  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5">
+					<path fill-rule="evenodd" d="M16.403 12.652a3 3 0 0 0 0-5.304 3 3 0 0 0-3.75-3.751 3 3 0 0 0-5.305 0 3 3 0 0 0-3.751 3.75 3 3 0 0 0 0 5.305 3 3 0 0 0 3.75 3.751 3 3 0 0 0 5.305 0 3 3 0 0 0 3.751-3.75Zm-2.546-3.07a.75.75 0 0 0-1.214-.883l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
+				  </svg>
+				</span>
+			  </div>
+			  <p id="channel-handle" class="text-xs sm:text-sm text-zinc-400 font-medium">@username</p>
+			  <!-- Statistics Grid -->
+			  <div class="flex flex-wrap justify-center sm:justify-start items-center gap-x-4 gap-y-1 text-xs text-zinc-400 pt-1.5">
+				<span class="flex items-center gap-1.5"><strong class="text-white font-semibold" id="stats-subs">-</strong> subscriber</span>
+				<span class="w-1.5 h-1.5 rounded-full bg-zinc-800 hidden sm:inline-block"></span>
+				<span class="flex items-center gap-1.5"><strong class="text-white font-semibold" id="stats-videos">-</strong> video</span>
+				<span class="w-1.5 h-1.5 rounded-full bg-zinc-800 hidden sm:inline-block"></span>
+				<span class="flex items-center gap-1.5"><strong class="text-white font-semibold" id="stats-views">-</strong> total views</span>
+			  </div>
+			</div>
+		  </div>
+
+		  <!-- Custom YouTube Link Action Button -->
+		  <div class="flex justify-center shrink-0 mb-2">
+			<a id="channel-yt-link" href="#" target="_blank" class="px-5 py-2.5 bg-white text-black font-bold text-xs rounded-xl hover:bg-zinc-200 transition-all flex items-center gap-2 shadow-lg shadow-white/5 uppercase tracking-wide">
+			  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+				<path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.517 3.545 12 3.545 12 3.545s-7.517 0-9.388.508a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.871.508 9.388.508 9.388.508s7.517 0 9.388-.508a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+			  </svg>
+			  Buka di YouTube
+			</a>
+		  </div>
+		</div>
+
+		<!-- Expandable Description Footer -->
+		<div class="px-6 pb-6 border-t border-zinc-900/50 pt-4 bg-zinc-950/40">
+		  <details class="group">
+			<summary class="list-none flex items-center justify-between cursor-pointer text-xs font-bold text-zinc-400 select-none hover:text-white transition-colors">
+			  <span>TENTANG & DESKRIPSI CHANNEL</span>
+			  <span class="p-1 bg-zinc-900 group-open:rotate-180 transition-transform rounded-lg">
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+				  <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+				</svg>
+			  </span>
+			</summary>
+			<div id="channel-description" class="mt-3 text-sm text-zinc-400 leading-relaxed max-h-48 overflow-y-auto pr-2">
+			  Memuat deskripsi selengkapnya...
+			</div>
+		  </details>
+		</div>
+	  </section>
+
+	  <!-- Playlists Hub -->
+	  <section class="bg-zinc-950 border border-zinc-900 rounded-3xl p-6 space-y-4">
+		<div>
+		  <h3 class="text-sm font-extrabold text-white heading-font tracking-wide uppercase">Playlist Saluran (Playlists)</h3>
+		  <p class="text-xs text-zinc-500">Pilih salah satu album playlist di bawah ini untuk memuat feed video spesifik.</p>
+		</div>
+		<div id="playlists-container" class="flex gap-4 overflow-x-auto pb-2 snap-x scroll-smooth">
+		  <!-- Playlists cards loaded dynamically -->
+		  <div class="animate-pulse flex gap-4 w-full">
+			<div class="w-48 h-28 bg-zinc-900 rounded-xl shrink-0"></div>
+			<div class="w-48 h-28 bg-zinc-900 rounded-xl shrink-0"></div>
+			<div class="w-48 h-28 bg-zinc-900 rounded-xl shrink-0"></div>
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- Main Hub (Video Player + Sidebar Video Playlist Grid) -->
+	  <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+		<!-- LEFT COLUMN: Embedded Player & Info Block (8 Columns) -->
+		<div class="lg:col-span-8 space-y-4">
+		  <div class="bg-zinc-950 border border-zinc-900 rounded-3xl p-4 md:p-6 shadow-2xl">
+			<p class="text-[10px] text-zinc-500 font-bold tracking-widest uppercase mb-3.5 flex items-center gap-2">
+			  <span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
+			  Now Playing Showcase
+			</p>
+
+			<!-- Player Screen Frame -->
+			<div class="relative w-full aspect-video bg-black rounded-2xl overflow-hidden border border-zinc-900 shadow-inner group">
+			  <div id="youtube-player" class="absolute inset-0 w-full h-full"></div>
+			  <!-- Empty Placeholder Frame -->
+			  <div id="player-placeholder" class="absolute inset-0 bg-zinc-900/40 flex flex-col items-center justify-center gap-4 text-center p-6 transition-all duration-300 z-10 pointer-events-none">
+				<div class="w-16 h-16 rounded-full bg-red-600/10 border border-red-500/20 text-red-500 flex items-center justify-center animate-pulse">
+				  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8">
+					<path d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-.53 14.03a.75.75 0 0 1-1.06 0l-3-3a.75.75 0 1 1 1.06-1.06l1.72 1.72V8.25a.75.75 0 0 1 1.5 0v5.69l1.72-1.72a.75.75 0 1 1 1.06 1.06l-3 3Z" />
+				  </svg>
+				</div>
+				<div>
+				  <h5 class="text-sm font-bold text-white">Memilih Video...</h5>
+				  <p class="text-xs text-zinc-500 max-w-sm mt-1">Pilih video dari daftar playlist di sebelah kanan untuk memulai pemutaran video dinamis.</p>
+				</div>
+			  </div>
+			</div>
+
+			<!-- Video Dynamic Meta Info -->
+			<div class="mt-5 space-y-4">
+			  <div>
+				<h3 id="player-video-title" class="text-lg md:text-xl font-extrabold text-white leading-tight">Video Title Placeholder</h3>
+				<div class="flex items-center justify-between text-xs text-zinc-400 mt-2 border-b border-zinc-900 pb-3">
+				  <span id="player-video-date">Dipublikasikan pada: -</span>
+				  <span class="bg-zinc-900 px-2.5 py-1 rounded-md text-[10px] font-bold text-zinc-300 tracking-wider uppercase border border-zinc-800" id="player-video-badge">UPLOADS</span>
+				</div>
+			  </div>
+
+			  <!-- Video Description Area -->
+			  <div class="bg-zinc-900/30 border border-zinc-900 p-4 rounded-xl">
+				<h4 class="text-xs font-bold text-zinc-300 uppercase tracking-wider mb-2">Deskripsi Video</h4>
+				<div id="player-video-description" class="text-sm text-zinc-400 leading-relaxed h-32 overflow-y-auto pr-1">
+				  Pilih video untuk membaca ulasan deskripsinya di sini.
+				</div>
+			  </div>
+			</div>
+		  </div>
+		</div>
+
+		<!-- RIGHT COLUMN: Playlist / Feed List (4 Columns) -->
+		<div class="lg:col-span-4 space-y-4">
+		  <div class="bg-zinc-950 border border-zinc-900 rounded-3xl p-4 md:p-5 shadow-2xl flex flex-col h-[650px] max-h-screen">
+			<!-- Heading Controls -->
+			<div class="flex items-center justify-between border-b border-zinc-900 pb-4 mb-4">
+			  <div>
+				<h3 id="active-playlist-label" class="text-sm font-extrabold text-white heading-font tracking-wide uppercase">DAFTAR VIDEO</h3>
+				<p class="text-[10px] text-zinc-500 font-bold tracking-wider" id="playlist-length">Loading Feed...</p>
+			  </div>
+			  <span class="px-2 py-1 bg-red-600/10 border border-red-500/20 text-red-500 text-[10px] font-extrabold tracking-wider uppercase rounded-md">Live feed</span>
+			</div>
+
+			<!-- Inner search/filter within current uploads -->
+			<div class="relative mb-3">
+			  <input 
+				type="text" 
+				id="video-filter-input" 
+				placeholder="Cari video di feed..." 
+				oninput="filterUploads()"
+				class="w-full pl-8 pr-4 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-xs focus:outline-none focus:border-red-500 transition-colors text-white"
+			  />
+			  <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-zinc-500">
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5">
+				  <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.637 10.637z" />
+				</svg>
+			  </div>
+			</div>
+
+			<!-- Playlist scroll container -->
+			<div class="flex-1 overflow-y-auto space-y-2 pr-1" id="playlist-scroll-container">
+			  <!-- Uploads Cards Will Render Dynamically Here -->
+			</div>
+		  </div>
+		</div>
+
+	  </section>
+
+    </main>
+
+    <!-- Setup Configuration Modal Backdrop -->
+    <div id="config-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+	  <div class="w-full max-w-lg bg-zinc-950 border border-zinc-900 rounded-3xl p-6 md:p-8 shadow-2xl relative space-y-6">
+		<!-- Close Button -->
+		<button 
+		  onclick="toggleConfigModal(false)" 
+		  class="absolute right-5 top-5 p-1 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-white rounded-lg transition-colors"
+		>
+		  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-4 h-4">
+			<path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+		  </svg>
+		</button>
+
+		<!-- Modal Heading -->
+		<div>
+		  <span class="px-2 py-0.5 bg-red-600/10 border border-red-500/20 text-red-500 text-[10px] font-extrabold tracking-widest uppercase rounded">YOUTUBE API INTEGRATION</span>
+		  <h3 class="text-xl font-black heading-font text-white mt-2">Hubungkan API Key v3 Anda</h3>
+		  <p class="text-xs text-zinc-400 mt-1">Gunakan API Key nyata Anda dari Google Cloud Console untuk melakukan pencarian dinamis channel global secara real-time.</p>
+		</div>
+
+		<!-- Configuration Form -->
+		<div class="space-y-4">
+		  <div class="space-y-1.5">
+			<label for="modal-api-key" class="text-xs font-bold text-zinc-300 uppercase tracking-wide flex items-center justify-between">
+			  <span>Google API Key v3</span>
+			  <a href="https://console.cloud.google.com/" target="_blank" class="text-red-500 hover:underline text-[10px]">Dapatkan Key →</a>
+			</label>
+			<input 
+			  type="password" 
+			  id="modal-api-key" 
+			  placeholder="AIzaSy..." 
+			  class="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 focus:border-red-500 focus:outline-none rounded-xl text-sm transition-colors text-white font-mono"
+			/>
+		  </div>
+
+		  <div class="space-y-1.5">
+			<label for="modal-channel-id" class="text-xs font-bold text-zinc-300 uppercase tracking-wide">ID Channel Default (Opsional)</label>
+			<input 
+			  type="text" 
+			  id="modal-channel-id" 
+			  placeholder="Contoh: UCBJycsmduvYELgTru_Cszeg" 
+			  class="w-full px-4 py-3 bg-zinc-900 border border-zinc-800 focus:border-red-500 focus:outline-none rounded-xl text-sm transition-colors text-white font-mono"
+			/>
+			<span class="text-[10px] text-zinc-500 block">ID default akan digunakan sebagai inisialisasi awal saat halaman dimuat.</span>
+		  </div>
+		</div>
+
+		<!-- Modal Action Buttons -->
+		<div class="flex gap-3 pt-2">
+		  <button 
+			onclick="saveConfiguration()"
+			class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-sm text-white font-bold rounded-xl transition-all shadow-lg shadow-red-900/20"
+		  >
+			Simpan Konfigurasi
+		  </button>
+		  <button 
+			onclick="resetConfiguration()"
+			class="px-4 py-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs text-zinc-400 hover:text-white font-bold rounded-xl transition-all"
+		  >
+			Reset
+		  </button>
+		</div>
+	  </div>
+    </div>
+
+    <!-- Footer Credit -->
+    <footer class="border-t border-zinc-900 py-6 px-4 text-center text-xs text-zinc-600 mt-12 bg-black">
+	  <p>&copy; 2026 Nexus Play Interactive. Powered by YouTube Data API v3.</p>
+    </footer>
+
+<script>
+        // --- 1. SEED / FALLBACK CONFIGURATIONS (Sangat Berfungsi Tanpa API Key) ---
+        const FALLBACK_CHANNELS = {
+            'MKBHD': {
+                id: 'UC2H7DyQrnr2RA4RSMF0B4ZA',
+                title: 'Marques Brownlee',
+                handle: '@mkbhd',
+                description: 'MKBHD: Quality Tech Videos | Reviews | News | Podcasts. NYC. Selamat datang di portal teknologi masa depan di mana detail visual, resolusi mutakhir, dan review gawai premium disajikan secara objektif dan mendalam.',
+                avatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80',
+                banner: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80',
+                subscribers: '18.7M',
+                videos: '1.632',
+                views: '4.218.490.112',
+                ytLink: 'https://www.youtube.com/@mkbhd',
+                playlists: [
+                    { id: 'uploads_all', title: 'Upload Terbaru', itemCount: 4, thumbnail: 'https://images.unsplash.com/photo-1546054454-aa26e2b734c7?w=320&q=80' },
+                    { id: 'mkbhd_reviews', title: 'Smartphone Reviews', itemCount: 2, thumbnail: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=320&q=80' },
+                    { id: 'mkbhd_podcasts', title: 'Waveform Podcast', itemCount: 2, thumbnail: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=320&q=80' }
+                ],
+                playlistVideos: {
+                    'uploads_all': [
+                        { id: 'dQw4w9WgXcQ', title: 'The Ultimate Future Smartphone Setup Tour (2026)!', views: '1.5M', date: '3 hari yang lalu', description: 'Kali ini kita akan membongkar seluruh setup masa depan, integrasi AI termutakhir, serta bagaimana robotik pintar mendominasi ruang kerja pribadi kita. Simak review detail dan komparasi lengkapnya!', thumbnail: 'https://images.unsplash.com/photo-1546054454-aa26e2b734c7?w=320&q=80' },
+                        { id: 't705_v-JJ_g', title: 'Why Everyone is Buying This Custom Keyboard Now...', views: '840K', date: '1 minggu yang lalu', description: 'Keyboard mekanis telah berkembang pesat. Di video ini kita akan mendengarkan visual-audio profile yang menakjubkan dari keyboard premium bermaterial titanium dengan switch kustom terlangka di dunia.', thumbnail: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=320&q=80' },
+                        { id: '9bZkp7q19f0', title: 'My 10 Favorite Tech Innovations of the Year!', views: '2.9M', date: '2 minggu yang lalu', description: 'Dari teknologi silikon transparan hingga mobil elektrik modular, berikut adalah sepuluh penemuan terbaik yang mengubah peta sirkuit teknologi global tahun ini.', thumbnail: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=320&q=80' },
+                        { id: '8-D3P0S-uic', title: 'Apple Vision Pro 2: Two Years Later Strategy', views: '4.1M', date: '1 bulan yang lalu', description: 'Bagaimana perkembangan spasial computing setelah dua tahun masa rilis global? Apakah perangkat kacamata ini menjadi standar baru atau hanya sekadar angan-angan fiksi belaka?', thumbnail: 'https://images.unsplash.com/photo-1608248597481-496100c8c836?w=320&q=80' }
+                    ],
+                    'mkbhd_reviews': [
+                        { id: 'dQw4w9WgXcQ', title: 'The Ultimate Future Smartphone Setup Tour (2026)!', views: '1.5M', date: '3 hari yang lalu', description: 'Kali ini kita akan membongkar seluruh setup masa depan, integrasi AI termutakhir, serta bagaimana robotik pintar mendominasi ruang kerja pribadi kita. Simak review detail dan komparasi lengkapnya!', thumbnail: 'https://images.unsplash.com/photo-1546054454-aa26e2b734c7?w=320&q=80' },
+                        { id: '8-D3P0S-uic', title: 'Apple Vision Pro 2: Two Years Later Strategy', views: '4.1M', date: '1 bulan yang lalu', description: 'Bagaimana perkembangan spasial computing setelah dua tahun masa rilis global? Apakah perangkat kacamata ini menjadi standar baru atau hanya sekadar angan-angan fiksi belaka?', thumbnail: 'https://images.unsplash.com/photo-1608248597481-496100c8c836?w=320&q=80' }
+                    ],
+                    'mkbhd_podcasts': [
+                        { id: 't705_v-JJ_g', title: 'Why Everyone is Buying This Custom Keyboard Now...', views: '840K', date: '1 minggu yang lalu', description: 'Keyboard mekanis telah berkembang pesat. Di video ini kita akan mendengarkan visual-audio profile yang menakjubkan dari keyboard premium bermaterial titanium dengan switch kustom terlangka di dunia.', thumbnail: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=320&q=80' },
+                        { id: '9bZkp7q19f0', title: 'My 10 Favorite Tech Innovations of the Year!', views: '2.9M', date: '2 minggu yang lalu', description: 'Dari teknologi silikon transparan hingga mobil elektrik modular, berikut adalah sepuluh penemuan terbaik yang mengubah peta sirkuit teknologi global tahun ini.', thumbnail: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=320&q=80' }
+                    ]
+                }
+            },
+            'GOOGLE_DEV': {
+                id: 'UC_x5XG1OV2P6uZZ5FSM9Ttw',
+                title: 'Google Developers',
+                handle: '@googledevelopers',
+                description: 'The Google Developers channel is your place for creative developer inspiration, tutorials, new product rollouts, and community spotlights. Explore Android, Chrome, Web, Firebase, Cloud and Machine Learning architectures.',
+                avatar: 'https://images.unsplash.com/photo-1573804633927-bfcbcd909acd?w=150&auto=format&fit=crop&q=80',
+                banner: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&q=80',
+                subscribers: '2.4M',
+                videos: '5.201',
+                views: '198.502.943',
+                ytLink: 'https://www.youtube.com/@googledevelopers',
+                playlists: [
+                    { id: 'uploads_all', title: 'Upload Terbaru', itemCount: 3, thumbnail: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=320&q=80' },
+                    { id: 'gdev_gemini', title: 'Gemini & AI Series', itemCount: 2, thumbnail: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=320&q=80' }
+                ],
+                playlistVideos: {
+                    'uploads_all': [
+                        { id: 'X5g086V-b_k', title: 'What\'s New in Gemini 3.1 Live API Integration?', views: '250K', date: '5 hari yang lalu', description: 'Pelajari integrasi real-time Gemini Live API terbaru dengan fitur latency rendah, decoding streaming audio dua arah, dan pipeline deteksi suara mutakhir langsung di peramban web Anda.', thumbnail: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=320&q=80' },
+                        { id: 'Z9q1p7_f-1E', title: 'Android 17 Preview: Developer Best Practices', views: '110K', date: '2 minggu yang lalu', description: 'Memulai adaptasi SDK Android terbaru. Temukan optimasi penanganan thread latar belakang, layout fleksibel untuk perangkat lipat multi-screen, dan integrasi akselerator on-device NPU.', thumbnail: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=320&q=80' },
+                        { id: 'K_uN8a1_tK4', title: 'The Future of Web Components and Modern Frameworks', views: '89K', date: '1 bulan yang lalu', description: 'Diskusi panel seru bersama para insinyur Chrome mengenai tren rendering hibrida, efisiensi bundler ES, dan optimalisasi core web vitals generasi baru.', thumbnail: 'https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=320&q=80' }
+                    ],
+                    'gdev_gemini': [
+                        { id: 'X5g086V-b_k', title: 'What\'s New in Gemini 3.1 Live API Integration?', views: '250K', date: '5 hari yang lalu', description: 'Pelajari integrasi real-time Gemini Live API terbaru dengan fitur latency rendah, decoding streaming audio dua arah, dan pipeline deteksi suara mutakhir langsung di peramban web Anda.', thumbnail: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=320&q=80' },
+                        { id: 'K_uN8a1_tK4', title: 'The Future of Web Components and Modern Frameworks', views: '89K', date: '1 bulan yang lalu', description: 'Diskusi panel seru bersama para insinyur Chrome mengenai tren rendering hibrida, efisiensi bundler ES, dan optimalisasi core web vitals generasi baru.', thumbnail: 'https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=320&q=80' }
+                    ]
+                }
+            },
+            'SPACE_X': {
+                id: 'UC3g0f_p-19kL_99v7T_U8vA',
+                title: 'SpaceX',
+                handle: '@spacex',
+                description: 'SpaceX designs, manufactures and launches advanced rockets and spacecraft. The company was founded in 2002 to revolutionize space technology, with the ultimate goal of enabling people to live on other planets.',
+                avatar: 'https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?w=150&auto=format&fit=crop&q=80',
+                banner: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&q=80',
+                subscribers: '14.2M',
+                videos: '492',
+                views: '984.112.506',
+                ytLink: 'https://www.youtube.com/@spacex',
+                playlists: [
+                    { id: 'uploads_all', title: 'Upload Terbaru', itemCount: 3, thumbnail: 'https://images.unsplash.com/photo-1516849841032-87cbac4d88f7?w=320&q=80' },
+                    { id: 'spacex_starship', title: 'Starship Campaigns', itemCount: 2, thumbnail: 'https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?w=320&q=80' }
+                ],
+                playlistVideos: {
+                    'uploads_all': [
+                        { id: 'dQw4w9WgXcQ', title: 'Starship Flight Test 6: Official Stream Highlights', views: '5.2M', date: '1 minggu yang lalu', description: 'Menyaksikan peluncuran bersejarah Starship dan kembalinya booster Super Heavy ke menara penangkap Mechazilla dengan presisi mekanika orbit yang luar biasa.', thumbnail: 'https://images.unsplash.com/photo-1516849841032-87cbac4d88f7?w=320&q=80' },
+                        { id: 't705_v-JJ_g', title: 'Falcon 9 Launching Starlink Satellites (V3-3)', views: '1.2M', date: '2 minggu yang lalu', description: 'Peluncuran berkala Falcon 9 dalam mendukung konstelasi internet broadband berkecepatan tinggi global dari orbit rendah bumi. Dilengkapi pendaratan mulus di armada droneship.', thumbnail: 'https://images.unsplash.com/photo-1517976487492-5750f3195933?w=320&q=80' },
+                        { id: '8-D3P0S-uic', title: 'Crew Dragon Expedition 75 Docking at ISS', views: '2.6M', date: '1 bulan yang lalu', description: 'Liputan lengkap saat wahana antariksa Dragon bermanuver secara otonom untuk mendekati dan menempel pada Stasiun Luar Angkasa Internasional.', thumbnail: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=320&q=80' }
+                    ],
+                    'spacex_starship': [
+                        { id: 'dQw4w9WgXcQ', title: 'Starship Flight Test 6: Official Stream Highlights', views: '5.2M', date: '1 minggu yang lalu', description: 'Menyaksikan peluncuran bersejarah Starship dan kembalinya booster Super Heavy ke menara penangkap Mechazilla dengan presisi mekanika orbit yang luar biasa.', thumbnail: 'https://images.unsplash.com/photo-1516849841032-87cbac4d88f7?w=320&q=80' },
+                        { id: '8-D3P0S-uic', title: 'Crew Dragon Expedition 75 Docking at ISS', views: '2.6M', date: '1 bulan yang lalu', description: 'Liputan lengkap saat wahana antariksa Dragon bermanuver secara otonom untuk mendekati dan menempel pada Stasiun Luar Angkasa Internasional.', thumbnail: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=320&q=80' }
+                    ]
+                }
+            }
+        };
+
+        // --- 2. STATE MANAGER VARIABLES ---
+        let API_KEY = localStorage.getItem('yt_explorer_api_key') || 'AIzaSyDH3naOGPlOL175VfhVaRrzr0438MymNxM';
+        let CURRENT_CHANNEL_ID = localStorage.getItem('yt_explorer_channel_id') || 'UC2H7DyQrnr2RA4RSMF0B4ZA'; 
+        let activeChannelData = null;
+        let activeVideoList = [];
+        let player = null;
+        let isPlayerApiLoaded = false;
+        let activePlaylistId = 'uploads_all';
+
+        // --- 3. LIFECYCLE INITIALIZER ---
+        window.onload = function() {
+            // Render fast switcher channel chips
+            renderChannelChips();
+            // Check current API configurations
+            checkApiStatus();
+            // Fetch initial channel (either fallback or API)
+            loadChannel(CURRENT_CHANNEL_ID);
+            // Load YT Player API Frame
+            loadYoutubeIframeApi();
+        };
+
+        // --- 4. API & CONFIGURATION HANDLERS ---
+        function checkApiStatus() {
+            const statusDot = document.getElementById('api-status-dot');
+            const statusText = document.getElementById('api-status-text');
+            const sandboxBanner = document.getElementById('sandbox-banner');
+
+            if (API_KEY) {
+                statusDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse';
+                statusText.textContent = 'API v3 Terhubung';
+                sandboxBanner.classList.add('hidden');
+                document.getElementById('modal-api-key').value = API_KEY;
+            } else {
+                statusDot.className = 'w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse';
+                statusText.textContent = 'Setup API v3 Key';
+                sandboxBanner.classList.remove('hidden');
+            }
+            document.getElementById('modal-channel-id').value = CURRENT_CHANNEL_ID;
+        }
+
+        function toggleConfigModal(show) {
+            const modal = document.getElementById('config-modal');
+            if (show) {
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function saveConfiguration() {
+            const keyInput = document.getElementById('modal-api-key').value.trim();
+            const channelInput = document.getElementById('modal-channel-id').value.trim();
+
+            if (keyInput) {
+                API_KEY = keyInput;
+                localStorage.setItem('yt_explorer_api_key', keyInput);
+            }
+            if (channelInput) {
+                CURRENT_CHANNEL_ID = channelInput;
+                localStorage.setItem('yt_explorer_channel_id', channelInput);
+            }
+
+            toggleConfigModal(false);
+            checkApiStatus();
+            loadChannel(CURRENT_CHANNEL_ID);
+            showNotification('Konfigurasi Berhasil Disimpan!', 'Success');
+        }
+
+        function resetConfiguration() {
+            API_KEY = '';
+            CURRENT_CHANNEL_ID = 'UC2H7DyQrnr2RA4RSMF0B4ZA';
+            localStorage.removeItem('yt_explorer_api_key');
+            localStorage.removeItem('yt_explorer_channel_id');
+            
+            document.getElementById('modal-api-key').value = '';
+            document.getElementById('modal-channel-id').value = 'UCBJycsmduvYELgTru_Cszeg';
+
+            toggleConfigModal(false);
+            checkApiStatus();
+            loadChannel(CURRENT_CHANNEL_ID);
+            showNotification('Konfigurasi Direset ke Sandbox Mode.', 'Info');
+        }
+
+        // --- 5. CHANNEL LOADING & FETCH ENGINE ---
+        async function loadChannel(channelId) {
+            showSkeletonLoaders(true);
+
+            if (!API_KEY) {
+                // SANDBOX MODE: Cari dari database lokal FALLBACK_CHANNELS
+                let foundChannel = null;
+                for (let key in FALLBACK_CHANNELS) {
+                    if (FALLBACK_CHANNELS[key].id === channelId) {
+                        foundChannel = FALLBACK_CHANNELS[key];
+                        break;
+                    }
+                }
+                // Jika ID tidak ditemukan dalam fallback list, gunakan default
+                if (!foundChannel) {
+                    foundChannel = FALLBACK_CHANNELS['MKBHD'];
+                }
+
+                // Simulasikan delay respon jaringan ringan (400ms) untuk kemulusan UX
+                setTimeout(() => {
+                    populateChannelUI(foundChannel);
+                    renderPlaylistsRow(foundChannel.playlists);
+                    
+                    // Muat video dari playlist default (Upload Terbaru)
+                    activePlaylistId = foundChannel.playlists[0].id;
+                    const defaultVideos = foundChannel.playlistVideos[activePlaylistId] || [];
+                    activeVideoList = defaultVideos;
+                    renderUploadsPlaylist(defaultVideos, foundChannel.playlists[0].title);
+                    
+                    if (defaultVideos.length > 0) {
+                        setupPlayerVideo(defaultVideos[0]);
+                    }
+                    showSkeletonLoaders(false);
+                }, 400);
+
+            } else {
+                // REAL-TIME API MODE: Menggunakan endpoint YouTube Data API v3
+                try {
+                    // Fetch Channel info
+                    const channelUrl = `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,contentDetails,brandingSettings&id=${channelId}&key=${API_KEY}`;
+                    const chResponse = await fetch(channelUrl);
+                    if (!chResponse.ok) throw new Error('Gagal mengambil data Channel. Cek API Key Anda.');
+                    const chData = await chResponse.json();
+
+                    if (!chData.items || chData.items.length === 0) {
+                        throw new Error('Channel tidak ditemukan.');
+                    }
+
+                    const channelItem = chData.items[0];
+                    const uploadsPlaylistId = channelItem.contentDetails.relatedPlaylists.uploads;
+
+                    // Fetch other Playlists from this channel
+                    const playlistsUrl = `https://www.googleapis.com/youtube/v3/playlists?part=snippet,contentDetails&maxResults=10&channelId=${channelId}&key=${API_KEY}`;
+                    const plResponse = await fetch(playlistsUrl);
+                    let channelPlaylists = [];
+                    
+                    // Selalu sisipkan "Upload Terbaru" sebagai pilihan pertama
+                    channelPlaylists.push({
+                        id: uploadsPlaylistId,
+                        title: 'Upload Terbaru',
+                        itemCount: channelItem.statistics.videoCount,
+                        thumbnail: channelItem.snippet.thumbnails.high ? channelItem.snippet.thumbnails.high.url : 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=320&q=80'
+                    });
+
+                    if (plResponse.ok) {
+                        const plData = await plResponse.json();
+                        if (plData.items) {
+                            plData.items.forEach(item => {
+                                channelPlaylists.push({
+                                    id: item.id,
+                                    title: item.snippet.title,
+                                    itemCount: item.contentDetails.itemCount,
+                                    thumbnail: item.snippet.thumbnails.medium ? item.snippet.thumbnails.medium.url : 'https://placehold.co/320x180/1c1917/ffffff?text=Playlist'
+                                });
+                            });
+                        }
+                    }
+
+                    // Map real API response to matched app model structure
+                    const structuredChannel = {
+                        id: channelItem.id,
+                        title: channelItem.snippet.title,
+                        handle: channelItem.snippet.customUrl || `@${channelItem.snippet.title.toLowerCase().replace(/\s+/g, '')}`,
+                        description: channelItem.snippet.description || 'Kreator tidak menyertakan deskripsi channel.',
+                        avatar: channelItem.snippet.thumbnails.high ? channelItem.snippet.thumbnails.high.url : channelItem.snippet.thumbnails.default.url,
+                        banner: channelItem.brandingSettings?.image?.bannerExternalUrl || '',
+                        subscribers: formatCount(channelItem.statistics.subscriberCount),
+                        videos: formatCount(channelItem.statistics.videoCount),
+                        views: formatCount(channelItem.statistics.viewCount),
+                        ytLink: `https://www.youtube.com/${channelItem.snippet.customUrl || 'channel/' + channelItem.id}`,
+                    };
+
+                    populateChannelUI(structuredChannel);
+                    renderPlaylistsRow(channelPlaylists);
+
+                    // Muat video dari playlist default (Upload Terbaru) secara berkala
+                    loadPlaylistVideos(uploadsPlaylistId, 'Upload Terbaru');
+
+                } catch (error) {
+                    console.error(error);
+                    showNotification(error.message, 'Error');
+                    // Fallback otomatis jika API Gagal
+                    API_KEY = ''; // Reset sementara
+                    checkApiStatus();
+                    loadChannel(channelId);
+                } finally {
+                    showSkeletonLoaders(false);
+                }
+            }
+        }
+
+        // --- 6. PLAYLIST VIDEOS LOAD ENGINE ---
+        async function loadPlaylistVideos(playlistId, playlistTitle) {
+            if (!API_KEY) {
+                // Di mode Sandbox, cari data playlist simulasi lokal
+                if (activeChannelData && activeChannelData.playlistVideos) {
+                    const localVideos = activeChannelData.playlistVideos[playlistId] || [];
+                    activeVideoList = localVideos;
+                    activePlaylistId = playlistId;
+                    renderUploadsPlaylist(localVideos, playlistTitle);
+                    highlightActivePlaylistCard(playlistId);
+                    if (localVideos.length > 0) {
+                        setupPlayerVideo(localVideos[0]);
+                    }
+                }
+                return;
+            }
+
+            try {
+                showSkeletonLoaders(true);
+                const playlistItemsUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=20&playlistId=${playlistId}&key=${API_KEY}`;
+                const response = await fetch(playlistItemsUrl);
+                if (!response.ok) throw new Error('Gagal mengambil video dari playlist ini.');
+                const data = await response.json();
+
+                const uploads = data.items.map(item => {
+                    const snippet = item.snippet;
+                    return {
+                        id: snippet.resourceId.videoId,
+                        title: snippet.title,
+                        views: 'Ditonton',
+                        date: formatDate(snippet.publishedAt),
+                        description: snippet.description || 'Tidak ada deskripsi.',
+                        thumbnail: snippet.thumbnails.medium ? snippet.thumbnails.medium.url : (snippet.thumbnails.default ? snippet.thumbnails.default.url : 'https://placehold.co/320x180/1c1917/ffffff?text=Video')
+                    };
+                });
+
+                activeVideoList = uploads;
+                activePlaylistId = playlistId;
+                renderUploadsPlaylist(uploads, playlistTitle);
+                highlightActivePlaylistCard(playlistId);
+
+                if (uploads.length > 0) {
+                    setupPlayerVideo(uploads[0]);
+                } else {
+                    showNotification('Playlist ini kosong atau privat.', 'Warning');
+                }
+
+            } catch (error) {
+                showNotification(error.message, 'Error');
+            } finally {
+                showSkeletonLoaders(false);
+            }
+        }
+
+        // --- 7. UI POPULATION & RENDERING ---
+        function populateChannelUI(data) {
+            activeChannelData = data;
+            document.getElementById('channel-title').textContent = data.title;
+            document.getElementById('channel-handle').textContent = data.handle;
+            document.getElementById('channel-description').innerHTML = (data.description || '').replace(/\n/g, '<br>');
+            document.getElementById('channel-avatar').src = data.avatar;
+            document.getElementById('channel-yt-link').href = data.ytLink;
+
+            // Stats values
+            document.getElementById('stats-subs').textContent = data.subscribers;
+            document.getElementById('stats-videos').textContent = data.videos;
+            document.getElementById('stats-views').textContent = data.views;
+
+            // Banner handling with placeholder safety
+            const bannerImg = document.getElementById('channel-banner');
+            if (data.banner) {
+                // If it's standard youtube banner URL, we append max-resolution parameter
+                bannerImg.src = data.banner.includes('googleusercontent') ? `${data.banner}=w1060-fcrop64=1,00005a57ffffa5a8-k-no` : data.banner;
+            } else {
+                bannerImg.src = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&q=80';
+            }
+        }
+
+        function renderChannelChips() {
+            const container = document.getElementById('channel-chips-container');
+            container.innerHTML = '';
+
+            for (let key in FALLBACK_CHANNELS) {
+                const item = FALLBACK_CHANNELS[key];
+                const button = document.createElement('button');
+                button.onclick = () => {
+                    CURRENT_CHANNEL_ID = item.id;
+                    loadChannel(item.id);
+                };
+                button.className = "px-3.5 py-1.5 bg-zinc-900 hover:bg-red-600/20 border border-zinc-800 hover:border-red-500/30 text-xs text-zinc-300 hover:text-red-400 font-bold rounded-xl transition-all flex items-center gap-1.5";
+                button.innerHTML = `
+                    <span class="w-1.5 h-1.5 rounded-full bg-zinc-600"></span>
+                    <span>${item.title}</span>
+                `;
+                container.appendChild(button);
+            }
+        }
+
+        function renderPlaylistsRow(playlists) {
+            const container = document.getElementById('playlists-container');
+            container.innerHTML = '';
+
+            if (!playlists || playlists.length === 0) {
+                container.innerHTML = `
+                    <p class="text-xs text-zinc-500 py-4">Tidak ada playlist publik yang terdaftar.</p>
+                `;
+                return;
+            }
+
+            playlists.forEach((playlist) => {
+                const card = document.createElement('div');
+                card.id = `playlist-card-${playlist.id}`;
+                card.onclick = () => loadPlaylistVideos(playlist.id, playlist.title);
+                card.className = "relative w-48 h-28 shrink-0 bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 cursor-pointer snap-start transition-all duration-300 hover:border-red-500/40 select-none group";
+                
+                card.innerHTML = `
+                    <!-- Background Cover image -->
+                    <img src="${playlist.thumbnail}" alt="${playlist.title}" class="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:scale-105 group-hover:opacity-40 transition-all duration-300" onerror="this.src='https://placehold.co/320x180/1c1917/ffffff?text=Playlist'">
+                    <!-- Overlay Darkening -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
+                    
+                    <!-- Content Layer -->
+                    <div class="absolute inset-x-3 bottom-3 flex flex-col justify-end">
+                        <h4 class="text-xs font-black text-white line-clamp-2 leading-snug group-hover:text-red-400 transition-colors">${playlist.title}</h4>
+                        <div class="flex items-center gap-1.5 mt-1 text-[10px] text-zinc-400 font-bold">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
+                            </svg>
+                            <span>${playlist.itemCount} Video</span>
+                        </div>
+                    </div>
+                    <!-- Indicator Badge -->
+                    <div class="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-zinc-700 playlist-active-dot"></div>
+                `;
+                container.appendChild(card);
+            });
+            highlightActivePlaylistCard(activePlaylistId);
+        }
+
+        function highlightActivePlaylistCard(id) {
+            const container = document.getElementById('playlists-container');
+            const cards = container.children;
+            for (let i = 0; i < cards.length; i++) {
+                const card = cards[i];
+                if (card.id === `playlist-card-${id}`) {
+                    card.classList.add('border-red-500/80', 'ring-2', 'ring-red-500/20');
+                    const dot = card.querySelector('.playlist-active-dot');
+                    if (dot) dot.className = "absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-red-500 animate-pulse playlist-active-dot";
+                } else {
+                    card.classList.remove('border-red-500/80', 'ring-2', 'ring-red-500/20');
+                    const dot = card.querySelector('.playlist-active-dot');
+                    if (dot) dot.className = "absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-zinc-700 playlist-active-dot";
+                }
+            }
+        }
+
+        function renderUploadsPlaylist(videos, titleLabel = "Daftar Video") {
+            const container = document.getElementById('playlist-scroll-container');
+            container.innerHTML = '';
+
+            document.getElementById('active-playlist-label').textContent = titleLabel;
+            document.getElementById('playlist-length').textContent = `${videos.length} Video Ditemukan`;
+
+            if (videos.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-zinc-600 text-xs">
+                        Tidak ada video dalam playlist ini.
+                    </div>
+                `;
+                return;
+            }
+
+            videos.forEach((video, index) => {
+                const card = document.createElement('div');
+                card.onclick = () => setupPlayerVideo(video, index);
+                card.id = `video-card-${index}`;
+                card.className = "group flex gap-3 p-2 bg-zinc-900/40 hover:bg-zinc-900 border border-transparent hover:border-zinc-800/80 rounded-xl cursor-pointer transition-all duration-200 active:scale-[0.98]";
+                card.innerHTML = `
+                    <!-- Thumbnail Box -->
+                    <div class="relative w-28 h-16 shrink-0 bg-zinc-950 rounded-lg overflow-hidden border border-zinc-800/50">
+                        <img src="${video.thumbnail}" alt="Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/320x180/1c1917/ffffff?text=Video'">
+                        <div class="absolute bottom-1 right-1 px-1 py-0.5 bg-black/80 text-[9px] font-bold text-white rounded">HD</div>
+                    </div>
+                    <!-- Meta Content -->
+                    <div class="flex-1 min-w-0 flex flex-col justify-center">
+                        <h4 class="text-xs font-bold text-zinc-100 line-clamp-2 leading-tight group-hover:text-red-500 transition-colors" title="${video.title}">${video.title}</h4>
+                        <div class="flex items-center gap-2 mt-1.5 text-[10px] text-zinc-500 font-medium">
+                            <span>${video.views}</span>
+                            <span class="w-1 h-1 rounded-full bg-zinc-800"></span>
+                            <span>${video.date}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // --- 8. CHANNEL GLOBAL SEARCH (Real API Search) ---
+        async function handleChannelSearch(event) {
+            event.preventDefault();
+            const query = document.getElementById('search-input').value.trim();
+            if (!query) return;
+
+            if (!API_KEY) {
+                // Di mode Sandbox, kita bantu arahkan pencarian ke opsi lokal yang cocok
+                showNotification("Mencari di database Sandbox lokal...", "Info");
+                const matchedKey = Object.keys(FALLBACK_CHANNELS).find(key => 
+                    FALLBACK_CHANNELS[key].title.toLowerCase().includes(query.toLowerCase())
+                );
+                
+                if (matchedKey) {
+                    loadChannel(FALLBACK_CHANNELS[matchedKey].id);
+                } else {
+                    showNotification("Channel tidak cocok di database lokal. Masukkan API Key untuk mencari secara global!", "Warning");
+                }
+            } else {
+                // REAL API CALL: Lakukan request pencarian ke YouTube Search endpoint
+                try {
+                    showSkeletonLoaders(true);
+                    const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=channel&q=${encodeURIComponent(query)}&maxResults=1&key=${API_KEY}`;
+                    const response = await fetch(searchUrl);
+                    if (!response.ok) throw new Error('Terjadi kesalahan koneksi pencarian API.');
+                    const data = await response.json();
+
+                    if (data.items && data.items.length > 0) {
+                        const searchedChannelId = data.items[0].snippet.channelId;
+                        CURRENT_CHANNEL_ID = searchedChannelId;
+                        localStorage.setItem('yt_explorer_channel_id', searchedChannelId);
+                        loadChannel(searchedChannelId);
+                        showNotification(`Menampilkan hasil untuk: ${data.items[0].snippet.title}`, 'Success');
+                    } else {
+                        showNotification('Nama channel tidak ditemukan.', 'Warning');
+                    }
+                } catch (error) {
+                    showNotification(error.message, 'Error');
+                } finally {
+                    showSkeletonLoaders(false);
+                }
+            }
+        }
+
+        // --- 9. INTERNAL FILTER/SEARCH UPLOADS ---
+        function filterUploads() {
+            const filterValue = document.getElementById('video-filter-input').value.toLowerCase();
+            const cards = document.getElementById('playlist-scroll-container').children;
+
+            if (!activeVideoList || activeVideoList.length === 0) return;
+
+            activeVideoList.forEach((video, index) => {
+                const card = document.getElementById(`video-card-${index}`);
+                if (!card) return;
+
+                if (video.title.toLowerCase().includes(filterValue)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // --- 10. VIDEO PLAYER CONTROLLERS (YouTube IFrame API integration) ---
+        function loadYoutubeIframeApi() {
+            const tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        }
+
+        // Dipanggil otomatis oleh script API YouTube Iframe setelah terunduh
+        function onYouTubeIframeAPIReady() {
+            isPlayerApiLoaded = true;
+        }
+
+        function setupPlayerVideo(video, activeIndex = 0) {
+            // Hilangkan placeholder overlay visual
+            const placeholder = document.getElementById('player-placeholder');
+            if (placeholder) placeholder.classList.add('hidden');
+
+            // Set Meta Title dan Deskripsi Dinamis
+            document.getElementById('player-video-title').textContent = video.title;
+            document.getElementById('player-video-date').textContent = `Dipublikasikan pada: ${video.date}`;
+            document.getElementById('player-video-description').innerHTML = (video.description || '').replace(/\n/g, '<br>');
+
+            // Highlight border active pada card playlist
+            const container = document.getElementById('playlist-scroll-container');
+            const cards = container.getElementsByClassName('group');
+            for (let i = 0; i < cards.length; i++) {
+                cards[i].classList.remove('border-red-500/50', 'bg-zinc-900');
+            }
+            const activeCard = document.getElementById(`video-card-${activeIndex}`);
+            if (activeCard) {
+                activeCard.classList.add('border-red-500/50', 'bg-zinc-900');
+            }
+
+            // Inisialisasi atau pemuatan ulang Iframe video player
+            if (isPlayerApiLoaded) {
+                if (!player) {
+                    player = new YT.Player('youtube-player', {
+                        height: '100%',
+                        width: '100%',
+                        videoId: video.id,
+                        playerVars: {
+                            'playsinline': 1,
+                            'rel': 0,
+                            'modestbranding': 1,
+                            'autoplay': 0
+                        },
+                        events: {
+                            'onStateChange': onPlayerStateChange
+                        }
+                    });
+                } else {
+                    player.loadVideoById(video.id);
+                }
+            } else {
+                // Fallback Iframe dasar apabila IFrame API mengalami kegagalan load sementara
+                const fallbackContainer = document.getElementById('youtube-player');
+                fallbackContainer.innerHTML = `
+                    <iframe 
+                        src="https://www.youtube.com/embed/${video.id}?autoplay=0&rel=0&modestbranding=1" 
+                        class="w-full h-full border-0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>`;
+            }
+        }
+
+        function onPlayerStateChange(event) {
+            // Ketika video berakhir, otomatis putar video berikutnya di list uploads
+            if (event.data === YT.PlayerState.ENDED) {
+                // Temukan video aktif saat ini
+                const activeCard = document.querySelector('.border-red-500\\/50');
+                if (activeCard) {
+                    const activeIndex = parseInt(activeCard.id.replace('video-card-', ''), 10);
+                    const nextIndex = activeIndex + 1;
+                    if (nextIndex < activeVideoList.length) {
+                        setupPlayerVideo(activeVideoList[nextIndex], nextIndex);
+                    } else {
+                        // Kembali ke awal
+                        setupPlayerVideo(activeVideoList[0], 0);
+                    }
+                }
+            }
+        }
+
+        // --- 11. HELPER & UTILITY FUNCTIONS ---
+        function formatCount(num) {
+            if (!num) return '-';
+            const value = parseInt(num, 10);
+            if (isNaN(value)) return num;
+
+            if (value >= 1e9) {
+                return (value / 1e9).toFixed(1).replace(/\.0$/, '') + ' Miliar';
+            }
+            if (value >= 1e6) {
+                return (value / 1e6).toFixed(1).replace(/\.0$/, '') + ' Jt';
+            }
+            if (value >= 1e3) {
+                return (value / 1e3).toFixed(1).replace(/\.0$/, '') + ' Rb';
+            }
+            return value.toLocaleString('id-ID');
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(dateStr).toLocaleDateString('id-ID', options);
+        }
+
+        function showSkeletonLoaders(show) {
+            const title = document.getElementById('channel-title');
+            if (show) {
+                title.classList.add('animate-pulse', 'bg-zinc-800', 'text-transparent', 'rounded');
+            } else {
+                title.classList.remove('animate-pulse', 'bg-zinc-800', 'text-transparent', 'rounded');
+            }
+        }
+
+        function showNotification(message, type = 'Info') {
+            const existingToast = document.getElementById('app-notification');
+            if (existingToast) existingToast.remove();
+
+            const colors = {
+                'Success': 'from-emerald-950/90 to-emerald-900/40 border-emerald-500/30 text-emerald-400',
+                'Warning': 'from-amber-950/90 to-amber-900/40 border-amber-500/30 text-amber-400',
+                'Error': 'from-rose-950/90 to-rose-900/40 border-rose-500/30 text-rose-400',
+                'Info': 'from-zinc-950/90 to-zinc-900/40 border-zinc-500/30 text-zinc-300'
+            };
+
+            const toast = document.createElement('div');
+            toast.id = 'app-notification';
+            toast.className = `fixed bottom-5 right-5 z-50 p-4 rounded-2xl border bg-gradient-to-tr shadow-2xl flex items-center gap-3 animate-bounce max-w-sm ${colors[type] || colors['Info']}`;
+            toast.innerHTML = `
+                <div class="p-1 rounded-lg bg-black/40">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 111.063.852l-.708 2.836a.75.75 0 001.063.852l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h5 class="text-xs font-extrabold uppercase tracking-widest">${type}</h5>
+                    <p class="text-xs mt-0.5 opacity-90">${message}</p>
+                </div>
+            `;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                setTimeout(() => toast.remove(), 500);
+            }, 4500);
+        }
+</script>
+  </body>
+</html>

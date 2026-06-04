@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Camera Video Server Panel</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0f19; /* Dark tech background */
+        }
+        /* Custom scrollbar for beautiful server look */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5563;
+        }
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.15); }
+        }
+        .record-pulse {
+            animation: pulse-red 1.5s infinite;
+        }
+</style>
+<script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    }
+                }
+            }
+        }
+</script>
+  </head>
+  <body class="text-gray-100 min-h-screen flex flex-col antialiased">
+
+    <!-- Header / Navbar -->
+    <header class="border-b border-gray-800 bg-gray-900/80 backdrop-blur sticky top-0 z-40 px-4 py-3 sm:px-6 lg:px-8">
+	  <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+		<div class="flex items-center gap-3">
+		  <div class="p-2 bg-indigo-600/20 text-indigo-400 rounded-lg border border-indigo-500/30">
+			<i data-lucide="server" class="w-6 h-6"></i>
+		  </div>
+		  <div>
+			<h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+			  CAM-SERVER <span class="text-xs bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/20 font-mono">ONLINE</span>
+			</h1>
+			<p class="text-xs text-gray-400">Sistem Perekaman & Manajemen Video Berbasis Web</p>
+		  </div>
+		</div>
+
+		<!-- Quick Status -->
+		<div class="flex items-center gap-4 text-xs font-mono text-gray-400">
+		  <div class="flex items-center gap-1.5 bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-700/50">
+			<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+			<span>FPS: <span id="fps-counter">60</span></span>
+		  </div>
+		  <div class="flex items-center gap-1.5 bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-700/50">
+			<i data-lucide="hard-drive" class="w-3.5 h-3.5 text-indigo-400"></i>
+			<span>Storage: <span id="storage-used">0.0 MB</span></span>
+		  </div>
+		  <div class="flex items-center gap-1.5 bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-700/50">
+			<i data-lucide="clock" class="w-3.5 h-3.5 text-indigo-400"></i>
+			<span id="server-time">00:00:00 UTC</span>
+		  </div>
+		</div>
+	  </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+	  <!-- LEFT: Live Camera Preview & Active Controls (2 Columns on Large Screens) -->
+	  <div class="lg:col-span-2 flex flex-col gap-6">
+		<!-- Camera Card -->
+		<div class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-xl flex flex-col">
+		  <div class="px-5 py-4 bg-gray-950/80 border-b border-gray-800 flex items-center justify-between">
+			<div class="flex items-center gap-2">
+			  <span id="recording-indicator" class="w-2.5 h-2.5 rounded-full bg-gray-500"></span>
+			  <h2 class="font-semibold text-gray-200">Kamera Feed Langsung</h2>
+			</div>
+			<div class="flex items-center gap-2">
+			  <div id="recording-timer" class="hidden text-sm font-mono text-red-500 font-bold bg-red-500/10 px-2.5 py-0.5 rounded border border-red-500/20 flex items-center gap-1.5">
+				<span class="w-1.5 h-1.5 rounded-full bg-red-500 record-pulse"></span>
+				<span id="timer-display">00:00</span>
+			  </div>
+			  <span id="cam-badge" class="text-xs bg-gray-800 text-gray-400 px-2 py-1 rounded font-medium">No Feed</span>
+			</div>
+		  </div>
+
+		  <!-- Camera Screen Viewport -->
+		  <div class="relative bg-black aspect-video w-full flex items-center justify-center group overflow-hidden">
+			<video id="webcam-preview" autoplay playsinline muted class="w-full h-full object-cover hidden"></video>
+
+			<!-- Screen Overlay / Fallbacks / Active Graphics -->
+			<div id="camera-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-gradient-to-b from-gray-950 to-gray-900">
+			  <div class="p-4 bg-gray-800/50 rounded-full border border-gray-700/50 text-gray-500 mb-4 group-hover:scale-105 transition-transform duration-300">
+				<i data-lucide="video-off" class="w-10 h-10"></i>
+			  </div>
+			  <h3 class="text-gray-300 font-medium mb-1">Kamera Belum Aktif</h3>
+			  <p class="text-xs text-gray-500 max-w-sm mb-4">Klik tombol "Mulai Kamera" di bawah untuk mengakses webcam perangkat Anda.</p>
+			  <button id="btn-init-cam" class="bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-medium py-2 px-5 rounded-xl transition-all duration-200 text-sm flex items-center gap-2 shadow-lg shadow-indigo-600/20 border border-indigo-500/30">
+				<i data-lucide="power" class="w-4 h-4"></i>
+				Mulai Kamera
+			  </button>
+			</div>
+
+			<!-- HUD Overlay during recording or streaming -->
+			<div id="hud-overlay" class="absolute inset-0 border-2 border-transparent pointer-events-none p-4 flex flex-col justify-between transition-all duration-300">
+			  <div class="flex justify-between items-start">
+				<div class="bg-black/60 backdrop-blur-md px-3 py-1 rounded-lg text-[10px] font-mono text-gray-300 border border-gray-800/60">
+				  CAM_ID: <span id="hud-cam-id">MAIN_DEV_01</span>
+				</div>
+				<div class="bg-black/60 backdrop-blur-md px-3 py-1 rounded-lg text-[10px] font-mono text-gray-300 border border-gray-800/60 flex items-center gap-1.5">
+				  <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+				  <span id="hud-resolution">1920x1080</span>
+				</div>
+			  </div>
+			  <div class="flex justify-between items-end">
+				<div class="bg-black/60 backdrop-blur-md px-3 py-1 rounded-lg text-[10px] font-mono text-gray-300 border border-gray-800/60">
+				  ENCODER: H.264 / AAC
+				</div>
+				<div id="live-watermark" class="hidden flex items-center gap-1.5 bg-red-600/90 text-white px-2.5 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider">
+				  <span class="w-1.5 h-1.5 rounded-full bg-white record-pulse"></span>
+				  REC
+				</div>
+			  </div>
+			</div>
+		  </div>
+
+		  <!-- Camera Controls Footer -->
+		  <div class="p-4 bg-gray-950/40 border-t border-gray-800 flex flex-wrap items-center justify-between gap-3">
+			<div class="flex items-center gap-2">
+			  <!-- Toggle Camera Feed completely -->
+			  <button id="btn-toggle-cam" disabled class="p-2.5 bg-gray-800 hover:bg-gray-700 disabled:opacity-40 text-gray-300 disabled:hover:bg-gray-800 rounded-xl border border-gray-700 transition-colors" title="Matikan/Nyalakan Kamera">
+				<i data-lucide="video" class="w-5 h-5"></i>
+			  </button>
+			  <!-- Toggle Audio Source -->
+			  <button id="btn-toggle-mic" disabled class="p-2.5 bg-gray-800 hover:bg-gray-700 disabled:opacity-40 text-gray-300 disabled:hover:bg-gray-800 rounded-xl border border-gray-700 transition-colors" title="Mute/Unmute Audio">
+				<i data-lucide="mic" class="w-5 h-5"></i>
+			  </button>
+			</div>
+
+			<!-- Center Rec Action Button -->
+			<div class="flex items-center gap-3">
+			  <button id="btn-record" disabled class="flex items-center gap-2 px-6 py-2.5 bg-red-600 hover:bg-red-500 disabled:opacity-50 disabled:hover:bg-red-600 text-white font-semibold rounded-xl shadow-lg shadow-red-600/20 border border-red-500/30 transition-all active:scale-95">
+				<span class="w-3 h-3 rounded-full bg-white block" id="record-btn-dot"></span>
+				<span id="record-btn-text">REC (Rekam)</span>
+			  </button>
+			</div>
+
+			<!-- Configuration Panel Switcher -->
+			<div class="text-xs text-gray-400 font-mono">
+			  Server: <span id="server-status" class="text-gray-500">Idle</span>
+			</div>
+		  </div>
+		</div>
+
+		<!-- Server Logs & Performance Simulation Graph -->
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+		  <!-- Live Console / Server Log -->
+		  <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4 flex flex-col h-48">
+			<div class="flex items-center justify-between mb-2 border-b border-gray-800 pb-2">
+			  <span class="text-xs font-semibold uppercase tracking-wider text-gray-400 flex items-center gap-2">
+				<i data-lucide="terminal" class="w-4 h-4 text-indigo-400"></i>
+				Log Sistem Server
+			  </span>
+			  <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+			</div>
+			<div id="server-logs" class="flex-grow overflow-y-auto text-[11px] font-mono space-y-1.5 text-gray-400 pr-1">
+			  <div>[16:05:44] Menginisialisasi modul server video...</div>
+			  <div>[16:05:44] Menunggu otorisasi input media pengguna.</div>
+			</div>
+		  </div>
+
+		  <!-- Resource Monitors -->
+		  <div class="bg-gray-900 border border-gray-800 rounded-2xl p-4 flex flex-col justify-between">
+			<span class="text-xs font-semibold uppercase tracking-wider text-gray-400 flex items-center gap-2 border-b border-gray-800 pb-2 mb-3">
+			  <i data-lucide="activity" class="w-4 h-4 text-emerald-400"></i>
+			  Status Resource Real-time
+			</span>
+			<div class="space-y-3">
+			  <!-- CPU Usage -->
+			  <div>
+				<div class="flex justify-between text-xs font-mono text-gray-400 mb-1">
+				  <span>Beban CPU Server</span>
+				  <span id="cpu-percent">12%</span>
+				</div>
+				<div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
+				  <div id="cpu-progress" class="bg-indigo-500 h-full rounded-full transition-all duration-1000" style="width: 12%;"></div>
+				</div>
+			  </div>
+			  <!-- RAM Usage -->
+			  <div>
+				<div class="flex justify-between text-xs font-mono text-gray-400 mb-1">
+				  <span>Alokasi RAM Node</span>
+				  <span id="ram-percent">45%</span>
+				</div>
+				<div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
+				  <div id="ram-progress" class="bg-emerald-500 h-full rounded-full transition-all duration-1000" style="width: 45%;"></div>
+				</div>
+			  </div>
+			  <!-- Frame Drop -->
+			  <div class="flex justify-between items-center text-xs font-mono text-gray-400 mt-2 bg-gray-950 p-2 rounded-lg border border-gray-800">
+				<span>Drop Frame Rate:</span>
+				<span class="text-emerald-400">0% (Lancar)</span>
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  </div>
+
+	  <!-- RIGHT: Gallery of Recorded Videos (1 Column) -->
+	  <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5 flex flex-col shadow-xl">
+		<div class="flex items-center justify-between border-b border-gray-800 pb-4 mb-4">
+		  <div class="flex items-center gap-2">
+			<div class="p-1.5 bg-yellow-500/10 text-yellow-400 rounded border border-yellow-500/20">
+			  <i data-lucide="database" class="w-5 h-5"></i>
+			</div>
+			<div>
+			  <h2 class="font-bold text-gray-200">Database Video</h2>
+			  <p class="text-[10px] text-gray-400">Video tersimpan di server lokal</p>
+			</div>
+		  </div>
+		  <span id="video-count-badge" class="bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 font-mono text-xs px-2 py-0.5 rounded-full">0 File</span>
+		</div>
+
+		<!-- List of Recordings -->
+		<div class="flex-grow flex flex-col">
+		  <!-- Search bar -->
+		  <div class="relative mb-4">
+			<span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+			  <i data-lucide="search" class="w-4 h-4"></i>
+			</span>
+			<input type="text" id="search-input" placeholder="Cari rekaman video..." class="w-full pl-9 pr-4 py-2 bg-gray-950 border border-gray-800 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-xs text-gray-300 transition-all placeholder:text-gray-600">
+		  </div>
+
+		  <!-- Dynamic container for items -->
+		  <div id="video-list" class="space-y-3 overflow-y-auto max-h-[460px] pr-1 flex-grow">
+			<!-- Dynamic rendering here via JS -->
+		  </div>
+
+		  <!-- Empty State -->
+		  <div id="empty-state" class="flex flex-col items-center justify-center py-16 text-center text-gray-500 flex-grow">
+			<div class="p-3 bg-gray-800/40 border border-gray-700/30 rounded-2xl mb-3 text-gray-600">
+			  <i data-lucide="folder-open" class="w-10 h-10"></i>
+			</div>
+			<p class="text-sm font-semibold text-gray-400">Server Masih Kosong</p>
+			<p class="text-xs text-gray-600 max-w-[200px] mt-1">Gunakan tombol kamera dan REC untuk menyimpan rekaman video pertama Anda.</p>
+		  </div>
+		</div>
+	  </div>
+    </main>
+
+    <!-- MODAL: Video Player Modal -->
+    <div id="video-modal" class="fixed inset-0 bg-black/95 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+	  <div class="bg-gray-900 border border-gray-800 rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl flex flex-col">
+		<!-- Modal Header -->
+		<div class="px-5 py-3 border-b border-gray-800 flex items-center justify-between bg-gray-950">
+		  <div class="flex items-center gap-2">
+			<i data-lucide="video" class="w-4 h-4 text-indigo-400"></i>
+			<span id="modal-video-title" class="font-medium text-sm text-gray-200 truncate max-w-md">video-2026.mp4</span>
+		  </div>
+		  <button id="modal-close-btn" class="p-1 text-gray-400 hover:text-white rounded-lg hover:bg-gray-800 transition-colors">
+			<i data-lucide="x" class="w-5 h-5"></i>
+		  </button>
+		</div>
+
+		<!-- Video Container -->
+		<div class="bg-black aspect-video flex items-center justify-center relative">
+		  <video id="modal-video-player" controls autoplay class="w-full h-full object-contain"></video>
+		</div>
+
+		<!-- Video Info & Bottom Menu -->
+		<div class="p-5 bg-gray-950/80 border-t border-gray-800 flex flex-wrap items-center justify-between gap-4">
+		  <div class="text-xs font-mono text-gray-400 space-y-0.5">
+			<div>Waktu Rekam: <span id="modal-video-date" class="text-gray-200">2026-05-21 16:05</span></div>
+			<div>Ukuran Berkas: <span id="modal-video-size" class="text-gray-200">1.2 MB</span></div>
+		  </div>
+
+		  <div class="flex items-center gap-2">
+			<button id="modal-btn-download" class="flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-lg transition-colors">
+			  <i data-lucide="download" class="w-3.5 h-3.5"></i>
+			  Simpan ke PC (Save)
+			</button>
+			<button id="modal-btn-delete" class="flex items-center gap-1.5 px-4 py-2 bg-red-600/10 hover:bg-red-600 hover:text-white text-red-400 font-semibold text-xs rounded-lg border border-red-500/20 transition-colors">
+			  <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+			  Hapus (Delete)
+			</button>
+		  </div>
+		</div>
+	  </div>
+    </div>
+
+    <!-- MODAL: Custom Toast Container (Anti alert/confirm dialog) -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 pointer-events-none max-w-sm w-full"></div>
+
+    <!-- MODAL: Custom Confirm Dialog -->
+    <div id="confirm-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center hidden z-50 p-4">
+	  <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 max-w-sm w-full shadow-2xl">
+		<div class="flex items-center gap-3 text-red-500 mb-4">
+		  <div class="p-2 bg-red-500/10 rounded-lg border border-red-500/20">
+			<i data-lucide="alert-triangle" class="w-6 h-6"></i>
+		  </div>
+		  <h3 class="text-lg font-bold text-gray-200">Hapus Rekaman?</h3>
+		</div>
+		<p class="text-sm text-gray-400 mb-6">Apakah Anda yakin ingin menghapus file video ini secara permanen dari server lokal?</p>
+		<div class="flex gap-3">
+		  <button id="btn-cancel-confirm" class="flex-1 py-2 px-4 bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium rounded-lg text-sm border border-gray-700 transition-colors">Batal</button>
+		  <button id="btn-ok-confirm" class="flex-1 py-2 px-4 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-lg text-sm border border-red-500/30 transition-colors shadow-lg shadow-red-600/20">Hapus</button>
+		</div>
+	  </div>
+    </div>
+
+    <!-- Footer of Page -->
+    <footer class="border-t border-gray-800/60 bg-gray-950 py-4 text-center text-xs text-gray-600">
+	  <p>&copy; 2026 CAM-SERVER. Desain Kontroler Panel Eksklusif dengan Pemrosesan Video Klien-Sisi.</p>
+    </footer>
+
+<script>
+        // DOM Elements
+        const webcamPreview = document.getElementById('webcam-preview');
+        const cameraPlaceholder = document.getElementById('camera-placeholder');
+        const hudOverlay = document.getElementById('hud-overlay');
+        const liveWatermark = document.getElementById('live-watermark');
+        const camBadge = document.getElementById('cam-badge');
+        const serverStatus = document.getElementById('server-status');
+        const serverLogs = document.getElementById('server-logs');
+        
+        // Buttons
+        const btnInitCam = document.getElementById('btn-init-cam');
+        const btnToggleCam = document.getElementById('btn-toggle-cam');
+        const btnToggleMic = document.getElementById('btn-toggle-mic');
+        const btnRecord = document.getElementById('btn-record');
+        const recordBtnDot = document.getElementById('record-btn-dot');
+        const recordBtnText = document.getElementById('record-btn-text');
+        
+        // Timer
+        const recordingTimer = document.getElementById('recording-timer');
+        const timerDisplay = document.getElementById('timer-display');
+        const recordingIndicator = document.getElementById('recording-indicator');
+
+        // Database Gallery elements
+        const videoList = document.getElementById('video-list');
+        const emptyState = document.getElementById('empty-state');
+        const searchInput = document.getElementById('search-input');
+        const videoCountBadge = document.getElementById('video-count-badge');
+        const totalStorageUsed = document.getElementById('storage-used');
+
+        // Modal Elements
+        const videoModal = document.getElementById('video-modal');
+        const modalVideoTitle = document.getElementById('modal-video-title');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+        const modalVideoPlayer = document.getElementById('modal-video-player');
+        const modalVideoDate = document.getElementById('modal-video-date');
+        const modalVideoSize = document.getElementById('modal-video-size');
+        const modalBtnDownload = document.getElementById('modal-btn-download');
+        const modalBtnDelete = document.getElementById('modal-btn-delete');
+
+        // Confirm Dialog Elements
+        const confirmModal = document.getElementById('confirm-modal');
+        const btnCancelConfirm = document.getElementById('btn-cancel-confirm');
+        const btnOkConfirm = document.getElementById('btn-ok-confirm');
+
+        // Global State variables
+        let mediaStream = null;
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let isRecording = false;
+        let recordingStartTime = 0;
+        let timerInterval = null;
+        let cameraActive = false;
+        let micActive = true; // Default microphone state when initializing
+        
+        // In-memory Database of recorded video assets
+        let savedVideos = []; 
+        let currentTargetDeleteId = null;
+
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Get live server time
+        function updateServerTime() {
+            const timeEl = document.getElementById('server-time');
+            const now = new Date();
+            const pad = (num) => String(num).padStart(2, '0');
+            timeEl.textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())} Local`;
+        }
+        setInterval(updateServerTime, 1000);
+        updateServerTime();
+
+        // Appending standard log to UI terminal
+        function logMessage(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logItem = document.createElement('div');
+            
+            let colorClass = 'text-gray-400';
+            if (type === 'success') colorClass = 'text-emerald-400';
+            if (type === 'error') colorClass = 'text-red-400';
+            if (type === 'warn') colorClass = 'text-yellow-400';
+            if (type === 'sys') colorClass = 'text-indigo-400';
+
+            logItem.className = `${colorClass} flex gap-1`;
+            logItem.innerHTML = `<span>[${timestamp}]</span> <span>${message}</span>`;
+            
+            serverLogs.appendChild(logItem);
+            serverLogs.scrollTop = serverLogs.scrollHeight;
+        }
+
+        // Show Toast Notification
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `p-4 rounded-xl shadow-2xl border transition-all duration-300 transform translate-y-2 opacity-0 flex items-center justify-between gap-3 pointer-events-auto w-full ${
+                type === 'success' ? 'bg-emerald-950/90 border-emerald-500/30 text-emerald-300' :
+                type === 'error' ? 'bg-red-950/90 border-red-500/30 text-red-300' :
+                'bg-gray-900/90 border-gray-800 text-gray-200'
+            }`;
+
+            const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'x-circle' : 'info';
+            
+            toast.innerHTML = `
+                <div class="flex items-center gap-2.5">
+                    <i data-lucide="${icon}" class="w-5 h-5 flex-shrink-0"></i>
+                    <p class="text-xs font-semibold">${message}</p>
+                </div>
+                <button class="toast-close text-gray-400 hover:text-white transition-colors">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            `;
+            
+            toastContainer.appendChild(toast);
+            lucide.createIcons({ root: toast });
+
+            // Animate In
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            // Close Handler
+            const closeBtn = toast.querySelector('.toast-close');
+            closeBtn.addEventListener('click', () => {
+                toast.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => toast.remove(), 300);
+            });
+
+            // Auto Remove
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.classList.add('opacity-0', 'scale-95');
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 4000);
+        }
+
+        // Request Access and Start Camera
+        async function startCamera() {
+            logMessage('Mencoba menyambungkan ke perangkat kamera...', 'sys');
+            try {
+                // Request both video and audio
+                mediaStream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 },
+                        facingMode: "user"
+                    },
+                    audio: true
+                });
+
+                // Attach Stream
+                webcamPreview.srcObject = mediaStream;
+                webcamPreview.classList.remove('hidden');
+                cameraPlaceholder.classList.add('hidden');
+                
+                cameraActive = true;
+                btnToggleCam.disabled = false;
+                btnToggleMic.disabled = false;
+                btnRecord.disabled = false;
+                
+                // Update states & Badges
+                camBadge.textContent = "ACTIVE";
+                camBadge.classList.remove('bg-gray-800', 'text-gray-400');
+                camBadge.classList.add('bg-emerald-500/10', 'text-emerald-400');
+                recordingIndicator.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500';
+                serverStatus.textContent = 'Streaming Live';
+                serverStatus.className = 'text-emerald-400 font-bold';
+
+                // Display Track Info in HUD
+                const videoTrack = mediaStream.getVideoTracks()[0];
+                if (videoTrack) {
+                    const settings = videoTrack.getSettings();
+                    document.getElementById('hud-resolution').textContent = `${settings.width || 1280}x${settings.height || 720}`;
+                    document.getElementById('hud-cam-id').textContent = videoTrack.label ? videoTrack.label.substring(0, 15) + "..." : "MAIN_CAM";
+                }
+
+                logMessage('Kamera dan mikrofon berhasil disambungkan.', 'success');
+                showToast('Kamera terhubung ke server', 'success');
+
+            } catch (err) {
+                console.error('Error accessing hardware', err);
+                logMessage('Gagal mengakses kamera/mikrofon: ' + err.message, 'error');
+                showToast('Izin kamera ditolak atau perangkat sibuk!', 'error');
+                
+                // Reset states
+                webcamPreview.classList.add('hidden');
+                cameraPlaceholder.classList.remove('hidden');
+            }
+        }
+
+        // Event listener for Start Cam buttons
+        btnInitCam.addEventListener('click', startCamera);
+
+        // Toggle Video Track
+        btnToggleCam.addEventListener('click', () => {
+            if (!mediaStream) return;
+            const videoTrack = mediaStream.getVideoTracks()[0];
+            if (videoTrack) {
+                videoTrack.enabled = !videoTrack.enabled;
+                if (videoTrack.enabled) {
+                    btnToggleCam.classList.remove('bg-red-500/20', 'text-red-400', 'border-red-500/30');
+                    btnToggleCam.innerHTML = `<i data-lucide="video" class="w-5 h-5"></i>`;
+                    logMessage('Tampilan kamera diaktifkan kembali.', 'info');
+                } else {
+                    btnToggleCam.classList.add('bg-red-500/20', 'text-red-400', 'border-red-500/30');
+                    btnToggleCam.innerHTML = `<i data-lucide="video-off" class="w-5 h-5"></i>`;
+                    logMessage('Umpan kamera dimatikan (Video Feed Disabled).', 'warn');
+                }
+                lucide.createIcons({ root: btnToggleCam });
+            }
+        });
+
+        // Toggle Audio Track
+        btnToggleMic.addEventListener('click', () => {
+            if (!mediaStream) return;
+            const audioTrack = mediaStream.getAudioTracks()[0];
+            if (audioTrack) {
+                audioTrack.enabled = !audioTrack.enabled;
+                micActive = audioTrack.enabled;
+                if (audioTrack.enabled) {
+                    btnToggleMic.classList.remove('bg-red-500/20', 'text-red-400', 'border-red-500/30');
+                    btnToggleMic.innerHTML = `<i data-lucide="mic" class="w-5 h-5"></i>`;
+                    logMessage('Mikrofon diaktifkan (Audio Active).', 'info');
+                } else {
+                    btnToggleMic.classList.add('bg-red-500/20', 'text-red-400', 'border-red-500/30');
+                    btnToggleMic.innerHTML = `<i data-lucide="mic-off" class="w-5 h-5"></i>`;
+                    logMessage('Mikrofon dimatikan (Audio Muted).', 'warn');
+                }
+                lucide.createIcons({ root: btnToggleMic });
+            }
+        });
+
+        // Timer helper functions
+        function startRecordingTimer() {
+            recordingStartTime = Date.now();
+            timerDisplay.textContent = '00:00';
+            recordingTimer.classList.remove('hidden');
+            
+            timerInterval = setInterval(() => {
+                const elapsedSeconds = Math.floor((Date.now() - recordingStartTime) / 1000);
+                const minutes = String(Math.floor(elapsedSeconds / 60)).padStart(2, '0');
+                const seconds = String(elapsedSeconds % 60).padStart(2, '0');
+                timerDisplay.textContent = `${minutes}:${seconds}`;
+            }, 1000);
+        }
+
+        function stopRecordingTimer() {
+            clearInterval(timerInterval);
+            recordingTimer.classList.add('hidden');
+        }
+
+        // Toggle Recording Action (REC)
+        btnRecord.addEventListener('click', () => {
+            if (!isRecording) {
+                startRecording();
+            } else {
+                stopRecording();
+            }
+        });
+
+        // Start Recording Processing
+        function startRecording() {
+            if (!mediaStream) {
+                showToast('Kamera tidak aktif.', 'error');
+                return;
+            }
+            recordedChunks = [];
+            
+            // Set options mime-type fallback
+            let options = { mimeType: 'video/webm;codecs=vp9,opus' };
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                options = { mimeType: 'video/webm;codecs=vp8,opus' };
+                if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                    options = { mimeType: 'video/webm' };
+                }
+            }
+
+            try {
+                mediaRecorder = new MediaRecorder(mediaStream, options);
+            } catch (err) {
+                console.error('Gagal membuat MediaRecorder:', err);
+                logMessage('Gagal inisialisasi perekaman: ' + err.message, 'error');
+                showToast('Kesalahan inisialisasi perekam!', 'error');
+                return;
+            }
+
+            mediaRecorder.ondataavailable = function (e) {
+                if (e.data && e.data.size > 0) {
+                    recordedChunks.push(e.data);
+                }
+            };
+
+            mediaRecorder.onstop = function () {
+                processSavedVideo();
+            };
+
+            // Start recorder
+            mediaRecorder.start();
+            isRecording = true;
+
+            // Update UI State
+            serverStatus.textContent = 'Merekam Video...';
+            serverStatus.className = 'text-red-500 font-bold animate-pulse';
+            
+            // Turn Live Rec banner on HUD
+            liveWatermark.classList.remove('hidden');
+
+            recordBtnDot.className = 'w-3.5 h-3.5 bg-white rounded-none transition-all duration-300'; // Make square for stop sign
+            recordBtnText.textContent = 'Stop (Berhenti)';
+            btnRecord.classList.remove('bg-red-600', 'hover:bg-red-500');
+            btnRecord.classList.add('bg-red-800', 'hover:bg-red-700');
+            recordingIndicator.className = 'w-2.5 h-2.5 rounded-full bg-red-500 record-pulse';
+
+            // Disable settings toggles during direct stream recording to maintain stream integrity
+            btnToggleCam.disabled = true;
+            btnToggleMic.disabled = true;
+
+            startRecordingTimer();
+            logMessage('Proses perekaman video dimulai.', 'sys');
+            showToast('Sedang merekam...', 'info');
+        }
+
+        // Stop Recording Processing
+        function stopRecording() {
+            if (!isRecording || !mediaRecorder) return;
+            
+            mediaRecorder.stop();
+            isRecording = false;
+
+            // Reset UI states
+            serverStatus.textContent = 'Streaming Live';
+            serverStatus.className = 'text-emerald-400 font-bold';
+            
+            liveWatermark.classList.add('hidden');
+
+            recordBtnDot.className = 'w-3 h-3 rounded-full bg-white block';
+            recordBtnText.textContent = 'REC (Rekam)';
+            btnRecord.classList.remove('bg-red-800', 'hover:bg-red-700');
+            btnRecord.classList.add('bg-red-600', 'hover:bg-red-500');
+            recordingIndicator.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500';
+
+            // Re-enable helper tracks
+            btnToggleCam.disabled = false;
+            btnToggleMic.disabled = false;
+
+            stopRecordingTimer();
+            logMessage('Sesi perekaman dihentikan.', 'sys');
+        }
+
+        // Process Saved Video Blob into memory database
+        function processSavedVideo() {
+            if (recordedChunks.length === 0) {
+                logMessage('Perekaman selesai tanpa data video yang dihasilkan.', 'error');
+                return;
+            }
+
+            const videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
+            const videoUrl = URL.createObjectURL(videoBlob);
+            const sizeInBytes = videoBlob.size;
+            
+            // Format sizes nicely
+            const sizeInMb = (sizeInBytes / (1024 * 1024)).toFixed(2);
+            
+            // Set timestamp metadata
+            const timestamp = new Date();
+            const year = timestamp.getFullYear();
+            const month = String(timestamp.getMonth() + 1).padStart(2, '0');
+            const day = String(timestamp.getDate()).padStart(2, '0');
+            const hours = String(timestamp.getHours()).padStart(2, '0');
+            const minutes = String(timestamp.getMinutes()).padStart(2, '0');
+            const seconds = String(timestamp.getSeconds()).padStart(2, '0');
+            
+            const filename = `CAM_REC_${year}${month}${day}_${hours}${minutes}${seconds}.webm`;
+            const displayDate = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+
+            const newVideo = {
+                id: Date.now(),
+                filename: filename,
+                url: videoUrl,
+                blob: videoBlob,
+                size: `${sizeInMb} MB`,
+                sizeBytes: sizeInBytes,
+                date: displayDate,
+                rawDate: timestamp
+            };
+
+            savedVideos.unshift(newVideo);
+            logMessage(`Berhasil menyimpan rekaman ke memory server: "${filename}" (${sizeInMb} MB)`, 'success');
+            showToast('Video disimpan ke database', 'success');
+            
+            renderVideoGallery();
+        }
+
+        // Render Database Gallery list
+        function renderVideoGallery() {
+            videoList.innerHTML = '';
+            
+            const filteredVideos = savedVideos.filter(video => {
+                const searchVal = searchInput.value.toLowerCase();
+                return video.filename.toLowerCase().includes(searchVal);
+            });
+
+            if (filteredVideos.length === 0) {
+                emptyState.classList.remove('hidden');
+                videoList.classList.add('hidden');
+                
+                // If database completely empty vs search mismatch
+                if (savedVideos.length === 0) {
+                    emptyState.querySelector('p').textContent = 'Server Masih Kosong';
+                } else {
+                    emptyState.querySelector('p').textContent = 'Pencarian Tidak Ditemukan';
+                }
+            } else {
+                emptyState.classList.add('hidden');
+                videoList.classList.remove('hidden');
+                
+                filteredVideos.forEach(video => {
+                    const item = document.createElement('div');
+                    item.className = 'p-3 bg-gray-950 border border-gray-800/80 rounded-xl hover:border-indigo-500/40 transition-colors flex items-center justify-between gap-3 group';
+                    
+                    item.innerHTML = `
+                        <div class="flex items-center gap-3 min-w-0">
+                            <!-- Simulated Thumbnail or Movie Icon -->
+                            <div class="w-12 h-12 bg-indigo-950/40 border border-indigo-500/20 rounded-lg flex items-center justify-center text-indigo-400 group-hover:bg-indigo-600/10 transition-colors flex-shrink-0">
+                                <i data-lucide="play-circle" class="w-6 h-6"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <h4 class="font-medium text-xs text-gray-200 truncate group-hover:text-indigo-400 transition-colors" title="${video.filename}">${video.filename}</h4>
+                                <div class="flex items-center gap-2 text-[10px] text-gray-500 mt-0.5">
+                                    <span class="font-mono bg-gray-900 px-1 py-0.5 rounded border border-gray-800">${video.size}</span>
+                                    <span>&bull;</span>
+                                    <span>${video.date}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Interactive action items -->
+                        <div class="flex items-center gap-1 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all duration-200">
+                            <button onclick="previewVideo(${video.id})" class="p-1.5 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors" title="Putar">
+                                <i data-lucide="eye" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="downloadVideo(${video.id})" class="p-1.5 text-indigo-400 hover:text-white hover:bg-indigo-600 rounded-lg transition-colors" title="Simpan ke PC">
+                                <i data-lucide="download" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="triggerDeleteVideo(${video.id})" class="p-1.5 text-red-400 hover:text-white hover:bg-red-600 rounded-lg transition-colors" title="Hapus">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    `;
+                    
+                    videoList.appendChild(item);
+                });
+                lucide.createIcons({ root: videoList });
+            }
+
+            // Update Counter Badge and storage summary
+            videoCountBadge.textContent = `${savedVideos.length} File`;
+            
+            // Calculate total memory sizes
+            const totalBytes = savedVideos.reduce((sum, v) => sum + v.sizeBytes, 0);
+            const totalMb = (totalBytes / (1024 * 1024)).toFixed(2);
+            totalStorageUsed.textContent = `${totalMb} MB`;
+        }
+
+        // Live filtration as user types
+        searchInput.addEventListener('input', renderVideoGallery);
+
+        // Download Action
+        window.downloadVideo = function(id) {
+            const video = savedVideos.find(v => v.id === id);
+            if (!video) return;
+
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = video.url;
+            a.download = video.filename;
+            document.body.appendChild(a);
+            a.click();
+            
+            // Clean up standard download simulation
+            setTimeout(() => {
+                document.body.removeChild(a);
+                logMessage(`Mengekspor berkas file: "${video.filename}" ke unduhan browser.`, 'info');
+                showToast('Video mulai terunduh!', 'success');
+            }, 100);
+        };
+
+        // Video Preview Action
+        window.previewVideo = function(id) {
+            const video = savedVideos.find(v => v.id === id);
+            if (!video) return;
+
+            modalVideoTitle.textContent = video.filename;
+            modalVideoDate.textContent = video.date;
+            modalVideoSize.textContent = video.size;
+            
+            // Inject Blob player URL
+            modalVideoPlayer.src = video.url;
+            modalVideoPlayer.load();
+            
+            // Store binding on download & delete buttons within modal context
+            modalBtnDownload.onclick = () => downloadVideo(video.id);
+            modalBtnDelete.onclick = () => {
+                closePreviewModal();
+                triggerDeleteVideo(video.id);
+            };
+
+            videoModal.classList.remove('hidden');
+            logMessage(`Membuka pemutar video pratinjau untuk: ${video.filename}`, 'sys');
+        };
+
+        function closePreviewModal() {
+            videoModal.classList.add('hidden');
+            modalVideoPlayer.pause();
+            modalVideoPlayer.src = '';
+        }
+
+        modalCloseBtn.addEventListener('click', closePreviewModal);
+
+        // Close modal if user clicks gray backdrop
+        videoModal.addEventListener('click', (e) => {
+            if (e.target === videoModal) {
+                closePreviewModal();
+            }
+        });
+
+        // Delete handling mechanism without native alerts
+        window.triggerDeleteVideo = function(id) {
+            currentTargetDeleteId = id;
+            confirmModal.classList.remove('hidden');
+        };
+
+        btnCancelConfirm.addEventListener('click', () => {
+            confirmModal.classList.add('hidden');
+            currentTargetDeleteId = null;
+        });
+
+        btnOkConfirm.addEventListener('click', () => {
+            if (currentTargetDeleteId === null) return;
+            
+            const targetVideoIndex = savedVideos.findIndex(v => v.id === currentTargetDeleteId);
+            if (targetVideoIndex !== -1) {
+                const videoToDelete = savedVideos[targetVideoIndex];
+                
+                // Release Blob URL object memory
+                URL.revokeObjectURL(videoToDelete.url);
+                
+                // Splice array database list
+                savedVideos.splice(targetVideoIndex, 1);
+                
+                logMessage(`Berkas video "${videoToDelete.filename}" telah berhasil dihapus dari server.`, 'warn');
+                showToast('Video berhasil dihapus', 'success');
+                
+                renderVideoGallery();
+            }
+            
+            confirmModal.classList.add('hidden');
+            currentTargetDeleteId = null;
+        });
+
+        // Close confirm dialog click backdrop
+        confirmModal.addEventListener('click', (e) => {
+            if (e.target === confirmModal) {
+                confirmModal.classList.add('hidden');
+                currentTargetDeleteId = null;
+            }
+        });
+
+        // Simulated Server load loop (Updates stats in real-time)
+        function updateServerLoads() {
+            const cpuPercentEl = document.getElementById('cpu-percent');
+            const cpuProgress = document.getElementById('cpu-progress');
+            const ramPercentEl = document.getElementById('ram-percent');
+            const ramProgress = document.getElementById('ram-progress');
+            const fpsCounter = document.getElementById('fps-counter');
+
+            setInterval(() => {
+                // Generate natural-looking spikes based on activity
+                let baseCpu = isRecording ? 38 : 8;
+                let randomCpu = Math.floor(Math.random() * 15);
+                let currentCpu = baseCpu + randomCpu;
+
+                let baseRam = isRecording ? 64 : 41;
+                let randomRam = Math.floor(Math.random() * 6);
+                let currentRam = baseRam + randomRam;
+
+                // Frame drop fluctuations
+                let currentFps = cameraActive ? (58 + Math.floor(Math.random() * 3)) : 0;
+
+                // Bind elements UI
+                cpuPercentEl.textContent = `${currentCpu}%`;
+                cpuProgress.style.width = `${currentCpu}%`;
+                
+                ramPercentEl.textContent = `${currentRam}%`;
+                ramProgress.style.width = `${currentRam}%`;
+
+                fpsCounter.textContent = currentFps;
+
+                // Random load notification simulator
+                if (Math.random() > 0.95 && cameraActive) {
+                    logMessage(`[Status Server] Pemeliharaan RAM node server terkontrol pada beban ${currentRam}%.`, 'info');
+                }
+            }, 3000);
+        }
+
+        // Initialize server loop simulations
+        window.onload = function() {
+            updateServerLoads();
+            renderVideoGallery();
+            logMessage('Semua subsistem panel server siap digunakan.', 'success');
+        };
+
+</script>
+  </body>
+</html>
