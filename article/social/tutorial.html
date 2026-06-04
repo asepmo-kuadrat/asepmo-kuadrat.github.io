@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panduan Interaktif Firebase Storage</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome for Icons (Webfont, NO SVG) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+        /* Custom Styles & Chart Constraints */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; }
+        
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .code-block {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            font-family: monospace;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            white-space: pre;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        /* Chart Container Requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px; /* Maximum width */
+            margin-left: auto;
+            margin-right: auto;
+            height: 250px; /* Base height */
+            max-height: 250px; /* Maximum height */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 300px; max-height: 300px; max-width: 500px; }
+        }
+
+        .tab-btn.active {
+            background-color: #4f46e5;
+            color: white;
+            border-color: #4f46e5;
+        }
+</style>
+
+    <!-- Chosen Palette: Warm Slate & Indigo Accent (bg: slate-50, text: slate-800, accent: indigo-600) -->
+
+    <!-- Application Structure Plan: 
+    The SPA is structured as an "Interactive Developer Dashboard". 
+    1. Header & Intro: Establishes context and explains the "Virtual Folder" concept visually using CSS.
+    2. Interactive Hub (Main Content): Uses a tabbed interface for the 5 core operations (Upload, List, Download, Edit, Delete). This allows users to focus on one operation at a time without feeling overwhelmed by a long wall of text, prioritizing ease of consumption.
+    3. Simulation Engine: Each operation tab includes a "Simulation" feature using Chart.js or dynamic DOM updates to visualize what the code actually does (e.g., upload progress, fetching data), enhancing active learning.
+    4. Key Takeaways: A bottom grid summarizing crucial rules (security, overwriting) for quick synthesis.
+    This functional/dashboard structure is chosen because technical documentation is best consumed in isolated, interactive chunks rather than a linear read. 
+    -->
+
+    <!-- Visualization & Content Choices: 
+    1. Concept (Flat Structure): HTML/CSS visual mapping to show how physical folders translate to flat paths. (Goal: Inform/Organize -> HTML/Tailwind -> NO SVG).
+    2. Core Operations (Text/Code): Dynamic text and pre-formatted code blocks updated via JS state based on the selected tab. (Goal: Inform -> JS update -> NO SVG).
+    3. Operation Simulation (Upload/Download): Chart.js Doughnut chart simulating a progress bar (0% to 100%) dynamically updated via JS intervals when the user clicks "Simulasikan". (Goal: Change/Inform -> Chart.js -> NO SVG).
+    4. Operation Simulation (List): A Chart.js Pie chart breaking down the types of items found (Folders vs Files) in a mock directory. (Goal: Compare -> Chart.js -> NO SVG).
+    5. Summary/Rules: HTML/CSS Grid cards for quick readability. 
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+  </head>
+  <body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Header Section -->
+    <header class="bg-indigo-700 text-white shadow-lg sticky top-0 z-50">
+	  <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+		<div class="flex items-center gap-3">
+		  <i class="fa-solid fa-cloud text-3xl text-amber-400"></i>
+		  <div>
+			<h1 class="text-xl sm:text-2xl font-bold leading-tight">Firebase Storage Explorer</h1>
+			<p class="text-indigo-200 text-sm">Panduan Interaktif Modular API v9+</p>
+		  </div>
+		</div>
+		<button onclick="document.getElementById('intro-section').scrollIntoView({behavior: 'smooth'})" class="text-sm bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded-full transition-colors border border-indigo-400">
+		  Mulai Belajar <i class="fa-solid fa-arrow-down ml-1"></i>
+		</button>
+	  </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 py-8">
+
+	  <!-- Intro Section: Concept Visualization -->
+	  <section id="intro-section" class="mb-12 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+		<div class="max-w-3xl mb-6">
+		  <h2 class="text-2xl font-bold text-slate-800 mb-3"><i class="fa-solid fa-lightbulb text-amber-500 mr-2"></i>Konsep Dasar: Struktur Virtual</h2>
+		  <p class="text-slate-600 leading-relaxed">
+			Firebase Cloud Storage adalah layanan penyimpanan objek yang kuat. Hal terpenting untuk dipahami adalah: <strong>Firebase Storage tidak memiliki struktur "folder" fisik</strong>. Ia menggunakan struktur <em>flat</em> (datar). 
+			<br><br>
+			Namun, jika Anda menyertakan garis miring (<code class="bg-slate-100 px-1 rounded text-indigo-600">/</code>) pada nama file, Firebase secara virtual akan menampilkannya seolah-olah itu adalah sebuah folder. Lihat ilustrasi di bawah:
+		  </p>
+		</div>
+
+		<div class="flex flex-col md:flex-row gap-6 items-center justify-center bg-slate-50 p-6 rounded-xl border border-slate-100">
+		  <!-- Visual Physical Folder -->
+		  <div class="flex-1 w-full border-2 border-dashed border-slate-300 rounded-lg p-4 bg-white">
+			<h3 class="text-sm font-semibold text-center text-slate-500 mb-4">Yang Anda Lihat (Visual/Folder)</h3>
+			<div class="ml-4">
+			  <div class="flex items-center gap-2 text-amber-600 font-medium mb-2">
+				<i class="fa-solid fa-folder-open"></i> dokumen
+			  </div>
+			  <div class="ml-6 flex flex-col gap-2 border-l-2 border-slate-200 pl-4">
+				<div class="flex items-center gap-2 text-slate-700">
+				  <i class="fa-solid fa-file-pdf text-red-500"></i> laporan.pdf
+				</div>
+				<div class="flex items-center gap-2 text-slate-700">
+				  <i class="fa-solid fa-file-word text-blue-500"></i> proposal.docx
+				</div>
+			  </div>
+			</div>
+		  </div>
+
+		  <div class="text-slate-400">
+			<i class="fa-solid fa-arrow-right-arrow-left text-2xl hidden md:block"></i>
+			<i class="fa-solid fa-arrow-up-arrow-down text-2xl md:hidden"></i>
+		  </div>
+
+		  <!-- Visual Flat Structure -->
+		  <div class="flex-1 w-full border-2 border-slate-300 rounded-lg p-4 bg-slate-800 text-slate-200">
+			<h3 class="text-sm font-semibold text-center text-slate-400 mb-4">Penyimpanan Asli (Flat Object)</h3>
+			<div class="flex flex-col gap-3 font-mono text-sm">
+			  <div class="bg-slate-700 p-2 rounded flex items-center gap-2">
+				<i class="fa-solid fa-cube text-indigo-400"></i> "dokumen/laporan.pdf"
+			  </div>
+			  <div class="bg-slate-700 p-2 rounded flex items-center gap-2">
+				<i class="fa-solid fa-cube text-indigo-400"></i> "dokumen/proposal.docx"
+			  </div>
+			</div>
+		  </div>
+		</div>
+
+		<div class="mt-6 p-4 bg-indigo-50 border-l-4 border-indigo-500 rounded-r-lg">
+		  <p class="text-sm text-indigo-900"><strong>Persiapan Awal:</strong> Sebelum melakukan operasi di bawah, pastikan Anda telah menginisialisasi <code class="font-mono bg-indigo-100 px-1 rounded">getStorage(app)</code> menggunakan Firebase config Anda.</p>
+		</div>
+	  </section>
+
+	  <!-- Interactive Operations Hub -->
+	  <section class="mb-12">
+		<h2 class="text-2xl font-bold text-slate-800 mb-6 text-center">Interaktif API Explorer</h2>
+		<p class="text-center text-slate-600 mb-8 max-w-2xl mx-auto">Pilih operasi di bawah ini untuk melihat penjelasan, kode implementasi (Modular API), dan mensimulasikan cara kerjanya secara real-time.</p>
+
+		<div class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
+
+		  <!-- Tab Navigation -->
+		  <div class="flex flex-wrap border-b border-slate-200 bg-slate-50" id="tabs-container">
+			<!-- Injected by JS -->
+		  </div>
+
+		  <!-- Content Area -->
+		  <div class="grid grid-cols-1 lg:grid-cols-2">
+
+			<!-- Left: Description & Code -->
+			<div class="p-6 md:p-8 border-b lg:border-b-0 lg:border-r border-slate-200">
+			  <div id="op-header" class="mb-4">
+				<h3 id="op-title" class="text-xl font-bold text-indigo-700 flex items-center gap-2">
+				  <i class="fa-solid fa-cloud-arrow-up"></i> 1. Mengupload File
+				</h3>
+			  </div>
+			  <div id="op-desc" class="text-slate-600 text-sm leading-relaxed mb-6">
+				<!-- Injected by JS -->
+			  </div>
+
+			  <div class="relative">
+				<div class="absolute top-0 right-0 bg-slate-700 text-slate-300 text-xs px-2 py-1 rounded-bl-lg rounded-tr-lg">JavaScript</div>
+				<div id="op-code" class="code-block custom-scrollbar">
+				  <!-- Injected by JS -->
+				</div>
+			  </div>
+			</div>
+
+			<!-- Right: Simulation Area -->
+			<div class="p-6 md:p-8 bg-slate-50 flex flex-col items-center justify-center min-h-[350px]">
+			  <h4 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-6">Area Simulasi</h4>
+
+			  <!-- Dynamic Simulation UI -->
+			  <div id="simulation-ui" class="w-full flex flex-col items-center justify-center">
+
+				<!-- Simulation Action Button -->
+				<button id="btn-simulate" class="mb-6 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-6 rounded-lg shadow-md shadow-indigo-500/30 transition-all active:scale-95 flex items-center gap-2">
+				  <i class="fa-solid fa-play"></i> Jalankan Simulasi
+				</button>
+
+				<!-- Chart Container (Strictly Constrained) -->
+				<div class="chart-container w-full" id="chart-wrapper">
+				  <canvas id="simulationChart"></canvas>
+				</div>
+
+				<!-- Mock Console Output (Hidden by default) -->
+				<div id="mock-console" class="hidden w-full max-w-sm mt-4 bg-slate-900 text-green-400 font-mono text-xs p-4 rounded-lg h-32 overflow-y-auto">
+				  <span class="text-slate-500">>> Menunggu aksi...</span>
+				</div>
+
+			  </div>
+			</div>
+
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- Summary & Rules -->
+	  <section>
+		<h2 class="text-2xl font-bold text-slate-800 mb-6"><i class="fa-solid fa-clipboard-list text-emerald-500 mr-2"></i>Kesimpulan & Aturan Penting</h2>
+		<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+		  <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+			<div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl mb-4">
+			  <i class="fa-solid fa-folder-tree"></i>
+			</div>
+			<h3 class="font-bold text-slate-800 mb-2">Folder itu Ilusi</h3>
+			<p class="text-sm text-slate-600">Struktur foldernya adalah virtual berdasarkan string path (<code class="bg-slate-100 px-1 rounded">/</code>). Untuk menghapus sebuah folder, Anda harus menghapus semua file di dalamnya.</p>
+		  </div>
+
+		  <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+			<div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-xl mb-4">
+			  <i class="fa-solid fa-pen-to-square"></i>
+			</div>
+			<h3 class="font-bold text-slate-800 mb-2">Tidak Ada Edit Isi / Rename</h3>
+			<p class="text-sm text-slate-600">Tidak ada operasi edit isi file atau <em>rename</em> bawaan. Anda harus timpa (overwrite) file lama dengan yang baru, atau download -> upload dengan nama baru -> hapus yang lama.</p>
+		  </div>
+
+		  <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+			<div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-xl mb-4">
+			  <i class="fa-solid fa-shield-halved"></i>
+			</div>
+			<h3 class="font-bold text-slate-800 mb-2">Keamanan Itu Wajib</h3>
+			<p class="text-sm text-slate-600">Pastikan Anda selalu mengonfigurasi <strong>Firebase Security Rules</strong> agar aset dan file Anda aman dari akses publik yang tidak diinginkan.</p>
+		  </div>
+		</div>
+	  </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-6 mt-12">
+	  <div class="max-w-6xl mx-auto px-6 text-center text-sm">
+		<p>&copy; 2026 Interactive Firebase Storage Guide. Disarikan dari Laporan Sumber.</p>
+	  </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+<script>
+        // --- 1. Data Storage (Information Architecture) ---
+        // Storing the content of the source report logically for the SPA
+        const reportData = {
+            upload: {
+                id: 'upload',
+                title: 'Mengupload File',
+                icon: 'fa-cloud-arrow-up',
+                desc: 'Untuk mengupload file, buat <em>Reference</em> (referensi) yang menunjuk ke lokasi penyimpanan, lalu gunakan <code>uploadBytes</code>.<br><br><strong>Membuat Folder:</strong> Tambahkan nama folder di dalam path. Jika foldernya belum ada, Firebase akan otomatis membuatkannya secara virtual setelah file terupload.',
+                code: `import { ref, uploadBytes } from "firebase/storage";
+
+async function uploadFile(file) {
+  // Path: Folder "dokumen" -> File "laporan.pdf"
+  const storageRef = ref(storage, 'dokumen/' + file.name);
+
+  try {
+    await uploadBytes(storageRef, file);
+    console.log('File berhasil diupload!');
+  } catch (error) {
+    console.error('Gagal:', error);
+  }
+}`,
+                simType: 'progress',
+                simBtnText: 'Simulasi Upload',
+                simIcon: 'fa-upload'
+            },
+            list: {
+                id: 'list',
+                title: 'Melihat File (List)',
+                icon: 'fa-list',
+                desc: 'Gunakan fungsi <code>listAll()</code> untuk melihat isi sebuah direktori. Fungsi ini mengembalikan daftar <code>prefixes</code> (menandakan folder virtual) dan <code>items</code> (menandakan file).',
+                code: `import { ref, listAll } from "firebase/storage";
+
+async function listFiles() {
+  const listRef = ref(storage, 'dokumen');
+  const res = await listAll(listRef);
+    
+  res.prefixes.forEach((folderRef) => {
+    console.log('Folder:', folderRef.name);
+  });
+  res.items.forEach((itemRef) => {
+    console.log('File:', itemRef.name);
+  });
+}`,
+                simType: 'pie',
+                simBtnText: 'List Direktori "dokumen"',
+                simIcon: 'fa-magnifying-glass'
+            },
+            download: {
+                id: 'download',
+                title: 'Mendownload File',
+                icon: 'fa-cloud-arrow-down',
+                desc: 'Mendownload file web dilakukan dengan mengambil URL publik menggunakan <code>getDownloadURL()</code>. URL ini bisa digunakan untuk tag <code>&lt;img&gt;</code> atau link download.',
+                code: `import { ref, getDownloadURL } from "firebase/storage";
+
+async function getFileUrl(fileName) {
+  const fileRef = ref(storage, 'dokumen/' + fileName);
+
+  try {
+    const url = await getDownloadURL(fileRef);
+    console.log('URL Download:', url);
+    // document.getElementById('myImage').src = url;
+  } catch (error) {
+    console.error('Gagal:', error);
+  }
+}`,
+                simType: 'progress',
+                simBtnText: 'Ambil URL & Download',
+                simIcon: 'fa-download'
+            },
+            edit: {
+                id: 'edit',
+                title: 'Mengedit / Rename',
+                icon: 'fa-pen-to-square',
+                desc: '<strong>Firebase tidak mendukung edit isi file langsung atau rename bawaan.</strong><br><br>Untuk edit file: Upload ulang ke path yang sama persis (overwrite).<br>Untuk rename: Download file -> Upload dengan nama baru -> Hapus file lama.<br>Untuk edit properti: Gunakan <code>updateMetadata()</code>.',
+                code: `import { ref, updateMetadata } from "firebase/storage";
+
+// Contoh Edit Metadata
+async function updateMeta() {
+  const storageRef = ref(storage, 'dokumen/laporan.pdf');
+  const newMetadata = {
+    customMetadata: { 'status': 'direvisi' }
+  };
+  
+  await updateMetadata(storageRef, newMetadata);
+}
+
+// Catatan: Untuk edit isi, jalankan uploadBytes lagi.`,
+                simType: 'progress',
+                simBtnText: 'Simulasi Overwrite File',
+                simIcon: 'fa-rotate'
+            },
+            delete: {
+                id: 'delete',
+                title: 'Menghapus File',
+                icon: 'fa-trash-can',
+                desc: 'Menghapus file menggunakan <code>deleteObject()</code>.<br><br><strong>Menghapus Folder:</strong> Anda tidak bisa menghapus folder secara langsung. Anda harus melooping <code>listAll()</code> dan menghapus setiap file di dalamnya. Jika kosong, folder otomatis hilang.',
+                code: `import { ref, deleteObject } from "firebase/storage";
+
+async function deleteFile() {
+  const fileRef = ref(storage, 'dokumen/laporan.pdf');
+
+  try {
+    await deleteObject(fileRef);
+    console.log('File berhasil dihapus!');
+  } catch (error) {
+    console.error('Gagal menghapus:', error);
+  }
+}`,
+                simType: 'pie-delete',
+                simBtnText: 'Hapus File Laporan',
+                simIcon: 'fa-eraser'
+            }
+        };
+
+        // --- 2. State Management ---
+        let currentOperation = 'upload';
+        let chartInstance = null; // Holds the Chart.js instance
+        let simInterval = null;
+
+        // --- 3. DOM Elements ---
+        const tabsContainer = document.getElementById('tabs-container');
+        const opTitle = document.getElementById('op-title');
+        const opDesc = document.getElementById('op-desc');
+        const opCode = document.getElementById('op-code');
+        const btnSimulate = document.getElementById('btn-simulate');
+        const mockConsole = document.getElementById('mock-console');
+        const chartWrapper = document.getElementById('chart-wrapper');
+
+        // --- 4. Initialization & Navigation Logic ---
+        function initApp() {
+            // Render Navigation Tabs
+            Object.values(reportData).forEach((op, index) => {
+                const btn = document.createElement('button');
+                btn.className = `tab-btn flex-1 min-w-[120px] py-3 px-4 text-sm font-medium border-b-2 border-transparent text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-colors ${op.id === currentOperation ? 'active' : ''}`;
+                btn.innerHTML = `<i class="fa-solid ${op.icon} mr-1 mb-1 block sm:inline"></i> ${op.title.split(' ')[0]}`;
+                btn.onclick = () => selectTab(op.id, btn);
+                tabsContainer.appendChild(btn);
+            });
+
+            // Load initial content
+            renderContent(currentOperation);
+            initChart();
+        }
+
+        function selectTab(id, clickedBtn) {
+            if (id === currentOperation) return; // Ignore if already selected
+            
+            // Update Active State on Buttons
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('active');
+                b.classList.remove('bg-indigo-600', 'text-white');
+            });
+            clickedBtn.classList.add('active');
+
+            currentOperation = id;
+            
+            // Add fade animation
+            const contentAreas = [opTitle, opDesc, opCode, chartWrapper, mockConsole];
+            contentAreas.forEach(el => {
+                el.classList.remove('fade-in');
+                void el.offsetWidth; // Trigger reflow
+                el.classList.add('fade-in');
+            });
+
+            renderContent(id);
+        }
+
+        function renderContent(id) {
+            const data = reportData[id];
+            
+            opTitle.innerHTML = `<i class="fa-solid ${data.icon}"></i> ${data.title}`;
+            opDesc.innerHTML = data.desc;
+            opCode.textContent = data.code;
+            
+            btnSimulate.innerHTML = `<i class="fa-solid ${data.simIcon}"></i> ${data.simBtnText}`;
+            
+            // Reset Simulations
+            clearInterval(simInterval);
+            mockConsole.classList.add('hidden');
+            chartWrapper.classList.remove('hidden');
+            btnSimulate.disabled = false;
+            btnSimulate.classList.remove('opacity-50', 'cursor-not-allowed');
+
+            resetChartConfig(data.simType);
+        }
+
+        // --- 5. Chart.js & Simulation Engine ---
+        function initChart() {
+            const ctx = document.getElementById('simulationChart').getContext('2d');
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Selesai', 'Sisa'],
+                    datasets: [{
+                        data: [0, 100],
+                        backgroundColor: ['#4f46e5', '#e2e8f0'],
+                        borderWidth: 0,
+                        cutout: '80%'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    },
+                    animation: { duration: 500 }
+                }
+            });
+        }
+
+        function resetChartConfig(simType) {
+            if (!chartInstance) return;
+
+            if (simType === 'progress') {
+                chartInstance.config.type = 'doughnut';
+                chartInstance.data.labels = ['Progress', 'Sisa'];
+                chartInstance.data.datasets[0].data = [0, 100];
+                chartInstance.data.datasets[0].backgroundColor = ['#4f46e5', '#e2e8f0'];
+                chartInstance.options.cutout = '80%';
+                chartInstance.options.plugins.legend.display = false;
+            } else if (simType === 'pie') {
+                chartInstance.config.type = 'pie';
+                chartInstance.data.labels = ['Folder (Prefixes)', 'File (Items)'];
+                chartInstance.data.datasets[0].data = [0, 0]; // Empty until simulated
+                chartInstance.data.datasets[0].backgroundColor = ['#f59e0b', '#3b82f6'];
+                chartInstance.options.cutout = '0%';
+                chartInstance.options.plugins.legend.display = true;
+            } else if (simType === 'pie-delete') {
+                chartInstance.config.type = 'pie';
+                chartInstance.data.labels = ['File Laporan', 'File Lainnya'];
+                chartInstance.data.datasets[0].data = [1, 3]; // Initial state
+                chartInstance.data.datasets[0].backgroundColor = ['#ef4444', '#94a3b8'];
+                chartInstance.options.cutout = '0%';
+                chartInstance.options.plugins.legend.display = true;
+            }
+            chartInstance.update();
+        }
+
+        // Handle Simulation Click
+        btnSimulate.addEventListener('click', () => {
+            const data = reportData[currentOperation];
+            btnSimulate.disabled = true;
+            btnSimulate.classList.add('opacity-50', 'cursor-not-allowed');
+
+            if (data.simType === 'progress') {
+                runProgressSimulation();
+            } else if (data.simType === 'pie') {
+                runListSimulation();
+            } else if (data.simType === 'pie-delete') {
+                runDeleteSimulation();
+            }
+        });
+
+        function runProgressSimulation() {
+            let progress = 0;
+            mockConsole.classList.remove('hidden');
+            mockConsole.innerHTML = `<span class="text-blue-400">>> Memulai operasi...</span><br>`;
+            
+            simInterval = setInterval(() => {
+                progress += Math.floor(Math.random() * 20) + 10;
+                if (progress >= 100) progress = 100;
+                
+                chartInstance.data.datasets[0].data = [progress, 100 - progress];
+                
+                // Colors: Blue -> Green when complete
+                if (progress === 100) {
+                    chartInstance.data.datasets[0].backgroundColor = ['#10b981', '#e2e8f0'];
+                } else {
+                    chartInstance.data.datasets[0].backgroundColor = ['#4f46e5', '#e2e8f0'];
+                }
+                
+                chartInstance.update();
+
+                mockConsole.innerHTML += `Transferred: ${progress}%<br>`;
+                mockConsole.scrollTop = mockConsole.scrollHeight;
+
+                if (progress === 100) {
+                    clearInterval(simInterval);
+                    mockConsole.innerHTML += `<span class="text-green-400 font-bold">>> Operasi Berhasil Selesai!</span>`;
+                    setTimeout(() => { btnSimulate.disabled = false; btnSimulate.classList.remove('opacity-50', 'cursor-not-allowed'); }, 1000);
+                }
+            }, 300);
+        }
+
+        function runListSimulation() {
+            mockConsole.classList.remove('hidden');
+            mockConsole.innerHTML = `<span class="text-blue-400">>> Memanggil listAll('dokumen/')...</span><br>`;
+            
+            setTimeout(() => {
+                // Populate Pie Chart Data
+                chartInstance.data.datasets[0].data = [2, 5]; // 2 Folders, 5 Files
+                chartInstance.update();
+                
+                mockConsole.innerHTML += `> Ditemukan 2 Folder (Prefixes)<br>`;
+                mockConsole.innerHTML += `  - dokumen/profil<br>`;
+                mockConsole.innerHTML += `  - dokumen/arsip<br>`;
+                mockConsole.innerHTML += `> Ditemukan 5 File (Items)<br>`;
+                mockConsole.innerHTML += `  - laporan.pdf<br>`;
+                mockConsole.innerHTML += `  - gambar1.jpg<br>`;
+                mockConsole.innerHTML += `  - ...<br>`;
+                mockConsole.innerHTML += `<span class="text-green-400 font-bold">>> Selesai</span>`;
+                mockConsole.scrollTop = mockConsole.scrollHeight;
+                
+                btnSimulate.disabled = false; 
+                btnSimulate.classList.remove('opacity-50', 'cursor-not-allowed');
+            }, 800);
+        }
+
+        function runDeleteSimulation() {
+            mockConsole.classList.remove('hidden');
+            mockConsole.innerHTML = `<span class="text-yellow-400">>> Mencari referensi file...</span><br>`;
+            
+            setTimeout(() => {
+                mockConsole.innerHTML += `<span class="text-red-400">>> Menjalankan deleteObject(laporan.pdf)...</span><br>`;
+                
+                // Animate removal from pie chart
+                chartInstance.data.datasets[0].data = [0, 3]; // File Laporan becomes 0
+                chartInstance.update();
+
+                setTimeout(() => {
+                    mockConsole.innerHTML += `<span class="text-green-400 font-bold">>> File berhasil dihapus dari Cloud.</span>`;
+                    mockConsole.scrollTop = mockConsole.scrollHeight;
+                    btnSimulate.disabled = false; 
+                    btnSimulate.classList.remove('opacity-50', 'cursor-not-allowed');
+                }, 500);
+            }, 800);
+        }
+
+        // Initialize App on Load
+        document.addEventListener('DOMContentLoaded', initApp);
+
+</script>
+  </body>
+</html>

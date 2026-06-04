@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodePen: Kanvas Digital Web Developer</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Tailwind Config for Custom Colors/Fonts -->
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"Fira Code"', 'monospace'],
+                    },
+                    colors: {
+                        dark: {
+                            900: '#07090F', // Sangat gelap, hampir hitam
+                            800: '#0F1523', // Latar artikel
+                            700: '#1A2333', // Border dan elemen hover
+                            600: '#2A3649',
+                        },
+                        neon: {
+                            cyan: '#00F0FF',
+                            purple: '#8A2BE2',
+                            pink: '#FF007F'
+                        }
+                    }
+                }
+            }
+        }
+</script>
+
+<style>
+        body {
+            background-color: #07090F;
+            color: #E2E8F0;
+        }
+
+        /* Scrollbar Elegan */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0F1523; }
+        ::-webkit-scrollbar-thumb { background: #2A3649; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3b4b66; }
+
+        /* Efek Kaca (Glassmorphism) */
+        .glass-panel {
+            background: rgba(15, 21, 35, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Gradasi Teks */
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(90deg, #00F0FF, #8A2BE2);
+        }
+
+        /* Animasi Tombol Interaktif */
+        .interactive-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .interactive-btn:hover {
+            transform: translateX(5px);
+            box-shadow: -4px 0 0 #00F0FF;
+        }
+        .interactive-btn.active {
+            background-color: rgba(0, 240, 255, 0.1);
+            border-color: rgba(0, 240, 255, 0.3);
+            box-shadow: -4px 0 0 #00F0FF;
+            color: #fff;
+        }
+
+        /* Gaya Iframe Editor */
+        .editor-frame-container {
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.05), inset 0 0 20px rgba(0,0,0,0.5);
+        }
+</style>
+  </head>
+  <body class="h-screen w-full overflow-hidden flex flex-col md:flex-row antialiased selection:bg-neon-cyan selection:text-dark-900">
+
+    <!-- BAGIAN KIRI: Artikel (Scrollable) -->
+    <aside class="w-full md:w-[45%] lg:w-[40%] h-[50vh] md:h-screen overflow-y-auto bg-dark-800 border-b md:border-b-0 md:border-r border-dark-700 relative z-10 flex flex-col">
+
+	  <!-- Header Artikel -->
+	  <header class="p-8 pb-4 sticky top-0 bg-dark-800/90 backdrop-blur-md border-b border-dark-700/50 z-20">
+		<div class="flex items-center gap-3 mb-2">
+		  <div class="w-8 h-8 rounded bg-gradient-to-br from-neon-cyan to-neon-purple flex items-center justify-center text-dark-900 font-bold text-xl">
+			<svg viewBox="0 0 138 26" fill="none" stroke="#000" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M15 8a7 7 0 100 10m7-8.7L33 2l11 7.3v7.4L33 24l-11-7.3zm0 0l11 7.4 11-7.4m0 7.4L33 9.3l-11 7.4M33 2v7.3m0 7.4V24"/></svg>
+		  </div>
+		  <h1 class="text-xs font-mono text-slate-400 tracking-widest uppercase">Edisi Pengembang</h1>
+		</div>
+		<h2 class="text-3xl lg:text-4xl font-bold mt-2 leading-tight">Mengenal <span class="text-gradient">CodePen</span> Lebih Dekat</h2>
+	  </header>
+
+	  <!-- Konten Artikel -->
+	  <main class="p-8 pt-6 flex-1 space-y-10 text-slate-300 leading-relaxed">
+
+		<!-- Pengantar -->
+		<section>
+		  <p class="text-lg text-slate-200 mb-4 font-medium">
+			Dalam ekosistem *Front-End Development*, memiliki tempat untuk bereksperimen, berbagi, dan menemukan inspirasi adalah hal yang krusial. Di sinilah <strong class="text-white">CodePen</strong> hadir sebagai pahlawan bagi para kreator web.
+		  </p>
+		  <p class="text-sm text-slate-400">
+			CodePen bukan sekadar editor kode daring; ini adalah taman bermain interaktif tempat HTML, CSS, dan JavaScript dieksekusi secara *real-time*. Anda mengetik, web pun langsung merespons. Tidak perlu kompilasi manual, tidak perlu setup server lokal yang rumit.
+		  </p>
+		</section>
+
+		<!-- Fitur Utama & Interaksi Editor -->
+		<section>
+		  <div class="flex items-center gap-2 mb-4">
+			<div class="h-[1px] w-8 bg-neon-cyan"></div>
+			<h3 class="text-xl font-bold text-white">Anatomi Sebuah "Pen"</h3>
+		  </div>
+		  <p class="text-sm text-slate-400 mb-6">
+			Setiap karya di CodePen disebut "Pen". Cobalah klik tombol di bawah ini untuk melihat bagaimana editor di sebelah kanan beradaptasi menampilkan komponen kode yang berbeda secara dinamis.
+		  </p>
+
+		  <!-- Tombol Interaktif Pengubah Iframe -->
+		  <div class="space-y-3 font-mono text-xs">
+			<button onclick="changePenView('html,result', this)" class="interactive-btn active w-full text-left p-4 rounded-lg bg-dark-700/30 border border-dark-600 flex justify-between items-center group">
+			  <div>
+				<span class="text-neon-cyan font-bold block mb-1">01. Kerangka HTML</span>
+				<span class="text-slate-400 group-hover:text-slate-300">Lihat struktur dasar pembentuk halaman.</span>
+			  </div>
+			  <span class="text-xl opacity-50 group-hover:opacity-100 transition-opacity">→</span>
+			</button>
+
+			<button onclick="changePenView('css,result', this)" class="interactive-btn w-full text-left p-4 rounded-lg bg-dark-700/30 border border-dark-600 flex justify-between items-center group">
+			  <div>
+				<span class="text-neon-purple font-bold block mb-1">02. Estetika CSS</span>
+				<span class="text-slate-400 group-hover:text-slate-300">Ubah gaya, warna, dan animasi seketika.</span>
+			  </div>
+			  <span class="text-xl opacity-50 group-hover:opacity-100 transition-opacity">→</span>
+			</button>
+
+			<button onclick="changePenView('js,result', this)" class="interactive-btn w-full text-left p-4 rounded-lg bg-dark-700/30 border border-dark-600 flex justify-between items-center group">
+			  <div>
+				<span class="text-yellow-400 font-bold block mb-1">03. Logika JavaScript</span>
+				<span class="text-slate-400 group-hover:text-slate-300">Tambahkan interaksi dan manipulasi DOM.</span>
+			  </div>
+			  <span class="text-xl opacity-50 group-hover:opacity-100 transition-opacity">→</span>
+			</button>
+		  </div>
+		</section>
+
+		<!-- Mengapa CodePen? -->
+		<section>
+		  <div class="flex items-center gap-2 mb-4">
+			<div class="h-[1px] w-8 bg-neon-pink"></div>
+			<h3 class="text-xl font-bold text-white">Mengapa Developer Mencintainya?</h3>
+		  </div>
+		  <ul class="space-y-4 text-sm text-slate-400">
+			<li class="flex items-start gap-3">
+			  <span class="text-neon-cyan mt-1">✦</span>
+			  <div>
+				<strong class="text-slate-200">Lingkungan Siap Pakai:</strong> Mendukung pre-processor modern seperti Sass, Pug, dan Babel tanpa perlu konfigurasi *Webpack* atau *Vite*.
+			  </div>
+			</li>
+			<li class="flex items-start gap-3">
+			  <span class="text-neon-cyan mt-1">✦</span>
+			  <div>
+				<strong class="text-slate-200">Komunitas Terbuka:</strong> Ribuan karya (*Pens*) bersifat *open-source*. Jika Anda melihat efek bayangan atau animasi yang keren, Anda bisa melihat persis bagaimana itu dibuat (proses *Forking*).
+			  </div>
+			</li>
+			<li class="flex items-start gap-3">
+			  <span class="text-neon-cyan mt-1">✦</span>
+			  <div>
+				<strong class="text-slate-200">Integrasi Portofolio:</strong> Penyematan (*embed*) iframe seperti di web ini membuatnya sangat mudah memamerkan keahlian *coding* di blog atau CV digital.
+			  </div>
+			</li>
+		  </ul>
+		</section>
+
+		<!-- Footer Artikel -->
+		<footer class="pt-8 pb-4 text-center border-t border-dark-700/50">
+		  <p class="text-xs text-slate-500 font-mono">
+			Dirancang untuk pengalaman eksperimental.<br>
+			© 2026 CodePen Embed Explorer.
+		  </p>
+		</footer>
+	  </main>
+    </aside>
+
+    <!-- BAGIAN KANAN: Editor Interaktif (CodePen Iframe) -->
+    <main class="w-full md:w-[55%] lg:w-[60%] h-[50vh] md:h-screen bg-dark-900 p-4 md:p-6 lg:p-8 flex flex-col relative">
+
+	  <!-- Hiasan Background / Glow -->
+	  <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-neon-cyan/10 rounded-full blur-[100px] pointer-events-none"></div>
+	  <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-neon-purple/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+	  <!-- Wadah Editor (Mac Window Style) -->
+	  <div class="flex-1 w-full max-w-5xl mx-auto editor-frame-container glass-panel rounded-xl flex flex-col overflow-hidden relative z-10">
+
+		<!-- Top Bar Editor -->
+		<div class="h-10 bg-dark-800/80 border-b border-dark-700 flex items-center px-4 justify-between shrink-0">
+		  <div class="flex gap-2">
+			<div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+			<div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+			<div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+		  </div>
+		  <div class="text-[11px] font-mono text-slate-500 tracking-wider">
+			editor_workspace.codepen
+		  </div>
+		  <div class="flex gap-2">
+			<!-- Icon Placeholder -->
+			<div class="w-4 h-4 text-slate-500">⚙️</div>
+		  </div>
+		</div>
+
+		<!-- Iframe CodePen -->
+		<div class="flex-1 w-full bg-[#1e1e1e] relative">
+		  <!-- Loader Animasi Saat Menunggu Iframe -->
+		  <div id="loader" class="absolute inset-0 flex items-center justify-center bg-dark-900 z-0 transition-opacity duration-500">
+			<div class="flex flex-col items-center gap-3">
+			  <div class="w-8 h-8 border-4 border-dark-700 border-t-neon-cyan rounded-full animate-spin"></div>
+			  <span class="text-xs font-mono text-slate-400">Merender Ruang Kerja...</span>
+			</div>
+		  </div>
+
+		  <!-- Iframe Asli -->
+		  <iframe 
+			id="codepen-iframe"
+			class="w-full h-full relative z-10 opacity-0 transition-opacity duration-700" 
+			scrolling="no" 
+			title="CodePen Workspace" 
+			/* Menggunakan Pen Demo CodePen yang populer sebagai placeholder */
+			src="https://codepen.io/CodePen/embed/PNaGbb?default-tab=html%2Cresult&theme-id=dark&editable=true" 
+			frameborder="no" 
+			loading="lazy" 
+			allowtransparency="true" 
+			allowfullscreen="true"
+			onload="handleIframeLoad()">
+			Lihat Pen <a href="https://codepen.io/CodePen/pen/PNaGbb">
+			  Demo</a> di CodePen.
+		  </iframe>
+		</div>
+	  </div>
+
+    </main>
+
+    <!-- JavaScript Interaktivitas -->
+<script>
+        // Pen ID yang digunakan (Bisa diganti dengan karya Anda sendiri)
+        const penId = 'PNaGbb'; // Ini adalah Pen Demo resmi dari Team CodePen
+
+        function changePenView(tabSettings, clickedButton) {
+            const iframe = document.getElementById('codepen-iframe');
+            const loader = document.getElementById('loader');
+            
+            // Tampilkan loader saat mengubah
+            iframe.style.opacity = '0.5';
+            loader.style.opacity = '1';
+            loader.style.zIndex = '20';
+            
+            // Buat URL baru dengan pengaturan tab yang dipilih (html, css, atau js)
+            const newSrc = `https://codepen.io/CodePen/embed/${penId}?default-tab=${tabSettings}&theme-id=dark&editable=true`;
+            iframe.src = newSrc;
+
+            // Logika UI untuk menyorot tombol aktif di artikel
+            const buttons = document.querySelectorAll('.interactive-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            clickedButton.classList.add('active');
+        }
+
+        function handleIframeLoad() {
+            // Hilangkan loader setelah iframe selesai dimuat
+            const iframe = document.getElementById('codepen-iframe');
+            const loader = document.getElementById('loader');
+            
+            iframe.style.opacity = '1';
+            loader.style.opacity = '0';
+            
+            setTimeout(() => {
+                loader.style.zIndex = '-1';
+            }, 500);
+        }
+</script>
+  </body>
+</html>

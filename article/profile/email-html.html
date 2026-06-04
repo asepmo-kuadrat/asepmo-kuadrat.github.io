@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor Email HTML</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+<style>
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        
+        /* Line numbers for textarea trick */
+        .editor-container {
+            position: relative;
+            background: #1e1e1e;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        #html-input {
+            background: transparent;
+            color: #d4d4d4;
+            font-family: 'Courier New', Courier, monospace;
+            resize: none;
+            outline: none;
+        }
+</style>
+  </head>
+  <body class="bg-slate-50 min-h-screen font-sans text-slate-800 flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-10">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+		<div class="flex items-center gap-2">
+		  <div class="bg-blue-600 p-2 rounded-lg text-white">
+			<i data-lucide="mail"></i>
+		  </div>
+		  <h1 class="text-xl font-bold text-slate-800">EmailCraft HTML</h1>
+		</div>
+	  </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 flex flex-col lg:flex-row gap-6">
+
+	  <!-- Left Column: Editor & Preview -->
+	  <div class="flex-grow flex flex-col bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden h-[calc(100vh-8rem)]">
+
+		<!-- Navigation Breadcrumb / Tabs -->
+		<div class="flex border-b border-slate-200 bg-slate-50/50 px-2 pt-2">
+		  <button id="btn-edit" class="px-6 py-3 text-sm font-medium border-b-2 border-blue-600 text-blue-600 transition-colors flex items-center gap-2" onclick="switchTab('edit')">
+			<i data-lucide="code" class="w-4 h-4"></i> Edit Html
+		  </button>
+		  <button id="btn-preview" class="px-6 py-3 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 transition-colors flex items-center gap-2" onclick="switchTab('preview')">
+			<i data-lucide="eye" class="w-4 h-4"></i> Preview Html
+		  </button>
+		</div>
+
+		<!-- Workspace -->
+		<div class="flex-grow relative">
+		  <!-- Edit View -->
+		  <div id="view-edit" class="absolute inset-0 p-4 flex flex-col h-full bg-slate-900">
+			<textarea id="html-input" class="w-full h-full p-4 text-sm leading-relaxed" spellcheck="false">
+			  <!DOCTYPE html>
+			  <html lang="id">
+				<head>
+				  <meta charset="UTF-8">
+<style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .header {
+            background-color: #2563eb;
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .content {
+            padding: 30px;
+            color: #374151;
+            line-height: 1.6;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #2563eb;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .footer {
+            background-color: #f9fafb;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #6b7280;
+            border-top: 1px solid #e5e7eb;
+        }
+</style>
+				</head>
+				<body>
+				  <div class="email-container">
+					<div class="header">
+					  <h1 style="margin: 0;">Halo dari EmailCraft!</h1>
+					</div>
+					<div class="content">
+					  <h2>Pesan Anda Siap Dikirim</h2>
+					  <p>Ini adalah contoh template email HTML. Anda dapat mengedit kode di panel <strong>Edit Html</strong> dan melihat hasilnya di tab <strong>Preview Html</strong>.</p>
+					  <p>Pastikan desain Anda responsif agar terlihat bagus di perangkat seluler maupun desktop.</p>
+					  <div style="text-align: center;">
+						<a href="#" class="btn">Mulai Sekarang</a>
+					  </div>
+					</div>
+					<div class="footer">
+					  <p>&copy; 2026 Perusahaan Anda. Semua hak dilindungi undang-undang.</p>
+					</div>
+				  </div>
+				</body>
+			  </html>
+			</textarea>
+		  </div>
+
+		  <!-- Preview View -->
+		  <div id="view-preview" class="absolute inset-0 bg-[#e5e5e5] hidden flex items-center justify-center p-4">
+			<div class="w-full h-full max-w-4xl bg-white rounded shadow-sm border border-slate-300 overflow-hidden relative flex flex-col">
+			  <div class="bg-slate-100 border-b border-slate-200 p-2 text-xs text-slate-500 text-center flex justify-between items-center px-4">
+				<span>Pratinjau Klien Email</span>
+				<span class="flex gap-1">
+				  <span class="w-3 h-3 rounded-full bg-red-400"></span>
+				  <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
+				  <span class="w-3 h-3 rounded-full bg-green-400"></span>
+				</span>
+			  </div>
+			  <iframe id="preview-frame" class="w-full flex-grow border-none bg-white"></iframe>
+			</div>
+		  </div>
+		</div>
+	  </div>
+
+	  <!-- Right Column: Send Email Form -->
+	  <div class="w-full lg:w-80 flex-shrink-0">
+		<div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+		  <h2 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+			<i data-lucide="send" class="w-5 h-5 text-blue-600"></i> Kirim Ke Gmail
+		  </h2>
+
+		  <form id="send-form" class="space-y-4">
+			<div>
+			  <label for="to-email" class="block text-sm font-medium text-slate-700 mb-1">Email Tujuan</label>
+			  <input type="email" id="to-email" placeholder="contoh@gmail.com" required
+				class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+			</div>
+			<div>
+			  <label for="subject" class="block text-sm font-medium text-slate-700 mb-1">Subjek Email</label>
+			  <input type="text" id="subject" placeholder="Subjek pesan Anda" required
+				class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+			</div>
+
+			<div class="pt-2">
+			  <button type="submit" id="submit-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm">
+				<i data-lucide="send" class="w-4 h-4"></i> Kirim Email Sekarang
+			  </button>
+			</div>
+
+			<p class="text-xs text-slate-500 text-center mt-4">
+			  *Catatan: Ini adalah simulasi antarmuka. Pengiriman email HTML dari sisi klien (browser) memerlukan integrasi backend.
+			</p>
+		  </form>
+		</div>
+	  </div>
+    </main>
+
+    <!-- Custom Alert/Modal (Hidden by default) -->
+    <div id="notification" class="fixed bottom-4 right-4 bg-white border-l-4 border-green-500 shadow-lg rounded p-4 transform transition-all duration-300 translate-y-20 opacity-0 flex items-start gap-3 z-50">
+	  <div class="text-green-500 mt-0.5">
+		<i data-lucide="check-circle" class="w-5 h-5"></i>
+	  </div>
+	  <div>
+		<h4 class="text-sm font-semibold text-slate-800">Berhasil Terkirim!</h4>
+		<p class="text-xs text-slate-600 mt-1" id="notification-text">Email telah dikirim ke contoh@gmail.com</p>
+	  </div>
+	  <button onclick="hideNotification()" class="text-slate-400 hover:text-slate-600 ml-4">
+		<i data-lucide="x" class="w-4 h-4"></i>
+	  </button>
+    </div>
+
+<script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Elements
+        const btnEdit = document.getElementById('btn-edit');
+        const btnPreview = document.getElementById('btn-preview');
+        const viewEdit = document.getElementById('view-edit');
+        const viewPreview = document.getElementById('view-preview');
+        const htmlInput = document.getElementById('html-input');
+        const previewFrame = document.getElementById('preview-frame');
+        const sendForm = document.getElementById('send-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notification-text');
+
+        // Tab Switching Logic
+        function switchTab(tab) {
+            if (tab === 'edit') {
+                // UI Updates
+                viewEdit.classList.remove('hidden');
+                viewPreview.classList.add('hidden');
+                
+                // Button Styling
+                btnEdit.classList.replace('border-transparent', 'border-blue-600');
+                btnEdit.classList.replace('text-slate-500', 'text-blue-600');
+                
+                btnPreview.classList.replace('border-blue-600', 'border-transparent');
+                btnPreview.classList.replace('text-blue-600', 'text-slate-500');
+            } else if (tab === 'preview') {
+                // Sync Content to Iframe
+                const currentHtml = htmlInput.value;
+                previewFrame.srcdoc = currentHtml;
+
+                // UI Updates
+                viewPreview.classList.remove('hidden');
+                viewEdit.classList.add('hidden');
+                
+                // Button Styling
+                btnPreview.classList.replace('border-transparent', 'border-blue-600');
+                btnPreview.classList.replace('text-slate-500', 'text-blue-600');
+                
+                btnEdit.classList.replace('border-blue-600', 'border-transparent');
+                btnEdit.classList.replace('text-blue-600', 'text-slate-500');
+            }
+        }
+
+        // Auto-update preview if in preview mode (optional enhancement)
+        htmlInput.addEventListener('input', () => {
+            if (!viewPreview.classList.contains('hidden')) {
+                previewFrame.srcdoc = htmlInput.value;
+            }
+        });
+
+        // Form Submit Logic (Simulation)
+        sendForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const toEmail = document.getElementById('to-email').value;
+            const subject = document.getElementById('subject').value;
+            const htmlContent = htmlInput.value;
+
+            // Loading state
+            submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Mengirim...';
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-75');
+            lucide.createIcons();
+
+            // Simulate API Call delay (1.5 seconds)
+            setTimeout(() => {
+                // Reset Button
+                submitBtn.innerHTML = '<i data-lucide="send" class="w-4 h-4"></i> Kirim Email Sekarang';
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-75');
+                lucide.createIcons();
+
+                // Show Notification
+                showNotification(toEmail);
+                
+                // Reset Form
+                sendForm.reset();
+            }, 1500);
+        });
+
+        function showNotification(email) {
+            notificationText.textContent = `Simulasi: Email berhasil dikirim ke ${email}.`;
+            notification.classList.remove('translate-y-20', 'opacity-0');
+            
+            // Auto hide after 4 seconds
+            setTimeout(hideNotification, 4000);
+        }
+
+        function hideNotification() {
+            notification.classList.add('translate-y-20', 'opacity-0');
+        }
+</script>
+  </body>
+</html>

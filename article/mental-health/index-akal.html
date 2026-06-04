@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Akal Sehat & Sabar Subur</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+<script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        wisdom: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            600: '#16a34a',
+                            800: '#166534',
+                            950: '#022c22',
+                        },
+                        passion: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            600: '#ea580c',
+                            800: '#9a3412',
+                            950: '#431407',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+</script>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+        }
+        .serif-title {
+            font-family: 'Playfair Display', serif;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        .glassmorphism {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px rgba(255, 255, 255, 0.08) solid;
+        }
+        .active-tab {
+            border-bottom: 2px solid #10b981;
+            color: #10b981;
+        }
+</style>
+  </head>
+  <body class="overflow-x-hidden min-h-screen flex flex-col">
+
+    <!-- OVERLAYS: Drawer Menu (Left Sidebar) -->
+    <div id="drawerMenu" class="fixed inset-y-0 left-0 w-80 bg-slate-900 border-r border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col shadow-2xl">
+	  <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-950">
+		<div class="flex items-center gap-2">
+		  <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-500 to-amber-500 flex items-center justify-center shadow-lg">
+			<i class="fa-solid fa-brain text-white text-sm"></i>
+		  </div>
+		  <span class="font-bold text-lg text-emerald-400 font-sans">Akal Sehat</span>
+		</div>
+		<button onclick="toggleDrawer()" class="text-slate-400 hover:text-white transition">
+		  <i class="fa-solid fa-xmark text-xl"></i>
+		</button>
+	  </div>
+	  <nav class="flex-1 p-6 space-y-4 overflow-y-auto">
+		<p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Menu Utama</p>
+		<button onclick="navigateTo('home'); toggleDrawer();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-emerald-400 transition text-left">
+		  <i class="fa-solid fa-house text-lg w-6"></i>
+		  <span>Beranda (Home)</span>
+		</button>
+		<button onclick="navigateTo('search'); toggleDrawer();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-emerald-400 transition text-left">
+		  <i class="fa-solid fa-magnifying-glass text-lg w-6"></i>
+		  <span>Cari Kebijaksanaan (Search)</span>
+		</button>
+		<button onclick="navigateTo('youtube'); toggleDrawer();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-emerald-400 transition text-left">
+		  <i class="fa-brands fa-youtube text-lg w-6"></i>
+		  <span>Kanal YouTube (Inspirasi)</span>
+		</button>
+
+		<div class="border-t border-slate-800 my-4 pt-4"></div>
+		<p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Interaksi Jiwa</p>
+		<button onclick="scrollToSection('visualGallery'); toggleDrawer();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition text-left">
+		  <i class="fa-solid fa-images text-lg w-6"></i>
+		  <span>Galeri Sabar & Akal</span>
+		</button>
+		<button onclick="scrollToSection('chatDialogSection'); toggleDrawer();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition text-left">
+		  <i class="fa-solid fa-comments text-lg w-6"></i>
+		  <span>Arsip Percakapan</span>
+		</button>
+		<button onclick="scrollToSection('muhasabahSection'); toggleDrawer();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition text-left">
+		  <i class="fa-solid fa-clipboard-question text-lg w-6"></i>
+		  <span>Alat Muhasabah Diri</span>
+		</button>
+		<button onclick="scrollToSection('audioSection'); toggleDrawer();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white transition text-left">
+		  <i class="fa-solid fa-music text-lg w-6"></i>
+		  <span>Lagu "Duri di Kebun"</span>
+		</button>
+	  </nav>
+	  <div class="p-6 border-t border-slate-800 bg-slate-950 text-center text-xs text-slate-500">
+		Akal Sehat v1.0.0 &copy; 2026
+	  </div>
+    </div>
+    <!-- Drawer Backdrop -->
+    <div id="drawerBackdrop" onclick="toggleDrawer()" class="fixed inset-0 bg-black/60 hidden z-40 transition-opacity duration-300"></div>
+
+    <!-- NAVBAR (Header) -->
+    <header class="sticky top-0 z-30 glassmorphism border-b border-slate-800/80 px-4 lg:px-8 py-4">
+	  <div class="max-w-7xl mx-auto flex items-center justify-between">
+		<!-- Left: Toggle & Logo -->
+		<div class="flex items-center gap-4">
+		  <button onclick="toggleDrawer()" class="p-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition-all duration-200">
+			<i class="fa-solid fa-bars text-xl"></i>
+		  </button>
+		  <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
+			<div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-amber-500 flex items-center justify-center shadow-lg shadow-emerald-500/10">
+			  <i class="fa-solid fa-brain text-white text-lg"></i>
+			</div>
+			<div>
+			  <span class="font-bold text-lg tracking-tight block text-emerald-400 font-sans">AKAL SEHAT</span>
+			  <span class="text-[10px] text-amber-400 font-medium tracking-widest uppercase block -mt-1">vs Nafsu, Sabar & Subur</span>
+			</div>
+		  </div>
+		</div>
+
+		<!-- Center: Desktop Menu Links -->
+		<nav class="hidden md:flex items-center gap-1">
+		  <button onclick="navigateTo('home')" id="nav-home" class="px-4 py-2 rounded-lg text-sm font-medium text-emerald-400 hover:bg-slate-800/50 transition">Beranda</button>
+		  <button onclick="navigateTo('search')" id="nav-search" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-emerald-400 hover:bg-slate-800/50 transition">Pencarian</button>
+		  <button onclick="navigateTo('youtube')" id="nav-youtube" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-emerald-400 hover:bg-slate-800/50 transition">YouTube</button>
+		</nav>
+
+		<!-- Right: Options Menu (Dropdown) -->
+		<div class="relative">
+		  <button onclick="toggleOptionsDropdown()" class="p-2 rounded-lg hover:bg-slate-800 text-slate-300 hover:text-white transition">
+			<i class="fa-solid fa-ellipsis-vertical text-xl"></i>
+		  </button>
+		  <!-- Dropdown Menu -->
+		  <div id="optionsDropdown" class="absolute right-0 mt-2 w-56 rounded-xl bg-slate-900 border border-slate-800 shadow-2xl py-2 hidden z-50">
+			<div class="px-4 py-2 border-b border-slate-800 text-xs text-slate-500 uppercase font-semibold">Pilihan Cepat</div>
+			<button onclick="scrollToSection('muhasabahSection'); toggleOptionsDropdown();" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-800 hover:text-emerald-400 flex items-center gap-3 transition">
+			  <i class="fa-solid fa-clipboard-check text-slate-400 w-5"></i>
+			  Mulai Tes Muhasabah
+			</button>
+			<button onclick="scrollToSection('audioSection'); toggleOptionsDropdown();" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-800 hover:text-emerald-400 flex items-center gap-3 transition">
+			  <i class="fa-solid fa-headphones text-slate-400 w-5"></i>
+			  Putar Lagu Pengantar
+			</button>
+			<div class="border-t border-slate-800 my-1"></div>
+			<button onclick="changeFontSize()" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-800 hover:text-emerald-400 flex items-center gap-3 transition">
+			  <i class="fa-solid fa-text-height text-slate-400 w-5"></i>
+			  Ubah Ukuran Teks
+			</button>
+			<button onclick="resetApp()" class="w-full text-left px-4 py-2.5 text-sm text-rose-400 hover:bg-rose-950/40 flex items-center gap-3 transition">
+			  <i class="fa-solid fa-rotate-left w-5"></i>
+			  Reset Semua Data
+			</button>
+		  </div>
+		</div>
+	  </div>
+    </header>
+
+    <!-- CONTENT WRAPPER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 lg:p-8 space-y-12">
+
+	  <!-- ================= SECTION 1: HOME PAGE ================= -->
+	  <div id="page-home" class="space-y-12 transition-all duration-300">
+
+		<!-- HERO BANNER -->
+		<section class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 border border-emerald-900/30 p-8 lg:p-16 shadow-2xl">
+		  <!-- Background decorative shapes -->
+		  <div class="absolute -top-12 -right-12 w-64 h-64 rounded-full bg-emerald-500/10 blur-3xl"></div>
+		  <div class="absolute -bottom-12 -left-12 w-64 h-64 rounded-full bg-amber-500/10 blur-3xl"></div>
+
+		  <div class="max-w-3xl relative z-10 space-y-6">
+			<span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+			  <i class="fa-solid fa-compass"></i> Navigasi Jiwa & Logika Islami
+			</span>
+			<h1 class="serif-title text-4xl lg:text-6xl font-bold text-white leading-tight">
+			  Menemukan <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">Kedamaian</span> dengan Mengendalikan <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">Keinginan</span>
+			</h1>
+			<p class="text-base lg:text-lg text-slate-300 leading-relaxed max-w-2xl">
+			  Sebuah portal filsafat spiritual yang mengupas tuntas keterkaitan erat antara konsep kesabaran yang subur dengan pertarungan akal sehat melawan bisikan nafsu dalam kehidupan modern.
+			</p>
+			<div class="flex flex-wrap gap-4 pt-2">
+			  <button onclick="scrollToSection('chatDialogSection')" class="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-semibold shadow-lg shadow-emerald-500/20 transition flex items-center gap-2">
+				<i class="fa-solid fa-scroll"></i> Baca Arsip Percakapan
+			  </button>
+			  <button onclick="scrollToSection('muhasabahSection')" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 font-semibold border border-slate-700 transition flex items-center gap-2">
+				<i class="fa-solid fa-gamepad"></i> Mulai Tes Muhasabah
+			  </button>
+			</div>
+		  </div>
+		</section>
+
+		<!-- VISUAL GALLERY (SABAR SUBUR & AKAL NAFSU) -->
+		<section id="visualGallery" class="space-y-6 scroll-mt-24">
+		  <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+			<div>
+			  <h2 class="serif-title text-3xl font-bold text-white">Galeri Filosofi Visual</h2>
+			  <p class="text-slate-400 text-sm mt-1">Eksplorasi representasi artistik dari konsep Sabar, Subur, Akal Sehat, dan Nafsu.</p>
+			</div>
+			<div class="flex gap-2">
+			  <span class="px-3 py-1 rounded-md text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-900/50">2 Visual</span>
+			  <span class="px-3 py-1 rounded-md text-xs font-semibold bg-slate-800 text-slate-300">Interaktif</span>
+			</div>
+		  </div>
+
+		  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+			<!-- Card 1: Sabar dan Subur -->
+			<div class="group bg-slate-900/60 border border-slate-800 rounded-2xl overflow-hidden hover:border-emerald-500/40 transition-all duration-300 flex flex-col shadow-lg">
+			  <div class="relative overflow-hidden aspect-video bg-slate-950">
+				<!-- Image container with hover zoom -->
+				<img src="sabar-dan-subur.png" alt="Sabar dan Subur" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null; this.src='https://placehold.co/800x450/022c22/ffffff?text=Sabar+dan+Subur+Image';">
+				<div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-80"></div>
+				<div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+				  <span class="px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 backdrop-blur-sm">Filsafat Sabar & Subur</span>
+				</div>
+			  </div>
+			  <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+				<div class="space-y-2">
+				  <h3 class="text-xl font-bold text-white group-hover:text-emerald-400 transition">Menanam Sabar, Memanen Subur</h3>
+				  <p class="text-sm text-slate-300 leading-relaxed">
+					Visualisasi seorang kakek menyiram benih harapan dengan sabar di sisi kiri, dan seorang nenek yang bahagia memanen hasil alam yang melimpah dan subur di sisi kanan. Mengajarkan bahwa kesabaran bukanlah sikap pasif, melainkan kerja keras yang konsisten.
+				  </p>
+				</div>
+				<div class="pt-4 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400">
+				  <span><i class="fa-regular fa-clock mr-1"></i> Proses & Ketekunan</span>
+				  <span class="text-emerald-400">Aktif & Produktif</span>
+				</div>
+			  </div>
+			</div>
+
+			<!-- Card 2: Akal Sehat vs Nafsu -->
+			<div class="group bg-slate-900/60 border border-slate-800 rounded-2xl overflow-hidden hover:border-amber-500/40 transition-all duration-300 flex flex-col shadow-lg">
+			  <div class="relative overflow-hidden aspect-video bg-slate-950">
+				<!-- Image container with hover zoom -->
+				<img src="Gemini_Generated_Image_8hcrns8hcrns8hcr.png" alt="Akal Sehat vs Nafsu" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null; this.src='https://placehold.co/800x450/431407/ffffff?text=Akal+Sehat+vs+Nafsu+Image';">
+				<div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-80"></div>
+				<div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+				  <span class="px-3 py-1 rounded-lg text-xs font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30 backdrop-blur-sm">Tarik Tambang Jiwa</span>
+				</div>
+			  </div>
+			  <div class="p-6 flex-1 flex flex-col justify-between space-y-4">
+				<div class="space-y-2">
+				  <h3 class="text-xl font-bold text-white group-hover:text-amber-400 transition">Pergulatan Akal Sehat dan Nafsu</h3>
+				  <p class="text-sm text-slate-300 leading-relaxed">
+					Pertarungan sengit di mana seorang pemuda ditarik oleh dua kekuatan. Di kiri, sosok orang tua bijaksana (Akal Sehat) dengan simbol buku, cahaya, dan kompas. Di kanan, iblis bayangan hitam membara (Nafsu) yang memikat dengan mobil mewah, belanjaan, gadget, dan kesenangan duniawi yang fana.
+				  </p>
+				</div>
+				<div class="pt-4 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400">
+				  <span><i class="fa-solid fa-scale-balanced mr-1"></i> Kontrol Diri</span>
+				  <span class="text-amber-400">Ujian Kehidupan</span>
+				</div>
+			  </div>
+			</div>
+		  </div>
+		</section>
+
+		<!-- CHAT DIALOG SECTION (All past conversations) -->
+		<section id="chatDialogSection" class="scroll-mt-24 space-y-6">
+		  <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+			<div>
+			  <h2 class="serif-title text-3xl font-bold text-white">Arsip Dialog Kebijaksanaan</h2>
+			  <p class="text-slate-400 text-sm mt-1">Naskah lengkap percakapan antara User dan Asisten Kecerdasan tentang dualitas kehidupan.</p>
+			</div>
+			<div class="flex gap-2">
+			  <button onclick="expandAllDialogs()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition">Buka Semua</button>
+			  <button onclick="collapseAllDialogs()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition">Tutup Semua</button>
+			</div>
+		  </div>
+
+		  <!-- Interactive Accordion Dialogues -->
+		  <div class="space-y-4 font-sans">
+			<!-- Dialogue Block 1: Sabar & Subur -->
+			<div class="bg-slate-900/40 border border-slate-800 rounded-2xl overflow-hidden transition-all duration-200">
+			  <button onclick="toggleAccordion('dialogue1')" class="w-full px-6 py-4 flex items-center justify-between hover:bg-slate-850 transition text-left">
+				<div class="flex items-center gap-3">
+				  <div class="w-8 h-8 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+					<i class="fa-solid fa-seedling"></i>
+				  </div>
+				  <div>
+					<h4 class="font-bold text-white">Esai: Menanam Sabar, Memanen Subur</h4>
+					<p class="text-xs text-slate-400">Filosofi hidup aktif dan analogi berkebun</p>
+				  </div>
+				</div>
+				<i id="icon-dialogue1" class="fa-solid fa-chevron-down text-slate-400 transition-transform"></i>
+			  </button>
+			  <div id="content-dialogue1" class="hidden px-6 pb-6 pt-2 border-t border-slate-800 bg-slate-950/40 space-y-4 text-slate-300 text-sm leading-relaxed">
+				<h5 class="text-emerald-400 font-semibold text-base">Filosofi Hidup dari Sepotong Tanah</h5>
+				<p>Proses alam menumbuhkan pohon rindang dari benih adalah cerminan dari konsep sabar dan subur. Banyak manusia menginginkan hasil instan, namun melupakan pentingnya waktu.</p>
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-2">
+				  <div class="bg-slate-900/60 p-4 rounded-xl border border-emerald-950">
+					<strong class="text-emerald-400 block mb-1">1. Sabar adalah Proses Aktif</strong>
+					Sama seperti petani yang menyiapkan tanah, mencangkul, menyiram, serta membasmi gulma dan hama setiap hari. Ini membutuhkan konsistensi tanpa putus asa sekalipun hasilnya belum terlihat.
+				  </div>
+				  <div class="bg-slate-900/60 p-4 rounded-xl border border-teal-950">
+					<strong class="text-teal-400 block mb-1">2. Subur adalah Dampak & Berkah</strong>
+					Ketika tiba waktunya, kesabaran melahirkan kesuburan: kualitas hidup kokoh bagai pohon berakar kuat dan menebar manfaat luas bagi makhluk hidup di sekitarnya.
+				  </div>
+				</div>
+				<div class="bg-emerald-950/30 border border-emerald-900/50 p-4 rounded-xl text-xs text-emerald-200 italic">
+				  "Kesabaran yang sejati tidak diukur dari seberapa lama kita menunggu, melainkan dari seberapa baik sikap dan usaha kita selama masa penantian tersebut."
+				</div>
+			  </div>
+			</div>
+
+			<!-- Dialogue Block 2: Akal Sehat & Nafsu -->
+			<div class="bg-slate-900/40 border border-slate-800 rounded-2xl overflow-hidden transition-all duration-200">
+			  <button onclick="toggleAccordion('dialogue2')" class="w-full px-6 py-4 flex items-center justify-between hover:bg-slate-850 transition text-left">
+				<div class="flex items-center gap-3">
+				  <div class="w-8 h-8 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center">
+					<i class="fa-solid fa-scale-balanced"></i>
+				  </div>
+				  <div>
+					<h4 class="font-bold text-white">Esai: Akal Sehat & Nafsu dalam Islam</h4>
+					<p class="text-xs text-slate-400">Kompas Spiritual vs Motor Penggerak Keinginan</p>
+				  </div>
+				</div>
+				<i id="icon-dialogue2" class="fa-solid fa-chevron-down text-slate-400 transition-transform"></i>
+			  </button>
+			  <div id="content-dialogue2" class="hidden px-6 pb-6 pt-2 border-t border-slate-800 bg-slate-950/40 space-y-4 text-slate-300 text-sm leading-relaxed">
+				<h5 class="text-blue-400 font-semibold text-base">Pergulatan Jiwa: Siapa yang Menjadi Pemimpin?</h5>
+				<p>Akal sehat berasal dari kata bahasa Arab <em>'aqala</em> yang artinya mengikat atau menahan. Sebaliknya, nafsu adalah fitrah motor penggerak emosi manusia.</p>
+
+				<div class="bg-slate-900/80 rounded-xl overflow-hidden border border-slate-800 my-4">
+				  <table class="w-full text-left text-xs text-slate-300">
+					<thead class="bg-slate-950 text-emerald-400">
+					  <tr>
+						<th class="p-3">Karakteristik</th>
+						<th class="p-3">Akal Sehat 🧠</th>
+						<th class="p-3">Nafsu (Hawa) 🌊</th>
+					  </tr>
+					</thead>
+					<tbody class="divide-y divide-slate-800">
+					  <tr>
+						<td class="p-3 font-semibold text-white">Fungsi</td>
+						<td class="p-3">Sebagai hakim / pengemudi</td>
+						<td class="p-3">Sebagai mesin penggerak</td>
+					  </tr>
+					  <tr>
+						<td class="p-3 font-semibold text-white">Visi</td>
+						<td class="p-3">Jangka panjang & Keselamatan Akhirat</td>
+						<td class="p-3">Kesenangan instan saat ini juga</td>
+					  </tr>
+					</tbody>
+				  </table>
+				</div>
+
+				<p class="font-semibold text-slate-200">Tiga Tingkatan Nafsu dalam Al-Qur'an:</p>
+				<ul class="list-disc pl-5 space-y-1 text-xs">
+				  <li><strong>Nafsu Ammarah:</strong> Jiwa liar yang terus-menerus mendesak kepada kejahatan dan kepuasan fana.</li>
+				  <li><strong>Nafsu Lawwamah:</strong> Jiwa yang mulai sadar, menyesal, dan mencela diri sendiri setelah berbuat dosa.</li>
+				  <li><strong>Nafsu Mutmainnah:</strong> Jiwa tenang yang damai karena tunduk sepenuhnya kepada syariat Allah.</li>
+				</ul>
+			  </div>
+			</div>
+
+			<!-- Dialogue Block 3: Dilema Sosial & Keuangan -->
+			<div class="bg-slate-900/40 border border-slate-800 rounded-2xl overflow-hidden transition-all duration-200">
+			  <button onclick="toggleAccordion('dialogue3')" class="w-full px-6 py-4 flex items-center justify-between hover:bg-slate-850 transition text-left">
+				<div class="flex items-center gap-3">
+				  <div class="w-8 h-8 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center">
+					<i class="fa-solid fa-mobile-screen-button"></i>
+				  </div>
+				  <div>
+					<h4 class="font-bold text-white">Studi Kasus: Dunia Modern</h4>
+					<p class="text-xs text-slate-400">Tantangan Notifikasi HP & Pengaturan Keuangan</p>
+				  </div>
+				</div>
+				<i id="icon-dialogue3" class="fa-solid fa-chevron-down text-slate-400 transition-transform"></i>
+			  </button>
+			  <div id="content-dialogue3" class="hidden px-6 pb-6 pt-2 border-t border-slate-800 bg-slate-950/40 space-y-4 text-slate-300 text-sm leading-relaxed">
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+				  <div class="space-y-2">
+					<h5 class="text-amber-400 font-semibold"><i class="fa-solid fa-bell mr-2"></i>Dilema Layar Kaca</h5>
+					<p class="text-xs">
+					  Algoritma modern diprogram untuk merangsang kesenangan instan (pujian/Likes). Nafsu menuntut kita membuka notifikasi segera saat HP berbunyi, sedangkan akal sehat berjuang menahan diri demi prioritas tugas utama kita.
+					</p>
+				  </div>
+				  <div class="space-y-2">
+					<h5 class="text-emerald-400 font-semibold"><i class="fa-solid fa-credit-card mr-2"></i>Dilema Keuangan</h5>
+					<p class="text-xs">
+					  Keinginan belanja impulsif (*impulsive buying*) akibat tawaran tren sering kali bertentangan dengan kebutuhan jangka panjang. Mendahulukan melunasi tagihan bulanan adalah simbol kematangan akal sehat atas hawa nafsu.
+					</p>
+				  </div>
+				</div>
+			  </div>
+			</div>
+
+			<!-- Dialogue Block 4: Penguatan Akal -->
+			<div class="bg-slate-900/40 border border-slate-800 rounded-2xl overflow-hidden transition-all duration-200">
+			  <button onclick="toggleAccordion('dialogue4')" class="w-full px-6 py-4 flex items-center justify-between hover:bg-slate-850 transition text-left">
+				<div class="flex items-center gap-3">
+				  <div class="w-8 h-8 rounded-full bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+					<i class="fa-solid fa-shield-halved"></i>
+				  </div>
+				  <div>
+					<h4 class="font-bold text-white">Metode Penguatan & Perisai Akal</h4>
+					<p class="text-xs text-slate-400">Teknik Islam melatih pikiran untuk mengontrol emosi</p>
+				  </div>
+				</div>
+				<i id="icon-dialogue4" class="fa-solid fa-chevron-down text-slate-400 transition-transform"></i>
+			  </button>
+			  <div id="content-dialogue4" class="hidden px-6 pb-6 pt-2 border-t border-slate-800 bg-slate-950/40 space-y-4 text-slate-300 text-sm leading-relaxed">
+				<p>Ada tiga pilar utama yang diajarkan Islam untuk memperkuat stamina akal sehat dalam meredam nafsu:</p>
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+				  <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-1">
+					<span class="text-emerald-400 font-bold text-sm block">1. Puasa (Shaum)</span>
+					<p class="text-xs text-slate-400">Melatih fisik menolak kenikmatan dasar agar jiwa mengeras tangguh terhadap godaan lain.</p>
+				  </div>
+				  <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-1">
+					<span class="text-amber-400 font-bold text-sm block">2. Muhasabah (Waspada)</span>
+					<p class="text-xs text-slate-400">Secara berkala mengaudit niat dan tindakan harian sebelum tidur demi menajamkan nurani.</p>
+				  </div>
+				  <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl space-y-1">
+					<span class="text-blue-400 font-bold text-sm block">3. Mengingat Akhirat</span>
+					<p class="text-xs text-slate-400">Meruntuhkan ilusi kesenangan instan dunia dengan menyadari semua hal ada hisabnya.</p>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		  </div>
+		</section>
+
+		<!-- MUHASABAH GAME / SELF ASSESSMENT TOOL -->
+		<section id="muhasabahSection" class="scroll-mt-24 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 border border-slate-800 rounded-3xl p-6 lg:p-10 space-y-8 shadow-2xl relative">
+		  <div class="absolute top-0 right-0 p-8 opacity-5 text-8xl text-emerald-500 pointer-events-none">
+			<i class="fa-solid fa-scale-balanced"></i>
+		  </div>
+
+		  <div class="max-w-2xl space-y-2">
+			<h2 class="serif-title text-3xl font-bold text-white">Alat Muhasabah Interaktif</h2>
+			<p class="text-slate-400 text-sm">Uji persentase kekuatan Akal Sehat vs Nafsu Anda berdasarkan skenario pengambilan keputusan sehari-hari.</p>
+		  </div>
+
+		  <!-- Quiz Area -->
+		  <div id="quizContainer" class="space-y-6">
+			<!-- Progress Bar -->
+			<div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+			  <div id="quizProgress" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-0 transition-all duration-300"></div>
+			</div>
+
+			<!-- Question Block -->
+			<div id="questionBlock" class="space-y-4">
+			  <span id="questionNumber" class="text-xs font-semibold text-emerald-400 tracking-wider block uppercase">Pertanyaan 1 dari 4</span>
+			  <h3 id="questionText" class="text-lg lg:text-xl font-bold text-white">Bagaimana Anda bereaksi saat sedang fokus bekerja dan ada bunyi notifikasi media sosial masuk ke ponsel Anda?</h3>
+
+			  <div class="grid grid-cols-1 gap-3 pt-2" id="answersContainer">
+				<!-- Button answers will be injected here dynamically by JS -->
+			  </div>
+			</div>
+		  </div>
+
+		  <!-- Result Area (Hidden initially) -->
+		  <div id="quizResultContainer" class="hidden bg-slate-900/80 p-6 rounded-2xl border border-slate-800 text-center space-y-6">
+			<h3 class="text-2xl font-bold text-white">Hasil Analisis Muhasabah</h3>
+
+			<div class="flex justify-center items-center gap-8 py-4">
+			  <div class="text-center">
+				<span class="block text-4xl font-extrabold text-emerald-400" id="akalScoreText">0%</span>
+				<span class="text-xs text-slate-400">Akal Sehat</span>
+			  </div>
+			  <div class="text-slate-600 text-3xl font-light">vs</div>
+			  <div class="text-center">
+				<span class="block text-4xl font-extrabold text-amber-500" id="nafsuScoreText">0%</span>
+				<span class="text-xs text-slate-400">Hawa Nafsu</span>
+			  </div>
+			</div>
+
+			<div class="max-w-md mx-auto">
+			  <div class="w-full bg-slate-800 rounded-full h-3 mb-4 overflow-hidden flex">
+				<div id="barAkal" class="bg-emerald-500 h-full transition-all duration-500" style="width: 50%;"></div>
+				<div id="barNafsu" class="bg-amber-500 h-full transition-all duration-500" style="width: 50%;"></div>
+			  </div>
+			  <p id="analysisOutputText" class="text-sm text-slate-300 leading-relaxed">
+				Rekomendasi analisis personal Anda akan muncul di sini berdasarkan pilihan jawaban Anda.
+			  </p>
+			</div>
+
+			<div class="pt-4 flex justify-center gap-4">
+			  <button onclick="restartQuiz()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition">
+				Ulangi Tes
+			  </button>
+			  <button onclick="scrollToSection('audioSection')" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition">
+				Putar Lagu Refleksi
+			  </button>
+			</div>
+		  </div>
+		</section>
+
+		<!-- INTEGRATED AUDIO PLAYER (Duri di Kebun) -->
+		<section id="audioSection" class="scroll-mt-24 bg-gradient-to-tr from-slate-950 via-slate-900 to-rose-950/20 border border-rose-950/20 rounded-3xl p-6 lg:p-8 space-y-6">
+		  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+			<div class="space-y-1">
+			  <span class="px-2.5 py-1 rounded-md text-[10px] font-bold tracking-widest bg-rose-500/10 border border-rose-500/20 text-rose-400 uppercase">Simulasi Musik</span>
+			  <h2 class="serif-title text-2xl font-bold text-white">Hymn Refleksi: "Duri di Kebun"</h2>
+			  <p class="text-slate-400 text-xs">Kombinasi Neo-Soul lembut (Sabar & Subur) yang perlahan runtuh menjadi atmosfer Horor (Nafsu).</p>
+			</div>
+			<div class="flex items-center gap-3 bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-800">
+			  <div id="musicStatusDot" class="w-2.5 h-2.5 rounded-full bg-slate-600 animate-pulse"></div>
+			  <span id="musicStatusText" class="text-xs text-slate-400">Musik Berhenti</span>
+			</div>
+		  </div>
+
+		  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+			<!-- Left: Control & Waveform simulation -->
+			<div class="lg:col-span-5 bg-slate-950/60 border border-slate-800/80 p-6 rounded-2xl flex flex-col items-center justify-center text-center space-y-4">
+			  <div class="relative w-24 h-24 rounded-full bg-gradient-to-tr from-emerald-500 to-rose-600 p-1 animate-spin-slow">
+				<div class="w-full h-full rounded-full bg-slate-900 flex items-center justify-center">
+				  <i id="discIcon" class="fa-solid fa-record-vinyl text-4xl text-slate-400"></i>
+				</div>
+			  </div>
+			  <div>
+				<h4 class="font-bold text-white text-base">Duri di Kebun</h4>
+				<p class="text-xs text-slate-500">Sisi Lain Pagi • Eksperimental</p>
+			  </div>
+
+			  <!-- Timeline Slider -->
+			  <div class="w-full space-y-1">
+				<input type="range" id="audioTimeline" min="0" max="25" value="0" class="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500" oninput="seekAudio(this.value)">
+				<div class="flex justify-between text-[10px] text-slate-500">
+				  <span id="timeCurrent">0:00</span>
+				  <span id="timeTotal">0:25</span>
+				</div>
+			  </div>
+
+			  <!-- Player Buttons -->
+			  <div class="flex items-center gap-4">
+				<button onclick="prevTrack()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-backward-step text-lg"></i></button>
+				<button onclick="togglePlayMusic()" id="playBtn" class="w-12 h-12 rounded-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 flex items-center justify-center shadow-lg transition-all transform hover:scale-105">
+				  <i class="fa-solid fa-play text-xl ml-1"></i>
+				</button>
+				<button onclick="nextTrack()" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-forward-step text-lg"></i></button>
+			  </div>
+			</div>
+
+			<!-- Right: Dynamic Lyrics Monitor -->
+			<div class="lg:col-span-7 bg-slate-950/40 p-6 rounded-2xl border border-slate-800/60 min-h-[220px] flex flex-col justify-between">
+			  <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 border-b border-slate-800 pb-2 flex justify-between">
+				<span>Lirik Sinkronisasi</span>
+				<span id="genreIndicator" class="text-emerald-400 transition-colors">Neo-Soul Lembut</span>
+			  </div>
+			  <div class="space-y-4 py-2" id="lyricsBox">
+				<!-- Animated active lyrics -->
+				<p id="lyricLine1" class="text-base font-semibold text-slate-400 transition-all duration-300">Menanam benih di kebun hati,</p>
+				<p id="lyricLine2" class="text-sm text-slate-600 transition-all duration-300">Sirami sabar, tunas pun subur.</p>
+				<p id="lyricLine3" class="text-sm text-slate-600 transition-all duration-300">Akal membimbing, menuntun pagi...</p>
+			  </div>
+			  <div class="text-[10px] text-slate-500 italic mt-4 border-t border-slate-800/60 pt-2">
+				*Transisi horor akan aktif otomatis setelah detik ke-13.
+			  </div>
+			</div>
+		  </div>
+		</section>
+	  </div>
+
+
+	  <!-- ================= SECTION 2: SEARCH PAGE ================= -->
+	  <div id="page-search" class="hidden space-y-8 transition-all duration-300">
+		<div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 lg:p-8 space-y-6">
+		  <div class="space-y-2">
+			<h2 class="serif-title text-3xl font-bold text-white">Cari Kebijaksanaan</h2>
+			<p class="text-slate-400 text-sm">Temukan kutipan, dalil, dan petunjuk praktis tentang cara menyeimbangkan akal sehat serta bersikap sabar.</p>
+		  </div>
+
+		  <!-- Search Inputs -->
+		  <div class="flex flex-col md:flex-row gap-3">
+			<div class="relative flex-1">
+			  <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+			  <input type="text" id="wisdomSearchInput" onkeyup="filterWisdom()" placeholder="Cari misal: Sabar, Nafsu, Puasa, Akal..." class="w-full pl-11 pr-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-emerald-500 transition">
+			</div>
+			<select id="categorySelector" onchange="filterWisdom()" class="px-4 py-3 bg-slate-950 border border-slate-800 rounded-xl text-slate-300 focus:outline-none focus:border-emerald-500 transition">
+			  <option value="all">Semua Kategori</option>
+			  <option value="sabar">Sabar & Subur</option>
+			  <option value="akal">Akal Sehat</option>
+			  <option value="nafsu">Mengontrol Nafsu</option>
+			</select>
+		  </div>
+
+		  <!-- Live Results Area -->
+		  <div id="wisdomResults" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+			<!-- Dynamic quotes injected here -->
+		  </div>
+		</div>
+	  </div>
+
+
+	  <!-- ================= SECTION 3: YOUTUBE HUB ================= -->
+	  <div id="page-youtube" class="hidden space-y-8 transition-all duration-300">
+		<div class="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 lg:p-8 space-y-6">
+		  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+			<div class="space-y-1">
+			  <h2 class="serif-title text-3xl font-bold text-white">Kanal Inspirasi Islami & Logika</h2>
+			  <p class="text-slate-400 text-sm">Tonton ceramah inspiratif dan kajian mendalam untuk meningkatkan daya tahan pikiran.</p>
+			</div>
+			<span class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-center gap-2">
+			  <i class="fa-brands fa-youtube"></i> 4 Rekomendasi Video
+			</span>
+		  </div>
+
+		  <!-- Simulated YouTube Player Container -->
+		  <div id="simulatedPlayer" class="hidden bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden relative aspect-video shadow-2xl">
+			<button onclick="closeVideoPlayer()" class="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-slate-900/80 text-white hover:bg-slate-800 flex items-center justify-center transition">
+			  <i class="fa-solid fa-xmark text-lg"></i>
+			</button>
+			<!-- Simulated player video screen -->
+			<div class="absolute inset-0 bg-cover bg-center flex items-center justify-center" id="playerBg">
+			  <div class="absolute inset-0 bg-black/75"></div>
+			  <div class="relative z-10 text-center space-y-4 px-4 max-w-lg">
+				<div class="w-16 h-16 rounded-full bg-rose-600 mx-auto flex items-center justify-center animate-pulse cursor-pointer">
+				  <i class="fa-solid fa-play text-2xl text-white ml-1"></i>
+				</div>
+				<h4 class="text-lg font-bold text-white" id="playerTitle">Memutar Judul Video</h4>
+				<p class="text-xs text-slate-400">Mensimulasikan pemutaran konten multimedia berkualitas tinggi untuk meningkatkan ilmu spiritual Anda.</p>
+			  </div>
+			</div>
+		  </div>
+
+		  <!-- Grid Video Recommendations -->
+		  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+			<!-- Video Card 1 -->
+			<div onclick="playSimulatedVideo('Seni Mengendalikan Amarah dan Hawa Nafsu', 'https://placehold.co/800x450/111827/ffffff?text=Kajian+Sabar+Akal')" class="cursor-pointer group bg-slate-950 border border-slate-800 rounded-xl overflow-hidden hover:border-rose-500/40 transition">
+			  <div class="relative aspect-video bg-slate-900 overflow-hidden">
+				<img src="https://placehold.co/400x225/111827/ffffff?text=Kandungan+Nafsu+vs+Akal" alt="Video Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition">
+				<div class="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/20 transition">
+				  <i class="fa-solid fa-play text-3xl text-white opacity-80 group-hover:opacity-100 transition"></i>
+				</div>
+				<span class="absolute bottom-2 right-2 text-[10px] bg-black/80 px-1.5 py-0.5 rounded text-white font-medium">12:35</span>
+			  </div>
+			  <div class="p-4 space-y-1">
+				<h4 class="font-bold text-slate-200 text-sm line-clamp-2 group-hover:text-rose-400 transition">Seni Mengendalikan Amarah dan Hawa Nafsu di Era Modern</h4>
+				<p class="text-[11px] text-slate-500">Ustadz Hikmah Wijaya • 2.4K views</p>
+			  </div>
+			</div>
+
+			<!-- Video Card 2 -->
+			<div onclick="playSimulatedVideo('Mengapa Sabar Bisa Menjadikan Anda Subur?', 'https://placehold.co/800x450/064e3b/ffffff?text=Mengapa+Sabar+Menyuburkan')" class="cursor-pointer group bg-slate-950 border border-slate-800 rounded-xl overflow-hidden hover:border-rose-500/40 transition">
+			  <div class="relative aspect-video bg-slate-900 overflow-hidden">
+				<img src="https://placehold.co/400x225/064e3b/ffffff?text=Keajaiban+Sikap+Sabar" alt="Video Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition">
+				<div class="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/20 transition">
+				  <i class="fa-solid fa-play text-3xl text-white opacity-80 group-hover:opacity-100 transition"></i>
+				</div>
+				<span class="absolute bottom-2 right-2 text-[10px] bg-black/80 px-1.5 py-0.5 rounded text-white font-medium">18:40</span>
+			  </div>
+			  <div class="p-4 space-y-1">
+				<h4 class="font-bold text-slate-200 text-sm line-clamp-2 group-hover:text-rose-400 transition">Keajaiban Filosofis: Mengapa Sabar Bisa Menjadikan Anda Subur?</h4>
+				<p class="text-[11px] text-slate-500">Dr. Syarifudin Al-Rasyid • 8.1K views</p>
+			  </div>
+			</div>
+
+			<!-- Video Card 3 -->
+			<div onclick="playSimulatedVideo('Tips Muhasabah Diri Sebelum Tidur', 'https://placehold.co/800x450/451a03/ffffff?text=Tips+Muhasabah')" class="cursor-pointer group bg-slate-950 border border-slate-800 rounded-xl overflow-hidden hover:border-rose-500/40 transition">
+			  <div class="relative aspect-video bg-slate-900 overflow-hidden">
+				<img src="https://placehold.co/400x225/451a03/ffffff?text=Latihan+Audit+Jiwa" alt="Video Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition">
+				<div class="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/20 transition">
+				  <i class="fa-solid fa-play text-3xl text-white opacity-80 group-hover:opacity-100 transition"></i>
+				</div>
+				<span class="absolute bottom-2 right-2 text-[10px] bg-black/80 px-1.5 py-0.5 rounded text-white font-medium">08:15</span>
+			  </div>
+			  <div class="p-4 space-y-1">
+				<h4 class="font-bold text-slate-200 text-sm line-clamp-2 group-hover:text-rose-400 transition">Praktik Muhasabah: Tips Audit Jiwa Sebelum Tidur</h4>
+				<p class="text-[11px] text-slate-500">Ustadzah Aisyah Rahma • 15K views</p>
+			  </div>
+			</div>
+
+			<!-- Video Card 4 -->
+			<div onclick="playSimulatedVideo('Bahaya Algoritma Media Sosial Bagi Iman', 'https://placehold.co/800x450/1e1b4b/ffffff?text=Bahaya+Dilema+Digital')" class="cursor-pointer group bg-slate-950 border border-slate-800 rounded-xl overflow-hidden hover:border-rose-500/40 transition">
+			  <div class="relative aspect-video bg-slate-900 overflow-hidden">
+				<img src="https://placehold.co/400x225/1e1b4b/ffffff?text=Digital+vs+Iman" alt="Video Thumbnail" class="w-full h-full object-cover group-hover:scale-105 transition">
+				<div class="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/20 transition">
+				  <i class="fa-solid fa-play text-3xl text-white opacity-80 group-hover:opacity-100 transition"></i>
+				</div>
+				<span class="absolute bottom-2 right-2 text-[10px] bg-black/80 px-1.5 py-0.5 rounded text-white font-medium">22:10</span>
+			  </div>
+			  <div class="p-4 space-y-1">
+				<h4 class="font-bold text-slate-200 text-sm line-clamp-2 group-hover:text-rose-400 transition">Melawan Candu Digital: Menyelamatkan Akal Sehat Anak Muda</h4>
+				<p class="text-[11px] text-slate-500">Filsuf Digital Indon • 44K views</p>
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-950 border-t border-slate-900 mt-12 py-8 px-4">
+	  <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+		<div class="flex items-center gap-3">
+		  <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-500 to-amber-500 flex items-center justify-center shadow-lg">
+			<i class="fa-solid fa-brain text-white text-xs"></i>
+		  </div>
+		  <span class="font-bold text-slate-300 font-sans tracking-wide">PORTAL AKAL SEHAT</span>
+		</div>
+		<div class="flex gap-6 text-sm text-slate-500">
+		  <button onclick="scrollToSection('visualGallery')" class="hover:text-slate-300 transition">Galeri</button>
+		  <button onclick="scrollToSection('chatDialogSection')" class="hover:text-slate-300 transition">Arsip Dialog</button>
+		  <button onclick="scrollToSection('muhasabahSection')" class="hover:text-slate-300 transition">Muhasabah</button>
+		</div>
+		<p class="text-xs text-slate-600">&copy; 2026 Portal Akal Sehat. Semua Hak Cipta Dilindungi.</p>
+	  </div>
+    </footer>
+
+    <!-- INTERACTIVE JAVASCRIPT CODE -->
+<script>
+        // Global State & Data
+        let activePage = 'home';
+        let currentFontSize = 'md'; // sm, md, lg
+        
+        // --- DATA WISDOM UNTUK PENCARIAN ---
+        const wisdomData = [
+            {
+                title: "Hakikat Sabar Aktif",
+                text: "Sabar bukanlah pasif menunggu nasib, melainkan proses giat menanam kebaikan, merawat harapan, dan konsisten berusaha meski belum tampak hasil di depan mata.",
+                category: "sabar",
+                source: "Filosofi Tunas Subur"
+            },
+            {
+                title: "Buah Manis Kesuburan",
+                text: "Ketekunan melahirkan kesuburan jiwa yang tidak hanya menghasilkan kedamaian batin, namun juga menebarkan manfaat bagi lingkungan sekeliling kita.",
+                category: "sabar",
+                source: "Analogi Kebun Hati"
+            },
+            {
+                title: "Akal sebagai Penambat Keinginan",
+                text: "Dalam bahasa Arab, 'Akal' bermakna tali pengikat. Ia bertugas mengikat nafsu liar manusia agar tidak bertindak ekstrem melompati batasan moral syariat.",
+                category: "akal",
+                source: "Esai Jiwa Islami"
+            },
+            {
+                title: "Sifat Nafsu Ammarah",
+                text: "Dorongan naluriah primitif manusia yang condong pada kepuasan instan, mengutamakan syahwat dan melupakan masa depan logis.",
+                category: "nafsu",
+                source: "Tingkatan Jiwa Al-Qur'an"
+            },
+            {
+                title: "Definisi Nafsu Mutmainnah",
+                text: "Kondisi jiwa tertinggi yang tenang, selaras, dan tunduk sepenuhnya di bawah tuntunan moral serta cahaya kebenaran ilahi.",
+                category: "nafsu",
+                source: "Ketenangan Spiritual"
+            },
+            {
+                title: "Pilar Utama Penguat Akal",
+                text: "Islam menggariskan latihan spiritual berkala seperti ibadah puasa (shaum), audit diri (muhasabah), serta selalu mengingat akhirat sebagai perisai akal.",
+                category: "akal",
+                source: "Metode Sunnah"
+            }
+        ];
+
+        // --- DATA QUIZ MUHASABAH ---
+        const quizData = [
+            {
+                question: "Bagaimana reaksi pertama Anda saat sedang fokus bekerja lalu ponsel pintar Anda berbunyi menampilkan notifikasi media sosial?",
+                answers: [
+                    { text: "Langsung membuka HP karena tidak tahan rasa penasarannya (Fomo).", scoreAkal: 0, scoreNafsu: 100 },
+                    { text: "Berpikir sejenak, lalu memutuskan menyelesaikannya setelah urusan kerja beres.", scoreAkal: 100, scoreNafsu: 0 },
+                    { text: "Kadang buka kadang tahan tergantung kondisi suasana hati saya saat itu.", scoreAkal: 50, scoreNafsu: 50 }
+                ]
+            },
+            {
+                question: "Bagaimana Anda membelanjakan sisa tabungan atau uang saku Anda di akhir bulan?",
+                answers: [
+                    { text: "Membeli barang hobi atau tren kekinian demi menyegarkan suasana pikiran.", scoreAkal: 20, scoreNafsu: 80 },
+                    { text: "Mendahulukan membayar tagihan mendesak dan mengalokasikannya ke dana cadangan.", scoreAkal: 100, scoreNafsu: 0 },
+                    { text: "Membagi dua secara seimbang untuk tabungan dan sebagian untuk kesenangan pribadi.", scoreAkal: 70, scoreNafsu: 30 }
+                ]
+            },
+            {
+                question: "Seberapa sering Anda melakukan audit introspeksi diri (muhasabah) atas perilaku salah Anda dalam sehari?",
+                answers: [
+                    { text: "Hampir tidak pernah, saya mengalir begitu saja seadanya hidup.", scoreAkal: 10, scoreNafsu: 90 },
+                    { text: "Rutin melakukan evaluasi atau refleksi tenang di keheningan malam sebelum tidur.", scoreAkal: 100, scoreNafsu: 0 },
+                    { text: "Hanya jika saya baru saja melakukan kesalahan besar atau ditimpa musibah.", scoreAkal: 50, scoreNafsu: 50 }
+                ]
+            },
+            {
+                question: "Ketika melihat orang lain memamerkan keberhasilan mewah di media sosial, apa yang pertama kali tebersit dalam pikiran Anda?",
+                answers: [
+                    { text: "Merasa dengki, rendah diri, atau terdorong membeli sesuatu agar terlihat setara.", scoreAkal: 0, scoreNafsu: 100 },
+                    { text: "Mendoakan keberkahannya, dan menasihati diri agar selalu bersyukur pada takdir diri.", scoreAkal: 100, scoreNafsu: 0 },
+                    { text: "Termotivasi bekerja lebih keras dengan meniru gaya hidup konsumtifnya.", scoreAkal: 40, scoreNafsu: 60 }
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let totalAkalScore = 0;
+        let totalNafsuScore = 0;
+
+        // --- AUDIO SIMULATION STATE ---
+        let audioPlaying = false;
+        let audioTimer = null;
+        let audioCurrentTime = 0;
+        const audioDuration = 25; // 25 detik total track
+
+        // Lyrics data matching the audio seconds
+        const lyricsTimeline = [
+            { time: 0, line1: "Menanam benih di kebun hati,", line2: "Sirami sabar, tunas pun subur...", genre: "Neo-Soul Lembut 🌿" },
+            { time: 5, line1: "Akal membimbing, menuntun pagi,", line2: "Menenangkan gejolak jiwa yang rapuh.", genre: "Neo-Soul Lembut 🌿" },
+            { time: 10, line1: "Namun bayangan nafsu datang,", line2: "Bagai badai duri merusak ladang...", genre: "Atmosfer Mulai Berubah ⚠️" },
+            { time: 13, line1: "Gelap gulita... Kota memanggil kencang,", line2: "Layar bercahaya, raga terbuang kalap!", genre: "HOROR & MENAKUTKAN 💀" },
+            { time: 18, line1: "Suara batin tenggelam melengking,", line2: "Akal terjebak... Tersesat dalam dingin!", genre: "HOROR & MENAKUTKAN 💀" },
+            { time: 23, line1: "(Lirih) Kembalilah... ke fitrah batin...", line2: "...sebelum semuanya terlambat.", genre: "Selesai 🔇" }
+        ];
+
+        // Initialize App
+        window.onload = function() {
+            renderQuizQuestion();
+            filterWisdom();
+        }
+
+        // NAVIGATION SYSTEM
+        function navigateTo(pageId) {
+            activePage = pageId;
+            
+            // Toggle Page Visibility
+            document.getElementById('page-home').classList.add('hidden');
+            document.getElementById('page-search').classList.add('hidden');
+            document.getElementById('page-youtube').classList.add('hidden');
+            
+            document.getElementById(`page-${pageId}`).classList.remove('hidden');
+            
+            // Toggle Navigation Styles
+            const navs = ['home', 'search', 'youtube'];
+            navs.forEach(nav => {
+                const element = document.getElementById(`nav-${nav}`);
+                if (element) {
+                    if (nav === pageId) {
+                        element.className = "px-4 py-2 rounded-lg text-sm font-semibold text-emerald-400 bg-slate-800/80 transition";
+                    } else {
+                        element.className = "px-4 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-emerald-400 hover:bg-slate-800/50 transition";
+                    }
+                }
+            });
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // SCROLL HELPER
+        function scrollToSection(sectionId) {
+            // Ensure we are on home page first
+            if (activePage !== 'home') {
+                navigateTo('home');
+                // Wait briefly for DOM switch
+                setTimeout(() => {
+                    const el = document.getElementById(sectionId);
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            } else {
+                const el = document.getElementById(sectionId);
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // DRAWER MANAGEMENT
+        function toggleDrawer() {
+            const drawer = document.getElementById('drawerMenu');
+            const backdrop = document.getElementById('drawerBackdrop');
+            if (drawer.classList.contains('-translate-x-full')) {
+                drawer.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+            } else {
+                drawer.classList.add('-translate-x-full');
+                backdrop.classList.add('hidden');
+            }
+        }
+
+        // OPTIONS DROPDOWN
+        function toggleOptionsDropdown() {
+            const dropdown = document.getElementById('optionsDropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        // FONT SIZE TOGGLE
+        function changeFontSize() {
+            const mainContainer = document.querySelector('main');
+            if (currentFontSize === 'sm') {
+                mainContainer.style.fontSize = '1.05rem';
+                currentFontSize = 'md';
+            } else if (currentFontSize === 'md') {
+                mainContainer.style.fontSize = '1.15rem';
+                currentFontSize = 'lg';
+            } else {
+                mainContainer.style.fontSize = '0.95rem';
+                currentFontSize = 'sm';
+            }
+        }
+
+        // RESET ALL APP DATA
+        function resetApp() {
+            restartQuiz();
+            stopMusic();
+            closeVideoPlayer();
+            navigateTo('home');
+            alert('Semua progress simulasi dan musik berhasil di-reset.');
+            toggleOptionsDropdown();
+        }
+
+        // ACCORDION TOGGLE
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                content.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            }
+        }
+
+        function expandAllDialogs() {
+            ['dialogue1', 'dialogue2', 'dialogue3', 'dialogue4'].forEach(id => {
+                document.getElementById(`content-${id}`).classList.remove('hidden');
+                document.getElementById(`icon-${id}`).classList.add('rotate-180');
+            });
+        }
+
+        function collapseAllDialogs() {
+            ['dialogue1', 'dialogue2', 'dialogue3', 'dialogue4'].forEach(id => {
+                document.getElementById(`content-${id}`).classList.add('hidden');
+                document.getElementById(`icon-${id}`).classList.remove('rotate-180');
+            });
+        }
+
+        // --- INTERACTIVE MUHASABAH TEST ENGINE ---
+        function renderQuizQuestion() {
+            if (currentQuestionIndex >= quizData.length) {
+                showQuizResult();
+                return;
+            }
+
+            const quizProgress = document.getElementById('quizProgress');
+            const progressPercent = ((currentQuestionIndex) / quizData.length) * 100;
+            quizProgress.style.width = `${progressPercent}%`;
+
+            const currentQ = quizData[currentQuestionIndex];
+            document.getElementById('questionNumber').innerText = `Skenario ${currentQuestionIndex + 1} dari ${quizData.length}`;
+            document.getElementById('questionText').innerText = currentQ.question;
+
+            const answersContainer = document.getElementById('answersContainer');
+            answersContainer.innerHTML = '';
+
+            currentQ.answers.forEach((ans, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 rounded-xl bg-slate-950 border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-900 transition flex items-start gap-3 group";
+                btn.onclick = () => selectAnswer(ans.scoreAkal, ans.scoreNafsu);
+                
+                const bullet = document.createElement('span');
+                bullet.className = "w-6 h-6 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs text-slate-400 group-hover:bg-emerald-500/20 group-hover:text-emerald-400 transition-colors shrink-0 mt-0.5";
+                bullet.innerText = String.fromCharCode(65 + idx);
+
+                const textSpan = document.createElement('span');
+                textSpan.className = "text-sm text-slate-300 group-hover:text-white transition-colors";
+                textSpan.innerText = ans.text;
+
+                btn.appendChild(bullet);
+                btn.appendChild(textSpan);
+                answersContainer.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(akal, nafsu) {
+            totalAkalScore += akal;
+            totalNafsuScore += nafsu;
+            currentQuestionIndex++;
+            renderQuizQuestion();
+        }
+
+        function showQuizResult() {
+            document.getElementById('quizProgress').style.width = '100%';
+            document.getElementById('quizContainer').classList.add('hidden');
+            document.getElementById('quizResultContainer').classList.remove('hidden');
+
+            const maxTotal = quizData.length * 100;
+            const finalAkalPercent = Math.round((totalAkalScore / maxTotal) * 100);
+            const finalNafsuPercent = 100 - finalAkalPercent;
+
+            document.getElementById('akalScoreText').innerText = `${finalAkalPercent}%`;
+            document.getElementById('nafsuScoreText').innerText = `${finalNafsuPercent}%`;
+            
+            document.getElementById('barAkal').style.width = `${finalAkalPercent}%`;
+            document.getElementById('barNafsu').style.width = `${finalNafsuPercent}%`;
+
+            let analysis = "";
+            if (finalAkalPercent >= 80) {
+                analysis = "🌟 Luar biasa! Akal sehat Anda memegang kemudi jiwa dengan sangat kokoh. Keputusan hidup Anda didasarkan pada logika jernih dan kesabaran yang subur. Teruskan istiqamah dan tingkatkan muhasabah harian agar selalu waspada.";
+            } else if (finalAkalPercent >= 50) {
+                analysis = "⚖️ Posisi Jiwa Seimbang. Anda memiliki kematangan logika yang cukup baik, namun di beberapa kesempatan, letupan emosi nafsu masih sering melonggarkan benteng pertahanan Anda. Sering-seringlah bermuhasabah atau menjalankan ibadah shaum untuk memperkuat stamina akal.";
+            } else {
+                analysis = "⚠️ Peringatan untuk Jiwa. Hawa nafsu Anda mendominasi pengambilan keputusan harian. Keinginan instan sering mengorbankan masa depan Anda. Sangat disarankan untuk segera memperbanyak waktu refleksi tenang, melatih kesabaran, dan membatasi stimulasi digital yang berlebihan.";
+            }
+
+            document.getElementById('analysisOutputText').innerText = analysis;
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            totalAkalScore = 0;
+            totalNafsuScore = 0;
+            document.getElementById('quizContainer').classList.remove('hidden');
+            document.getElementById('quizResultContainer').classList.add('hidden');
+            renderQuizQuestion();
+        }
+
+        // --- WISDOM FILTER (PENCARIAN) ---
+        function filterWisdom() {
+            const query = document.getElementById('wisdomSearchInput').value.toLowerCase();
+            const category = document.getElementById('categorySelector').value;
+            const container = document.getElementById('wisdomResults');
+            container.innerHTML = '';
+
+            const filtered = wisdomData.filter(item => {
+                const matchesQuery = item.title.toLowerCase().includes(query) || item.text.toLowerCase().includes(query);
+                const matchesCategory = category === 'all' || item.category === category;
+                return matchesQuery && matchesCategory;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-2 text-center py-10 text-slate-500">
+                        <i class="fa-solid fa-face-frown text-3xl mb-3 block"></i>
+                        Tidak menemukan mutiara hikmah yang cocok. Coba kata kunci lain.
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-3 flex flex-col justify-between hover:border-emerald-500/30 transition-all duration-300";
+                
+                let icon = "fa-brain text-emerald-400";
+                let bgIcon = "bg-emerald-500/10";
+                if (item.category === 'sabar') {
+                    icon = "fa-seedling text-teal-400";
+                    bgIcon = "bg-teal-500/10";
+                } else if (item.category === 'nafsu') {
+                    icon = "fa-fire text-amber-500";
+                    bgIcon = "bg-amber-500/10";
+                }
+
+                card.innerHTML = `
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg ${bgIcon} flex items-center justify-center text-xs">
+                                <i class="fa-solid ${icon}"></i>
+                            </span>
+                            <h4 class="font-bold text-white text-sm">${item.title}</h4>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">${item.text}</p>
+                    </div>
+                    <div class="pt-2 border-t border-slate-900 flex justify-between text-[10px] text-slate-500">
+                        <span>Sumber: ${item.source}</span>
+                        <span class="uppercase font-semibold text-[8px] tracking-wider text-emerald-500">${item.category}</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // --- SIMULASI YOUTUBE PLAYER ---
+        function playSimulatedVideo(title, placeholderUrl) {
+            const player = document.getElementById('simulatedPlayer');
+            const playerTitle = document.getElementById('playerTitle');
+            const playerBg = document.getElementById('playerBg');
+
+            playerTitle.innerText = title;
+            playerBg.style.backgroundImage = `url('${placeholderUrl}')`;
+            
+            player.classList.remove('hidden');
+            player.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function closeVideoPlayer() {
+            document.getElementById('simulatedPlayer').classList.add('hidden');
+        }
+
+        // --- SIMULASI AUDIO SINKRONISASI LIRIK ---
+        function togglePlayMusic() {
+            const playBtn = document.getElementById('playBtn');
+            const discIcon = document.getElementById('discIcon');
+            const statusDot = document.getElementById('musicStatusDot');
+            const statusText = document.getElementById('musicStatusText');
+
+            if (audioPlaying) {
+                stopMusic();
+            } else {
+                audioPlaying = true;
+                playBtn.innerHTML = `<i class="fa-solid fa-pause text-xl"></i>`;
+                discIcon.classList.add('animate-spin');
+                statusDot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping";
+                statusText.innerText = "Memutar Lagu...";
+                
+                audioTimer = setInterval(() => {
+                    audioCurrentTime++;
+                    if (audioCurrentTime > audioDuration) {
+                        stopMusic();
+                        audioCurrentTime = 0;
+                    } else {
+                        updateAudioPlayerUI();
+                    }
+                }, 1000);
+            }
+        }
+
+        function stopMusic() {
+            audioPlaying = false;
+            clearInterval(audioTimer);
+            document.getElementById('playBtn').innerHTML = `<i class="fa-solid fa-play text-xl ml-1"></i>`;
+            document.getElementById('discIcon').classList.remove('animate-spin');
+            document.getElementById('musicStatusDot').className = "w-2.5 h-2.5 rounded-full bg-slate-600";
+            document.getElementById('musicStatusText').innerText = "Musik Berhenti";
+            updateAudioPlayerUI();
+        }
+
+        function seekAudio(value) {
+            audioCurrentTime = parseInt(value);
+            updateAudioPlayerUI();
+            if (audioPlaying) {
+                clearInterval(audioTimer);
+                audioTimer = setInterval(() => {
+                    audioCurrentTime++;
+                    if (audioCurrentTime > audioDuration) {
+                        stopMusic();
+                        audioCurrentTime = 0;
+                    } else {
+                        updateAudioPlayerUI();
+                    }
+                }, 1000);
+            }
+        }
+
+        function updateAudioPlayerUI() {
+            document.getElementById('audioTimeline').value = audioCurrentTime;
+            
+            // Format time text
+            const m = Math.floor(audioCurrentTime / 60);
+            const s = audioCurrentTime % 60;
+            document.getElementById('timeCurrent').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+
+            // Sync lyrics based on timeline
+            let activeLyric = lyricsTimeline[0];
+            for (let i = 0; i < lyricsTimeline.length; i++) {
+                if (audioCurrentTime >= lyricsTimeline[i].time) {
+                    activeLyric = lyricsTimeline[i];
+                }
+            }
+
+            const box = document.getElementById('lyricsBox');
+            const l1 = document.getElementById('lyricLine1');
+            const l2 = document.getElementById('lyricLine2');
+            const l3 = document.getElementById('lyricLine3');
+            const genre = document.getElementById('genreIndicator');
+
+            l1.innerText = activeLyric.line1;
+            l2.innerText = activeLyric.line2;
+            genre.innerText = activeLyric.genre;
+
+            // Visual state change depending on "horror collapse" phase
+            if (audioCurrentTime >= 13) {
+                l1.className = "text-base font-extrabold text-rose-500 animate-pulse transition-all duration-300";
+                l2.className = "text-sm text-amber-500 font-semibold transition-all duration-300";
+                genre.className = "text-rose-500 animate-pulse font-bold";
+                document.getElementById('audioSection').className = "scroll-mt-24 bg-gradient-to-tr from-slate-950 via-slate-900 to-rose-950 border border-rose-500/30 rounded-3xl p-6 lg:p-8 space-y-6 transition-all duration-500";
+            } else {
+                l1.className = "text-base font-semibold text-emerald-400 transition-all duration-300";
+                l2.className = "text-sm text-slate-300 transition-all duration-300";
+                genre.className = "text-emerald-400 font-semibold";
+                document.getElementById('audioSection').className = "scroll-mt-24 bg-gradient-to-tr from-slate-950 via-slate-900 to-slate-900 border border-slate-800 rounded-3xl p-6 lg:p-8 space-y-6 transition-all duration-500";
+            }
+        }
+
+        function prevTrack() {
+            audioCurrentTime = 0;
+            updateAudioPlayerUI();
+        }
+
+        function nextTrack() {
+            audioCurrentTime = audioDuration;
+            updateAudioPlayerUI();
+            stopMusic();
+        }
+</script>
+  </body>
+</html>

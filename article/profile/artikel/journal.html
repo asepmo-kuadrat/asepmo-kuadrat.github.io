@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Journal | Inspirasi & Gaya Hidup</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#121212',
+                            light: '#FDFCF8', // Off-white/cream yang elegan
+                            accent: '#C2A37A', // Warna emas/beige redup
+                            gray: '#52525B',
+                            border: '#EAEAEA'
+                        }
+                    }
+                }
+            }
+        }
+</script>
+
+<style>
+        body {
+            background-color: #FDFCF8;
+            color: #121212;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Custom scrollbar elegan */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #EAEAEA; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #C2A37A; }
+
+        /* Efek hover pada gambar artikel */
+        .img-zoom-hover { overflow: hidden; }
+        .img-zoom-hover img { transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .article-card:hover .img-zoom-hover img { transform: scale(1.05); }
+
+        /* Animasi Transisi Halaman */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        /* Drop cap untuk awal paragraf artikel */
+        .drop-cap::first-letter {
+            float: left;
+            font-size: 5rem;
+            line-height: 0.8;
+            padding-top: 8px;
+            padding-right: 12px;
+            padding-left: 0;
+            font-family: "Playfair Display", serif;
+            font-style: italic;
+            color: #C2A37A;
+        }
+</style>
+  </head>
+  <body class="font-sans flex flex-col min-h-screen relative">
+
+    <!-- OVERLAY DRAWER -->
+    <div id="drawer-overlay" class="fixed inset-0 bg-brand-dark/70 backdrop-blur-sm z-40 opacity-0 pointer-events-none transition-opacity duration-500 ease-in-out" onclick="closeDrawer()"></div>
+
+    <!-- DRAWER MENU -->
+    <aside id="drawer" class="fixed top-0 left-0 h-full w-80 max-w-[80vw] bg-brand-dark text-white z-50 transform -translate-x-full transition-transform duration-500 cubic-bezier(0.16, 1, 0.3, 1) overflow-y-auto border-r border-neutral-800 flex flex-col shadow-2xl">
+	  <div class="p-8 flex flex-col h-full">
+
+		<div class="flex justify-between items-center mb-12">
+		  <h2 class="font-serif text-2xl tracking-widest uppercase text-brand-accent">Menu</h2>
+		  <button onclick="closeDrawer()" class="text-gray-400 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10">
+			<i class="ph ph-x text-2xl"></i>
+		  </button>
+		</div>
+
+		<nav class="flex-grow">
+		  <ul class="space-y-6" id="drawer-menu-list">
+			<!-- Nav items di-generate oleh JS -->
+		  </ul>
+		</nav>
+
+		<!-- FOOTER -->
+		<footer class="bg-brand-dark text-white pt-16 pb-8 mt-auto border-t-[4px] border-brand-accent">
+		  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12 border-b border-neutral-800 pb-12">
+			  <div>
+				<h2 class="font-serif text-3xl font-bold mb-4">The<span class="text-brand-accent italic">Journal.</span></h2>
+				<p class="text-gray-400 max-w-md text-sm leading-relaxed font-light">Kurasi wawasan mendalam mengenai arsitektur mewah minimalis, bisnis, gaya hidup, dan pengembangan diri untuk para profesional yang terus berkembang.</p>
+			  </div>
+
+			<div class="flex justify-between items-center text-[10px] text-gray-500 uppercase tracking-widest font-semibold">
+			  <p>&copy; 2026 THE JOURNAL / ASEPMO.</p>
+			  <div class="flex space-x-6 hidden sm:flex">
+				<a href="#" class="hover:text-brand-accent transition-colors">Privacy</a>
+				<a href="#" class="hover:text-brand-accent transition-colors">Terms</a>
+			  </div>
+			</div>
+		  </div>
+		</footer>
+	  </div>
+    </aside>
+
+    <!-- HEADER -->
+    <header class="w-full bg-brand-light/95 backdrop-blur-md sticky top-0 z-30 border-b border-brand-border transition-all duration-300" id="main-header">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between relative">
+
+		<div class="flex-1 flex items-center">
+		  <button onclick="openDrawer()" class="flex items-center gap-2 text-brand-dark hover:text-brand-accent transition-colors group">
+			<i class="ph ph-list text-2xl"></i>
+			<span class="text-xs font-semibold tracking-widest uppercase hidden sm:block mt-0.5">Eksplorasi</span>
+		  </button>
+		</div>
+
+		<!-- LOGO -->
+		<div class="absolute left-1/2 transform -translate-x-1/2 cursor-pointer flex flex-col items-center" onclick="navigateTo('home')">
+		  <h1 class="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-brand-dark">The<span class="text-brand-accent italic font-medium">Journal.</span></h1>
+		</div>
+
+		<div class="flex-1 flex justify-end items-center gap-4 text-brand-dark">
+		  <button class="hover:text-brand-accent transition-colors"><i class="ph ph-magnifying-glass text-xl"></i></button>
+		</div>
+	  </div>
+
+	  <!-- BREADCRUMB -->
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 border-t border-brand-border/50 text-[11px] font-semibold tracking-widest text-brand-gray uppercase flex items-center gap-2">
+		<span class="cursor-pointer hover:text-brand-accent transition-colors" onclick="navigateTo('home')">Home</span>
+		<span class="text-brand-border/80">|</span>
+		<span id="breadcrumb-current" class="text-brand-dark">Artikel Terkini</span>
+	  </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12" id="main-content">
+
+	  <!-- SECTION 1: HOME PAGE -->
+	  <section id="view-home" class="page-view block animate-fade-in">
+		<!-- Hero Featured Article -->
+		<article class="mb-16 sm:mb-24 group cursor-pointer article-card" onclick="openDetail(1)">
+		  <div class="relative w-full h-[50vh] sm:h-[65vh] rounded-2xl overflow-hidden img-zoom-hover mb-6 shadow-md">
+			<img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80" alt="Featured" class="w-full h-full object-cover">
+			<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+			<div class="absolute bottom-0 left-0 p-6 sm:p-12 w-full max-w-4xl text-white">
+			  <span class="bg-brand-accent text-white text-[10px] sm:text-xs font-bold tracking-widest uppercase py-1.5 px-3 rounded-sm mb-4 inline-block shadow-sm">Arsitektur</span>
+			  <h2 class="font-serif text-3xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-4 group-hover:text-gray-200 transition-colors drop-shadow-lg">Evolusi Rumah Mewah Minimalis Tropis di 2026</h2>
+			  <p class="text-gray-200 text-sm sm:text-base font-light max-w-2xl hidden md:block leading-relaxed drop-shadow-md">Menjelajahi perpaduan sempurna antara kemewahan modern dan elemen alam tropis yang menciptakan ruang hidup yang menenangkan jiwa.</p>
+			</div>
+		  </div>
+		</article>
+
+		<div class="flex items-center justify-between mb-8 pb-4 border-b border-brand-border">
+		  <h3 class="font-serif text-2xl sm:text-3xl font-bold text-brand-dark italic">Kompilasi Artikel</h3>
+		</div>
+
+		<!-- Home Grid -->
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 sm:gap-y-16" id="home-grid">
+		  <!-- Data akan diisi oleh JS -->
+		</div>
+	  </section>
+
+	  <!-- SECTION 2: CATEGORY PAGE (Dipakai untuk ke-7 kategori) -->
+	  <section id="view-category" class="page-view hidden">
+		<div class="text-center max-w-3xl mx-auto mb-16 pt-8 pb-12 border-b border-brand-border">
+		  <span class="text-brand-accent font-semibold tracking-widest uppercase text-xs mb-4 block">Kategori</span>
+		  <h2 id="category-title" class="font-serif text-5xl md:text-6xl font-bold mb-6 capitalize text-brand-dark">Kategori</h2>
+		  <p id="category-desc" class="text-brand-gray text-base md:text-lg font-light leading-relaxed">Deskripsi kategori akan muncul di sini.</p>
+		</div>
+
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-10" id="category-list-container">
+		  <!-- Data akan diisi oleh JS -->
+		</div>
+	  </section>
+
+	  <!-- SECTION 3: DETAILS PAGE -->
+	  <section id="view-detail" class="page-view hidden">
+		<article class="max-w-[800px] mx-auto bg-white p-6 sm:p-12 md:p-16 rounded-2xl shadow-sm border border-brand-border/60">
+
+		  <!-- Back Button -->
+		  <button onclick="navigateBack()" class="flex items-center gap-2 text-brand-gray hover:text-brand-accent transition-colors mb-10 text-xs font-semibold tracking-widest uppercase bg-brand-light py-2 px-4 rounded-full border border-brand-border">
+			<i class="ph ph-arrow-left text-base"></i> Kembali
+		  </button>
+
+		  <!-- Article Header -->
+		  <header class="text-center mb-12">
+			<span id="detail-category" class="text-brand-accent text-xs font-bold tracking-widest uppercase mb-4 block cursor-pointer hover:text-brand-dark transition-colors" onclick="navigateTo(this.innerText.toLowerCase())">Kategori</span>
+			<h1 id="detail-title" class="font-serif text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-8 text-brand-dark">Judul Artikel</h1>
+
+			<div class="flex items-center justify-center gap-4 text-[11px] sm:text-xs font-semibold text-brand-gray tracking-widest uppercase border-y border-brand-border/50 py-4">
+			  <span id="detail-author" class="flex items-center gap-1.5"><i class="ph ph-pen-nib text-sm"></i> Redaksi</span>
+			  <span class="text-brand-border">|</span>
+			  <span id="detail-date" class="flex items-center gap-1.5"><i class="ph ph-calendar text-sm"></i> Tanggal</span>
+			</div>
+		  </header>
+
+		  <!-- Article Hero Image -->
+		  <div class="w-full aspect-[16/9] overflow-hidden rounded-xl mb-12 shadow-md bg-neutral-100">
+			<img id="detail-image" src="" alt="Cover Artikel" class="w-full h-full object-cover">
+		  </div>
+
+		  <!-- Article Body -->
+		  <div id="detail-content" class="font-sans text-brand-gray text-base sm:text-lg leading-loose font-light space-y-8 text-justify">
+			<!-- Konten dari JS -->
+		  </div>
+
+		  <!-- Share Footer -->
+		  <div class="mt-16 pt-8 border-t border-brand-border flex flex-col sm:flex-row justify-between items-center gap-4">
+			<span class="text-xs font-bold tracking-widest uppercase text-brand-dark">Bagikan Tulisan Ini</span>
+			<div class="flex gap-4 text-xl text-brand-gray">
+			  <button class="p-2 bg-brand-light rounded-full border border-brand-border hover:text-[#1DA1F2] hover:border-[#1DA1F2] transition-colors"><i class="ph ph-twitter-logo"></i></button>
+			  <button class="p-2 bg-brand-light rounded-full border border-brand-border hover:text-[#4267B2] hover:border-[#4267B2] transition-colors"><i class="ph ph-facebook-logo"></i></button>
+			  <button class="p-2 bg-brand-light rounded-full border border-brand-border hover:text-brand-accent hover:border-brand-accent transition-colors" onclick="copyLink()"><i class="ph ph-link"></i></button>
+			</div>
+		  </div>
+		</article>
+	  </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-brand-dark text-white pt-16 pb-8 mt-auto border-t-[4px] border-brand-accent">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12 border-b border-neutral-800 pb-12">
+		  <div>
+			<h2 class="font-serif text-3xl font-bold mb-4">The<span class="text-brand-accent italic">Journal.</span></h2>
+			<p class="text-gray-400 max-w-md text-sm leading-relaxed font-light">Kurasi wawasan mendalam mengenai arsitektur mewah minimalis, bisnis, gaya hidup, dan pengembangan diri untuk para profesional yang terus berkembang.</p>
+		  </div>
+
+		  <div class="flex flex-col md:items-end">
+			<h4 class="font-serif text-xl mb-4 italic text-brand-accent">Buletin Eksklusif</h4>
+			<p class="text-xs text-gray-500 mb-4 md:text-right font-light tracking-wider">Dapatkan inspirasi desain dan wawasan eksklusif mingguan.</p>
+			<div class="flex w-full max-w-md shadow-lg">
+			  <input type="email" placeholder="Alamat email Anda" class="px-4 py-3 bg-neutral-900 border border-neutral-700 focus:outline-none focus:border-brand-accent text-sm flex-grow rounded-l-md text-white font-light transition-colors">
+			  <button class="bg-brand-accent hover:bg-[#a68962] transition-colors text-white px-6 py-3 font-bold text-xs uppercase tracking-widest rounded-r-md">Langganan</button>
+			</div>
+		  </div>
+		</div>
+
+		<div class="flex justify-between items-center text-[10px] text-gray-500 uppercase tracking-widest font-semibold">
+		  <p>&copy; 2026 THE JOURNAL / ASEPMO.</p>
+		  <div class="flex space-x-6 hidden sm:flex">
+			<a href="#" class="hover:text-brand-accent transition-colors">Privacy</a>
+			<a href="#" class="hover:text-brand-accent transition-colors">Terms</a>
+		  </div>
+		</div>
+	  </div>
+    </footer>
+
+<script>
+        // 1. DATA KATEGORI (7 Halaman Kategori sesuai permintaan)
+        const categories = [
+            { id: 'waktu', label: 'Waktu', icon: 'clock', desc: 'Eksplorasi tentang manajemen waktu dan seni menikmati setiap detik dalam kehidupan profesional.' },
+            { id: 'love', label: 'Love', icon: 'heart', desc: 'Kisah dan panduan membina hubungan serta empati dalam kehidupan yang sibuk.' },
+            { id: 'bussiness', label: 'Bussiness', icon: 'briefcase', desc: 'Wawasan kewirausahaan, tren pasar, dan strategi kepemimpinan bagi pengusaha.' },
+            { id: 'skill', label: 'Skill', icon: 'brain', desc: 'Tingkatkan kapasitas diri. Panduan mengasah keahlian teknis dan kepemimpinan.' },
+            { id: 'lifestyle', label: 'Life Style', icon: 'coffee', desc: 'Kurasi gaya hidup elegan, kesehatan holistik, dan penemuan harmoni kerja.' },
+            { id: 'financial', label: 'Financial', icon: 'wallet', desc: 'Kecerdasan finansial dan strategi mengelola kekayaan untuk pengusaha berkembang.' },
+            { id: 'arsitektur', label: 'Arsitektur', icon: 'house-line', desc: 'Inspirasi desain rumah mewah minimalis dan ruang hidup yang merefleksikan kesuksesan.' }
+        ];
+
+        // 2. DATA ARTIKEL
+        const articles = [
+            { id: 1, category: 'arsitektur', title: 'Evolusi Rumah Mewah Minimalis Tropis di 2026', img: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80', date: '26 Mei 2026', author: 'AsepMo Architect' },
+            { id: 2, category: 'bussiness', title: 'Strategi Skalabilitas untuk Pengusaha di Fase Berkembang', img: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80', date: '24 Mei 2026', author: 'Redaksi Bisnis' },
+            { id: 3, category: 'waktu', title: 'Seni Mengelola Waktu di Era Distraksi Digital', img: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800&q=80', date: '20 Mei 2026', author: 'Redaksi Utama' },
+            { id: 4, category: 'financial', title: 'Diversifikasi Aset Cerdas Setelah Pendanaan Seri A', img: 'https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?auto=format&fit=crop&w=800&q=80', date: '18 Mei 2026', author: 'Hadi Finansial' },
+            { id: 5, category: 'arsitektur', title: 'Estetika Wabi-Sabi dalam Desain Interior Mewah', img: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=800&q=80', date: '15 Mei 2026', author: 'AsepMo Architect' },
+            { id: 6, category: 'lifestyle', title: 'Menemukan Keseimbangan Melalui Slow Living', img: 'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?auto=format&fit=crop&w=800&q=80', date: '12 Mei 2026', author: 'Elena Rose' },
+            { id: 7, category: 'love', title: 'Bahasa Cinta Pengusaha: Menjaga Api di Tengah Kesibukan', img: 'https://images.unsplash.com/photo-1518893063132-36e46dbe2428?auto=format&fit=crop&w=800&q=80', date: '10 Mei 2026', author: 'Sarah Wijaya' },
+            { id: 8, category: 'skill', title: 'Critical Thinking: Membedah Keputusan Strategis', img: 'https://images.unsplash.com/photo-1456406644174-8ddd4cd52a06?auto=format&fit=crop&w=800&q=80', date: '05 Mei 2026', author: 'Redaksi Utama' },
+            { id: 9, category: 'arsitektur', title: 'Mengoptimalkan Pencahayaan Alami di Fasad Minimalis', img: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=800&q=80', date: '01 Mei 2026', author: 'AsepMo Architect' }
+        ];
+
+        const dummyParagraphs = `
+            <p class="drop-cap text-brand-dark">Desain arsitektur bukan sekadar tentang membangun tembok; ia adalah seni merajut ruang, cahaya, dan harmoni alam ke dalam kehidupan sehari-hari. Sebagai pengusaha yang sedang berkembang, lingkungan tempat Anda kembali setiap malam memiliki dampak psikologis yang mendalam terhadap kejernihan pikiran dan kreativitas esok hari.</p>
+            <p>Tren hunian mewah minimalis tahun ini menekankan pada pengurangan elemen visual yang tidak perlu, digantikan dengan material premium yang memiliki tekstur alami seperti batu alam, kayu jati, dan beton ekspos. Konsep ini menghadirkan kemewahan yang tidak berteriak, melainkan berbisik melalui kualitas ruang.</p>
+            <blockquote class="border-l-[6px] border-brand-accent pl-6 py-2 my-10 text-2xl md:text-3xl font-serif italic text-brand-dark bg-brand-light/40 rounded-r-xl">
+                "Kemewahan sejati dalam arsitektur modern adalah ruang bernapas, pencahayaan alami, dan koneksi tanpa batas dengan alam sekitar."
+            </blockquote>
+            <h3 class="text-2xl font-serif font-bold text-brand-dark mt-12 mb-6">Investasi Pada Fungsionalitas Ekstrem</h3>
+            <p>Dalam dunia bisnis yang serba cepat, rumah Anda harus menjadi suaka (sanctuary). Penggabungan <em>smart home technology</em> yang disembunyikan di balik desain minimalis memungkinkan fungsionalitas tanpa mengorbankan estetika. Setiap sudut dirancang secara teliti—dari sirkulasi udara silang (cross-ventilation) tropis hingga proporsi ruangan yang memperkuat ketenangan.</p>
+            <p>Kami di AsepMo percaya bahwa pengusaha sukses membutuhkan fondasi fisik yang kuat. Rumah mewah minimalis tidak hanya merepresentasikan pencapaian, tetapi juga menjadi instrumen untuk menjaga keseimbangan antara ambisi bisnis (business), pengembangan keahlian (skill), dan kehidupan personal (life style & love).</p>
+        `;
+
+        let historyStack = ['home'];
+
+        // DOM Elements
+        const drawer = document.getElementById('drawer');
+        const overlay = document.getElementById('drawer-overlay');
+        const views = document.querySelectorAll('.page-view');
+        const breadcrumbCurrent = document.getElementById('breadcrumb-current');
+
+        // Initialize App
+        function initApp() {
+            const menuList = document.getElementById('drawer-menu-list');
+            
+            // Add Home
+            menuList.innerHTML += `
+                <li>
+                    <button onclick="navigateTo('home')" class="w-full text-left font-serif text-2xl hover:text-brand-accent hover:translate-x-3 transition-all duration-300 flex items-center group">
+                        <span class="w-8 h-[1px] bg-brand-accent mr-4 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                        <i class="ph ph-house text-xl mr-3 text-brand-gray group-hover:text-brand-accent"></i> Home
+                    </button>
+                </li>
+            `;
+
+            // Add 7 Categories
+            categories.forEach((cat) => {
+                menuList.innerHTML += `
+                    <li>
+                        <button onclick="navigateTo('${cat.id}')" class="w-full text-left font-serif text-2xl hover:text-brand-accent hover:translate-x-3 transition-all duration-300 flex items-center group">
+                            <span class="w-8 h-[1px] bg-brand-accent mr-4 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                            <i class="ph ph-${cat.icon} text-xl mr-3 text-brand-gray group-hover:text-brand-accent"></i> ${cat.label}
+                        </button>
+                    </li>
+                `;
+            });
+
+            renderHomeGrid();
+        }
+
+        // Drawer Controls
+        function openDrawer() {
+            drawer.classList.remove('-translate-x-full');
+            overlay.classList.remove('opacity-0', 'pointer-events-none');
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeDrawer() {
+            drawer.classList.add('-translate-x-full');
+            overlay.classList.add('opacity-0', 'pointer-events-none');
+            document.body.style.overflow = '';
+        }
+
+        // View Routing
+        function showView(viewId) {
+            views.forEach(v => v.classList.add('hidden'));
+            const target = document.getElementById(viewId);
+            if(target) {
+                target.classList.remove('hidden');
+                // Re-trigger animation
+                target.classList.remove('animate-fade-in');
+                void target.offsetWidth; 
+                target.classList.add('animate-fade-in');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateBreadcrumb(text) {
+            breadcrumbCurrent.innerText = text;
+        }
+
+        // Route Handler (9 Pages Logic)
+        function navigateTo(targetId) {
+            closeDrawer();
+            
+            if (targetId === 'home') {
+                historyStack.push('home');
+                updateBreadcrumb('Artikel Terkini');
+                showView('view-home');
+            } else {
+                // Category Pages (waktu, love, bussiness, skill, lifestyle, financial, arsitektur)
+                const categoryObj = categories.find(c => c.id === targetId);
+                if (categoryObj) {
+                    historyStack.push(targetId);
+                    updateBreadcrumb(`Artikel / ${categoryObj.label}`);
+                    renderCategory(categoryObj);
+                    showView('view-category');
+                }
+            }
+        }
+
+        // Details Page Logic
+        function openDetail(articleId) {
+            closeDrawer();
+            const article = articles.find(a => a.id === articleId) || articles[0]; 
+            
+            document.getElementById('detail-category').innerText = article.category;
+            document.getElementById('detail-title').innerText = article.title;
+            document.getElementById('detail-author').innerHTML = `<i class="ph ph-pen-nib text-sm"></i> ${article.author}`;
+            document.getElementById('detail-date').innerHTML = `<i class="ph ph-calendar text-sm"></i> ${article.date}`;
+            document.getElementById('detail-image').src = article.img;
+            document.getElementById('detail-content').innerHTML = dummyParagraphs;
+
+            historyStack.push(`detail-${articleId}`);
+            updateBreadcrumb(`Artikel / Membaca...`);
+            showView('view-detail');
+        }
+
+        // Back Logic
+        function navigateBack() {
+            historyStack.pop(); 
+            const previousState = historyStack[historyStack.length - 1] || 'home';
+            
+            if (previousState.startsWith('detail-')) {
+                const id = parseInt(previousState.split('-')[1]);
+                openDetail(id);
+                historyStack.pop(); 
+            } else {
+                navigateTo(previousState);
+                historyStack.pop(); 
+            }
+        }
+
+        function generateArticleCardHTML(article, layout = 'vertical') {
+            if (layout === 'horizontal') {
+                return `
+                <article class="flex flex-col sm:flex-row gap-6 group cursor-pointer bg-white p-5 rounded-2xl border border-brand-border/60 hover:shadow-xl transition-all duration-300 article-card" onclick="openDetail(${article.id})">
+                    <div class="sm:w-2/5 overflow-hidden rounded-xl aspect-[4/3] img-zoom-hover relative bg-neutral-100">
+                        <img src="${article.img}" alt="${article.title}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="sm:w-3/5 flex flex-col justify-center py-2 pr-2">
+                        <span class="text-brand-accent text-[10px] font-bold tracking-widest uppercase mb-3 block">${article.category}</span>
+                        <h4 class="font-serif text-2xl font-bold mb-3 group-hover:text-brand-accent transition-colors leading-tight text-brand-dark">${article.title}</h4>
+                        <p class="text-brand-gray text-sm line-clamp-2 mb-6 font-light leading-relaxed">Ringkasan wawasan berharga untuk memandu Anda mengelola aspek krusial dalam pertumbuhan pribadi dan bisnis Anda.</p>
+                        <div class="mt-auto flex items-center gap-4 text-[10px] font-bold tracking-widest uppercase text-brand-gray">
+                            <span class="flex items-center gap-1"><i class="ph ph-calendar text-sm"></i> ${article.date}</span>
+                        </div>
+                    </div>
+                </article>
+                `;
+            } else {
+                return `
+                <article class="group cursor-pointer article-card bg-white rounded-2xl p-4 border border-transparent hover:border-brand-border/60 hover:shadow-lg transition-all duration-300" onclick="openDetail(${article.id})">
+                    <div class="w-full aspect-[4/3] overflow-hidden rounded-xl img-zoom-hover mb-6 relative bg-neutral-100">
+                        <img src="${article.img}" alt="${article.title}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="px-2">
+                        <span class="text-brand-accent text-[10px] font-bold tracking-widest uppercase mb-3 block">${article.category}</span>
+                        <h4 class="font-serif text-xl sm:text-2xl font-bold mb-3 group-hover:text-brand-accent transition-colors leading-snug text-brand-dark">${article.title}</h4>
+                        <p class="text-brand-gray text-sm line-clamp-2 font-light leading-relaxed mb-4">Wawasan berharga untuk memandu Anda mengelola aspek krusial dalam pertumbuhan pribadi dan bisnis.</p>
+                        <div class="text-[10px] font-bold tracking-widest uppercase text-brand-gray flex items-center gap-1">
+                            <i class="ph ph-calendar text-sm"></i> ${article.date}
+                        </div>
+                    </div>
+                </article>
+                `;
+            }
+        }
+
+        // Render Homepage (Mix of categories)
+        function renderHomeGrid() {
+            const container = document.getElementById('home-grid');
+            let html = '';
+            // Skip the first featured article, show the rest
+            articles.slice(1).forEach(art => {
+                html += generateArticleCardHTML(art, 'vertical');
+            });
+            container.innerHTML = html;
+        }
+
+        // Render Specific Category Page
+        function renderCategory(categoryObj) {
+            document.getElementById('category-title').innerText = categoryObj.label;
+            document.getElementById('category-desc').innerText = categoryObj.desc;
+            
+            const container = document.getElementById('category-list-container');
+            
+            // Filter articles by category
+            let catArticles = articles.filter(a => a.category === categoryObj.id);
+            
+            // Jika kosong (karena mock data terbatas), gunakan dummy agar halaman tetap terlihat bagus
+            if(catArticles.length === 0) {
+                catArticles = [articles[0], articles[1]]; 
+            }
+
+            let html = '';
+            catArticles.forEach(art => {
+                html += generateArticleCardHTML(art, 'horizontal');
+            });
+            container.innerHTML = html;
+        }
+
+        // Utilities
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert("Tautan artikel berhasil disalin!");
+            });
+        }
+
+        // Boot
+        window.onload = initApp;
+
+</script>
+  </body>
+</html>

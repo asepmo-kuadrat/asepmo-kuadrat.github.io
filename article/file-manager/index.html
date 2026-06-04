@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegan File Manager</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            900: '#0f172a', // Slate 900
+                            800: '#1e293b', // Slate 800
+                            700: '#334155', // Slate 700
+                        },
+                        primary: {
+                            500: '#3b82f6', // Blue 500
+                            600: '#2563eb', // Blue 600
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-out',
+                        'slide-up': 'slideUp 0.4s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+</script>
+<style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569; 
+        }
+        
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .drop-zone-active {
+            border-color: #3b82f6 !important;
+            background-color: rgba(59, 130, 246, 0.1) !important;
+        }
+</style>
+  </head>
+  <body class="bg-dark-900 text-gray-200 font-sans h-screen flex overflow-hidden selection:bg-primary-500 selection:text-white">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2"></div>
+
+    <!-- Sidebar -->
+    <aside class="w-64 glass-panel border-r border-gray-800 flex flex-col transition-all duration-300 hidden md:flex">
+	  <div class="p-6 flex items-center gap-3">
+		<div class="bg-primary-500 p-2 rounded-lg">
+		  <i data-lucide="hard-drive" class="text-white w-6 h-6"></i>
+		</div>
+		<h1 class="text-xl font-bold text-white tracking-wide">Storage<span class="text-primary-500">.io</span></h1>
+	  </div>
+
+	  <nav class="flex-1 px-4 py-2 space-y-2">
+		<button onclick="switchView('files')" id="nav-files" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors bg-primary-500 text-white shadow-lg shadow-primary-500/20">
+		  <i data-lucide="folder" class="w-5 h-5"></i>
+		  File Saya
+		</button>
+		<button onclick="switchView('upload')" id="nav-upload" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-dark-800 transition-colors">
+		  <i data-lucide="cloud-upload" class="w-5 h-5"></i>
+		  Upload File
+		</button>
+	  </nav>
+
+	  <div class="p-4 border-t border-gray-800">
+		<div class="flex items-center gap-3 px-2">
+		  <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-primary-500 to-purple-500 flex items-center justify-center">
+			<i data-lucide="user" class="w-4 h-4 text-white"></i>
+		  </div>
+		  <div class="flex-1 min-w-0">
+			<p class="text-sm font-medium text-white truncate" id="user-id-display">Loading...</p>
+			<p class="text-xs text-gray-400">Pengguna Aktif</p>
+		  </div>
+		</div>
+	  </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col relative h-full">
+
+	  <!-- Mobile Header -->
+	  <header class="md:hidden glass-panel p-4 flex items-center justify-between border-b border-gray-800 z-10">
+		<div class="flex items-center gap-2">
+		  <i data-lucide="hard-drive" class="text-primary-500 w-6 h-6"></i>
+		  <h1 class="text-lg font-bold text-white">Storage.io</h1>
+		</div>
+		<div class="flex gap-2">
+		  <button onclick="switchView('files')" class="p-2 rounded-lg bg-dark-800 text-gray-300 hover:text-white"><i data-lucide="folder" class="w-5 h-5"></i></button>
+		  <button onclick="switchView('upload')" class="p-2 rounded-lg bg-primary-500 text-white shadow-lg"><i data-lucide="cloud-upload" class="w-5 h-5"></i></button>
+		</div>
+	  </header>
+
+	  <!-- VIEW: File Manager -->
+	  <div id="view-files" class="flex-1 flex flex-col h-full animate-fade-in">
+		<!-- Topbar (Breadcrumbs & Actions) -->
+		<header class="glass-panel px-6 py-4 border-b border-gray-800 flex items-center justify-between z-10 sticky top-0">
+		  <!-- Breadcrumbs -->
+		  <div class="flex items-center gap-2 text-sm text-gray-400" id="breadcrumbs">
+			<!-- Populated via JS -->
+		  </div>
+
+		  <!-- Actions -->
+		  <div class="flex items-center gap-3">
+			<button onclick="openNewFolderModal()" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-dark-800 hover:bg-dark-700 text-sm font-medium transition-colors border border-gray-700 hover:border-gray-600">
+			  <i data-lucide="folder-plus" class="w-4 h-4"></i>
+			  <span class="hidden sm:inline">Folder Baru</span>
+			</button>
+			<button onclick="refreshCurrentPath()" class="p-2 rounded-lg bg-dark-800 hover:bg-dark-700 text-gray-400 hover:text-white transition-colors border border-gray-700">
+			  <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+			</button>
+		  </div>
+		</header>
+
+		<!-- File Grid/List Area -->
+		<div class="flex-1 overflow-y-auto p-6" id="file-container">
+
+		  <!-- Loading State -->
+		  <div id="loading-state" class="flex flex-col items-center justify-center h-full text-gray-500 hidden">
+			<i data-lucide="loader-2" class="w-10 h-10 animate-spin mb-4 text-primary-500"></i>
+			<p>Memuat file...</p>
+		  </div>
+
+		  <!-- Empty State -->
+		  <div id="empty-state" class="flex flex-col items-center justify-center h-full text-gray-500 hidden animate-slide-up">
+			<div class="w-24 h-24 bg-dark-800 rounded-full flex items-center justify-center mb-4">
+			  <i data-lucide="folder-open" class="w-12 h-12 text-gray-600"></i>
+			</div>
+			<h3 class="text-lg font-medium text-gray-300">Folder ini kosong</h3>
+			<p class="text-sm mt-1 mb-6">Mulai unggah file atau buat folder baru.</p>
+			<button onclick="switchView('upload')" class="px-6 py-2 bg-primary-600 hover:bg-primary-500 text-white rounded-lg transition-colors shadow-lg shadow-primary-500/20">
+			  Unggah File
+			</button>
+		  </div>
+
+		  <!-- Content Grid -->
+		  <div id="content-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 pb-20">
+			<!-- Items populated via JS -->
+		  </div>
+		</div>
+	  </div>
+
+	  <!-- VIEW: Upload Page -->
+	  <div id="view-upload" class="flex-1 flex flex-col h-full hidden animate-fade-in bg-dark-900/50">
+		<header class="px-6 py-4 border-b border-gray-800">
+		  <h2 class="text-xl font-semibold text-white">Unggah File ke <span id="upload-path-display" class="text-primary-500">/</span></h2>
+		  <p class="text-sm text-gray-400 mt-1">Pilih file atau seret file ke area di bawah ini.</p>
+		</header>
+
+		<div class="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
+		  <!-- Drop Zone -->
+		  <div id="drop-zone" class="border-2 border-dashed border-gray-700 rounded-2xl bg-dark-800/50 hover:bg-dark-800 hover:border-primary-500 transition-all duration-300 flex flex-col items-center justify-center p-12 text-center cursor-pointer group">
+			<input type="file" id="file-input" multiple class="hidden">
+			<div class="w-16 h-16 bg-dark-700 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform group-hover:bg-primary-500/20">
+			  <i data-lucide="upload-cloud" class="w-8 h-8 text-gray-400 group-hover:text-primary-500"></i>
+			</div>
+			<h3 class="text-lg font-medium text-gray-200 mb-2">Klik untuk memilih atau seret file kesini</h3>
+			<p class="text-sm text-gray-500">Mendukung semua jenis file</p>
+		  </div>
+
+		  <!-- Upload Queue -->
+		  <div id="upload-queue-container" class="hidden">
+			<h3 class="text-sm font-medium text-gray-400 mb-3 uppercase tracking-wider">Antrean Unggahan</h3>
+			<div id="upload-queue" class="space-y-3">
+			  <!-- Queue items populated via JS -->
+			</div>
+		  </div>
+		</div>
+	  </div>
+
+    </main>
+
+    <!-- Modal: New Folder -->
+    <div id="modal-new-folder" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+	  <div class="bg-dark-800 border border-gray-700 rounded-2xl shadow-2xl w-full max-w-sm transform scale-95 transition-transform duration-300" id="modal-content">
+		<div class="p-6">
+		  <h3 class="text-xl font-semibold text-white mb-4">Buat Folder Baru</h3>
+		  <input type="text" id="folder-name-input" placeholder="Nama folder..." class="w-full bg-dark-900 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors">
+		  <div class="mt-6 flex justify-end gap-3">
+			<button onclick="closeNewFolderModal()" class="px-4 py-2 rounded-lg text-gray-400 hover:text-white hover:bg-dark-700 transition-colors">Batal</button>
+			<button onclick="submitNewFolder()" class="px-4 py-2 rounded-lg bg-primary-600 hover:bg-primary-500 text-white transition-colors shadow-lg shadow-primary-500/20">Buat</button>
+		  </div>
+		</div>
+	  </div>
+    </div>
+
+    <!-- Firebase Configuration & Application Logic -->
+<script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+        import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // --- 1. SETUP FIREBASE ---
+        let firebaseConfig = {};
+        let appId = 'default-app-id';
+        let customToken = null;
+
+        try {
+            if (typeof __firebase_config !== 'undefined') {
+                firebaseConfig = JSON.parse(__firebase_config);
+            } else {
+                throw new Error("Firebase config not found in environment.");
+            }
+            if (typeof __app_id !== 'undefined') appId = __app_id;
+            if (typeof __initial_auth_token !== 'undefined') customToken = __initial_auth_token;
+        } catch (e) {
+            showToast("Error konfigurasi lingkungan", "error");
+            console.error("Config error:", e);
+        }
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const storage = getStorage(app);
+        const db = getFirestore(app);
+
+        // --- 2. GLOBAL STATE ---
+        let currentUser = null;
+        let currentPath = ''; // Relative path inside user's storage
+        let allItems = []; // Menyimpan metadata dari Firestore
+        let unsubscribeDb = null;
+        
+        // --- 3. DOM ELEMENTS ---
+        const elGrid = document.getElementById('content-grid');
+        const elBreadcrumbs = document.getElementById('breadcrumbs');
+        const elLoading = document.getElementById('loading-state');
+        const elEmpty = document.getElementById('empty-state');
+        const elUserIdDisplay = document.getElementById('user-id-display');
+        
+        // Upload Elements
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const uploadQueueContainer = document.getElementById('upload-queue-container');
+        const uploadQueue = document.getElementById('upload-queue');
+        const uploadPathDisplay = document.getElementById('upload-path-display');
+
+        // Modal Elements
+        const modalNewFolder = document.getElementById('modal-new-folder');
+        const modalContent = document.getElementById('modal-content');
+        const folderNameInput = document.getElementById('folder-name-input');
+
+        // --- 4. AUTHENTICATION (CRITICAL RULE 3) ---
+        const initAuth = async () => {
+            try {
+                if (customToken) {
+                    await signInWithCustomToken(auth, customToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Auth error:", error);
+                showToast("Gagal melakukan autentikasi", "error");
+            }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                elUserIdDisplay.textContent = user.uid.substring(0, 8) + '...';
+                
+                // Gunakan Firestore untuk melacak struktur folder dan metadata agar terhindar dari limitasi listAll Storage
+                const collectionPath = `artifacts/${appId}/users/${user.uid}/data`;
+                if (unsubscribeDb) unsubscribeDb();
+                
+                unsubscribeDb = onSnapshot(collection(db, collectionPath), (snapshot) => {
+                    allItems = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    loadDirectory(currentPath);
+                }, (error) => {
+                    console.error("Firestore error:", error);
+                    showToast("Gagal memuat struktur data", "error");
+                });
+
+            } else {
+                currentUser = null;
+                if (unsubscribeDb) {
+                    unsubscribeDb();
+                    unsubscribeDb = null;
+                }
+                allItems = [];
+            }
+        });
+
+        // Initialize Icons
+        lucide.createIcons();
+        initAuth();
+
+        // --- 5. CORE LOGIC: FILE MANAGER ---
+
+        function loadDirectory(path) {
+            if (!currentUser) return;
+            
+            currentPath = path;
+            updateBreadcrumbs();
+            
+            // Update UI upload path
+            uploadPathDisplay.textContent = '/' + currentPath;
+
+            renderGrid();
+        }
+
+        function renderGrid() {
+            elLoading.classList.add('hidden');
+            elGrid.innerHTML = '';
+
+            // Filter items for current path
+            const currentItems = allItems.filter(item => item.parentPath === currentPath);
+            const folders = currentItems.filter(item => item.type === 'folder');
+            const files = currentItems.filter(item => item.type === 'file');
+
+            if (folders.length === 0 && files.length === 0) {
+                elEmpty.classList.remove('hidden');
+                return;
+            }
+
+            elEmpty.classList.add('hidden');
+
+            // Render Folders First
+            folders.forEach(folder => {
+                const card = document.createElement('div');
+                card.className = 'glass-panel p-4 rounded-xl flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-dark-800 transition-all group animate-slide-up hover:-translate-y-1 relative';
+                card.onclick = () => loadDirectory(currentPath + folder.name + '/');
+                
+                card.innerHTML = `
+                    <div class="relative">
+                        <i data-lucide="folder" class="w-12 h-12 text-blue-400 group-hover:text-blue-300 transition-colors fill-blue-500/20"></i>
+                    </div>
+                    <span class="text-sm font-medium text-gray-200 text-center w-full truncate px-2">${folder.name}</span>
+                    
+                    <!-- Delete Folder Overlay -->
+                    <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button class="action-btn-delete-folder p-1.5 bg-red-600 hover:bg-red-500 rounded-lg text-white" title="Hapus Folder">
+                            <i data-lucide="trash-2" class="w-3 h-3"></i>
+                        </button>
+                    </div>
+                `;
+
+                card.querySelector('.action-btn-delete-folder').onclick = (e) => {
+                    e.stopPropagation();
+                    deleteItem(folder);
+                };
+
+                elGrid.appendChild(card);
+            });
+
+            // Render Files
+            files.forEach(file => {
+                const card = document.createElement('div');
+                card.className = 'glass-panel p-4 rounded-xl flex flex-col items-center gap-3 group relative animate-slide-up hover:border-gray-600 transition-all cursor-default';
+                
+                const ext = file.name.split('.').pop().toLowerCase();
+                const iconInfo = getFileIcon(ext);
+
+                card.innerHTML = `
+                    <div class="w-12 h-12 flex items-center justify-center rounded-lg ${iconInfo.bg}">
+                        <i data-lucide="${iconInfo.icon}" class="w-6 h-6 ${iconInfo.color}"></i>
+                    </div>
+                    <div class="w-full text-center">
+                        <p class="text-sm font-medium text-gray-200 truncate px-1" title="${file.name}">${file.name}</p>
+                    </div>
+                    
+                    <!-- Action Overlay -->
+                    <div class="absolute inset-0 bg-dark-900/80 backdrop-blur-sm rounded-xl opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2 transition-opacity duration-200">
+                        <button class="action-btn-download p-2 bg-primary-600 hover:bg-primary-500 rounded-lg text-white transition-colors" title="Download">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                        </button>
+                        <button class="action-btn-delete p-2 bg-red-600 hover:bg-red-500 rounded-lg text-white transition-colors" title="Hapus">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `;
+
+                // Attach Events
+                card.querySelector('.action-btn-download').onclick = (e) => {
+                    e.stopPropagation();
+                    downloadFile(file);
+                };
+                card.querySelector('.action-btn-delete').onclick = (e) => {
+                    e.stopPropagation();
+                    deleteItem(file);
+                };
+
+                elGrid.appendChild(card);
+            });
+
+            // Re-initialize icons for newly added HTML
+            lucide.createIcons();
+        }
+
+        function updateBreadcrumbs() {
+            const parts = currentPath.split('/').filter(p => p !== '');
+            
+            let html = `
+                <button onclick="window.app.loadDirectory('')" class="hover:text-white transition-colors flex items-center gap-1">
+                    <i data-lucide="home" class="w-4 h-4"></i>
+                </button>
+            `;
+
+            let cumulativePath = '';
+            parts.forEach((part, index) => {
+                cumulativePath += part + '/';
+                html += `
+                    <i data-lucide="chevron-right" class="w-4 h-4 text-gray-600"></i>
+                    <button onclick="window.app.loadDirectory('${cumulativePath}')" class="hover:text-white transition-colors truncate max-w-[100px] sm:max-w-[200px]">
+                        ${part}
+                    </button>
+                `;
+            });
+
+            elBreadcrumbs.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        // --- 6. ACTIONS ---
+
+        function downloadFile(item) {
+            if (!item.url) return;
+            const a = document.createElement('a');
+            a.href = item.url;
+            a.target = "_blank"; 
+            a.download = item.name;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        async function deleteItem(item) {
+            if(!confirm(`Yakin ingin menghapus ${item.name}?`)) return;
+            
+            try {
+                if(item.type === 'folder') {
+                    const folderPath = currentPath + item.name + '/';
+                    const hasChildren = allItems.some(i => i.parentPath === folderPath);
+                    if (hasChildren) {
+                        showToast("Folder tidak kosong! Hapus isinya terlebih dahulu.", "error");
+                        return;
+                    }
+                } else if (item.storagePath) {
+                    // Try delete from Storage
+                    try {
+                        await deleteObject(ref(storage, item.storagePath));
+                    } catch(e) {
+                        console.warn("Storage item missing or error", e);
+                    }
+                }
+                
+                // Delete metadata from Firestore
+                const collectionPath = `artifacts/${appId}/users/${currentUser.uid}/data`;
+                await deleteDoc(doc(db, collectionPath, item.id));
+                showToast("Berhasil dihapus", "success");
+            } catch (error) {
+                console.error("Delete error", error);
+                showToast("Gagal menghapus", "error");
+            }
+        }
+
+        window.submitNewFolder = async function() {
+            const name = folderNameInput.value.trim();
+            if (!name) return;
+
+            if (name.includes('/') || name.includes('.')) {
+                showToast("Nama folder tidak valid", "error");
+                return;
+            }
+
+            try {
+                const collectionPath = `artifacts/${appId}/users/${currentUser.uid}/data`;
+                await addDoc(collection(db, collectionPath), {
+                    type: 'folder',
+                    name: name,
+                    parentPath: currentPath,
+                    createdAt: Date.now()
+                });
+                
+                closeNewFolderModal();
+                showToast(`Folder '${name}' dibuat`, "success");
+            } catch (error) {
+                console.error("Create folder error", error);
+                showToast("Gagal membuat folder", "error");
+            }
+        };
+
+        // --- 7. UPLOAD LOGIC ---
+
+        function handleFiles(files) {
+            if (!files || files.length === 0) return;
+            
+            uploadQueueContainer.classList.remove('hidden');
+            
+            Array.from(files).forEach(file => {
+                uploadSingleFile(file);
+            });
+        }
+
+        function uploadSingleFile(file) {
+            if (!currentUser) return;
+
+            const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+            const storagePath = `artifacts/${appId}/users/${currentUser.uid}/data/${Date.now()}_${safeName}`;
+            const storageRef = ref(storage, storagePath);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            // Create UI for this upload
+            const itemId = 'upload-' + Math.random().toString(36).substr(2, 9);
+            const ext = file.name.split('.').pop().toLowerCase();
+            const iconInfo = getFileIcon(ext);
+
+            const itemHtml = `
+                <div id="${itemId}" class="glass-panel p-3 rounded-xl flex items-center gap-4">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-lg ${iconInfo.bg} shrink-0">
+                        <i data-lucide="${iconInfo.icon}" class="w-5 h-5 ${iconInfo.color}"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-200 truncate font-medium">${file.name}</span>
+                            <span class="text-gray-400 progress-text">0%</span>
+                        </div>
+                        <div class="w-full bg-dark-900 rounded-full h-1.5 overflow-hidden">
+                            <div class="bg-primary-500 h-1.5 rounded-full progress-bar transition-all duration-200" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="status-icon text-gray-500 w-6 flex justify-center">
+                        <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+                    </div>
+                </div>
+            `;
+            
+            uploadQueue.insertAdjacentHTML('beforeend', itemHtml);
+            lucide.createIcons();
+
+            const elItem = document.getElementById(itemId);
+            const elBar = elItem.querySelector('.progress-bar');
+            const elText = elItem.querySelector('.progress-text');
+            const elStatus = elItem.querySelector('.status-icon');
+
+            uploadTask.on('state_changed', 
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    elBar.style.width = progress + '%';
+                    elText.textContent = Math.round(progress) + '%';
+                }, 
+                (error) => {
+                    console.error("Upload error", error);
+                    elBar.classList.replace('bg-primary-500', 'bg-red-500');
+                    elStatus.innerHTML = `<i data-lucide="x-circle" class="w-5 h-5 text-red-500"></i>`;
+                    lucide.createIcons();
+                    showToast(`Gagal mengunggah ${file.name}`, "error");
+                }, 
+                async () => {
+                    // Success Upload to Storage, now save metadata to Firestore
+                    try {
+                        const url = await getDownloadURL(uploadTask.snapshot.ref);
+                        const collectionPath = `artifacts/${appId}/users/${currentUser.uid}/data`;
+                        
+                        await addDoc(collection(db, collectionPath), {
+                            type: 'file',
+                            name: file.name,
+                            parentPath: currentPath,
+                            storagePath: storagePath,
+                            url: url,
+                            size: file.size,
+                            createdAt: Date.now()
+                        });
+
+                        elBar.classList.replace('bg-primary-500', 'bg-green-500');
+                        elStatus.innerHTML = `<i data-lucide="check-circle-2" class="w-5 h-5 text-green-500"></i>`;
+                        elText.classList.add('text-green-400');
+                        lucide.createIcons();
+                        
+                        setTimeout(() => {
+                            elItem.style.opacity = '0';
+                            setTimeout(() => elItem.remove(), 300);
+                            if (uploadQueue.children.length === 0) {
+                                uploadQueueContainer.classList.add('hidden');
+                            }
+                        }, 3000);
+
+                    } catch (err) {
+                        console.error("Firestore save error", err);
+                        showToast(`Gagal menyimpan metadata ${file.name}`, "error");
+                    }
+                }
+            );
+        }
+
+        // Dropzone Events
+        dropZone.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.add('drop-zone-active'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.remove('drop-zone-active'), false);
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        });
+
+
+        // --- 8. UTILS & UI HELPERS ---
+
+        window.switchView = function(viewName) {
+            const viewFiles = document.getElementById('view-files');
+            const viewUpload = document.getElementById('view-upload');
+            const navFiles = document.getElementById('nav-files');
+            const navUpload = document.getElementById('nav-upload');
+
+            // Reset Nav Styles
+            navFiles.className = 'w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-dark-800 transition-colors';
+            navUpload.className = 'w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-dark-800 transition-colors';
+
+            if (viewName === 'files') {
+                viewFiles.classList.remove('hidden');
+                viewUpload.classList.add('hidden');
+                navFiles.className = 'w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors bg-primary-500 text-white shadow-lg shadow-primary-500/20';
+                loadDirectory(currentPath); // Refresh on switch back
+            } else if (viewName === 'upload') {
+                viewFiles.classList.add('hidden');
+                viewUpload.classList.remove('hidden');
+                navUpload.className = 'w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors bg-primary-500 text-white shadow-lg shadow-primary-500/20';
+            }
+        }
+
+        window.openNewFolderModal = function() {
+            folderNameInput.value = '';
+            modalNewFolder.classList.remove('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-95');
+            setTimeout(() => folderNameInput.focus(), 100);
+        }
+
+        window.closeNewFolderModal = function() {
+            modalNewFolder.classList.add('opacity-0', 'pointer-events-none');
+            modalContent.classList.add('scale-95');
+        }
+
+        window.refreshCurrentPath = function() {
+            loadDirectory(currentPath);
+        }
+
+        // Export loadDirectory for breadcrumb onclick access
+        window.app = { loadDirectory };
+
+        function getFileIcon(extension) {
+            const imageExt = ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'];
+            const docExt = ['pdf', 'doc', 'docx', 'txt', 'rtf'];
+            const codeExt = ['html', 'css', 'js', 'json', 'py', 'java', 'php'];
+            const mediaExt = ['mp4', 'mp3', 'wav', 'avi', 'mkv'];
+            const archiveExt = ['zip', 'rar', 'tar', 'gz'];
+
+            if (imageExt.includes(extension)) return { icon: 'image', color: 'text-pink-400', bg: 'bg-pink-500/10' };
+            if (docExt.includes(extension)) return { icon: 'file-text', color: 'text-blue-400', bg: 'bg-blue-500/10' };
+            if (codeExt.includes(extension)) return { icon: 'code', color: 'text-amber-400', bg: 'bg-amber-500/10' };
+            if (mediaExt.includes(extension)) return { icon: 'play-square', color: 'text-purple-400', bg: 'bg-purple-500/10' };
+            if (archiveExt.includes(extension)) return { icon: 'archive', color: 'text-red-400', bg: 'bg-red-500/10' };
+            
+            return { icon: 'file', color: 'text-gray-400', bg: 'bg-gray-500/10' };
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let bgClass = 'bg-dark-800 border-gray-700';
+            let icon = 'info';
+            let iconColor = 'text-primary-500';
+
+            if (type === 'success') {
+                icon = 'check-circle';
+                iconColor = 'text-green-500';
+            } else if (type === 'error') {
+                icon = 'alert-circle';
+                iconColor = 'text-red-500';
+            }
+
+            toast.className = `glass-panel px-4 py-3 rounded-lg shadow-lg border flex items-center gap-3 transform translate-y-10 opacity-0 transition-all duration-300`;
+            toast.innerHTML = `
+                <i data-lucide="${icon}" class="w-5 h-5 ${iconColor}"></i>
+                <span class="text-sm font-medium text-white">${message}</span>
+            `;
+
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            // Animate in
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            });
+
+            // Animate out and remove
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Handle Enter key in modal
+        folderNameInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') submitNewFolder();
+        });
+
+</script>
+  </body>
+</html>

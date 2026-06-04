@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masterclass Backend Termux: CRUD, Validation, Search & Auth</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+<script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        mongo: '#11bb4c',
+                        darkBg: '#0b0f19',
+                        darkCard: '#151c2c',
+                        terminalHeader: '#1e293b',
+                        terminalBg: '#0f172a'
+                    }
+                }
+            }
+        }
+</script>
+<style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #11bb4c;
+        }
+        .glow-green {
+            box-shadow: 0 0 15px rgba(17, 187, 76, 0.2);
+        }
+</style>
+  </head>
+  <body class="bg-darkBg text-slate-100 font-sans antialiased selection:bg-mongo selection:text-white">
+
+    <!-- TOOLBAR / NAVBAR -->
+    <header class="sticky top-0 z-40 w-full border-b border-slate-800 bg-darkBg/80 backdrop-blur-md">
+	  <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+		<!-- Left: Brand & Menu Trigger -->
+		<div class="flex items-center gap-4">
+		  <button id="drawer-open-btn" class="rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white focus:outline-none focus:ring-2 focus:ring-mongo" aria-label="Buka Menu">
+			<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+			  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+			</svg>
+		  </button>
+		  <a href="#home" class="flex items-center gap-2 group">
+			<span class="text-xl font-bold tracking-tight bg-gradient-to-r from-emerald-400 to-mongo bg-clip-text text-transparent group-hover:opacity-90 transition">
+			  TermuxBackend<span class="text-white">.Dev</span>
+			</span>
+			<span class="hidden sm:inline-flex items-center rounded-full bg-emerald-500/10 px-2 py-1 text-xs font-medium text-emerald-400 ring-1 ring-inset ring-emerald-500/20">v2.5.0</span>
+		  </a>
+		</div>
+
+		<!-- Middle: Quick Desktop Nav Links -->
+		<nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-300">
+		  <a href="#home" class="hover:text-mongo transition">Home</a>
+		  <a href="#nodejs" class="hover:text-mongo transition">Node.js</a>
+		  <a href="#tailwindcss" class="hover:text-mongo transition">TailwindCSS</a>
+		  <a href="#mongodb" class="hover:text-mongo transition">MongoDB</a>
+		  <a href="#github" class="hover:text-mongo transition">GitHub</a>
+		  <a href="#youtube" class="hover:text-mongo transition">YouTube</a>
+		</nav>
+
+		<!-- Right: Options Menu -->
+		<div class="relative">
+		  <button id="options-menu-btn" class="flex items-center gap-2 rounded-lg border border-slate-800 bg-slate-900 px-3 py-1.5 text-sm font-medium text-slate-300 hover:border-slate-700 hover:bg-slate-800 focus:outline-none" aria-haspopup="true" aria-expanded="false">
+			<span>Opsi</span>
+			<svg class="h-4 w-4 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
+			  <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+			</svg>
+		  </button>
+		  <!-- Options Dropdown Content -->
+		  <div id="options-dropdown" class="absolute right-0 mt-2 w-56 origin-top-right rounded-xl border border-slate-800 bg-darkCard p-2 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none transition-all scale-95 opacity-0 pointer-events-none">
+			<div class="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">Aksi Cepat</div>
+			<button onclick="scrollToSection('final-code')" class="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm text-slate-300 hover:bg-slate-800 hover:text-white transition">
+			  ⚡ Salin Source Code Akhir
+			</button>
+			<button onclick="scrollToSection('terminal-emulator')" class="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm text-slate-300 hover:bg-slate-800 hover:text-white transition">
+			  📟 Jalankan Terminal Simulasi
+			</button>
+			<div class="my-1 border-t border-slate-800"></div>
+			<div class="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">Tema & Tampilan</div>
+			<button onclick="toggleGridGlow()" class="flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm text-slate-300 hover:bg-slate-800 hover:text-white transition">
+			  <span>Toggle Efek Glow</span>
+			  <span id="glow-status" class="text-xs bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded">Aktif</span>
+			</button>
+		  </div>
+		</div>
+	  </div>
+    </header>
+
+    <!-- DRAWER / SIDEBAR MENU (Off-canvas) -->
+    <div id="drawer-overlay" class="fixed inset-0 z-50 bg-black/60 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+    <div id="drawer" class="fixed bottom-0 left-0 top-0 z-50 w-80 max-w-xs bg-darkCard border-r border-slate-800 p-6 shadow-2xl -translate-x-full transition-transform duration-300 ease-in-out flex flex-col justify-between">
+	  <div>
+		<!-- Drawer Header -->
+		<div class="flex items-center justify-between border-b border-slate-800 pb-4">
+		  <div class="flex items-center gap-2">
+			<span class="text-lg font-bold bg-gradient-to-r from-emerald-400 to-mongo bg-clip-text text-transparent">Menu Navigasi</span>
+		  </div>
+		  <button id="drawer-close-btn" class="rounded-lg p-2 text-slate-400 hover:bg-slate-800 hover:text-white focus:outline-none">
+			<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+			  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+			</svg>
+		  </button>
+		</div>
+
+		<!-- Drawer Links -->
+		<nav class="mt-6 space-y-2">
+		  <a href="#home" onclick="closeDrawer()" class="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white transition">
+			🏠 <span>Home</span>
+		  </a>
+		  <a href="#nodejs" onclick="closeDrawer()" class="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white transition">
+			🟢 <span>NodeJs & Express</span>
+		  </a>
+		  <a href="#tailwindcss" onclick="closeDrawer()" class="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white transition">
+			🎨 <span>Tailwindcss</span>
+		  </a>
+		  <a href="#mongodb" onclick="closeDrawer()" class="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white transition">
+			🍃 <span>MongoDB Atlas</span>
+		  </a>
+		  <a href="#github" onclick="closeDrawer()" class="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white transition">
+			🐙 <span>Github & Git</span>
+		  </a>
+		  <a href="#youtube" onclick="closeDrawer()" class="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white transition">
+			📺 <span>YouTube & Referensi</span>
+		  </a>
+		</nav>
+	  </div>
+
+	  <!-- Drawer Footer -->
+	  <div class="border-t border-slate-800 pt-4 text-center">
+		<p class="text-xs text-slate-500">Maju Terus Developer Termux Indonesia! 🇮🇩</p>
+	  </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+
+	  <!-- HERO / HOME SECTION -->
+	  <section id="home" class="relative overflow-hidden rounded-3xl border border-slate-800 bg-slate-950 px-6 py-12 sm:px-12 sm:py-20 lg:px-20 glow-green transition-all duration-300">
+		<!-- Grid Background decoration -->
+		<div id="grid-glow-layer" class="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-30"></div>
+
+		<div class="relative z-10 mx-auto max-w-3xl text-center">
+		  <div class="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-4 py-1.5 text-sm font-medium text-emerald-400 ring-1 ring-inset ring-emerald-500/30 mb-6 animate-pulse">
+			🚀 Kurikulum Eksperimen Mandiri Lengkap
+		  </div>
+		  <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-6xl bg-gradient-to-r from-slate-100 via-white to-emerald-400 bg-clip-text">
+			Panduan Lengkap Backend Web Developer Termux
+		  </h1>
+		  <p class="mt-6 text-lg leading-8 text-slate-300">
+			Buku panduan interaktif hasil eksperimen mandiri Anda. Mengubah aplikasi CRUD kontak sederhana di Termux menjadi sistem backend modern yang dilengkapi <strong class="text-emerald-400">Validasi Data Mongoose</strong>, <strong class="text-emerald-400">Fitur Pencarian Case-Insensitive</strong>, dan <strong class="text-emerald-400">Autentikasi Session & Hashing Bcrypt</strong>.
+		  </p>
+		  <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+			<a href="#tutorial-start" class="rounded-xl bg-mongo px-5 py-3 text-base font-semibold text-white hover:bg-emerald-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mongo transition shadow-lg shadow-emerald-950/50">
+			  Mulai Belajar
+			</a>
+			<a href="#terminal-emulator" class="rounded-xl border border-slate-700 bg-slate-900/50 px-5 py-3 text-base font-semibold text-slate-300 hover:bg-slate-800 transition">
+			  📟 Jalankan Terminal Simulasi
+			</a>
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- QUICK ROADMAP METRICS -->
+	  <div class="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+		<div class="rounded-2xl border border-slate-800 bg-darkCard p-6">
+		  <div class="text-xs font-semibold text-mongo uppercase tracking-wider">Tahap 1</div>
+		  <div class="mt-2 text-2xl font-bold text-white">CRUD Standar</div>
+		  <p class="mt-2 text-sm text-slate-400">Membuat server dasar dengan Express.js dan integrasi dasar MongoDB Atlas.</p>
+		</div>
+		<div class="rounded-2xl border border-slate-800 bg-darkCard p-6">
+		  <div class="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Tahap 2</div>
+		  <div class="mt-2 text-2xl font-bold text-white">Validasi Data</div>
+		  <p class="mt-2 text-sm text-slate-400">Mencegah data sampah dengan Mongoose Schema Validation & feedback error dinamis.</p>
+		</div>
+		<div class="rounded-2xl border border-slate-800 bg-darkCard p-6">
+		  <div class="text-xs font-semibold text-cyan-400 uppercase tracking-wider">Tahap 3</div>
+		  <div class="mt-2 text-2xl font-bold text-white">Pencarian Regex</div>
+		  <p class="mt-2 text-sm text-slate-400">Menyaring data secara dinamis menggunakan operator $regex di server Express.</p>
+		</div>
+		<div class="rounded-2xl border border-slate-800 bg-darkCard p-6">
+		  <div class="text-xs font-semibold text-violet-400 uppercase tracking-wider">Tahap 4</div>
+		  <div class="mt-2 text-2xl font-bold text-white">Proteksi Auth</div>
+		  <p class="mt-2 text-sm text-slate-400">Hashing password dengan bcryptjs dan manajemen sesi login dengan express-session.</p>
+		</div>
+	  </div>
+
+	  <!-- TERMINAL INTERAKTIF (FITUR KEREN) -->
+	  <section id="terminal-emulator" class="mt-16 rounded-3xl border border-slate-800 overflow-hidden shadow-2xl">
+		<!-- Terminal Header -->
+		<div class="bg-terminalHeader px-5 py-3 flex items-center justify-between border-b border-slate-900">
+		  <div class="flex items-center gap-2">
+			<span class="w-3 h-3 rounded-full bg-red-500"></span>
+			<span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+			<span class="w-3 h-3 rounded-full bg-green-500"></span>
+			<span class="ml-2 text-xs font-mono text-slate-400">termux - user@local:~</span>
+		  </div>
+		  <span class="text-xs font-mono text-slate-500">NodeJS v20.x</span>
+		</div>
+		<!-- Terminal Body -->
+		<div class="bg-terminalBg p-6 font-mono text-sm leading-relaxed text-emerald-400 min-h-[350px] flex flex-col justify-between">
+		  <div id="terminal-output" class="space-y-2 overflow-y-auto max-h-[300px]">
+			<p class="text-slate-400">Selamat datang di Terminal Simulasi Termux! Developer Hub.</p>
+			<p class="text-slate-400">Ketik <span class="text-white">help</span> untuk melihat daftar perintah yang tersedia di proyek Anda.</p>
+		  </div>
+		  <!-- Input Line -->
+		  <div class="flex items-center gap-2 border-t border-slate-800/80 pt-4 mt-4">
+			<span class="text-emerald-500">$</span>
+			<input id="terminal-input" type="text" class="flex-1 bg-transparent border-none text-slate-100 focus:outline-none focus:ring-0 font-mono" placeholder="Ketik perintah di sini..." autofocus>
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- TUTORIAL CONTENT WRAPPER -->
+	  <div id="tutorial-start" class="mt-20 grid grid-cols-1 lg:grid-cols-4 gap-10">
+
+		<!-- STICKY SIDE NAVIGATION -->
+		<aside class="lg:col-span-1">
+		  <div class="sticky top-24 space-y-6">
+			<div class="rounded-2xl border border-slate-800 bg-darkCard p-5">
+			  <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">Daftar Isi Tutorial</h3>
+			  <ul class="space-y-3 text-sm font-medium">
+				<li><a href="#prep" class="block text-slate-400 hover:text-mongo py-1 border-l-2 border-transparent hover:border-mongo pl-3 transition">1. Persiapan Pustaka</a></li>
+				<li><a href="#step-validation" class="block text-slate-400 hover:text-mongo py-1 border-l-2 border-transparent hover:border-mongo pl-3 transition">2. Validasi &amp; Notifikasi</a></li>
+				<li><a href="#step-search" class="block text-slate-400 hover:text-mongo py-1 border-l-2 border-transparent hover:border-mongo pl-3 transition">3. Fitur Pencarian Regex</a></li>
+				<li><a href="#step-auth" class="block text-slate-400 hover:text-mongo py-1 border-l-2 border-transparent hover:border-mongo pl-3 transition">4. Autentikasi Admin</a></li>
+				<li><a href="#final-code" class="block text-slate-400 hover:text-mongo py-1 border-l-2 border-transparent hover:border-mongo pl-3 transition">5. Kode Final (server.js &amp; EJS)</a></li>
+			  </ul>
+			</div>
+
+			<div class="rounded-2xl border border-slate-800 bg-emerald-950/20 p-5 glow-green">
+			  <h4 class="text-xs font-bold text-mongo uppercase tracking-widest">💡 Tahukah Anda?</h4>
+			  <p class="mt-2 text-xs text-slate-300 leading-relaxed">
+				Menggunakan <strong class="text-emerald-400">bcryptjs</strong> di Termux jauh lebih stabil daripada <strong class="text-emerald-400">bcrypt</strong> biasa karena ia murni ditulis dengan Javascript tanpa memerlukan kompilasi C++ yang berat di ponsel.
+			  </p>
+			</div>
+		  </div>
+		</aside>
+
+		<!-- TUTORIAL MATERIAL (3 COLS) -->
+		<div class="lg:col-span-3 space-y-16">
+
+		  <!-- PREPARATION SECTION -->
+		  <article id="prep" class="space-y-6">
+			<h2 class="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
+			  <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400 text-sm">1</span>
+			  Persiapan &amp; Instalasi Pustaka
+			</h2>
+			<p class="text-slate-300 leading-relaxed">
+			  Sebelum melangkah ke implementasi logika, kita perlu menambahkan paket modul pihak ketiga yang tangguh agar sistem backend kita memiliki kemampuan verifikasi keamanan yang solid.
+			</p>
+
+			<div class="rounded-xl border border-slate-800 bg-darkCard p-6">
+			  <h3 class="text-sm font-semibold text-slate-300 mb-2 uppercase">Langkah Instalasi di Termux Anda:</h3>
+			  <p class="text-sm text-slate-400 mb-4">Pastikan Anda telah mematikan proses node lokal Anda dengan <code class="bg-slate-900 px-1.5 py-0.5 rounded text-white text-xs">Ctrl + C</code>, lalu jalankan instalasi ganda:</p>
+
+			  <!-- Shell block -->
+			  <div class="bg-terminalBg rounded-lg p-4 font-mono text-xs flex justify-between items-center text-slate-300">
+				<span>$ npm install bcryptjs express-session</span>
+				<button onclick="copyToClipboard('npm install bcryptjs express-session')" class="text-slate-500 hover:text-white transition">Salin</button>
+			  </div>
+			</div>
+		  </article>
+
+		  <!-- SECTION VALIDATION -->
+		  <article id="step-validation" class="space-y-6">
+			<h2 class="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
+			  <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400 text-sm">2</span>
+			  Validasi Data (Mongoose Schema)
+			</h2>
+			<p class="text-slate-300 leading-relaxed">
+			  Mencegah data kotor masuk ke MongoDB Atlas sangat krusial. Schema Validation mengamankan layer database agar input kosong atau input asal-asalan diblokir seketika.
+			</p>
+
+			<!-- Code block comparison -->
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+			  <!-- Old -->
+			  <div class="rounded-xl border border-slate-800 bg-darkCard overflow-hidden">
+				<div class="bg-slate-800 px-4 py-2 text-xs font-semibold text-red-400">Schema Lama (Rentang Masalah)</div>
+				<div class="p-4 font-mono text-xs text-slate-400 overflow-x-auto">
+				  <pre><code>const kontakSchema = new mongoose.Schema({
+					  nama: String,
+					  pesan: String,
+					  waktu: { type: Date, default: Date.now }
+					  });</code></pre>
+				</div>
+			  </div>
+			  <!-- New -->
+			  <div class="rounded-xl border border-emerald-950 bg-emerald-950/20 overflow-hidden">
+				<div class="bg-emerald-900/40 px-4 py-2 text-xs font-semibold text-emerald-400">Schema Baru (Aman &amp; Tervalidasi)</div>
+				<div class="p-4 font-mono text-xs text-slate-300 overflow-x-auto">
+				  <pre><code>const kontakSchema = new mongoose.Schema({
+					  nama: {
+					  type: String,
+					  required: true,
+					  trim: true,
+					  minlength: 3
+					  },
+					  pesan: {
+					  type: String,
+					  required: true,
+					  trim: true,
+					  maxlength: 500
+					  },
+					  waktu: { type: Date, default: Date.now }
+					  });</code></pre>
+				</div>
+			  </div>
+			</div>
+
+			<!-- Explanations inside boxes -->
+			<div class="rounded-xl border border-slate-800 bg-darkCard p-6 space-y-4">
+			  <h4 class="text-sm font-semibold text-white">Bagaimana kita menangani Error ini di Route Express?</h4>
+			  <p class="text-sm text-slate-300">Kita wajib membungkus proses <code class="bg-slate-900 px-1 py-0.5 rounded text-mongo text-xs">save()</code> dengan skema penanganan <code class="bg-slate-900 px-1 py-0.5 rounded text-white text-xs">try...catch</code>, lalu meneruskan pesan error-nya ke views:</p>
+			  <div class="bg-terminalBg rounded-lg p-4 font-mono text-xs text-slate-300 overflow-x-auto">
+				<pre><code>app.post('/tambah', async (req, res) => {
+					const { nama, pesan } = req.body;
+					try {
+					const kontakBaru = new Kontak({ nama, pesan });
+					await kontakBaru.save();
+					res.redirect('/');
+					} catch (error) {
+					res.render('index', { 
+					kontak: await Kontak.find(), 
+					error: "Gagal menambah pesan: Pastikan nama minimal 3 karakter dan pesan tidak kosong!" 
+					});
+					}
+					});</code></pre>
+			  </div>
+			</div>
+		  </article>
+
+		  <!-- SECTION SEARCH -->
+		  <article id="step-search" class="space-y-6">
+			<h2 class="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
+			  <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400 text-sm">3</span>
+			  Fitur Pencarian Kontak (Query Regex)
+			</h2>
+			<p class="text-slate-300 leading-relaxed">
+			  Fitur pencarian diimplementasikan menggunakan rute <strong>GET</strong>. Kita menggunakan pencarian berbasis ekspresi reguler (Regex) dengan opsi <code class="bg-slate-900 px-1 py-0.5 rounded text-white text-xs">'i'</code> agar tidak sensitif huruf besar/kecil.
+			</p>
+
+			<div class="rounded-xl border border-slate-800 bg-darkCard p-6 space-y-4">
+			  <div class="flex items-center gap-2">
+				<span class="rounded bg-sky-500/10 px-2 py-1 text-xs font-semibold text-sky-400">GET ROUTE</span>
+				<span class="text-sm text-slate-400">Implementasi Pencarian di <code class="text-white">server.js</code>:</span>
+			  </div>
+			  <div class="bg-terminalBg rounded-lg p-4 font-mono text-xs text-slate-300 overflow-x-auto">
+				<pre><code>app.get('/', async (req, res) => {
+					const kataKunci = req.query.search; // menangkap dari input name="search"
+					try {
+					let query = {};
+					if (kataKunci) {
+					query.nama = { $regex: kataKunci, $options: 'i' }; 
+					}
+					const dataKontak = await Kontak.find(query);
+					res.render('index', { 
+					kontak: dataKontak, 
+					searchKunci: kataKunci,
+					error: null,
+					sudahLogin: req.session.sudahLogin 
+					});
+					} catch (error) {
+					res.status(500).send("Terjadi kesalahan pada server");
+					}
+					});</code></pre>
+			  </div>
+			</div>
+		  </article>
+
+		  <!-- SECTION AUTHENTICATION -->
+		  <article id="step-auth" class="space-y-6">
+			<h2 class="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
+			  <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400 text-sm">4</span>
+			  Sistem Autentikasi Pengguna &amp; Sesi
+			</h2>
+			<p class="text-slate-300 leading-relaxed">
+			  Kami menyematkan keamanan berlapis. Data admin disimpan secara terenkripsi, status login dikontrol menggunakan modul sesi server (<code class="bg-slate-900 px-1 py-0.5 text-mongo rounded text-xs">express-session</code>), dan aksi CRUD sensitif diberi sistem proteksi akses.
+			</p>
+
+			<!-- Interactive Flow Step Card -->
+			<div class="space-y-4">
+			  <div class="rounded-xl border border-slate-800 bg-darkCard p-6">
+				<h4 class="text-sm font-bold text-white mb-3">1. Skema Enkripsi Bcryptjs</h4>
+				<p class="text-sm text-slate-400 leading-relaxed mb-4">
+				  Saat registrasi admin rahasia dilakukan, password asli akan dipotong, dicampur *salt*, kemudian diacak secara satu arah sebelum masuk ke MongoDB.
+				</p>
+				<div class="bg-terminalBg rounded-lg p-4 font-mono text-xs text-slate-300 overflow-x-auto">
+				  <pre><code>const salt = await bcrypt.genSalt(10);
+					  const hashedPassword = await bcrypt.hash(password, salt);</code></pre>
+				</div>
+			  </div>
+
+			  <div class="rounded-xl border border-slate-800 bg-darkCard p-6">
+				<h4 class="text-sm font-bold text-white mb-3">2. Proteksi Router (Otorisasi)</h4>
+				<p class="text-sm text-slate-400 leading-relaxed mb-4">
+				  Sebelum server mengeksekusi operasi modifikasi data (seperti hapus data), ia harus melakukan pemeriksaan session.
+				</p>
+				<div class="bg-terminalBg rounded-lg p-4 font-mono text-xs text-slate-300 overflow-x-auto">
+				  <pre><code>if (!req.session.sudahLogin) {
+					  return res.send("Akses ditolak! Anda harus login terlebih dahulu.");
+					  }</code></pre>
+				</div>
+			  </div>
+			</div>
+		  </article>
+
+		  <!-- FINAL CONSOLIDATED CODE SECTION -->
+		  <article id="final-code" class="space-y-6">
+			<h2 class="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
+			  <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400 text-sm">5</span>
+			  Gabungan Seluruh Source Code Akhir
+			</h2>
+			<p class="text-slate-300 leading-relaxed">
+			  Berikut adalah kode lengkap terintegrasi dari seluruh sesi diskusi di atas. Anda bisa langsung menggunakannya sebagai referensi siap pakai.
+			</p>
+
+			<!-- Tab interface for server.js vs views/index.ejs -->
+			<div class="rounded-2xl border border-slate-800 bg-darkCard overflow-hidden">
+			  <div class="flex border-b border-slate-800 bg-slate-900 px-4">
+				<button id="tab-server-btn" onclick="switchTab('server')" class="px-4 py-3 text-sm font-semibold border-b-2 border-mongo text-white focus:outline-none transition-all duration-150">server.js (Backend)</button>
+				<button id="tab-ejs-btn" onclick="switchTab('ejs')" class="px-4 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-white focus:outline-none transition-all duration-150">views/index.ejs (Tampilan)</button>
+			  </div>
+
+			  <!-- server.js Tab content -->
+			  <div id="tab-server-content" class="p-6 font-mono text-xs text-slate-300 overflow-x-auto max-h-[600px]">
+				<div class="flex justify-between items-center mb-4">
+				  <span class="text-slate-500">// Seluruh backend Express + Mongoose + Session</span>
+				  <button onclick="copyToClipboard('code-block-server')" class="bg-slate-800 px-2.5 py-1 rounded text-white hover:bg-slate-700 transition">Salin Kode</button>
+				</div>
+				<pre id="code-block-server"><code>const express = require('express');
+					const mongoose = require('mongoose');
+					const bcrypt = require('bcryptjs');
+					const session = require('express-session');
+					const path = require('path');
+
+					const app = express();
+
+					// Konfigurasi Session
+					app.use(session({
+					secret: 'kunci_rahasia_aplikasi_kita',
+					resave: false,
+					saveUninitialized: false
+					}));
+
+					// Middleware parser url & json
+					app.use(express.urlencoded({ extended: true }));
+					app.use(express.json());
+
+					// Set template engine
+					app.set('view engine', 'ejs');
+					app.set('views', path.join(__dirname, 'views'));
+
+					// MongoDB Connection
+					const MONGO_URI = "mongodb+srv://user:pass@cluster.mongodb.net/dbname"; // Ganti dengan URI anda
+					mongoose.connect(MONGO_URI)
+					.then(() => console.log("🍃 MongoDB Atlas Terkoneksi dengan Sukses"))
+					.catch((err) => console.log("Gagal koneksi database: ", err));
+
+					// Database Schemas
+					const kontakSchema = new mongoose.Schema({
+					nama: { type: String, required: true, trim: true, minlength: 3 },
+					pesan: { type: String, required: true, trim: true, maxlength: 500 },
+					waktu: { type: Date, default: Date.now }
+					});
+					const Kontak = mongoose.model('Kontak', kontakSchema);
+
+					const userSchema = new mongoose.Schema({
+					username: { type: String, required: true, unique: true },
+					password: { type: String, required: true }
+					});
+					const User = mongoose.model('User', userSchema);
+
+					// --- ROUTES ---
+
+					// 1. READ / TAMPILAN UTAMA (Dengan Fitur Pencarian)
+					app.get('/', async (req, res) => {
+					const kataKunci = req.query.search;
+					try {
+					let query = {};
+					if (kataKunci) {
+					query.nama = { $regex: kataKunci, $options: 'i' };
+					}
+					const dataKontak = await Kontak.find(query);
+					res.render('index', { 
+					kontak: dataKontak, 
+					searchKunci: kataKunci,
+					error: null,
+					sudahLogin: req.session.sudahLogin,
+					username: req.session.username
+					});
+					} catch (error) {
+					res.status(500).send("Terjadi kesalahan pada server");
+					}
+					});
+
+					// 2. CREATE / TAMBAH DATA (Dengan Validasi Schema Mongoose)
+					app.post('/tambah', async (req, res) => {
+					const { nama, pesan } = req.body;
+					try {
+					const kontakBaru = new Kontak({ nama, pesan });
+					await kontakBaru.save();
+					res.redirect('/');
+					} catch (error) {
+					res.render('index', { 
+					kontak: await Kontak.find(), 
+					searchKunci: '',
+					error: "Gagal menambah pesan: Pastikan nama minimal 3 karakter dan pesan tidak kosong!",
+					sudahLogin: req.session.sudahLogin,
+					username: req.session.username
+					});
+					}
+					});
+
+					// 3. DELETE / HAPUS (Dengan Proteksi Login Sesi)
+					app.get('/hapus/:id', async (req, res) => {
+					if (!req.session.sudahLogin) {
+					return res.status(403).send("Akses ditolak! Anda harus login terlebih dahulu.");
+					}
+					try {
+					await Kontak.findByIdAndDelete(req.params.id);
+					res.redirect('/');
+					} catch (error) {
+					res.status(500).send("Gagal menghapus data");
+					}
+					});
+
+					// 4. REGISTER ADMIN RAHASIA (Untuk Mendaftar Admin Baru)
+					app.post('/register-admin-rahasia', async (req, res) => {
+					try {
+					const { username, password } = req.body;
+					const salt = await bcrypt.genSalt(10);
+					const hashedPassword = await bcrypt.hash(password, salt);
+
+					const adminBaru = new User({ username, password: hashedPassword });
+					await adminBaru.save();
+					res.send("Akun admin berhasil dibuat dengan aman!");
+					} catch (error) {
+					res.status(500).send("Gagal membuat admin: " + error.message);
+					}
+					});
+
+					// 5. LOGIN ADMIN
+					app.post('/login', async (req, res) => {
+					const { username, password } = req.body;
+					try {
+					const user = await User.findOne({ username });
+					if (!user) return res.send("Username atau password salah!");
+
+					const cocok = await bcrypt.compare(password, user.password);
+					if (!cocok) return res.send("Username atau password salah!");
+
+					req.session.sudahLogin = true;
+					req.session.username = user.username;
+					res.redirect('/');
+					} catch (error) {
+					res.status(500).send("Terjadi kesalahan sistem.");
+					}
+					});
+
+					// 6. LOGOUT ADMIN
+					app.get('/logout', (req, res) => {
+					req.session.destroy(() => {
+					res.redirect('/');
+					});
+					});
+
+					app.listen(3000, () => console.log('🚀 Server berjalan lancar di http://localhost:3000'));</code></pre>
+			  </div>
+
+			  <!-- views/index.ejs Tab content -->
+			  <div id="tab-ejs-content" class="hidden p-6 font-mono text-xs text-slate-300 overflow-x-auto max-h-[600px]">
+				<div class="flex justify-between items-center mb-4">
+				  <span class="text-slate-500">&lt;!-- Struktur tampilan UI EJS --&gt;</span>
+				  <button onclick="copyToClipboard('code-block-ejs')" class="bg-slate-800 px-2.5 py-1 rounded text-white hover:bg-slate-700 transition">Salin Kode</button>
+				</div>
+				<pre id="code-block-ejs"><code>&lt;!DOCTYPE html&gt;
+					&lt;html lang="en"&gt;
+					&lt;head&gt;
+					&lt;meta charset="UTF-8"&gt;
+					&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+					&lt;title&gt;Aplikasi Kontak CRUD Ganda&lt;/title&gt;
+					&lt;style&gt;
+					body { font-family: sans-serif; margin: 20px; background-color: #f4f6f9; }
+					.box { padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+					.error { color: red; background-color: #f8d7da; border: 1px solid #f5c6cb; }
+					.info { background-color: #d4edda; border: 1px solid #c3e6cb; }
+					.login-box { background-color: #e2e3e5; border: 1px solid #d6d8db; }
+					table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+					th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+					th { background-color: #11bb4c; color: white; }
+					&lt;/style&gt;
+					&lt;/head&gt;
+					&lt;body&gt;
+
+					&lt;h1&gt;Daftar Kontak Proyek CRUD&lt;/h1&gt;
+
+					&lt;!-- SISTEM PROTEKSI LOGIN DI TAMPILAN --&gt;
+					&lt;% if (typeof sudahLogin !== 'undefined' && sudahLogin) { %&gt;
+					&lt;div class="box info"&gt;
+					&lt;p&gt;Selamat datang, &lt;strong&gt;&lt;%= username %&gt;&lt;/strong&gt;! Anda masuk sebagai Admin. 
+					&lt;a href="/logout" style="color: red; margin-left: 15px;"&gt;Logout&lt;/a&gt;
+					&lt;/p&gt;
+					&lt;/div&gt;
+					&lt;% } else { %&gt;
+					&lt;div class="box login-box"&gt;
+					&lt;h3&gt;Login Admin&lt;/h3&gt;
+					&lt;form action="/login" method="POST"&gt;
+					&lt;input type="text" name="username" placeholder="Username" required&gt;
+					&lt;input type="password" name="password" placeholder="Password" required&gt;
+					&lt;button type="submit"&gt;Login&lt;/button&gt;
+					&lt;/form&gt;
+					&lt;/div&gt;
+					&lt;% } %&gt;
+
+					&lt;!-- ERROR NOTIFICATION LAYER --&gt;
+					&lt;% if (typeof error !== 'undefined' && error) { %&gt;
+					&lt;div class="box error"&gt;
+					&lt;%= error %&gt;
+					&lt;/div&gt;
+					&lt;% } %&gt;
+
+					&lt;!-- FORM PENCARIAN (GET METHOD) --&gt;
+					&lt;form action="/" method="GET" style="margin-bottom: 20px;"&gt;
+					&lt;input type="text" name="search" placeholder="Cari nama kontak..." value="&lt;%= typeof searchKunci !== 'undefined' ? searchKunci : '' %&gt;"&gt;
+					&lt;button type="submit"&gt;Cari&lt;/button&gt;
+					&lt;a href="/"&gt;&lt;button type="button"&gt;Reset&lt;/button&gt;&lt;/a&gt;
+					&lt;/form&gt;
+
+					&lt;!-- FORM INPUT DATA BARU --&gt;
+					&lt;h3&gt;Tambah Kontak Baru&lt;/h3&gt;
+					&lt;form action="/tambah" method="POST" style="margin-bottom: 30px;"&gt;
+					&lt;input type="text" name="nama" placeholder="Nama Lengkap" style="width: 250px;" required&gt;&lt;br&gt;&lt;br&gt;
+					&lt;textarea name="pesan" placeholder="Isi pesan di sini..." style="width: 250px; height: 80px;" required&gt;&lt;/textarea&gt;&lt;br&gt;&lt;br&gt;
+					&lt;button type="submit"&gt;Simpan Data&lt;/button&gt;
+					&lt;/form&gt;
+
+					&lt;!-- TABLE LIST DATA --&gt;
+					&lt;table&gt;
+					&lt;thead&gt;
+					&lt;tr&gt;
+					&lt;th&gt;Nama&lt;/th&gt;
+					&lt;th&gt;Pesan&lt;/th&gt;
+					&lt;th&gt;Tanggal&lt;/th&gt;
+					&lt;th&gt;Aksi&lt;/th&gt;
+					&lt;/tr&gt;
+					&lt;/thead&gt;
+					&lt;tbody&gt;
+					&lt;% if (kontak.length &gt; 0) { %&gt;
+					&lt;% kontak.forEach(k =&gt; { %&gt;
+                    &lt;tr&gt;
+					&lt;td&gt;&lt;%= k.nama %&gt;&lt;/td&gt;
+					&lt;td&gt;&lt;%= k.pesan %&gt;&lt;/td&gt;
+					&lt;td&gt;&lt;%= k.waktu.toDateString() %&gt;&lt;/td&gt;
+					&lt;td&gt;
+					&lt;% if (typeof sudahLogin !== 'undefined' && sudahLogin) { %&gt;
+					&lt;a href="/hapus/&lt;%= k._id %&gt;" onclick="return confirm('Yakin ingin menghapus data ini?')"&gt;
+					&lt;button style="background-color: red; color: white; border: none; padding: 5px 10px; border-radius: 3px;"&gt;Hapus&lt;/button&gt;
+					&lt;/a&gt;
+					&lt;% } else { %&gt;
+					&lt;span style="color: gray; font-style: italic;"&gt;Dikunci&lt;/span&gt;
+					&lt;% } %&gt;
+					&lt;/td&gt;
+                    &lt;/tr&gt;
+					&lt;% }) %&gt;
+					&lt;% } else { %&gt;
+					&lt;tr&gt;
+                    &lt;td colspan="4" style="text-align: center; color: gray;"&gt;Tidak ada data kontak ditemukan.&lt;/td&gt;
+					&lt;/tr&gt;
+					&lt;% } %&gt;
+					&lt;/tbody&gt;
+					&lt;/table&gt;
+
+					&lt;/body&gt;
+					&lt;/html&gt;</code></pre>
+			  </div>
+			</div>
+		  </article>
+
+		  <!-- SECTION EXTERNAL DIRECTORY REFERENCES -->
+		  <section id="external-directories" class="mt-16 pt-10 border-t border-slate-800 space-y-12">
+			<h2 class="text-3xl font-extrabold text-white">🗂️ Referensi Pustaka &amp; Direktori</h2>
+
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+			  <!-- NodeJs -->
+			  <div id="nodejs" class="rounded-2xl border border-slate-800 bg-darkCard p-6 flex flex-col justify-between">
+				<div>
+				  <div class="text-xs font-semibold text-emerald-400 uppercase tracking-widest mb-1">Teknologi Backend</div>
+				  <h3 class="text-xl font-bold text-white mb-2">🟢 Node.js &amp; Express</h3>
+				  <p class="text-sm text-slate-400 mb-4">
+					Runtime JavaScript tangguh di sisi server bersama kerangka Express yang mempermudah manajemen rute URL, manipulasi query web, penanganan server, dan manajemen sesi client secara responsif.
+				  </p>
+				</div>
+				<a href="https://nodejs.org/" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-mongo hover:underline font-semibold">
+				  Pelajari Dokumentasi Resmi &rarr;
+				</a>
+			  </div>
+
+			  <!-- Tailwindcss -->
+			  <div id="tailwindcss" class="rounded-2xl border border-slate-800 bg-darkCard p-6 flex flex-col justify-between">
+				<div>
+				  <div class="text-xs font-semibold text-cyan-400 uppercase tracking-widest mb-1">Framework CSS</div>
+				  <h3 class="text-xl font-bold text-white mb-2">🎨 Tailwindcss</h3>
+				  <p class="text-sm text-slate-400 mb-4">
+					Framework CSS utilitas terdepan di dunia yang memungkinkan perancangan tata letak website secara responsif, adaptif, cepat, serta elegan hanya dengan menyisipkan baris nama kelas CSS dalam HTML Anda.
+				  </p>
+				</div>
+				<a href="https://tailwindcss.com" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-cyan-400 hover:underline font-semibold">
+				  Pelajari Dokumentasi Resmi &rarr;
+				</a>
+			  </div>
+
+			  <!-- MongoDB -->
+			  <div id="mongodb" class="rounded-2xl border border-slate-800 bg-darkCard p-6 flex flex-col justify-between">
+				<div>
+				  <div class="text-xs font-semibold text-mongo uppercase tracking-widest mb-1">Database Cloud</div>
+				  <h3 class="text-xl font-bold text-white mb-2">🍃 MongoDB Atlas</h3>
+				  <p class="text-sm text-slate-400 mb-4">
+					Database NoSQL berbasis dokumen cloud gratis yang diakses secara mulus oleh server lokal maupun jarak jauh. Memberikan kemudahan struktur fleksibel melalui pemodelan Schema Mongoose.
+				  </p>
+				</div>
+				<a href="https://www.mongodb.com/atlas/database" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-mongo hover:underline font-semibold">
+				  Pelajari Dokumentasi Resmi &rarr;
+				</a>
+			  </div>
+
+			  <!-- GitHub -->
+			  <div id="github" class="rounded-2xl border border-slate-800 bg-darkCard p-6 flex flex-col justify-between">
+				<div>
+				  <div class="text-xs font-semibold text-indigo-400 uppercase tracking-widest mb-1">Version Control</div>
+				  <h3 class="text-xl font-bold text-white mb-2">🐙 GitHub &amp; Git Versioning</h3>
+				  <p class="text-sm text-slate-400 mb-4">
+					Penyimpanan repositori kode yang aman secara global untuk memantau sejarah commit, mendistribusikan kode program, dan menghubungkannya dengan auto-deploy server di Render.
+				  </p>
+				</div>
+				<a href="https://github.com" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:underline font-semibold">
+				  Pelajari Dokumentasi Resmi &rarr;
+				</a>
+			  </div>
+			</div>
+
+			<!-- YouTube Referensi (Centered Single) -->
+			<div id="youtube" class="rounded-2xl border border-slate-800 bg-darkCard p-8 text-center max-w-2xl mx-auto">
+			  <div class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10 text-red-500 mb-4">
+				<svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+				  <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.518 3.545 12 3.545 12 3.545s-7.518 0-9.388.508a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.87.508 9.388.508 9.388.508s7.518 0 9.388-.508a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+				</svg>
+			  </div>
+			  <h3 class="text-xl font-bold text-white mb-2">📺 YouTube Channel &amp; Panduan Video</h3>
+			  <p class="text-sm text-slate-400 mb-6">
+				Belajar mandiri Anda tidak akan pernah lengkap tanpa referensi audio visual yang mengajarkan konsep web, trik command-line Termux, dan integrasi backend. Kunjungi pembuat konten edukasi web andalan untuk memperkaya materi!
+			  </p>
+			  <a href="https://www.youtube.com" target="_blank" class="inline-flex items-center gap-2 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-700 transition">
+				Cari Panduan Video Dev di YouTube
+			  </a>
+			</div>
+		  </section>
+
+		</div>
+	  </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-24 border-t border-slate-800 bg-slate-950/60 py-12">
+	  <div class="mx-auto max-w-7xl px-4 text-center text-slate-500 text-sm space-y-2">
+		<p>&copy; 2026 TermuxBackend.Dev. Dibuat dengan antusiasme tinggi untuk komunitas Web Developer Indonesia.</p>
+		<p>Dibangun secara elegan menggunakan Tailwind CSS dan Cinta Teknologi.</p>
+	  </div>
+    </footer>
+
+    <!-- INTERACTIVE SCRIPTS -->
+<script>
+        // Options Dropdown Toggle
+        const optionsBtn = document.getElementById('options-menu-btn');
+        const optionsDropdown = document.getElementById('options-dropdown');
+
+        optionsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = optionsDropdown.classList.contains('pointer-events-auto');
+            if (isOpen) {
+                closeDropdown();
+            } else {
+                openDropdown();
+            }
+        });
+
+        document.addEventListener('click', () => {
+            closeDropdown();
+        });
+
+        function openDropdown() {
+            optionsDropdown.classList.remove('scale-95', 'opacity-0', 'pointer-events-none');
+            optionsDropdown.classList.add('scale-100', 'opacity-100', 'pointer-events-auto');
+            optionsBtn.setAttribute('aria-expanded', 'true');
+        }
+
+        function closeDropdown() {
+            optionsDropdown.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
+            optionsDropdown.classList.remove('scale-100', 'opacity-100', 'pointer-events-auto');
+            optionsBtn.setAttribute('aria-expanded', 'false');
+        }
+
+        // Drawer Menu Toggle
+        const drawer = document.getElementById('drawer');
+        const drawerOverlay = document.getElementById('drawer-overlay');
+        const drawerOpenBtn = document.getElementById('drawer-open-btn');
+        const drawerCloseBtn = document.getElementById('drawer-close-btn');
+
+        drawerOpenBtn.addEventListener('click', openDrawer);
+        drawerCloseBtn.addEventListener('click', closeDrawer);
+        drawerOverlay.addEventListener('click', closeDrawer);
+
+        function openDrawer() {
+            drawer.classList.remove('-translate-x-full');
+            drawerOverlay.classList.remove('pointer-events-none', 'opacity-0');
+            drawerOverlay.classList.add('pointer-events-auto', 'opacity-100');
+        }
+
+        function closeDrawer() {
+            drawer.classList.add('-translate-x-full');
+            drawerOverlay.classList.add('pointer-events-none', 'opacity-0');
+            drawerOverlay.classList.remove('pointer-events-auto', 'opacity-100');
+        }
+
+        // Tab Switcher Logic
+        function switchTab(type) {
+            const serverBtn = document.getElementById('tab-server-btn');
+            const ejsBtn = document.getElementById('tab-ejs-btn');
+            const serverContent = document.getElementById('tab-server-content');
+            const ejsContent = document.getElementById('tab-ejs-content');
+
+            if (type === 'server') {
+                serverBtn.classList.add('border-mongo', 'text-white');
+                serverBtn.classList.remove('border-transparent', 'text-slate-400');
+                ejsBtn.classList.add('border-transparent', 'text-slate-400');
+                ejsBtn.classList.remove('border-mongo', 'text-white');
+
+                serverContent.classList.remove('hidden');
+                ejsContent.classList.add('hidden');
+            } else {
+                ejsBtn.classList.add('border-mongo', 'text-white');
+                ejsBtn.classList.remove('border-transparent', 'text-slate-400');
+                serverBtn.classList.add('border-transparent', 'text-slate-400');
+                serverBtn.classList.remove('border-mongo', 'text-white');
+
+                ejsContent.classList.remove('hidden');
+                serverContent.classList.add('hidden');
+            }
+        }
+
+        // Copy to clipboard utility
+        function copyToClipboard(elementId) {
+            const codeEl = document.getElementById(elementId);
+            const textToCopy = codeEl.textContent || codeEl.innerText;
+            
+            // Modern copy with fallback
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    alertPopup("Kode berhasil disalin ke clipboard! 📋");
+                }).catch(() => {
+                    fallbackCopyText(textToCopy);
+                });
+            } else {
+                fallbackCopyText(textToCopy);
+            }
+        }
+
+        function fallbackCopyText(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed"; 
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                alertPopup("Kode berhasil disalin ke clipboard! 📋");
+            } catch (err) {
+                alertPopup("Gagal menyalin kode.");
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // Elegant Popups (replaces standard alerts)
+        function alertPopup(msg) {
+            const popup = document.createElement('div');
+            popup.className = "fixed bottom-5 right-5 bg-darkCard border border-mongo text-white px-5 py-3 rounded-xl shadow-2xl z-50 flex items-center gap-3 transition-all transform translate-y-10 opacity-0 duration-300";
+            popup.innerHTML = `<span>🟢</span> <p class="text-sm font-semibold">${msg}</p>`;
+            document.body.appendChild(popup);
+            setTimeout(() => {
+                popup.classList.remove('translate-y-10', 'opacity-0');
+            }, 100);
+            setTimeout(() => {
+                popup.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => document.body.removeChild(popup), 300);
+            }, 3000);
+        }
+
+        // Option Toggle Glow Grid decoration
+        function toggleGridGlow() {
+            const grid = document.getElementById('grid-glow-layer');
+            const hero = document.getElementById('home');
+            const status = document.getElementById('glow-status');
+
+            if (grid.classList.contains('opacity-30')) {
+                grid.classList.replace('opacity-30', 'opacity-0');
+                hero.classList.remove('glow-green');
+                status.textContent = "Mati";
+                status.className = "text-xs bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded";
+            } else {
+                grid.classList.replace('opacity-0', 'opacity-30');
+                hero.classList.add('glow-green');
+                status.textContent = "Aktif";
+                status.className = "text-xs bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded";
+            }
+        }
+
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // TERMINAL EMULATOR LOGIC
+        const terminalInput = document.getElementById('terminal-input');
+        const terminalOutput = document.getElementById('terminal-output');
+
+        const commands = {
+            help: `Daftar Perintah:<br>
+- <span class="text-white">help</span>: Menampilkan halaman bantuan ini.<br>
+- <span class="text-white">ls</span>: Melihat direktori proyek saat ini.<br>
+- <span class="text-white">npm install</span>: Mensimulasikan pemasangan pustaka.<br>
+- <span class="text-white">node server.js</span>: Menjalankan server backend secara virtual.<br>
+- <span class="text-white">git push</span>: Melakukan pengiriman data virtual ke repo Github.<br>
+- <span class="text-white">curl</span>: Memproses pembuatan data Admin rahasia secara langsung.`,
+            
+            ls: `<span class="text-white">node_modules/ &nbsp;&nbsp; views/ &nbsp;&nbsp; package.json &nbsp;&nbsp; server.js</span>`,
+            
+            'npm install': `<span class="text-slate-400">up to date, audited 241 packages in 1s<br>
+found <span class="text-emerald-400">0</span> vulnerabilities</span>`,
+            
+            'node server.js': `<span class="text-white">🍃 MongoDB Atlas Terkoneksi dengan Sukses</span><br>
+<span class="text-emerald-400">🚀 Server berjalan lancar di http://localhost:3000</span>`,
+            
+            'git push': `<span class="text-slate-400">Enumerating objects: 5, done.<br>
+Counting objects: 100% (5/5), done.<br>
+Writing objects: 100% (3/3), 421 bytes, done.<br>
+To github.com:akunanda/crud-termux-atlas.git<br>
+&nbsp;&nbsp; b3f17c..ad85b2  main -> main</span>`,
+            
+            curl: `<span class="text-white">Akun admin berhasil dibuat dengan aman! (Simulasi Berhasil)</span>`
+        };
+
+        terminalInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const query = terminalInput.value.trim().toLowerCase();
+                const pLine = document.createElement('p');
+                pLine.innerHTML = `<span class="text-white">$ ${terminalInput.value}</span>`;
+                terminalOutput.appendChild(pLine);
+
+                const responseLine = document.createElement('p');
+                responseLine.className = "text-slate-300 mt-1 pl-2 border-l-2 border-slate-700";
+
+                if (commands[query]) {
+                    responseLine.innerHTML = commands[query];
+                } else if (query === '') {
+                    responseLine.innerHTML = '';
+                } else {
+                    responseLine.innerHTML = `Perintah '<span class="text-red-400">${query}</span>' tidak ditemukan. Ketik <span class="text-white">help</span> untuk daftar bantuan.`;
+                }
+
+                terminalOutput.appendChild(responseLine);
+                terminalInput.value = '';
+
+                // Scroll to bottom
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+            }
+        });
+</script>
+  </body>
+</html>

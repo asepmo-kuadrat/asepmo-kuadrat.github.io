@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArusKas Pro - Atur Keuangan Anda Tanpa Histeris</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom scrollbar for premium touch */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #10b981;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-emerald-500 selection:text-slate-900">
+
+    <!-- Navigation Bar -->
+    <nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('home')">
+                    <div class="p-2 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-xl shadow-lg shadow-emerald-500/20">
+                        <i class="fa-solid fa-wallet text-slate-950 text-xl"></i>
+                    </div>
+                    <span class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 via-teal-200 to-white bg-clip-text text-transparent">ArusKas<span class="font-light">Pro</span>
+                    </span>
+                </div>
+
+                <!-- Nav Menu -->
+                <div class="hidden md:flex items-center gap-1">
+                    <button onclick="switchTab('home')" id="nav-home" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-emerald-400 bg-slate-800/60">
+                        <i class="fa-solid fa-house mr-1.5"></i> Home
+                    </button>
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-slate-400 hover:text-white hover:bg-slate-800/40">
+                        <i class="fa-solid fa-chart-line mr-1.5"></i> Kelola Arus Kas
+                    </button>
+                    <button onclick="switchTab('scenarios')" id="nav-scenarios" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-slate-400 hover:text-white hover:bg-slate-800/40">
+                        <i class="fa-solid fa-users-viewfinder mr-1.5"></i> Skenario Tanggal 1
+                    </button>
+                    <button onclick="switchTab('ai-advisor')" id="nav-ai-advisor" class="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-slate-400 hover:text-white hover:bg-slate-800/40">
+                        <i class="fa-solid fa-robot mr-1.5"></i> Asisten AI
+                    </button>
+                </div>
+
+                <!-- Action Button -->
+                <div class="flex items-center gap-3">
+                  <button onclick="navigateTo('youtube'); toggleDrawer();" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-emerald-400 transition text-left">
+					<i class="fa-brands fa-youtube text-lg w-6"></i>
+				  </button>
+					<!-- Mobile Menu Button -->
+                    <button onclick="toggleMobileMenu()" class="md:hidden text-slate-400 hover:text-white p-2">
+                        <i class="fa-solid fa-bars text-xl" id="menu-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-800 bg-slate-900 px-4 py-3 space-y-2">
+            <button onclick="switchTab('home'); toggleMobileMenu()" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-emerald-400 bg-slate-800/60 block">
+                <i class="fa-solid fa-house mr-2"></i> Home
+            </button>
+            <button onclick="switchTab('dashboard'); toggleMobileMenu()" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 block">
+                <i class="fa-solid fa-chart-line mr-2"></i> Kelola Arus Kas
+            </button>
+            <button onclick="switchTab('scenarios'); toggleMobileMenu()" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 block">
+                <i class="fa-solid fa-users-viewfinder mr-2"></i> Skenario Tanggal 1
+            </button>
+            <button onclick="switchTab('ai-advisor'); toggleMobileMenu()" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 block">
+                <i class="fa-solid fa-robot mr-2"></i> Asisten AI
+            </button>
+        </div>
+    </nav>
+
+    <!-- Notification System Container -->
+    <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2"></div>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- TAB: HOME -->
+        <section id="tab-home" class="space-y-12 transition-all duration-300">
+            <!-- Hero Section -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 p-8 sm:p-12 md:p-16 shadow-2xl">
+                <div class="absolute -top-24 -left-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"></div>
+                <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl"></div>
+                
+                <div class="relative z-10 max-w-3xl">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-6">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Solusi Finansial Tanggal 1
+                    </span>
+                    <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight mb-6">
+                        Kendalikan <span class="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">Arus Kas</span> Anda, Hindari Histeris Tanggal Muda.
+                    </h1>
+                    <p class="text-slate-400 text-lg mb-8 leading-relaxed">
+                        Apakah Anda gelisah menanti transferan seperti Andi? Atau pusing membagi anggaran yang mustahil seperti Budi? Selamat datang di platform pelacak arus kas modern yang membantu Anda menganalisis, mensimulasikan, dan menemukan solusi keuangan elegan.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button onclick="switchTab('dashboard')" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-8 py-3.5 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/35">
+                            <i class="fa-solid fa-wallet"></i> Mulai Atur Kas Anda
+                        </button>
+                        <button onclick="switchTab('scenarios')" class="border border-slate-700 bg-slate-900/60 hover:bg-slate-800/80 hover:border-slate-600 px-8 py-3.5 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-circle-play text-emerald-400"></i> Mainkan Simulasi
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feature Cards (Andi & Budi Scenario Teasers) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Andi Teaser -->
+                <div class="bg-slate-900/50 border border-slate-800/80 p-8 rounded-2xl flex flex-col justify-between hover:border-slate-700 transition-all duration-300 group">
+                    <div>
+                        <div class="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center mb-6 border border-amber-500/20 group-hover:bg-amber-500/20 transition-all">
+                            <i class="fa-regular fa-clock text-amber-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-100 mb-3">Skenario Andi: Kegelisahan Menanti Gaji</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                            Menanti kepastian transfer gaji bulanan sementara tagihan darurat sudah mengetuk pintu. Uji ketahanan dana darurat Anda melalui simulasi interaktif Andi dan pahami cara mengelola ketidakpastian.
+                        </p>
+                    </div>
+                    <button onclick="openAndiSimulation()" class="text-amber-400 hover:text-amber-300 text-sm font-semibold flex items-center gap-2 transition-all self-start">
+                        Bantu Andi Bernavigasi <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i>
+                    </button>
+                </div>
+
+                <!-- Budi Teaser -->
+                <div class="bg-slate-900/50 border border-slate-800/80 p-8 rounded-2xl flex flex-col justify-between hover:border-slate-700 transition-all duration-300 group">
+                    <div>
+                        <div class="w-12 h-12 bg-rose-500/10 rounded-xl flex items-center justify-center mb-6 border border-rose-500/20 group-hover:bg-rose-500/20 transition-all">
+                            <i class="fa-solid fa-calculator text-rose-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-100 mb-3">Skenario Budi: Matematika Anggaran Mustahil</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                            Ketika total pengeluaran wajib melebihi pendapatan bulanan. Ikuti cara cerdas mengoptimalkan pos biaya hidup Budi dengan instrumen penyesuaian anggaran dinamis kami.
+                        </p>
+                    </div>
+                    <button onclick="openBudiSimulation()" class="text-rose-400 hover:text-rose-300 text-sm font-semibold flex items-center gap-2 transition-all self-start">
+                        Selesaikan Masalah Budi <i class="fa-solid fa-arrow-right transition-transform group-hover:translate-x-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Value Proposition -->
+            <div class="border-t border-slate-900 pt-12">
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <h2 class="text-3xl font-extrabold text-slate-100">Mengapa Menggunakan ArusKas Pro?</h2>
+                    <p class="text-slate-400 text-sm mt-3">Alat bantu pencatatan yang mengedepankan fungsionalitas elegan tanpa kerumitan berlebih.</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div class="p-6 bg-slate-900/30 rounded-xl border border-slate-900 text-center">
+                        <i class="fa-solid fa-bolt text-emerald-400 text-2xl mb-4"></i>
+                        <h4 class="font-bold text-slate-200 mb-2">Simpan Instan & Lokal</h4>
+                        <p class="text-slate-400 text-xs">Seluruh data kas Anda disimpan secara aman di peramban lokal tanpa takut bocor ke server luar.</p>
+                    </div>
+                    <div class="p-6 bg-slate-900/30 rounded-xl border border-slate-900 text-center">
+                        <i class="fa-solid fa-brain text-purple-400 text-2xl mb-4"></i>
+                        <h4 class="font-bold text-slate-200 mb-2">Analisis Rekomendasi AI</h4>
+                        <p class="text-slate-400 text-xs">Konsultasikan kondisi keuangan Anda langsung dengan asisten kecerdasan buatan kapan pun dibutuhkan.</p>
+                    </div>
+                    <div class="p-6 bg-slate-900/30 rounded-xl border border-slate-900 text-center">
+                        <i class="fa-solid fa-chart-pie text-cyan-400 text-2xl mb-4"></i>
+                        <h4 class="font-bold text-slate-200 mb-2">Visualisasi Dinamis</h4>
+                        <p class="text-slate-400 text-xs">Pantau perbandingan pemasukan dan pengeluaran secara real-time dengan grafik bar progresif modern.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB: DASHBOARD (KELOLA ARUS KAS) -->
+        <section id="tab-dashboard" class="hidden space-y-8 transition-all duration-300">
+            <!-- Header section inside dashboard -->
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-100">Lembar Kerja Arus Kas</h2>
+                    <p class="text-slate-400 text-sm">Catat, awasi, dan optimalkan seluruh aliran masuk dan keluar dana Anda.</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="clearAllTransactions()" class="px-4 py-2 border border-rose-500/20 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 text-xs font-semibold rounded-lg transition-all duration-200">
+                        <i class="fa-solid fa-trash-can mr-1.5"></i> Kosongkan Lembar Kerja
+                    </button>
+                </div>
+            </div>
+
+            <!-- Financial Summary Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <!-- Total Income Card -->
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl relative overflow-hidden group">
+                    <div class="absolute right-4 top-4 text-emerald-500/10 text-6xl font-extrabold group-hover:scale-110 transition-transform"><i class="fa-solid fa-circle-down"></i></div>
+                    <span class="text-slate-400 text-xs font-medium uppercase tracking-wider">Total Pemasukan</span>
+                    <h3 class="text-2xl font-bold text-emerald-400 mt-2" id="total-income">Rp 0</h3>
+                    <div class="mt-4 flex items-center text-xs text-slate-400">
+                        <span class="text-emerald-400 font-semibold mr-1" id="income-percentage">0%</span> dari total perputaran kas.
+                    </div>
+                </div>
+
+                <!-- Total Expense Card -->
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl relative overflow-hidden group">
+                    <div class="absolute right-4 top-4 text-rose-500/10 text-6xl font-extrabold group-hover:scale-110 transition-transform"><i class="fa-solid fa-circle-up"></i></div>
+                    <span class="text-slate-400 text-xs font-medium uppercase tracking-wider">Total Pengeluaran</span>
+                    <h3 class="text-2xl font-bold text-rose-400 mt-2" id="total-expense">Rp 0</h3>
+                    <div class="mt-4 flex items-center text-xs text-slate-400">
+                        <span class="text-rose-400 font-semibold mr-1" id="expense-percentage">0%</span> dari total perputaran kas.
+                    </div>
+                </div>
+
+                <!-- Net Cash Flow Card -->
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl relative overflow-hidden group" id="net-card-container">
+                    <div class="absolute right-4 top-4 text-slate-500/10 text-6xl font-extrabold group-hover:scale-110 transition-transform" id="net-icon-bg"><i class="fa-solid fa-scale-balanced"></i></div>
+                    <span class="text-slate-400 text-xs font-medium uppercase tracking-wider">Sisa Saldo Kas (Net)</span>
+                    <h3 class="text-2xl font-bold text-slate-200 mt-2" id="net-cash">Rp 0</h3>
+                    <div class="mt-4 flex items-center text-xs text-slate-400" id="net-status-text">
+                        Kondisi kas stabil dan seimbang.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visualization Meter Bar -->
+            <div class="bg-slate-900/60 border border-slate-800/80 p-6 rounded-2xl space-y-3">
+                <div class="flex justify-between text-xs font-medium">
+                    <span class="text-emerald-400"><i class="fa-solid fa-circle-down mr-1"></i> Pemasukan</span>
+                    <span class="text-slate-400" id="ratio-text">Ratio Kas</span>
+                    <span class="text-rose-400">Pengeluaran <i class="fa-solid fa-circle-up ml-1"></i></span>
+                </div>
+                <div class="h-4 w-full bg-slate-950 rounded-full overflow-hidden flex">
+                    <div id="bar-income" class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-500" style="width: 50%"></div>
+                    <div id="bar-expense" class="h-full bg-gradient-to-r from-rose-500 to-red-400 transition-all duration-500" style="width: 50%"></div>
+                </div>
+                <div class="flex justify-between text-[11px] text-slate-500">
+                    <span id="ratio-income-val">50%</span>
+                    <span id="ratio-expense-val">50%</span>
+                </div>
+            </div>
+
+            <!-- Input & Transaction Table Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Add Transaction Card Form -->
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl h-fit space-y-5">
+                    <h3 class="font-bold text-lg text-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-plus-minus text-emerald-400"></i> Tambah Transaksi
+                    </h3>
+                    <form id="transaction-form" onsubmit="handleTransactionSubmit(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-1.5">Jenis Transaksi</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="border-2 border-slate-800 bg-slate-950 rounded-xl p-3 text-center cursor-pointer flex items-center justify-center gap-2 hover:border-emerald-500/50 transition-all" id="label-income">
+                                    <input type="radio" name="tx-type" value="income" checked onchange="toggleFormStyles()" class="hidden">
+                                    <i class="fa-solid fa-circle-down text-emerald-400"></i> <span class="text-sm font-semibold text-slate-300">Pemasukan</span>
+                                </label>
+                                <label class="border-2 border-slate-800 bg-slate-950 rounded-xl p-3 text-center cursor-pointer flex items-center justify-center gap-2 hover:border-rose-500/50 transition-all" id="label-expense">
+                                    <input type="radio" name="tx-type" value="expense" onchange="toggleFormStyles()" class="hidden">
+                                    <i class="fa-solid fa-circle-up text-rose-400"></i> <span class="text-sm font-semibold text-slate-300">Pengeluaran</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="tx-desc" class="block text-xs font-medium text-slate-400 mb-1.5">Nama Transaksi</label>
+                            <input type="text" id="tx-desc" placeholder="Contoh: Gaji Pokok, Belanja Susu" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-emerald-500 transition-all">
+                        </div>
+
+                        <div>
+                            <label for="tx-amount" class="block text-xs font-medium text-slate-400 mb-1.5">Jumlah (Rp)</label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-2.5 text-slate-500 text-sm font-semibold">Rp</span>
+                                <input type="number" id="tx-amount" placeholder="0" min="1" required class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-emerald-500 transition-all">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="tx-status" class="block text-xs font-medium text-slate-400 mb-1.5">Status Transaksi</label>
+                            <select id="tx-status" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-emerald-500 transition-all">
+                                <option value="cleared" class="bg-slate-950">Sudah Cair / Selesai</option>
+                                <option value="pending" class="bg-slate-950">Pending / Tertunda (Andi State)</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="w-full py-3 rounded-xl font-semibold text-slate-950 text-sm bg-emerald-400 hover:bg-emerald-300 shadow-lg shadow-emerald-400/10 transition-all duration-300">
+                            Simpan Catatan
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Transaction List -->
+                <div class="lg:col-span-2 bg-slate-900 border border-slate-800 p-6 rounded-2xl flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-lg text-slate-200 flex items-center gap-2">
+                                <i class="fa-solid fa-list-check text-emerald-400"></i> Log Aliran Kas Anda
+                            </h3>
+                            <div class="text-xs text-slate-400" id="tx-counter">0 Transaksi Tercatat</div>
+                        </div>
+
+                        <!-- Table Area -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="text-xs uppercase text-slate-500 border-b border-slate-800">
+                                    <tr>
+                                        <th scope="col" class="py-3 px-2">Transaksi</th>
+                                        <th scope="col" class="py-3 px-2">Status</th>
+                                        <th scope="col" class="py-3 px-2 text-right">Jumlah</th>
+                                        <th scope="col" class="py-3 px-2 text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transaction-table-body" class="divide-y divide-slate-800/60">
+                                    <!-- Dynamic rows from JS -->
+                                </tbody>
+                            </table>
+                            <div id="no-transactions-view" class="text-center py-12 text-slate-500 space-y-2">
+                                <i class="fa-regular fa-folder-open text-4xl mb-2 text-slate-600"></i>
+                                <p class="text-sm">Belum ada catatan transaksi.</p>
+                                <p class="text-[11px] text-slate-600">Gunakan form di samping untuk mengisinya!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Consult Trigger Footer -->
+                    <div class="mt-6 p-4 rounded-xl bg-slate-950 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2.5 bg-indigo-500/10 text-indigo-400 rounded-lg border border-indigo-500/20">
+                                <i class="fa-solid fa-brain"></i>
+                            </div>
+                            <div class="text-left">
+                                <h4 class="font-bold text-xs text-slate-200">Ingin Pendapat Asisten AI kami?</h4>
+                                <p class="text-[11px] text-slate-400">Analisis arus kas yang telah Anda buat secara otomatis.</p>
+                            </div>
+                        </div>
+                        <button onclick="consultMyCashflowWithAI()" class="text-xs font-semibold px-4 py-2 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 hover:border-indigo-500/50 transition-all duration-200 w-full sm:w-auto">
+                            Analisis Arus Kas <i class="fa-solid fa-angle-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB: SCENARIOS (ANDI & BUDI) -->
+        <section id="tab-scenarios" class="hidden space-y-8 transition-all duration-300">
+            <div class="border-b border-slate-800 pb-6">
+                <h2 class="text-2xl font-bold text-slate-100">Simulasi Interaktif: Andi & Budi</h2>
+                <p class="text-slate-400 text-sm">Mainkan simulasi skenario percakapan tanggal muda dan lihat dampaknya secara dinamis.</p>
+            </div>
+
+            <!-- Double Column for Simulations -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <!-- SCENARIO 1: ANDI (Gaji Belum Ditransfer) -->
+                <div id="sc-andi" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-6 relative overflow-hidden flex flex-col justify-between">
+                    <div class="space-y-6">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20">Skenario 1 - Andi</span>
+                            <span class="text-xs text-slate-400"><i class="fa-solid fa-spinner animate-spin text-amber-400 mr-1.5"></i> Status: Gelisah</span>
+                        </div>
+
+                        <!-- Dialogue bubble -->
+                        <div class="flex gap-4 items-start">
+                            <div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-user-clock text-amber-400"></i>
+                            </div>
+                            <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl rounded-tl-none relative space-y-2">
+                                <h4 class="text-xs font-bold text-slate-300">Andi (Penunggu Transferan)</h4>
+                                <p class="text-slate-400 text-xs leading-relaxed">
+                                    "Aduhh, sudah tanggal 1 malam gajiku belum dikirim kantor! Sementara tagihan sewa kos, susu anak, dan cicilan sudah mengantre panik..."
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Simulator for Andi -->
+                        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-4">
+                            <div class="flex justify-between items-center border-b border-slate-900 pb-3">
+                                <span class="text-xs font-bold text-slate-200">Kondisi Tabungan Darurat Andi:</span>
+                                <span class="text-xs font-semibold text-rose-400" id="andi-emergency-fund">Rp 500.000</span>
+                            </div>
+                            
+                            <!-- Urgent bill checkout simulator -->
+                            <div class="space-y-2.5">
+                                <div class="flex justify-between text-xs text-slate-400">
+                                    <span>Tagihan Kos (Sangat Mendesak)</span>
+                                    <span class="font-semibold text-slate-300">Rp 650.000</span>
+                                </div>
+                                <div class="h-2 w-full bg-slate-900 rounded-full overflow-hidden">
+                                    <div class="h-full bg-rose-500" style="width: 100%"></div>
+                                </div>
+                                <p class="text-[11px] text-amber-500/80 italic"><i class="fa-solid fa-circle-exclamation mr-1"></i> Dana darurat Andi kurang Rp 150.000!</p>
+                            </div>
+
+                            <!-- Interactive Button -->
+                            <div class="pt-2">
+                                <button onclick="triggerAndiAction('pinjam')" class="w-full py-2.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 hover:border-amber-500/40 text-xs font-bold transition-all">
+                                    Pinjam Saudara Sementara / Gunakan Paylater
+                                </button>
+                                <button onclick="triggerAndiAction('negosiasi')" class="w-full mt-2 py-2.5 rounded-lg bg-slate-900 hover:bg-slate-850 text-slate-300 border border-slate-800 text-xs font-bold transition-all">
+                                    Kirim Pesan ke Pemilik Kos (Negosiasi Tunda 2 Hari)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Feedback Area -->
+                        <div id="andi-feedback" class="hidden p-4 rounded-xl border transition-all text-xs">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Trigger Gaji Masuk -->
+                    <div class="pt-4 border-t border-slate-800/50">
+                        <button onclick="transferAndiSalary()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-all">
+                            <i class="fa-solid fa-money-bill-transfer"></i> Simulasikan Gaji Andi Masuk
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SCENARIO 2: BUDI (Besar Pasak daripada Tiang) -->
+                <div id="sc-budi" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-6 relative overflow-hidden flex flex-col justify-between">
+                    <div class="space-y-6">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 rounded bg-rose-500/10 text-rose-400 text-xs font-bold border border-rose-500/20">Skenario 2 - Budi</span>
+                            <span class="text-xs text-slate-400"><i class="fa-solid fa-triangle-exclamation text-rose-400 mr-1.5"></i> Status: Bingung</span>
+                        </div>
+
+                        <!-- Dialogue bubble -->
+                        <div class="flex gap-4 items-start">
+                            <div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center flex-shrink-0">
+                                <i class="fa-solid fa-circle-question text-rose-400"></i>
+                            </div>
+                            <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl rounded-tl-none relative space-y-2">
+                                <h4 class="text-xs font-bold text-slate-300">Budi (Matematika Mustahil)</h4>
+                                <p class="text-slate-400 text-xs leading-relaxed">
+                                    "Uang gajiku Rp 4 juta sudah cair, tapi pas kucoret-coret... tagihan dan biaya makan pokok mencapai Rp 5,5 juta! Bagaimana cara memangkasnya?"
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Adjustment of Budi's Budget -->
+                        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-4">
+                            <div class="flex justify-between items-center border-b border-slate-900 pb-3">
+                                <span class="text-xs font-bold text-slate-200">Pangkas Anggaran Budi:</span>
+                                <span class="text-xs text-slate-400">Gaji: <span class="font-bold text-emerald-400">Rp 4.000.000</span></span>
+                            </div>
+
+                            <!-- Dynamically editable sliders representing budget -->
+                            <div class="space-y-3">
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-slate-400">Anggaran Makan & Ngopi</span>
+                                        <span class="font-semibold text-slate-200" id="val-budi-makan">Rp 2.000.000</span>
+                                    </div>
+                                    <input type="range" id="slider-budi-makan" min="1000000" max="2500000" step="100000" value="2000000" oninput="updateBudiSimulation()" class="w-full accent-emerald-500 bg-slate-800 h-1 rounded-full cursor-pointer">
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-slate-400">Langganan Hiburan & Gaya Hidup</span>
+                                        <span class="font-semibold text-slate-200" id="val-budi-style">Rp 800.000</span>
+                                    </div>
+                                    <input type="range" id="slider-budi-style" min="100000" max="1000000" step="50000" value="800000" oninput="updateBudiSimulation()" class="w-full accent-emerald-500 bg-slate-800 h-1 rounded-full cursor-pointer">
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-slate-400">Transportasi & Internet</span>
+                                        <span class="font-semibold text-slate-200">Rp 2.700.000 (Tetap)</span>
+                                    </div>
+                                    <p class="text-[10px] text-slate-500 italic">Termasuk bayaran cicilan motor tidak bisa ditawar.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Budget Result Bar -->
+                        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                            <div class="flex justify-between text-xs font-bold">
+                                <span>Total Belanja Budi:</span>
+                                <span id="budi-total-cost" class="text-rose-400">Rp 5.500.000</span>
+                            </div>
+                            <div class="h-2 w-full bg-slate-900 rounded-full overflow-hidden">
+                                <div id="budi-budget-bar" class="h-full bg-rose-500 transition-all duration-300" style="width: 100%"></div>
+                            </div>
+                            <p id="budi-summary-text" class="text-[11px] text-rose-400 font-semibold italic text-center"></p>
+                        </div>
+                    </div>
+
+                    <!-- Ask Gemini solution for Budi -->
+                    <div class="pt-4 border-t border-slate-800/50">
+                        <button onclick="askAIPersonaForBudi()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-all">
+                            <i class="fa-solid fa-wand-magic-sparkles animate-pulse"></i> Cari Solusi AI untuk Budi
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TAB: AI ADVISOR -->
+        <section id="tab-ai-advisor" class="hidden space-y-8 transition-all duration-300">
+            <div class="border-b border-slate-800 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-100">Asisten Perencanaan Keuangan AI</h2>
+                    <p class="text-slate-400 text-sm">Konsultasikan langsung permasalahan arus kas Anda dengan kecerdasan buatan.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-400">Persona Konsultan:</span>
+                    <select id="ai-persona" class="bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                        <option value="advisor">Perencana Keuangan Profesional</option>
+                        <option value="andi">Andi (Simpatik & Empatis)</option>
+                        <option value="budi">Budi (Rasional & Penuh Strategi)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Instruction Panel -->
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl h-fit space-y-4">
+                    <h3 class="font-bold text-sm text-slate-200 uppercase tracking-wider">Topik Konsultasi Populer</h3>
+                    <div class="space-y-2">
+                        <button onclick="useQuickQuestion('Bagaimana cara memulai dana darurat dari gaji pas-pasan?')" class="w-full text-left p-3 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-xs text-slate-300 hover:text-white transition-all">
+                            "Bagaimana cara memulai dana darurat dari gaji pas-pasan?"
+                        </button>
+                        <button onclick="useQuickQuestion('Strategi membagi penghasilan menggunakan rumus 50/30/20.')" class="w-full text-left p-3 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-xs text-slate-300 hover:text-white transition-all">
+                            "Strategi membagi penghasilan menggunakan rumus 50/30/20."
+                        </button>
+                        <button onclick="useQuickQuestion('Gajiku selalu habis di minggu pertama gajian, apa solusinya?')" class="w-full text-left p-3 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-xs text-slate-300 hover:text-white transition-all">
+                            "Gajiku selalu habis di minggu pertama gajian, apa solusinya?"
+                        </button>
+                    </div>
+                    <div class="p-4 bg-emerald-500/10 rounded-xl border border-emerald-500/20 text-xs text-slate-400 leading-relaxed">
+                        <i class="fa-solid fa-circle-info text-emerald-400 mr-1"></i> <strong>Tip:</strong> Masukkan data di menu <strong>Kelola Arus Kas</strong> terlebih dahulu agar AI kami dapat memberikan saran personal secara akurat sesuai data nyata Anda!
+                    </div>
+                </div>
+
+                <!-- Chat Dialog Area -->
+                <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl h-[550px] flex flex-col justify-between overflow-hidden">
+                    <!-- Chat Header -->
+                    <div class="p-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+                                <i class="fa-solid fa-robot"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-xs text-slate-200" id="chat-advisor-name">Perencana Keuangan Pro</h4>
+                                <span class="text-[10px] text-emerald-400 flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Online & Siap Membantu
+                                </span>
+                            </div>
+                        </div>
+                        <button onclick="clearChatHistory()" class="text-[10px] text-slate-500 hover:text-slate-400">
+                            Hapus Obrolan
+                        </button>
+                    </div>
+
+                    <!-- Chat Messages list -->
+                    <div id="chat-messages-container" class="flex-grow p-4 overflow-y-auto space-y-4">
+                        <!-- Bot Message -->
+                        <div class="flex gap-3 items-start max-w-[85%]">
+                            <div class="w-8 h-8 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 flex-shrink-0">
+                                <i class="fa-solid fa-robot text-xs"></i>
+                            </div>
+                            <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-2xl rounded-tl-none text-xs text-slate-300 leading-relaxed">
+                                Halo! Saya asisten finansial Anda. Ada masalah atau tantangan arus kas apa yang ingin Anda selesaikan hari ini? 
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Input form -->
+                    <div class="p-4 bg-slate-950 border-t border-slate-800">
+                        <form id="chat-form" onsubmit="handleChatSubmit(event)" class="flex gap-2">
+                            <input type="text" id="chat-input" placeholder="Tanyakan apa saja seputar masalah keuangan..." required class="flex-grow bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 transition-all">
+                            <button type="submit" id="chat-send-btn" class="px-5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-900 bg-slate-950 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-500">© 2026 ArusKas Pro. Dirancang elegan untuk kenyamanan dompet Anda.</span>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="switchTab('home')" class="text-xs text-slate-400 hover:text-white">Home</button>
+                <button onclick="switchTab('dashboard')" class="text-xs text-slate-400 hover:text-white">Kelola Kas</button>
+                <button onclick="switchTab('scenarios')" class="text-xs text-slate-400 hover:text-white">Skenario</button>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Core state management
+        let state = {
+            transactions: [
+                { id: 1, desc: 'Gaji Bulanan Andi', amount: 4500000, type: 'income', status: 'pending' },
+                { id: 2, desc: 'Sewa Kos Andi', amount: 650000, type: 'expense', status: 'cleared' },
+                { id: 3, desc: 'Susu Anak', amount: 150000, type: 'expense', status: 'cleared' },
+                { id: 4, desc: 'Gaji Pokok Budi', amount: 4000000, type: 'income', status: 'cleared' },
+                { id: 5, desc: 'Anggaran Makan Budi', amount: 2000000, type: 'expense', status: 'cleared' }
+            ],
+            chatHistory: []
+        };
+
+        // Load data from localStorage if existing
+        function initApp() {
+            const stored = localStorage.getItem('aruskas_pro_data');
+            if (stored) {
+                try {
+                    state = JSON.parse(stored);
+                } catch(e) {
+                    console.error("Error parsing stored data, using fallback", e);
+                }
+            }
+            // Populate initial calculations
+            updateCalculations();
+            updateBudiSimulation();
+            toggleFormStyles();
+        }
+
+        // Save data helper
+        function saveData() {
+            localStorage.setItem('aruskas_pro_data', JSON.stringify(state));
+        }
+
+        // Custom Notification Toast
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let iconClass = 'fa-circle-check text-emerald-400';
+            let bgClass = 'bg-slate-900 border-emerald-500/30';
+            if (type === 'error') {
+                iconClass = 'fa-triangle-exclamation text-rose-500';
+                bgClass = 'bg-slate-900 border-rose-500/30';
+            } else if (type === 'info') {
+                iconClass = 'fa-circle-info text-blue-400';
+                bgClass = 'bg-slate-900 border-blue-500/30';
+            }
+
+            toast.className = `flex items-center gap-3 px-4 py-3 rounded-xl border ${bgClass} shadow-xl max-w-sm transform translate-y-2 opacity-0 transition-all duration-300`;
+            toast.innerHTML = `
+                <i class="fa-solid ${iconClass} text-lg"></i>
+                <div class="text-xs font-medium text-slate-200">${message}</div>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Animate In
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            // Animate Out & Remove
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 4000);
+        }
+
+        // Switch App Tab View
+        function switchTab(tabName) {
+            const tabs = ['home', 'dashboard', 'scenarios', 'ai-advisor'];
+            tabs.forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                const navEl = document.getElementById(`nav-${t}`);
+                if (t === tabName) {
+                    el.classList.remove('hidden');
+                    if(navEl) {
+                        navEl.className = "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-emerald-400 bg-slate-800/60";
+                    }
+                } else {
+                    el.classList.add('hidden');
+                    if(navEl) {
+                        navEl.className = "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-slate-400 hover:text-white hover:bg-slate-800/40";
+                    }
+                }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Mobile Menu toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('menu-icon');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.className = "fa-solid fa-xmark text-xl";
+            } else {
+                menu.classList.add('hidden');
+                icon.className = "fa-solid fa-bars text-xl";
+            }
+        }
+
+        // Formatter currency helper
+        function formatIDR(value) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                maximumFractionDigits: 0
+            }).format(value);
+        }
+
+        // Form logic styles toggle based on selection (income vs expense colors)
+        function toggleFormStyles() {
+            const selectedType = document.querySelector('input[name="tx-type"]:checked').value;
+            const lblIncome = document.getElementById('label-income');
+            const lblExpense = document.getElementById('label-expense');
+
+            if (selectedType === 'income') {
+                lblIncome.className = "border-2 border-emerald-500 bg-emerald-500/5 rounded-xl p-3 text-center cursor-pointer flex items-center justify-center gap-2 transition-all";
+                lblExpense.className = "border-2 border-slate-800 bg-slate-950 rounded-xl p-3 text-center cursor-pointer flex items-center justify-center gap-2 hover:border-rose-500/30 transition-all";
+            } else {
+                lblIncome.className = "border-2 border-slate-800 bg-slate-950 rounded-xl p-3 text-center cursor-pointer flex items-center justify-center gap-2 hover:border-emerald-500/30 transition-all";
+                lblExpense.className = "border-2 border-rose-500 bg-rose-500/5 rounded-xl p-3 text-center cursor-pointer flex items-center justify-center gap-2 transition-all";
+            }
+        }
+
+        // Handle Add Transaction form submit
+        function handleTransactionSubmit(event) {
+            event.preventDefault();
+            const desc = document.getElementById('tx-desc').value.trim();
+            const amount = parseFloat(document.getElementById('tx-amount').value);
+            const type = document.querySelector('input[name="tx-type"]:checked').value;
+            const status = document.getElementById('tx-status').value;
+
+            if (!desc || isNaN(amount) || amount <= 0) {
+                showNotification("Harap lengkapi detail data transaksi dengan benar.", "error");
+                return;
+            }
+
+            const newTx = {
+                id: Date.now(),
+                desc,
+                amount,
+                type,
+                status
+            };
+
+            state.transactions.unshift(newTx);
+            saveData();
+            updateCalculations();
+            
+            // reset form elements
+            document.getElementById('tx-desc').value = '';
+            document.getElementById('tx-amount').value = '';
+            
+            showNotification(`Berhasil mencatat transaksi: ${desc}`);
+        }
+
+        // Delete a single transaction
+        function deleteTransaction(id) {
+            const txIndex = state.transactions.findIndex(t => t.id === id);
+            if (txIndex !== -1) {
+                const desc = state.transactions[txIndex].desc;
+                state.transactions.splice(txIndex, 1);
+                saveData();
+                updateCalculations();
+                showNotification(`Berhasil menghapus: ${desc}`, 'info');
+            }
+        }
+
+        // Toggle Pending/Cleared status
+        function toggleTransactionStatus(id) {
+            const tx = state.transactions.find(t => t.id === id);
+            if (tx) {
+                tx.status = tx.status === 'cleared' ? 'pending' : 'cleared';
+                saveData();
+                updateCalculations();
+                showNotification(`Status transaksi "${tx.desc}" diubah ke ${tx.status === 'cleared' ? 'Sudah Cair' : 'Pending'}.`);
+            }
+        }
+
+        // Clear all transactions completely
+        function clearAllTransactions() {
+            state.transactions = [];
+            saveData();
+            updateCalculations();
+            showNotification("Seluruh catatan transaksi telah dikosongkan.", "info");
+        }
+
+        // Main updates logic
+        function updateCalculations() {
+            let totalIncome = 0;
+            let totalExpense = 0;
+
+            state.transactions.forEach(t => {
+                // We calculate cleared items, pending items might still show up differently or trigger warnings
+                if (t.type === 'income') {
+                    totalIncome += t.amount;
+                } else if (t.type === 'expense') {
+                    totalExpense += t.amount;
+                }
+            });
+
+            const netCash = totalIncome - totalExpense;
+            const totalTurnover = totalIncome + totalExpense;
+
+            // Render on DOM
+            document.getElementById('total-income').innerText = formatIDR(totalIncome);
+            document.getElementById('total-expense').innerText = formatIDR(totalExpense);
+            document.getElementById('net-cash').innerText = formatIDR(netCash);
+
+            // Ratios percentage
+            const incPercentage = totalTurnover > 0 ? Math.round((totalIncome / totalTurnover) * 100) : 0;
+            const expPercentage = totalTurnover > 0 ? Math.round((totalExpense / totalTurnover) * 100) : 0;
+
+            document.getElementById('income-percentage').innerText = `${incPercentage}%`;
+            document.getElementById('expense-percentage').innerText = `${expPercentage}%`;
+
+            // Adjust Bar Meter visually
+            const barInc = document.getElementById('bar-income');
+            const barExp = document.getElementById('bar-expense');
+            if (totalTurnover === 0) {
+                barInc.style.width = '50%';
+                barExp.style.width = '50%';
+                document.getElementById('ratio-income-val').innerText = '0%';
+                document.getElementById('ratio-expense-val').innerText = '0%';
+            } else {
+                barInc.style.width = `${incPercentage}%`;
+                barExp.style.width = `${expPercentage}%`;
+                document.getElementById('ratio-income-val').innerText = `${incPercentage}%`;
+                document.getElementById('ratio-expense-val').innerText = `${expPercentage}%`;
+            }
+
+            // Style of Net Cash Card according to deficit or surplus
+            const netCard = document.getElementById('net-card-container');
+            const netIcon = document.getElementById('net-icon-bg');
+            const netStatus = document.getElementById('net-status-text');
+
+            if (netCash < 0) {
+                netCard.className = "bg-slate-900 border border-rose-500/40 p-6 rounded-2xl relative overflow-hidden group";
+                netIcon.className = "absolute right-4 top-4 text-rose-500/10 text-6xl font-extrabold group-hover:scale-110 transition-transform";
+                netStatus.innerHTML = `<span class="text-rose-400 font-semibold"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Defisit Kas!</span> Besar pasak daripada tiang.`;
+            } else if (netCash === 0 && totalTurnover > 0) {
+                netCard.className = "bg-slate-900 border border-amber-500/40 p-6 rounded-2xl relative overflow-hidden group";
+                netIcon.className = "absolute right-4 top-4 text-amber-500/10 text-6xl font-extrabold group-hover:scale-110 transition-transform";
+                netStatus.innerHTML = `<span class="text-amber-400 font-semibold">Tepat Seimbang.</span> Kas pas-pasan tanpa sisa tabungan.`;
+            } else {
+                netCard.className = "bg-slate-900 border border-emerald-500/40 p-6 rounded-2xl relative overflow-hidden group";
+                netIcon.className = "absolute right-4 top-4 text-emerald-500/10 text-6xl font-extrabold group-hover:scale-110 transition-transform";
+                netStatus.innerHTML = `<span class="text-emerald-400 font-semibold"><i class="fa-solid fa-circle-check mr-1"></i> Surplus Kas Aman.</span> Arus keuangan berjalan sehat.`;
+            }
+
+            // Build table body rows
+            const tableBody = document.getElementById('transaction-table-body');
+            const noTxView = document.getElementById('no-transactions-view');
+            tableBody.innerHTML = '';
+
+            if (state.transactions.length === 0) {
+                noTxView.classList.remove('hidden');
+            } else {
+                noTxView.classList.add('hidden');
+                
+                state.transactions.forEach(t => {
+                    const statusBadge = t.status === 'cleared' 
+                        ? `<button onclick="toggleTransactionStatus(${t.id})" class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/25 transition-all">Cair</button>`
+                        : `<button onclick="toggleTransactionStatus(${t.id})" class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 hover:bg-amber-500/25 transition-all animate-pulse">Pending</button>`;
+
+                    const amountColor = t.type === 'income' ? 'text-emerald-400' : 'text-rose-400';
+                    const amountSign = t.type === 'income' ? '+' : '-';
+
+                    const row = document.createElement('tr');
+                    row.className = "hover:bg-slate-900/40 transition-colors";
+                    row.innerHTML = `
+                        <td class="py-3.5 px-2">
+                            <div class="font-semibold text-slate-200 text-xs">${t.desc}</div>
+                            <div class="text-[10px] text-slate-500 capitalize">${t.type === 'income' ? 'Aliran Masuk' : 'Aliran Keluar'}</div>
+                        </td>
+                        <td class="py-3.5 px-2">${statusBadge}</td>
+                        <td class="py-3.5 px-2 text-right font-mono font-bold text-xs ${amountColor}">${amountSign} ${formatIDR(t.amount)}</td>
+                        <td class="py-3.5 px-2 text-center">
+                            <button onclick="deleteTransaction(${t.id})" class="text-slate-500 hover:text-rose-400 p-1.5 transition-all" title="Hapus">
+                                <i class="fa-regular fa-trash-can text-xs"></i>
+                            </button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            }
+
+            document.getElementById('tx-counter').innerText = `${state.transactions.length} Transaksi Tercatat`;
+        }
+
+        // Andi Skenario actions
+        function triggerAndiAction(actionType) {
+            const feedbackEl = document.getElementById('andi-feedback');
+            feedbackEl.classList.remove('hidden');
+
+            if (actionType === 'pinjam') {
+                feedbackEl.className = "p-4 rounded-xl border border-rose-500/20 bg-rose-500/10 text-rose-300 text-xs space-y-1.5";
+                feedbackEl.innerHTML = `
+                    <h5 class="font-bold text-rose-400"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i> Risiko Beban Baru</h5>
+                    <p>Andi terpaksa meminjam atau menggunakan layanan berbayar instan. Meskipun tagihan kontrakan beres hari ini, bulan depan Andi harus membayar pokok pinjaman beserta bunga atau denda yang memperberat keuangan!</p>
+                `;
+            } else if (actionType === 'negosiasi') {
+                feedbackEl.className = "p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 text-xs space-y-1.5";
+                feedbackEl.innerHTML = `
+                    <h5 class="font-bold text-emerald-400"><i class="fa-solid fa-handshake mr-1.5"></i> Keputusan Bijak</h5>
+                    <p>Negosiasi yang transparan mengamankan nama baik Andi. Pemilik kos menyetujui tenggat waktu tambahan 2 hari tanpa tambahan bunga. Strategi komunikasi yang jujur selalu memenangkan ketenangan pikiran!</p>
+                `;
+            }
+        }
+
+        // Andi Salary Clear trigger
+        function transferAndiSalary() {
+            // Find any pending salary in transaction list or add it if not exists
+            const pendingIncome = state.transactions.find(t => t.desc.includes('Andi') && t.type === 'income' && t.status === 'pending');
+            
+            if (pendingIncome) {
+                pendingIncome.status = 'cleared';
+                showNotification("Gaji Andi sebesar Rp 4.500.000 resmi dikirim kantor!", "success");
+            } else {
+                // add new cleared income for Andi if not there
+                state.transactions.push({
+                    id: Date.now(),
+                    desc: "Simulasi Gaji Andi Cair",
+                    amount: 4500000,
+                    type: "income",
+                    status: "cleared"
+                });
+                showNotification("Simulasi Gaji Andi cair ditambahkan!", "success");
+            }
+            saveData();
+            updateCalculations();
+            
+            // visually update scenarios screen
+            const feedbackEl = document.getElementById('andi-feedback');
+            feedbackEl.classList.remove('hidden');
+            feedbackEl.className = "p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-emerald-300 text-xs space-y-1.5";
+            feedbackEl.innerHTML = `
+                <h5 class="font-bold text-emerald-400"><i class="fa-solid fa-circle-check mr-1.5"></i> Hore! Gaji Andi Cair</h5>
+                <p>Transfer gaji resmi mendarat. Kegelisahan Andi berkurang secara signifikan karena seluruh kebutuhan wajib segera terlunasi dengan dana segar!</p>
+            `;
+            document.getElementById('andi-emergency-fund').innerText = "Rp 5.000.000";
+        }
+
+        // Budi Live Budget Optimization Slider logic
+        function updateBudiSimulation() {
+            const makanVal = parseFloat(document.getElementById('slider-budi-makan').value);
+            const styleVal = parseFloat(document.getElementById('slider-budi-style').value);
+            const fixedCosts = 2700000; // transport, internet, cicilan wajib
+
+            const totalExpenses = makanVal + styleVal + fixedCosts;
+            const budgetLimit = 4000000;
+
+            document.getElementById('val-budi-makan').innerText = formatIDR(makanVal);
+            document.getElementById('val-budi-style').innerText = formatIDR(styleVal);
+            document.getElementById('budi-total-cost').innerText = formatIDR(totalExpenses);
+
+            const percentage = (totalExpenses / budgetLimit) * 100;
+            const bar = document.getElementById('budi-budget-bar');
+            const summaryText = document.getElementById('budi-summary-text');
+
+            if (percentage > 100) {
+                bar.style.width = "100%";
+                bar.className = "h-full bg-rose-500 transition-all duration-300";
+                summaryText.innerHTML = `<i class="fa-solid fa-triangle-exclamation mr-1"></i> Defisit! Anggaran Budi Minus ${formatIDR(totalExpenses - budgetLimit)}`;
+                summaryText.className = "text-[11px] text-rose-400 font-semibold italic text-center";
+            } else if (percentage === 100) {
+                bar.style.width = "100%";
+                bar.className = "h-full bg-amber-500 transition-all duration-300";
+                summaryText.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Impas Sempurna! Saldo pas Rp 0`;
+                summaryText.className = "text-[11px] text-amber-400 font-semibold italic text-center";
+            } else {
+                bar.style.width = `${(totalExpenses / budgetLimit) * 100}%`;
+                bar.className = "h-full bg-emerald-500 transition-all duration-300";
+                summaryText.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Sukses Hemat! Sisa surplus ${formatIDR(budgetLimit - totalExpenses)} untuk dana darurat Budi.`;
+                summaryText.className = "text-[11px] text-emerald-400 font-semibold italic text-center";
+            }
+        }
+
+        // Helper trigger to open specific scenarios
+        function openAndiSimulation() {
+            switchTab('scenarios');
+            const scAndi = document.getElementById('sc-andi');
+            scAndi.classList.add('ring-2', 'ring-amber-500/50');
+            setTimeout(() => {
+                scAndi.classList.remove('ring-2', 'ring-amber-500/50');
+            }, 2500);
+        }
+
+        function openBudiSimulation() {
+            switchTab('scenarios');
+            const scBudi = document.getElementById('sc-budi');
+            scBudi.classList.add('ring-2', 'ring-rose-500/50');
+            setTimeout(() => {
+                scBudi.classList.remove('ring-2', 'ring-rose-500/50');
+            }, 2500);
+        }
+
+        // Function to make dynamic Gemini Call
+        async function fetchGeminiAdvice(systemPrompt, userQuery) {
+            const apiKey = ""; // Canvas Runtime handles this
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                }
+            };
+
+            // Implement Exponential Backoff wrapper
+            const makeRequest = async (retries = 3, delay = 1000) => {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP Error Status: ${response.status}`);
+                    }
+                    return await response.json();
+                } catch (error) {
+                    if (retries > 0) {
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        return makeRequest(retries - 1, delay * 2);
+                    } else {
+                        throw error;
+                    }
+                }
+            };
+
+            const result = await makeRequest();
+            const text = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (!text) {
+                throw new Error("Balasan kosong dari Gemini API.");
+            }
+            return text;
+        }
+
+        // AI Advice trigger for Budi from scenario tab
+        async function askAIPersonaForBudi() {
+            switchTab('ai-advisor');
+            document.getElementById('ai-persona').value = 'budi';
+            updateAIPersona();
+            
+            const budiQuery = "Halo Asisten AI, berikan strategi konkret bagi saya (Budi) agar tidak terbiasa menggunakan gaya hidup berlebih sebesar Rp 800.000 saat pendapatan bulanan saya terbatas hanya Rp 4.000.000. Apa pos belanja yang bisa diefisiensikan?";
+            
+            // clear existing welcome
+            appendUserMessage(budiQuery);
+            await triggerBotResponse(budiQuery);
+        }
+
+        // Consult user's current transaction status
+        async function consultMyCashflowWithAI() {
+            switchTab('ai-advisor');
+            
+            // Formulate current cash flow context
+            let incomesList = [];
+            let expensesList = [];
+            state.transactions.forEach(t => {
+                if (t.type === 'income') {
+                    incomesList.push(`${t.desc}: ${formatIDR(t.amount)} (${t.status})`);
+                } else {
+                    expensesList.push(`${t.desc}: ${formatIDR(t.amount)} (${t.status})`);
+                }
+            });
+
+            const userQuery = `Berikut adalah data lembar kerja arus kas terperinci saya saat ini:\n\nPEMASUKAN:\n${incomesList.join('\n') || 'Belum ada data'}\n\nPENGELUARAN:\n${expensesList.join('\n') || 'Belum ada data'}\n\nTolong analisis kondisi keuangan saya secara keseluruhan dan tawarkan rekomendasi penghematan cerdas yang solutif.`;
+            
+            appendUserMessage("Mohon analisis lembar kerja arus kas nyata saya saat ini dan berikan saran finansial mendalam.");
+            await triggerBotResponse(userQuery);
+        }
+
+        // Chat UI helpers
+        function appendUserMessage(text) {
+            const container = document.getElementById('chat-messages-container');
+            const userMsg = document.createElement('div');
+            userMsg.className = "flex gap-3 items-start justify-end max-w-[85%] ml-auto";
+            userMsg.innerHTML = `
+                <div class="p-3.5 bg-indigo-600/20 border border-indigo-500/20 rounded-2xl rounded-tr-none text-xs text-slate-200 leading-relaxed">
+                    ${text}
+                </div>
+                <div class="w-8 h-8 rounded-full bg-slate-850 border border-slate-800 flex items-center justify-center text-slate-300 flex-shrink-0">
+                    <i class="fa-solid fa-user text-xs"></i>
+                </div>
+            `;
+            container.appendChild(userMsg);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function appendBotMessage(text) {
+            const container = document.getElementById('chat-messages-container');
+            const botMsg = document.createElement('div');
+            botMsg.className = "flex gap-3 items-start max-w-[85%]";
+            botMsg.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 flex-shrink-0">
+                    <i class="fa-solid fa-robot text-xs"></i>
+                </div>
+                <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-2xl rounded-tl-none text-xs text-slate-300 leading-relaxed whitespace-pre-line">
+                    ${text}
+                </div>
+            `;
+            container.appendChild(botMsg);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Streaming/Loading placeholder
+        function appendLoadingPlaceholder() {
+            const container = document.getElementById('chat-messages-container');
+            const placeholder = document.createElement('div');
+            placeholder.id = 'ai-chat-loader';
+            placeholder.className = "flex gap-3 items-start max-w-[85%]";
+            placeholder.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 flex-shrink-0">
+                    <i class="fa-solid fa-robot text-xs"></i>
+                </div>
+                <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-2xl rounded-tl-none text-xs text-slate-500 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-notch animate-spin text-indigo-400"></i> Asisten sedang menyusun rekomendasi...
+                </div>
+            `;
+            container.appendChild(placeholder);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function removeLoadingPlaceholder() {
+            const loader = document.getElementById('ai-chat-loader');
+            if (loader) loader.remove();
+        }
+
+        // Switch Quick Question
+        function useQuickQuestion(questionText) {
+            document.getElementById('chat-input').value = questionText;
+        }
+
+        // Trigger bot responses
+        async function triggerBotResponse(userPrompt) {
+            appendLoadingPlaceholder();
+
+            // Formulate System Instruction according to Persona
+            const selectedPersona = document.getElementById('ai-persona').value;
+            let systemInstruction = "";
+
+            if (selectedPersona === 'advisor') {
+                systemInstruction = "Anda adalah Perencana Keuangan Profesional berpengalaman yang ramah, sopan, dan berorientasi pada solusi praktis. Berikan saran arus kas (cash flow) dengan gaya tulisan yang elegan, ringkas, rapi, dan mudah dimengerti menggunakan terminologi Indonesia.";
+            } else if (selectedPersona === 'andi') {
+                systemInstruction = "Anda berperan sebagai Andi, seorang pekerja kelas menengah yang mudah cemas dan berempati tinggi. Tanggapi keluhan keuangan pengguna dengan sangat bersahabat, bagikan rasa solidaritas senasib sepenanggungan atas tagihan tanggal 1, namun tetap selipkan motivasi positif.";
+            } else if (selectedPersona === 'budi') {
+                systemInstruction = "Anda berperan sebagai Budi, perencana keuangan mandiri yang rasional, tegas, dan ahli memangkas biaya hidup yang tidak perlu. Tawarkan solusi matematika anggaran yang ketat, realistis, jujur, serta sarankan memotong gaya hidup berlebihan secara to-the-point.";
+            }
+
+            try {
+                const botReply = await fetchGeminiAdvice(systemInstruction, userPrompt);
+                removeLoadingPlaceholder();
+                appendBotMessage(botReply);
+            } catch (err) {
+                console.error("Gemini API Error", err);
+                removeLoadingPlaceholder();
+                appendBotMessage("Maaf, terjadi gangguan koneksi ketika menghubungi asisten AI Anda. Silakan coba kirim ulang pertanyaan beberapa saat lagi.");
+            }
+        }
+
+        // Handle Chat Submit Form
+        async function handleChatSubmit(event) {
+            event.preventDefault();
+            const inputEl = document.getElementById('chat-input');
+            const text = inputEl.value.trim();
+            if (!text) return;
+
+            appendUserMessage(text);
+            inputEl.value = '';
+
+            await triggerBotResponse(text);
+        }
+
+        // Clear Chat logs UI
+        function clearChatHistory() {
+            const container = document.getElementById('chat-messages-container');
+            container.innerHTML = `
+                <div class="flex gap-3 items-start max-w-[85%]">
+                    <div class="w-8 h-8 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 flex-shrink-0">
+                        <i class="fa-solid fa-robot text-xs"></i>
+                    </div>
+                    <div class="p-3.5 bg-slate-950 border border-slate-800 rounded-2xl rounded-tl-none text-xs text-slate-300 leading-relaxed">
+                        Riwayat obrolan telah dibersihkan. Tanyakan apa saja untuk memulai analisis keuangan baru!
+                    </div>
+                </div>
+            `;
+        }
+
+        // Watch persona changing
+        function updateAIPersona() {
+            const sel = document.getElementById('ai-persona').value;
+            const titleEl = document.getElementById('chat-advisor-name');
+            if (sel === 'advisor') {
+                titleEl.innerText = "Perencana Keuangan Pro";
+            } else if (sel === 'andi') {
+                titleEl.innerText = "Andi (Rekan Tanggal Tua)";
+            } else if (sel === 'budi') {
+                titleEl.innerText = "Budi (Ahli Budget Ketat)";
+            }
+        }
+
+        document.getElementById('ai-persona').addEventListener('change', updateAIPersona);
+
+        // Run application on window load
+        window.onload = function() {
+            initApp();
+        };
+    </script>
+</body>
+</html>

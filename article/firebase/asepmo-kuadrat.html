@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AsepMo Kuadrat | Arsitektur Mewah Minimalis</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Playfair Display (Serif/Elegant) & Inter (Sans/Clean) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/12.13.0/firebase-app-compat.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/12.13.0/firebase-auth-compat.js"></script>
+    <script defer src="/__/firebase/12.13.0/firebase-database-compat.js"></script>
+    <script defer src="/__/firebase/12.13.0/firebase-firestore-compat.js"></script>
+    <script defer src="/__/firebase/12.13.0/firebase-functions-compat.js"></script>
+    <script defer src="/__/firebase/12.13.0/firebase-messaging-compat.js"></script>
+    <script defer src="/__/firebase/12.13.0/firebase-storage-compat.js"></script>
+    <script defer src="/__/firebase/12.13.0/firebase-analytics-compat.js"></script>
+    <script defer src="/__/firebase/12.13.0/firebase-remote-config-compat.js"></script>
+    <script defer src="/__/firebase/12.13.0/firebase-performance-compat.js"></script>
+    <!-- 
+	initialize the SDK after all desired features are loaded, set useEmulator to false
+	to avoid connecting the SDK to running emulators.
+    -->
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+	
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        gold: {
+                            400: '#FBBF24',
+                            500: '#F59E0B',
+                            600: '#D97706',
+                        },
+                        dark: {
+                            900: '#0F172A',
+                            800: '#1E293B',
+                            700: '#334155',
+                        }
+                    }
+                }
+            }
+        }
+</script>
+
+<style>
+        body {
+            background-color: #0F172A;
+            color: #F8FAFC;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0F172A; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #D97706; 
+        }
+
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Toast Animation */
+        .toast-enter { transform: translateY(100%); opacity: 0; }
+        .toast-enter-active { transform: translateY(0); opacity: 1; transition: all 300ms ease-out; }
+        .toast-exit { transform: translateY(0); opacity: 1; }
+        .toast-exit-active { transform: translateY(100%); opacity: 0; transition: all 300ms ease-in; }
+</style>
+  </head>
+  <body class="antialiased font-sans relative">
+
+    <nav class="fixed w-full z-50 glass-panel transition-all duration-300" id="navbar">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="flex justify-between items-center h-20">
+		  <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+			<div class="w-8 h-8 border-2 border-gold-500 flex items-center justify-center transform rotate-45">
+			  <span class="font-serif text-gold-500 font-bold transform -rotate-45 text-sm">AK</span>
+			</div>
+			<span class="font-serif font-semibold text-xl tracking-wider text-white">AsepMo<sup class="text-gold-500 text-sm">2</sup></span>
+		  </div>
+		  <div class="hidden md:flex space-x-8 items-center">
+			<a href="#about" class="text-gray-300 hover:text-gold-400 transition-colors text-sm uppercase tracking-widest">Tentang</a>
+			<a href="#philosophy" class="text-gray-300 hover:text-gold-400 transition-colors text-sm uppercase tracking-widest">Filosofi</a>
+
+			<!-- Auth State UI -->
+			<div id="nav-unauth" class="flex gap-4">
+			  <button onclick="ui.showModal('auth-modal', 'login')" class="text-gray-300 hover:text-white transition-colors text-sm font-medium">Masuk</button>
+			  <button onclick="ui.showModal('auth-modal', 'register')" class="bg-gold-600 hover:bg-gold-500 text-white px-5 py-2 rounded-sm transition-colors text-sm font-medium shadow-lg shadow-gold-500/20">Daftar</button>
+			</div>
+			<div id="nav-auth" class="hidden flex items-center gap-4">
+			  <button onclick="ui.showModal('profile-modal')" class="flex items-center gap-2 text-gray-300 hover:text-gold-400 transition-colors">
+				<i class="fa-regular fa-circle-user text-xl"></i>
+				<span id="nav-username" class="text-sm font-medium">Pengguna</span>
+			  </button>
+			  <button onclick="firebaseApp.logout()" class="text-gray-400 hover:text-red-400 transition-colors text-sm"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+			</div>
+		  </div>
+		  <!-- Mobile menu button -->
+		  <div class="md:hidden flex items-center">
+			<button id="mobile-menu-btn" class="text-gray-300 hover:text-white focus:outline-none">
+			  <i class="fa-solid fa-bars text-2xl"></i>
+			</button>
+		  </div>
+		</div>
+	  </div>
+    </nav>
+
+    <header class="relative h-screen flex items-center justify-center overflow-hidden">
+	  <div class="absolute inset-0 z-0">
+		<!-- Placeholder for a luxury house image -->
+		<img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80" alt="Mansion" class="w-full h-full object-cover opacity-30 object-center">
+		<div class="absolute inset-0 bg-gradient-to-b from-dark-900/50 via-dark-900/80 to-dark-900"></div>
+	  </div>
+
+	  <div class="relative z-10 text-center px-4 max-w-4xl mx-auto fade-in">
+		<p class="text-gold-500 text-sm md:text-base font-semibold tracking-[0.3em] uppercase mb-4">Arsitektur Eksepsional</p>
+		<h1 class="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight">
+		  Mendefinisikan Ulang <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-gold-400 to-gold-600">Kemewahan</span>
+		</h1>
+		<p class="text-lg md:text-xl text-gray-400 mb-10 font-light max-w-2xl mx-auto">
+		  Menciptakan ruang hidup yang tidak hanya mengedepankan estetika minimalis, namun juga merangkul keanggunan dan fungsionalitas absolut.
+		</p>
+		<a href="#about" class="inline-block border border-gold-500 text-gold-400 hover:bg-gold-500 hover:text-white px-8 py-3 rounded-sm transition-all duration-300 tracking-widest text-sm uppercase">
+		  Eksplorasi Profil
+		</a>
+	  </div>
+    </header>
+
+    <main>
+	  <section id="about" class="py-24 bg-dark-900 relative">
+		<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+		  <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+			<div class="order-2 md:order-1 relative">
+			  <div class="absolute -inset-4 border border-gold-600/30 rounded-sm transform -translate-x-4 translate-y-4"></div>
+			  <img src="https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Interior Mewah" class="relative z-10 w-full h-auto rounded-sm shadow-2xl grayscale hover:grayscale-0 transition-all duration-700">
+			</div>
+			<div class="order-1 md:order-2 fade-in">
+			  <h2 class="text-3xl md:text-4xl font-serif font-bold text-white mb-2">AsepMo Kuadrat</h2>
+			  <div class="w-16 h-1 bg-gold-500 mb-8"></div>
+
+			  <div class="space-y-6 text-gray-400 font-light leading-relaxed">
+				<p>
+				  Di lanskap arsitektur modern, nama <strong>AsepMo Kuadrat</strong> muncul sebagai anomali yang brilian. Memulai karirnya dari kecintaannya pada garis-garis tegas dan ruang bernapas, AsepMo kini memimpin firma arsitektur yang khusus melayani kalangan elit dengan fokus pada <em>Minimalis Mewah</em>.
+				</p>
+				<p>
+				  Baginya, kemewahan sejati tidak diukur dari seberapa banyak ornamen yang menempel pada dinding, melainkan dari kualitas material, proporsi ruang, dan bagaimana cahaya alami berinteraksi dengan setiap sudut rumah.
+				</p>
+				<blockquote class="border-l-4 border-gold-500 pl-4 py-2 italic text-gray-300 my-6 bg-dark-800/50">
+				  "Rumah yang baik adalah panggung yang hening, membiarkan kehidupan penghuninya menjadi aktor utama yang bersinar." — AsepMo Kuadrat
+				</blockquote>
+				<p>
+				  Visi bisnisnya tidak hanya sekadar membangun rumah, tetapi merancang warisan. Setiap proyek ditangani dengan pendekatan <em>boutique</em>, memastikan eksklusivitas dan personalisasi yang tinggi bagi setiap klien.
+				</p>
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  </section>
+
+	  <section id="philosophy" class="py-24 bg-dark-800 border-t border-dark-700">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+		  <h2 class="text-3xl font-serif font-bold text-white mb-16">Pilar Arsitektur Kami</h2>
+		  <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+			<div class="p-6 glass-panel rounded-lg hover:-translate-y-2 transition-transform duration-300">
+			  <i class="fa-solid fa-gem text-4xl text-gold-500 mb-6"></i>
+			  <h3 class="text-xl font-serif font-semibold text-white mb-3">Material Premium</h3>
+			  <p class="text-gray-400 text-sm">Hanya menggunakan batu alam, kayu keras pilihan, dan logam kualitas tertinggi untuk durabilitas dan estetika abadi.</p>
+			</div>
+			<div class="p-6 glass-panel rounded-lg hover:-translate-y-2 transition-transform duration-300">
+			  <i class="fa-solid fa-wind text-4xl text-gold-500 mb-6"></i>
+			  <h3 class="text-xl font-serif font-semibold text-white mb-3">Sirkulasi Atmosferik</h3>
+			  <p class="text-gray-400 text-sm">Desain yang memaksimalkan aliran udara dan cahaya alami, menciptakan ruang yang sehat secara fisik dan mental.</p>
+			</div>
+			<div class="p-6 glass-panel rounded-lg hover:-translate-y-2 transition-transform duration-300">
+			  <i class="fa-solid fa-compress text-4xl text-gold-500 mb-6"></i>
+			  <h3 class="text-xl font-serif font-semibold text-white mb-3">Reduksi Ornamen</h3>
+			  <p class="text-gray-400 text-sm">Menghilangkan yang tidak perlu untuk menonjolkan esensi bentuk dan fungsi ruangan secara maksimal.</p>
+			</div>
+		  </div>
+		</div>
+	  </section>
+    </main>
+
+    <footer class="bg-dark-900 border-t border-dark-800 py-12 text-center">
+	  <p class="text-gray-500 text-sm">&copy; 2026 AsepMo Kuadrat Architecture. All rights reserved.</p>
+    </footer>
+
+    <!-- Overlay -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300" onclick="ui.closeAllModals()"></div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md z-[70] hidden opacity-0 transition-all duration-300 scale-95">
+	  <div class="bg-dark-800 border border-dark-700 rounded-xl shadow-2xl overflow-hidden relative">
+		<button onclick="ui.closeAllModals()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+
+		<div class="flex border-b border-dark-700">
+		  <button id="tab-login" onclick="ui.switchAuthTab('login')" class="flex-1 py-4 text-sm font-medium border-b-2 border-gold-500 text-gold-500 transition-colors">MASUK</button>
+		  <button id="tab-register" onclick="ui.switchAuthTab('register')" class="flex-1 py-4 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-200 transition-colors">DAFTAR</button>
+		</div>
+
+		<div class="p-8">
+		  <form id="auth-form" onsubmit="firebaseApp.handleAuthSubmit(event)">
+			<div class="space-y-4">
+			  <div id="name-field" class="hidden">
+				<label class="block text-xs text-gray-400 mb-1 uppercase tracking-wider">Nama Lengkap</label>
+				<input type="text" id="auth-name" class="w-full bg-dark-900 border border-dark-700 rounded p-3 text-white focus:outline-none focus:border-gold-500 transition-colors" placeholder="Cth: Asep Maulana">
+			  </div>
+			  <div>
+				<label class="block text-xs text-gray-400 mb-1 uppercase tracking-wider">Email</label>
+				<input type="email" id="auth-email" required class="w-full bg-dark-900 border border-dark-700 rounded p-3 text-white focus:outline-none focus:border-gold-500 transition-colors" placeholder="email@contoh.com">
+			  </div>
+			  <div>
+				<label class="block text-xs text-gray-400 mb-1 uppercase tracking-wider">Kata Sandi</label>
+				<input type="password" id="auth-password" required minlength="6" class="w-full bg-dark-900 border border-dark-700 rounded p-3 text-white focus:outline-none focus:border-gold-500 transition-colors" placeholder="Minimal 6 karakter">
+			  </div>
+			</div>
+			<button type="submit" id="auth-submit-btn" class="w-full bg-gold-600 hover:bg-gold-500 text-white font-medium py-3 rounded mt-8 transition-colors flex justify-center items-center gap-2">
+			  <span>Masuk</span>
+			  <i class="fa-solid fa-spinner fa-spin hidden" id="auth-loading"></i>
+			</button>
+		  </form>
+		</div>
+	  </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md z-[70] hidden opacity-0 transition-all duration-300 scale-95">
+	  <div class="bg-dark-800 border border-dark-700 rounded-xl shadow-2xl p-8 relative">
+		<button onclick="ui.closeAllModals()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+
+		<h2 class="text-2xl font-serif text-white mb-6 border-b border-dark-700 pb-4">Profil Anda</h2>
+
+		<form id="profile-form" onsubmit="firebaseApp.updateProfileData(event)">
+		  <div class="space-y-4">
+			<div>
+			  <label class="block text-xs text-gray-400 mb-1 uppercase tracking-wider">Nama Tampilan</label>
+			  <input type="text" id="profile-name" required class="w-full bg-dark-900 border border-dark-700 rounded p-3 text-white focus:outline-none focus:border-gold-500 transition-colors">
+			</div>
+			<div>
+			  <label class="block text-xs text-gray-400 mb-1 uppercase tracking-wider">Pekerjaan / Minat (Opsional)</label>
+			  <input type="text" id="profile-bio" class="w-full bg-dark-900 border border-dark-700 rounded p-3 text-white focus:outline-none focus:border-gold-500 transition-colors" placeholder="Misal: Arsitek, Investor...">
+			</div>
+		  </div>
+		  <div class="mt-8 flex gap-3">
+			<button type="button" onclick="ui.closeAllModals()" class="flex-1 bg-dark-700 hover:bg-dark-600 text-white font-medium py-3 rounded transition-colors">Batal</button>
+			<button type="submit" class="flex-1 bg-gold-600 hover:bg-gold-500 text-white font-medium py-3 rounded transition-colors flex justify-center items-center gap-2">
+			  <span>Simpan</span>
+			  <i class="fa-solid fa-spinner fa-spin hidden" id="profile-loading"></i>
+			</button>
+		  </div>
+		</form>
+	  </div>
+    </div>
+
+    <!-- Custom Toast Notification -->
+    <div id="toast-container" class="fixed bottom-4 right-4 z-[100] flex flex-col gap-2 pointer-events-none"></div>
+
+<script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            signInAnonymously, 
+            signInWithCustomToken, 
+            onAuthStateChanged,
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            updateProfile,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            doc, 
+            getDoc, 
+            setDoc,
+            serverTimestamp 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global Variables
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'asepmo-kuadrat-app';
+        let firebaseConfig = null;
+        let initialAuthToken = null;
+
+        try {
+            firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+            initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        } catch (e) {
+            console.error("Config parsing error:", e);
+        }
+
+        // Fallback mock config for local testing if needed
+        if (!firebaseConfig) {
+            firebaseConfig = {
+                apiKey: "mock-key", authDomain: "mock.firebaseapp.com", projectId: "mock-project"
+            };
+            console.warn("Using mock Firebase config.");
+        }
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        window.ui = {
+            currentAuthMode: 'login', // 'login' or 'register'
+            
+            showToast: (message, type = 'info') => {
+                const container = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                
+                let icon = 'fa-info-circle';
+                let bgColor = 'bg-dark-800 border-dark-700';
+                let textColor = 'text-white';
+                
+                if (type === 'success') {
+                    icon = 'fa-check-circle';
+                    bgColor = 'bg-green-900/90 border-green-700';
+                    textColor = 'text-green-100';
+                } else if (type === 'error') {
+                    icon = 'fa-exclamation-circle';
+                    bgColor = 'bg-red-900/90 border-red-700';
+                    textColor = 'text-red-100';
+                }
+
+                toast.className = `flex items-center gap-3 p-4 rounded shadow-lg border backdrop-blur-md ${bgColor} ${textColor} toast-enter pointer-events-auto`;
+                toast.innerHTML = `<i class="fa-solid ${icon}"></i><span class="text-sm font-medium">${message}</span>`;
+                
+                container.appendChild(toast);
+                
+                // Trigger reflow to start animation
+                void toast.offsetWidth;
+                toast.classList.remove('toast-enter');
+                toast.classList.add('toast-enter-active');
+
+                setTimeout(() => {
+                    toast.classList.remove('toast-enter-active');
+                    toast.classList.add('toast-exit-active');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            },
+
+            showModal: (modalId, mode = null) => {
+                const modal = document.getElementById(modalId);
+                const overlay = document.getElementById('modal-overlay');
+                
+                if (mode && modalId === 'auth-modal') {
+                    ui.switchAuthTab(mode);
+                }
+
+                // If opening profile, populate data
+                if (modalId === 'profile-modal' && firebaseApp.currentUser) {
+                    document.getElementById('profile-name').value = firebaseApp.currentUser.displayName || '';
+                    if(firebaseApp.currentProfileData) {
+                         document.getElementById('profile-bio').value = firebaseApp.currentProfileData.bio || '';
+                    }
+                }
+
+                overlay.classList.remove('hidden');
+                modal.classList.remove('hidden');
+                
+                // Small delay for transition
+                setTimeout(() => {
+                    overlay.classList.remove('opacity-0');
+                    modal.classList.remove('opacity-0', 'scale-95');
+                }, 10);
+            },
+
+            closeAllModals: () => {
+                const modals = ['auth-modal', 'profile-modal'];
+                const overlay = document.getElementById('modal-overlay');
+                
+                overlay.classList.add('opacity-0');
+                modals.forEach(id => {
+                    const el = document.getElementById(id);
+                    el.classList.add('opacity-0', 'scale-95');
+                });
+
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                    modals.forEach(id => document.getElementById(id).classList.add('hidden'));
+                    // Reset forms
+                    document.getElementById('auth-form').reset();
+                }, 300);
+            },
+
+            switchAuthTab: (mode) => {
+                ui.currentAuthMode = mode;
+                const btnLogin = document.getElementById('tab-login');
+                const btnRegister = document.getElementById('tab-register');
+                const nameField = document.getElementById('name-field');
+                const submitBtnSpan = document.querySelector('#auth-submit-btn span');
+
+                if (mode === 'login') {
+                    btnLogin.className = "flex-1 py-4 text-sm font-medium border-b-2 border-gold-500 text-gold-500 transition-colors";
+                    btnRegister.className = "flex-1 py-4 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-200 transition-colors";
+                    nameField.classList.add('hidden');
+                    document.getElementById('auth-name').removeAttribute('required');
+                    submitBtnSpan.textContent = "Masuk";
+                } else {
+                    btnRegister.className = "flex-1 py-4 text-sm font-medium border-b-2 border-gold-500 text-gold-500 transition-colors";
+                    btnLogin.className = "flex-1 py-4 text-sm font-medium border-b-2 border-transparent text-gray-400 hover:text-gray-200 transition-colors";
+                    nameField.classList.remove('hidden');
+                    document.getElementById('auth-name').setAttribute('required', 'true');
+                    submitBtnSpan.textContent = "Daftar Sekarang";
+                }
+            },
+
+            updateNavState: (user) => {
+                const unauthDiv = document.getElementById('nav-unauth');
+                const authDiv = document.getElementById('nav-auth');
+                const usernameSpan = document.getElementById('nav-username');
+
+                if (user && !user.isAnonymous) {
+                    unauthDiv.classList.add('hidden');
+                    authDiv.classList.remove('hidden');
+                    // Get first name or default
+                    let dName = user.displayName || 'Tamu';
+                    usernameSpan.textContent = dName.split(' ')[0];
+                } else {
+                    // Show login/register for anonymous or logged out users
+                    unauthDiv.classList.remove('hidden');
+                    authDiv.classList.add('hidden');
+                }
+            },
+            
+            setLoading: (btnId, isLoading) => {
+                const btn = document.getElementById(btnId);
+                const spinner = btn.querySelector('.fa-spinner');
+                if (isLoading) {
+                    btn.disabled = true;
+                    btn.classList.add('opacity-75', 'cursor-not-allowed');
+                    spinner.classList.remove('hidden');
+                } else {
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-75', 'cursor-not-allowed');
+                    spinner.classList.add('hidden');
+                }
+            }
+        };
+
+        window.firebaseApp = {
+            currentUser: null,
+            currentProfileData: null,
+
+            init: async () => {
+                // Handle initial environment auth requirement
+                try {
+                    if (initialAuthToken) {
+                        await signInWithCustomToken(auth, initialAuthToken);
+                        console.log("Authenticated via Custom Token");
+                    } else {
+                        // Background anonymous sign-in to satisfy auth requirement for db
+                        // Note: If user is already logged in via email from previous session,
+                        // onAuthStateChanged will pick it up quickly.
+                        await signInAnonymously(auth);
+                        console.log("Authenticated Anonymously as fallback");
+                    }
+                } catch (error) {
+                    console.error("Initial auth failed:", error);
+                }
+
+                // Listen for auth state changes
+                onAuthStateChanged(auth, async (user) => {
+                    firebaseApp.currentUser = user;
+                    ui.updateNavState(user);
+                    
+                    if (user && !user.isAnonymous) {
+                        await firebaseApp.fetchProfileData(user.uid);
+                    }
+                });
+            },
+
+            handleAuthSubmit: async (e) => {
+                e.preventDefault();
+                ui.setLoading('auth-submit-btn', true);
+                
+                const email = document.getElementById('auth-email').value;
+                const password = document.getElementById('auth-password').value;
+                const name = document.getElementById('auth-name').value;
+
+                try {
+                    if (ui.currentAuthMode === 'register') {
+                        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                        await updateProfile(userCredential.user, { displayName: name });
+                        
+                        // Create initial Firestore profile document based on strict path rule
+                        // Path: /artifacts/{appId}/users/{userId}/profile/main
+                        const profileRef = doc(db, 'artifacts', appId, 'users', userCredential.user.uid, 'profile', 'main');
+                        await setDoc(profileRef, {
+                            bio: '',
+                            createdAt: serverTimestamp(),
+                            updatedAt: serverTimestamp()
+                        });
+
+                        ui.showToast('Registrasi berhasil! Selamat datang.', 'success');
+                    } else {
+                        await signInWithEmailAndPassword(auth, email, password);
+                        ui.showToast('Berhasil masuk.', 'success');
+                    }
+                    ui.closeAllModals();
+                } catch (error) {
+                    console.error("Auth error:", error);
+                    let msg = "Terjadi kesalahan.";
+                    if (error.code === 'auth/email-already-in-use') msg = "Email sudah digunakan.";
+                    if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') msg = "Email atau password salah.";
+                    if (error.code === 'auth/weak-password') msg = "Password terlalu lemah.";
+                    ui.showToast(msg, 'error');
+                } finally {
+                    ui.setLoading('auth-submit-btn', false);
+                }
+            },
+
+            logout: async () => {
+                try {
+                    await signOut(auth);
+                    // After sign out, sign in anonymously again to maintain DB connection if needed by app logic
+                    await signInAnonymously(auth);
+                    firebaseApp.currentProfileData = null;
+                    ui.showToast('Berhasil keluar.', 'info');
+                } catch (error) {
+                    console.error("Logout error:", error);
+                }
+            },
+
+            fetchProfileData: async (userId) => {
+                try {
+                    const profileRef = doc(db, 'artifacts', appId, 'users', userId, 'profile', 'main');
+                    const docSnap = await getDoc(profileRef);
+                    
+                    if (docSnap.exists()) {
+                        firebaseApp.currentProfileData = docSnap.data();
+                    } else {
+                         // Initialize if not exists
+                         await setDoc(profileRef, { bio: '', createdAt: serverTimestamp() });
+                         firebaseApp.currentProfileData = { bio: '' };
+                    }
+                } catch (error) {
+                    console.error("Error fetching profile:", error);
+                }
+            },
+
+            updateProfileData: async (e) => {
+                e.preventDefault();
+                const user = firebaseApp.currentUser;
+                if (!user || user.isAnonymous) {
+                    ui.showToast("Anda harus login untuk update profil", "error");
+                    return;
+                }
+
+                ui.setLoading('profile-loading', true);
+                const newName = document.getElementById('profile-name').value;
+                const newBio = document.getElementById('profile-bio').value;
+
+                try {
+                    // 1. Update Auth Profile
+                    await updateProfile(user, { displayName: newName });
+                    
+                    // 2. Update Firestore Profile
+                    const profileRef = doc(db, 'artifacts', appId, 'users', user.uid, 'profile', 'main');
+                    await setDoc(profileRef, {
+                        bio: newBio,
+                        updatedAt: serverTimestamp()
+                    }, { merge: true });
+
+                    // Refresh local state
+                    firebaseApp.currentProfileData.bio = newBio;
+                    ui.updateNavState(auth.currentUser); // Refresh UI
+                    
+                    ui.showToast('Profil berhasil diperbarui.', 'success');
+                    ui.closeAllModals();
+                } catch (error) {
+                    console.error("Update profile error:", error);
+                    ui.showToast('Gagal memperbarui profil.', 'error');
+                } finally {
+                    ui.setLoading('profile-loading', false);
+                }
+            }
+        };
+
+        // Initialize App on load
+        window.addEventListener('DOMContentLoaded', () => {
+            firebaseApp.init();
+
+            // Navbar scroll effect
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('shadow-lg');
+                    navbar.style.background = 'rgba(15, 23, 42, 0.95)';
+                } else {
+                    navbar.classList.remove('shadow-lg');
+                    navbar.style.background = 'rgba(30, 41, 59, 0.7)';
+                }
+            });
+        });
+
+</script>
+  </body>
+</html>

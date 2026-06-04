@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="id" class="light transition-colors duration-500">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Favorite - Elegan & Smart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+<script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.4s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+</script>
+<style>
+        /* Custom scrollbar for elegance */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Glassmorphism utilities */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .glass {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+  </head>
+  <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 min-h-screen overflow-x-hidden font-sans transition-colors duration-300">
+
+    <!-- OVERLAYS -->
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-20 right-5 z-50 transform transition-all duration-300 translate-x-full opacity-0">
+	  <div id="toast-content" class="bg-white dark:bg-slate-800 border-l-4 border-brand-500 shadow-xl rounded-r-lg px-6 py-4 flex items-center gap-3">
+		<i data-lucide="info" class="text-brand-500"></i>
+		<span id="toast-message" class="font-medium text-sm">Pesan disini</span>
+	  </div>
+    </div>
+
+    <!-- AUTHENTICATION MODAL (Glassmorphism) -->
+    <div id="auth-overlay" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center transition-opacity duration-300">
+	  <div class="glass w-full max-w-md rounded-3xl p-8 m-4 shadow-2xl animate-slide-up">
+		<div class="text-center mb-8">
+		  <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-brand-100 dark:bg-brand-900/50 text-brand-600 dark:text-brand-400 mb-4">
+			<i data-lucide="bookmark-check" class="w-8 h-8"></i>
+		  </div>
+		  <h2 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-brand-600 to-indigo-600 dark:from-brand-400 dark:to-indigo-400">Web Favorite</h2>
+		  <p class="text-slate-500 dark:text-slate-400 mt-2 text-sm" id="auth-subtitle">Masuk untuk menyimpan koleksi elegan Anda.</p>
+		</div>
+
+		<form id="auth-form" class="space-y-5">
+		  <div>
+			<label class="block text-sm font-medium mb-1 pl-1">Email</label>
+			<div class="relative">
+			  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+				<i data-lucide="mail" class="w-5 h-5 text-slate-400"></i>
+			  </div>
+			  <input type="email" id="auth-email" required class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all placeholder-slate-400" placeholder="nama@email.com">
+			</div>
+		  </div>
+		  <div>
+			<label class="block text-sm font-medium mb-1 pl-1">Password</label>
+			<div class="relative">
+			  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+				<i data-lucide="lock" class="w-5 h-5 text-slate-400"></i>
+			  </div>
+			  <input type="password" id="auth-password" required minlength="6" class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 focus:ring-2 focus:ring-brand-500 focus:border-transparent outline-none transition-all placeholder-slate-400" placeholder="••••••••">
+			</div>
+		  </div>
+
+		  <button type="submit" id="auth-submit-btn" class="w-full py-3 px-4 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all flex justify-center items-center gap-2">
+			<span id="auth-btn-text">Masuk Sekarang</span>
+			<i data-lucide="arrow-right" class="w-4 h-4"></i>
+		  </button>
+		</form>
+
+		<div class="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
+		  <span id="auth-toggle-text">Belum punya akun?</span> 
+		  <button type="button" id="auth-toggle-mode" class="font-semibold text-brand-600 dark:text-brand-400 hover:underline">Daftar disini</button>
+		</div>
+	  </div>
+    </div>
+
+    <!-- APP CONTAINER (Hidden initially) -->
+    <div id="app-container" class="hidden min-h-screen flex flex-col">
+
+	  <!-- TOOLBAR / NAVBAR -->
+	  <header class="glass sticky top-0 z-40 border-b border-slate-200/50 dark:border-slate-700/50">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+		  <div class="flex items-center justify-between h-16">
+			<!-- Left: Drawer Toggle & Brand -->
+			<div class="flex items-center gap-4">
+			  <button id="btn-menu" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none">
+				<i data-lucide="menu" class="w-6 h-6"></i>
+			  </button>
+			  <div class="flex items-center gap-2">
+				<div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white shadow-md">
+				  <i data-lucide="bookmark" class="w-4 h-4"></i>
+				</div>
+				<span class="font-bold text-xl tracking-tight hidden sm:block">Web Favorite</span>
+			  </div>
+			</div>
+
+			<!-- Right: Options Menu -->
+			<div class="flex items-center gap-2 sm:gap-4">
+			  <button id="btn-theme" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none tooltip-trigger" title="Ubah Tema">
+				<i data-lucide="moon" id="icon-theme" class="w-5 h-5"></i>
+			  </button>
+
+			  <div class="relative group">
+				<button id="btn-profile" class="flex items-center gap-2 p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none">
+				  <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=e0f2fe" alt="Avatar" class="w-8 h-8 rounded-full border border-slate-200 dark:border-slate-700 bg-white">
+				</button>
+				<!-- Dropdown -->
+				<div class="absolute right-0 mt-2 w-48 rounded-xl shadow-lg bg-white dark:bg-slate-800 ring-1 ring-black ring-opacity-5 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all transform origin-top-right border border-slate-100 dark:border-slate-700">
+				  <div class="py-1">
+					<div class="px-4 py-2 text-xs text-slate-500 border-b border-slate-100 dark:border-slate-700 truncate" id="user-email-display">user@email.com</div>
+					<button id="btn-logout" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2 transition-colors">
+					  <i data-lucide="log-out" class="w-4 h-4"></i> Keluar
+					</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  </header>
+
+	  <!-- DRAWER MENU -->
+	  <div id="drawer-backdrop" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300"></div>
+	  <aside id="drawer" class="fixed inset-y-0 left-0 w-72 bg-white dark:bg-slate-900 shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 ease-in-out border-r border-slate-200 dark:border-slate-800 flex flex-col">
+		<div class="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center glass">
+		  <span class="font-bold text-lg text-brand-600 dark:text-brand-400">Menu Navigasi</span>
+		  <button id="btn-close-drawer" class="p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500">
+			<i data-lucide="x" class="w-5 h-5"></i>
+		  </button>
+		</div>
+		<div class="p-4 flex-1 overflow-y-auto">
+		  <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 px-3">Kategori Website</div>
+		  <nav class="space-y-1">
+			<a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-brand-50 dark:bg-brand-900/20 text-brand-700 dark:text-brand-300 font-medium">
+			  <i data-lucide="layout-grid" class="w-5 h-5"></i> Semua Koleksi
+			</a>
+			<a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors">
+			  <i data-lucide="briefcase" class="w-5 h-5"></i> Produktivitas
+			</a>
+			<a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors">
+			  <i data-lucide="gamepad-2" class="w-5 h-5"></i> Hiburan
+			</a>
+			<a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors">
+			  <i data-lucide="graduation-cap" class="w-5 h-5"></i> Edukasi
+			</a>
+		  </nav>
+		</div>
+		<div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
+		  <p class="text-xs text-slate-500 text-center">Web Favorite v1.0 &copy; 2026</p>
+		</div>
+	  </aside>
+
+	  <!-- MAIN CONTENT -->
+	  <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+
+		<!-- ARTICLE SECTION -->
+		<article class="mb-12 bg-white dark:bg-slate-800 rounded-3xl p-8 shadow-sm border border-slate-200 dark:border-slate-700 animate-fade-in relative overflow-hidden">
+		  <div class="absolute top-0 right-0 -mt-16 -mr-16 text-slate-100 dark:text-slate-700/30 opacity-50 pointer-events-none transform rotate-12">
+			<i data-lucide="compass" class="w-64 h-64"></i>
+		  </div>
+		  <div class="relative z-10 max-w-3xl">
+			<span class="inline-block py-1 px-3 rounded-full bg-brand-100 dark:bg-brand-900/50 text-brand-700 dark:text-brand-300 text-xs font-semibold tracking-wide mb-4">PANDUAN</span>
+			<h1 class="text-3xl sm:text-4xl font-bold mb-4 leading-tight">Navigasi Elegan di Samudra Informasi</h1>
+			<p class="text-slate-600 dark:text-slate-300 text-lg leading-relaxed mb-4">
+			  <strong>Web Favorite</strong> adalah asisten personal Anda untuk mengurasi dan menyimpan kepingan terbaik dari internet. Di era informasi yang membanjir, menyimpan tautan saja tidak cukup. Anda membutuhkan konteks.
+			</p>
+			<p class="text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
+			  Website dapat dikategorikan menjadi berbagai fungsi esensial: <em>Produktivitas</em> (alat kerja, manajemen waktu), <em>Edukasi</em> (platform belajar, jurnal ilmiah), hingga <em>Hiburan</em> (streaming, media sosial). Dengan aplikasi ini, Anda dapat dengan mudah mengekstrak meta-data (Judul, Ikon, Gambar, dan Deskripsi) hanya dari sebuah URL, mengubah tautan mentah menjadi kartu informasi yang indah secara visual.
+			</p>
+		  </div>
+		</article>
+
+		<!-- TWO COLUMNS LAYOUT -->
+		<div class="grid grid-cols-1 xl:grid-cols-2 gap-8 items-start">
+
+		  <!-- COLUMN 1: Search & Discover -->
+		  <section class="bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col h-full animate-fade-in" style="animation-delay: 0.1s;">
+			<div class="flex items-center gap-3 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
+			  <div class="p-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-lg">
+				<i data-lucide="search" class="w-6 h-6"></i>
+			  </div>
+			  <h2 class="text-xl font-bold">Eksplorasi via Pencarian</h2>
+			</div>
+
+			<!-- Search Input -->
+			<div class="mb-6 relative">
+			  <label class="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">Cari Website (Simulasi Google Search)</label>
+			  <form id="search-form" class="flex gap-2">
+				<div class="relative flex-1">
+				  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+					<i data-lucide="globe" class="w-4 h-4 text-slate-400"></i>
+				  </div>
+				  <input type="text" id="search-input" class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 focus:ring-2 focus:ring-purple-500 outline-none transition-all" placeholder="Contoh: Wikipedia, Github...">
+				</div>
+				<button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2.5 rounded-xl transition-colors font-medium flex items-center gap-2 shadow-md">
+				  <span>Cari</span>
+				</button>
+			  </form>
+			</div>
+
+			<!-- Search Result Box -->
+			<div id="search-result-container" class="hidden mb-8 border border-purple-100 dark:border-purple-900/30 bg-purple-50/50 dark:bg-purple-900/10 rounded-2xl p-4 transition-all">
+			  <div class="flex justify-between items-center mb-3">
+				<span class="text-xs font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-wider">Hasil Pencarian Teratas</span>
+				<button id="btn-save-search" class="text-sm bg-purple-100 hover:bg-purple-200 dark:bg-purple-800 dark:hover:bg-purple-700 text-purple-700 dark:text-purple-200 py-1.5 px-3 rounded-lg transition-colors flex items-center gap-1 font-medium">
+				  <i data-lucide="download" class="w-4 h-4"></i> Ekstrak & Simpan
+				</button>
+			  </div>
+			  <div id="search-preview" class="flex items-start gap-4">
+				<!-- Populated via JS -->
+			  </div>
+			</div>
+
+			<!-- Popular List -->
+			<h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 mt-auto pt-4">Situs Populer</h3>
+			<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 overflow-y-auto hide-scrollbar max-h-64 pr-2">
+			  <!-- Populated via JS -->
+			  <div id="popular-list-container" class="contents"></div>
+			</div>
+		  </section>
+
+		  <!-- COLUMN 2: My Favorites (Manual Add) -->
+		  <section class="bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col h-full animate-fade-in" style="animation-delay: 0.2s;">
+			<div class="flex items-center justify-between mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
+			  <div class="flex items-center gap-3">
+				<div class="p-2 bg-brand-100 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 rounded-lg">
+				  <i data-lucide="layers" class="w-6 h-6"></i>
+				</div>
+				<h2 class="text-xl font-bold">Koleksi Favorit</h2>
+			  </div>
+			  <span id="collection-count" class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 py-1 px-3 rounded-full text-xs font-bold">0 Tautan</span>
+			</div>
+
+			<!-- Add Manual Form -->
+			<div class="mb-6 bg-slate-50 dark:bg-slate-700/30 p-4 rounded-2xl border border-slate-100 dark:border-slate-700">
+			  <label class="block text-sm font-medium mb-2 text-slate-700 dark:text-slate-300">Tambah dari URL</label>
+			  <form id="add-url-form" class="flex gap-2">
+				<div class="relative flex-1">
+				  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+					<i data-lucide="link" class="w-4 h-4 text-slate-400"></i>
+				  </div>
+				  <input type="url" id="url-input" required class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 focus:ring-2 focus:ring-brand-500 outline-none transition-all" placeholder="https://contoh.com">
+				</div>
+				<button type="submit" id="btn-add-url" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 rounded-xl transition-colors font-medium flex items-center gap-2 shadow-md disabled:opacity-70 disabled:cursor-not-allowed">
+				  <span id="add-btn-text">Ekstrak</span>
+				  <i data-lucide="plus" id="add-btn-icon" class="w-4 h-4"></i>
+				</button>
+			  </form>
+			</div>
+
+			<!-- Saved List -->
+			<div id="favorites-list" class="flex-1 overflow-y-auto hide-scrollbar space-y-4 pr-2 pb-4">
+			  <!-- Loading State / Empty State / Cards -->
+			  <div class="flex flex-col items-center justify-center h-48 text-slate-400">
+				<i data-lucide="loader-2" class="w-8 h-8 animate-spin mb-2"></i>
+				<p class="text-sm">Memuat koleksi...</p>
+			  </div>
+			</div>
+		  </section>
+
+		</div>
+	  </main>
+    </div>
+
+    <!-- Scripts -->
+<script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithCustomToken, 
+            signInAnonymously, 
+            onAuthStateChanged,
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            onSnapshot, 
+            deleteDoc,
+            docsetDoc, 
+				  
+			getDoc,
+            query,
+            orderBy
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+		import { 
+		    getMessaging, 
+		    getToken 
+	    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging.js";
+
+        // Initialize Icons
+        lucide.createIcons();
+
+         // 📝 1. Konfigurasi Firebase (Ganti dengan kredensial asli Anda)
+		 const firebaseConfig = {
+			apiKey: "AIzaSyAIZwCXKW-tL3e6oDGOLLbrU9pD6lgrA6c",
+		    authDomain: "asepmo-article.firebaseapp.com",
+		    projectId: "asepmo-article",
+		    storageBucket: "asepmo-article.firebasestorage.app",
+		    messagingSenderId: "622595990822",
+		    appId: "1:622595990822:web:514b840a8cfb503dd34de7",
+		    measurementId: "G-HQV0SR7132"
+		};
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+		const messaging = getMessaging(app);
+
+        // --- State Management ---
+        let currentUser = null;
+        let unsubscribeFavorites = null;
+        let isDarkMode = localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        let isLoginMode = true;
+        let currentSearchResult = null; // Holds temporary search result
+
+        // Popular Sites Data
+        const popularSites = [
+            { name: "Google", url: "https://google.com", domain: "google.com" },
+            { name: "GitHub", url: "https://github.com", domain: "github.com" },
+            { name: "Medium", url: "https://medium.com", domain: "medium.com" },
+            { name: "Dribbble", url: "https://dribbble.com", domain: "dribbble.com" },
+            { name: "Wikipedia", url: "https://wikipedia.org", domain: "wikipedia.org" },
+            { name: "StackOverflow", url: "https://stackoverflow.com", domain: "stackoverflow.com" }
+        ];
+
+        // --- UI Elements ---
+        const elements = {
+            html: document.documentElement,
+            authOverlay: document.getElementById('auth-overlay'),
+            appContainer: document.getElementById('app-container'),
+            authForm: document.getElementById('auth-form'),
+            authEmail: document.getElementById('auth-email'),
+            authPassword: document.getElementById('auth-password'),
+            authToggleMode: document.getElementById('auth-toggle-mode'),
+            authToggleText: document.getElementById('auth-toggle-text'),
+            authBtnText: document.getElementById('auth-btn-text'),
+            authSubtitle: document.getElementById('auth-subtitle'),
+            btnTheme: document.getElementById('btn-theme'),
+            iconTheme: document.getElementById('icon-theme'),
+            btnMenu: document.getElementById('btn-menu'),
+            btnCloseDrawer: document.getElementById('btn-close-drawer'),
+            drawer: document.getElementById('drawer'),
+            drawerBackdrop: document.getElementById('drawer-backdrop'),
+            btnLogout: document.getElementById('btn-logout'),
+            userEmailDisplay: document.getElementById('user-email-display'),
+            toast: document.getElementById('toast'),
+            toastMsg: document.getElementById('toast-message'),
+            addUrlForm: document.getElementById('add-url-form'),
+            urlInput: document.getElementById('url-input'),
+            btnAddUrl: document.getElementById('btn-add-url'),
+            addBtnText: document.getElementById('add-btn-text'),
+            addBtnIcon: document.getElementById('add-btn-icon'),
+            favoritesList: document.getElementById('favorites-list'),
+            collectionCount: document.getElementById('collection-count'),
+            popularListContainer: document.getElementById('popular-list-container'),
+            searchForm: document.getElementById('search-form'),
+            searchInput: document.getElementById('search-input'),
+            searchResultContainer: document.getElementById('search-result-container'),
+            searchPreview: document.getElementById('search-preview'),
+            btnSaveSearch: document.getElementById('btn-save-search')
+        };
+
+        // --- Theme Handling ---
+        function applyTheme() {
+            if (isDarkMode) {
+                elements.html.classList.add('dark');
+                elements.iconTheme.setAttribute('data-lucide', 'sun');
+            } else {
+                elements.html.classList.remove('dark');
+                elements.iconTheme.setAttribute('data-lucide', 'moon');
+            }
+            lucide.createIcons();
+        }
+        applyTheme();
+
+        elements.btnTheme.addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+            applyTheme();
+        });
+
+        // --- Drawer Handling ---
+        function toggleDrawer(show) {
+            if (show) {
+                elements.drawer.classList.remove('-translate-x-full');
+                elements.drawerBackdrop.classList.remove('hidden');
+                // slight delay for animation
+                setTimeout(() => elements.drawerBackdrop.classList.remove('opacity-0'), 10);
+            } else {
+                elements.drawer.classList.add('-translate-x-full');
+                elements.drawerBackdrop.classList.add('opacity-0');
+                setTimeout(() => elements.drawerBackdrop.classList.add('hidden'), 300);
+            }
+        }
+        elements.btnMenu.addEventListener('click', () => toggleDrawer(true));
+        elements.btnCloseDrawer.addEventListener('click', () => toggleDrawer(false));
+        elements.drawerBackdrop.addEventListener('click', () => toggleDrawer(false));
+
+        // --- Toast Notification ---
+        function showToast(message, type = 'success') {
+            elements.toastMsg.textContent = message;
+            const icon = elements.toast.querySelector('i');
+            
+            if (type === 'error') {
+                elements.toast.querySelector('#toast-content').classList.replace('border-brand-500', 'border-red-500');
+                icon.setAttribute('data-lucide', 'alert-circle');
+                icon.classList.replace('text-brand-500', 'text-red-500');
+            } else {
+                elements.toast.querySelector('#toast-content').classList.replace('border-red-500', 'border-brand-500');
+                icon.setAttribute('data-lucide', 'check-circle-2');
+                icon.classList.replace('text-red-500', 'text-brand-500');
+            }
+            lucide.createIcons();
+            
+            elements.toast.classList.remove('translate-x-full', 'opacity-0');
+            setTimeout(() => {
+                elements.toast.classList.add('translate-x-full', 'opacity-0');
+            }, 3000);
+        }
+
+        // --- Auth Mode Toggle ---
+        elements.authToggleMode.addEventListener('click', () => {
+            isLoginMode = !isLoginMode;
+            if (isLoginMode) {
+                elements.authBtnText.textContent = "Masuk Sekarang";
+                elements.authToggleText.textContent = "Belum punya akun?";
+                elements.authToggleMode.textContent = "Daftar disini";
+                elements.authSubtitle.textContent = "Masuk untuk menyimpan koleksi elegan Anda.";
+            } else {
+                elements.authBtnText.textContent = "Buat Akun";
+                elements.authToggleText.textContent = "Sudah punya akun?";
+                elements.authToggleMode.textContent = "Masuk disini";
+                elements.authSubtitle.textContent = "Bergabunglah untuk mulai menyimpan website favorit.";
+            }
+        });
+
+        // --- Initialization & Auth Flow ---
+        // Rule: ALWAYS call signInWithCustomToken() or signInAnonymously() FIRST
+        const initSystemAuth = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    // Start anonymously if no token, allows us to initialize Firebase safely
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("System Auth Init Error:", error);
+                showToast("Sistem gagal inisialisasi", "error");
+            }
+        };
+
+        initSystemAuth(); // Call immediately
+
+        // Main Auth Listener
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Determine if we should show the app or the custom login screen
+                // If user is anonymous, they haven't logged in with email as requested.
+                // We show the custom login screen to force email registration/login for this specific app requirement.
+                if (user.isAnonymous) {
+                    showAuthScreen();
+                } else {
+                    // Fully authenticated with email (or a valid non-anon custom token)
+                    currentUser = user;
+                    showAppScreen();
+                    elements.userEmailDisplay.textContent = user.email || "Pengguna";
+                    loadFavorites();
+                }
+            } else {
+                showAuthScreen();
+            }
+        });
+
+        function showAuthScreen() {
+            elements.authOverlay.classList.remove('hidden');
+            elements.appContainer.classList.add('hidden');
+            setTimeout(() => elements.authOverlay.classList.remove('opacity-0'), 10);
+            if (unsubscribeFavorites) unsubscribeFavorites();
+        }
+
+        function showAppScreen() {
+            elements.authOverlay.classList.add('opacity-0');
+            setTimeout(() => {
+                elements.authOverlay.classList.add('hidden');
+                elements.appContainer.classList.remove('hidden');
+                renderPopularSites();
+            }, 300);
+        }
+
+        // Email Auth Submission
+        elements.authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = elements.authEmail.value;
+            const password = elements.authPassword.value;
+            const btn = document.getElementById('auth-submit-btn');
+            const originalHtml = btn.innerHTML;
+            
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Memproses...`;
+            btn.disabled = true;
+            lucide.createIcons();
+
+            try {
+                if (isLoginMode) {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    showToast("Berhasil masuk!");
+                } else {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    showToast("Akun berhasil dibuat!");
+                }
+            } catch (error) {
+                console.error("Auth error:", error);
+                let msg = "Terjadi kesalahan";
+                if(error.code === 'auth/email-already-in-use') msg = "Email sudah terdaftar.";
+                if(error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') msg = "Email atau password salah.";
+                if(error.code === 'auth/weak-password') msg = "Password terlalu lemah.";
+                showToast(msg, "error");
+            } finally {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+                lucide.createIcons();
+            }
+        });
+
+        // Logout
+        elements.btnLogout.addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                // System might auto-relogin anonymously due to our init logic, 
+                // but the state change listener will catch isAnonymous and show the form again.
+                showToast("Berhasil keluar");
+            } catch (error) {
+                console.error("Logout error", error);
+            }
+        });
+
+        // --- Core Logic: Mock Website Extraction ---
+        async function extractWebsiteInfo(urlStr, sourceName = null) {
+            try {
+                let url;
+                try {
+                    url = new URL(urlStr);
+                } catch {
+                    url = new URL('https://' + urlStr); // try prepending https
+                }
+                
+                const domain = url.hostname.replace('www.', '');
+                const titleName = sourceName || domain.charAt(0).toUpperCase() + domain.slice(1).split('.')[0];
+                
+                // Simulate network request delay for "extraction"
+                await new Promise(r => setTimeout(r, 800 + Math.random() * 700));
+
+                return {
+                    url: url.href,
+                    domain: domain,
+                    title: `${titleName} - Situs Utama`,
+                    favicon: `https://www.google.com/s2/favicons?domain=${domain}&sz=64`,
+                    // Use domain as seed for consistent random image, ensuring it looks like a webpage preview abstractly
+                    image: `https://picsum.photos/seed/${domain.replace(/[^a-zA-Z0-9]/g, '')}/400/200`, 
+                    description: `Informasi dan metadata berhasil diekstrak dari ${domain}. Menyimpan tautan ini membantu Anda mengorganisir sumber daya web Anda secara elegan.`,
+                    addedAt: new Date().toISOString()
+                };
+            } catch (error) {
+                console.error("Extraction error", error);
+                throw new Error("Gagal mengekstrak URL. Pastikan format valid.");
+            }
+        }
+
+        // --- Firestore Operations ---
+        // Path Rule: artifacts/{appId}/users/{userId}/{collectionName}
+        
+        async function saveToFirebase(extractedData) {
+            if (!currentUser) return false;
+            try {
+                const favoritesRef = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'favorites');
+                await addDoc(favoritesRef, {
+                    ...extractedData,
+                    timestamp: Date.now() // for local sorting if needed, though we avoid orderBy in query per rules
+                });
+                return true;
+            } catch (error) {
+                console.error("Error saving doc:", error);
+                throw error;
+            }
+        }
+
+        async function deleteFromFirebase(docId) {
+            if (!currentUser) return;
+            try {
+                const docRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'favorites', docId);
+                await deleteDoc(docRef);
+                showToast("Tautan dihapus");
+            } catch (error) {
+                console.error("Error deleting doc:", error);
+                showToast("Gagal menghapus", "error");
+            }
+        }
+
+        function loadFavorites() {
+            if (!currentUser) return;
+            
+            const favoritesRef = collection(db, 'artifacts', appId, 'users', currentUser.uid, 'favorites');
+            // Rule: NO COMPLEX QUERIES. Fetch all, sort locally.
+            
+            unsubscribeFavorites = onSnapshot(favoritesRef, (snapshot) => {
+                const favs = [];
+                snapshot.forEach((doc) => {
+                    favs.push({ id: doc.id, ...doc.data() });
+                });
+                
+                // Local sort (newest first)
+                favs.sort((a, b) => b.timestamp - a.timestamp);
+                
+                renderFavorites(favs);
+                elements.collectionCount.textContent = `${favs.length} Tautan`;
+                
+            }, (error) => {
+                console.error("Snapshot error:", error);
+                elements.favoritesList.innerHTML = `<div class="text-red-500 text-center p-4">Gagal memuat data.</div>`;
+            });
+        }
+
+        // --- Render Functions ---
+
+        function renderFavorites(favs) {
+            const container = elements.favoritesList;
+            if (favs.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-48 text-slate-400 bg-slate-50 dark:bg-slate-700/20 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
+                        <i data-lucide="inbox" class="w-10 h-10 mb-3 opacity-50"></i>
+                        <p class="text-sm font-medium">Belum ada koleksi.</p>
+                        <p class="text-xs mt-1">Tambahkan dari kolom pencarian atau input URL.</p>
+                    </div>`;
+                lucide.createIcons();
+                return;
+            }
+
+            let html = '';
+            favs.forEach(fav => {
+                html += `
+                <div class="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col sm:flex-row">
+                    <div class="sm:w-32 h-32 sm:h-auto shrink-0 relative overflow-hidden bg-slate-100 dark:bg-slate-700">
+                        <img src="${fav.image}" alt="Preview" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1.5">
+                                <img src="${fav.favicon}" alt="icon" class="w-4 h-4 rounded-sm" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiLz48L3N2Zz4='">
+                                <span class="text-xs font-semibold text-brand-600 dark:text-brand-400 truncate">${fav.domain}</span>
+                            </div>
+                            <h3 class="font-bold text-slate-800 dark:text-slate-100 leading-tight mb-1 line-clamp-1 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors cursor-pointer" onclick="window.open('${fav.url}', '_blank')">${fav.title}</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">${fav.description}</p>
+                        </div>
+                        <div class="flex justify-between items-center mt-3 pt-3 border-t border-slate-50 dark:border-slate-700/50">
+                            <a href="${fav.url}" target="_blank" class="text-xs font-medium text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-brand-400 flex items-center gap-1 transition-colors">
+                                Kunjungi <i data-lucide="external-link" class="w-3 h-3"></i>
+                            </a>
+                            <button onclick="window.deleteFav('${fav.id}')" class="text-slate-400 hover:text-red-500 transition-colors p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20" title="Hapus">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+            lucide.createIcons();
+            
+            // Expose delete to window for inline onclick
+            window.deleteFav = deleteFromFirebase;
+        }
+
+        function renderPopularSites() {
+            let html = '';
+            popularSites.forEach(site => {
+                html += `
+                <div class="flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 border border-transparent hover:border-slate-100 dark:hover:border-slate-700 transition-colors group">
+                    <div class="flex items-center gap-3 overflow-hidden">
+                        <img src="https://www.google.com/s2/favicons?domain=${site.domain}&sz=32" alt="${site.name}" class="w-6 h-6 rounded-md shadow-sm">
+                        <div class="truncate">
+                            <p class="text-sm font-bold text-slate-700 dark:text-slate-200">${site.name}</p>
+                            <p class="text-xs text-slate-500 truncate">${site.domain}</p>
+                        </div>
+                    </div>
+                    <button onclick="window.savePopular('${site.url}', '${site.name}')" class="p-2 text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 bg-slate-100/50 hover:bg-brand-50 dark:bg-slate-800 dark:hover:bg-brand-900/30 rounded-lg transition-all opacity-0 group-hover:opacity-100 focus:opacity-100" title="Ekstrak & Simpan">
+                        <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                    </button>
+                </div>`;
+            });
+            elements.popularListContainer.innerHTML = html;
+            lucide.createIcons();
+            
+            // Handle quick save from popular list
+            window.savePopular = async (url, name) => {
+                showToast(`Mengekstrak ${name}...`, 'info');
+                try {
+                    const data = await extractWebsiteInfo(url, name);
+                    await saveToFirebase(data);
+                    showToast(`${name} berhasil disimpan!`);
+                } catch (e) {
+                    showToast("Gagal menyimpan", "error");
+                }
+            };
+        }
+
+        // --- Interaction Handlers ---
+
+        // Manual Add Form Submit
+        elements.addUrlForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const url = elements.urlInput.value;
+            if(!url) return;
+
+            // UI Loading state
+            elements.btnAddUrl.disabled = true;
+            elements.addBtnText.textContent = "Mengekstrak...";
+            elements.addBtnIcon.setAttribute('data-lucide', 'loader-2');
+            elements.addBtnIcon.classList.add('animate-spin');
+            lucide.createIcons();
+
+            try {
+                const data = await extractWebsiteInfo(url);
+                await saveToFirebase(data);
+                showToast("Tautan berhasil disimpan!");
+                elements.urlInput.value = ''; // clear
+            } catch (error) {
+                showToast(error.message, "error");
+            } finally {
+                // Restore UI
+                elements.btnAddUrl.disabled = false;
+                elements.addBtnText.textContent = "Ekstrak";
+                elements.addBtnIcon.setAttribute('data-lucide', 'plus');
+                elements.addBtnIcon.classList.remove('animate-spin');
+                lucide.createIcons();
+            }
+        });
+
+        // Search Form Submit (Simulation)
+        elements.searchForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const query = elements.searchInput.value.trim();
+            if(!query) return;
+
+            // Simulate searching
+            const searchBtn = elements.searchForm.querySelector('button');
+            const originalText = searchBtn.innerHTML;
+            searchBtn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>`;
+            searchBtn.disabled = true;
+            lucide.createIcons();
+
+            try {
+                // Fake mapping query to a domain for demo
+                const simulatedDomain = query.toLowerCase().replace(/\s+/g, '') + '.com';
+                const urlToExtract = `https://www.${simulatedDomain}`;
+                
+                // Hide previous result
+                elements.searchResultContainer.classList.add('hidden');
+                
+                const data = await extractWebsiteInfo(urlToExtract, query);
+                currentSearchResult = data; // store temporarily
+
+                // Show preview
+                elements.searchPreview.innerHTML = `
+                    <img src="${data.favicon}" class="w-10 h-10 rounded shadow-sm bg-white p-1" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiIHN0cm9rZS13aWR0aD0iMiI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTAiLz48L3N2Zz4='">
+                    <div>
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100">${data.title}</h4>
+                        <p class="text-xs text-slate-500 mt-1 line-clamp-2">${data.description}</p>
+                        <a href="${data.url}" target="_blank" class="text-xs text-purple-600 dark:text-purple-400 mt-1 inline-block hover:underline">${data.domain}</a>
+                    </div>
+                `;
+                
+                elements.searchResultContainer.classList.remove('hidden');
+                
+            } catch (error) {
+                showToast("Pencarian gagal", "error");
+            } finally {
+                searchBtn.innerHTML = originalText;
+                searchBtn.disabled = false;
+                lucide.createIcons();
+            }
+        });
+
+        // Save Search Result
+        elements.btnSaveSearch.addEventListener('click', async () => {
+            if(!currentSearchResult) return;
+            
+            const btn = elements.btnSaveSearch;
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Menyimpan`;
+            btn.disabled = true;
+            lucide.createIcons();
+
+            try {
+                await saveToFirebase(currentSearchResult);
+                showToast("Hasil pencarian disimpan!");
+                elements.searchResultContainer.classList.add('hidden'); // hide after save
+                elements.searchInput.value = '';
+                currentSearchResult = null;
+            } catch (error) {
+                showToast("Gagal menyimpan", "error");
+            } finally {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+                lucide.createIcons();
+            }
+        });
+
+</script>
+  </body>
+</html>

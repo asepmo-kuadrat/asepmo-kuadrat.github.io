@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Autentikasi Modern - Firebase & GitHub</title>
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Urbanist:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+<script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Urbanist', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            accent: '#8b5cf6',
+                        }
+                    }
+                }
+            }
+        }
+</script>
+<style>
+        /* Custom Glowing and Glassmorphic Background animations */
+        @keyframes orbit {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-orbit-1 {
+            animation: orbit 15s infinite ease-in-out;
+        }
+        .animate-orbit-2 {
+            animation: orbit 20s infinite ease-in-out 2s;
+        }
+        .animate-orbit-3 {
+            animation: orbit 18s infinite ease-in-out 4s;
+        }
+        
+        /* Smooth backdrop blur styling for premium look */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-input {
+            background: rgba(30, 41, 59, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-input:focus {
+            border-color: #0ea5e9;
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.25);
+            background: rgba(30, 41, 59, 0.5);
+        }
+        
+        /* Shimmer effect for loaders */
+        .shimmer {
+            background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.03) 75%);
+            background-size: 200% 100%;
+            animation: loading-shimmer 1.5s infinite;
+        }
+        @keyframes loading-shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+</style>
+  </head>
+  <body class="bg-[#030712] text-slate-100 min-h-screen overflow-x-hidden font-sans relative antialiased">
+
+    <!-- Background Glow Blobs -->
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+	  <div class="absolute w-[500px] h-[500px] rounded-full bg-brand-500/10 blur-[100px] top-[-10%] left-[-10%] animate-orbit-1"></div>
+	  <div class="absolute w-[600px] h-[600px] rounded-full bg-brand-accent/10 blur-[120px] bottom-[-20%] right-[-10%] animate-orbit-2"></div>
+	  <div class="absolute w-[400px] h-[400px] rounded-full bg-sky-400/5 blur-[80px] top-[40%] left-[30%] animate-orbit-3"></div>
+    </div>
+
+    <!-- Toast Notification System -->
+    <div id="toast-container" class="fixed top-6 right-6 z-50 flex flex-col gap-3 max-w-md w-full px-4 sm:px-0 pointer-events-none"></div>
+
+    <!-- Global App Shell -->
+    <div class="relative z-10 min-h-screen flex flex-col justify-between p-4 sm:p-6 lg:p-8">
+
+	  <!-- Header / Logo -->
+	  <header class="w-full max-w-7xl mx-auto flex justify-between items-center py-4">
+		<div class="flex items-center gap-3">
+		  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-brand-accent flex items-center justify-center shadow-lg shadow-brand-500/20">
+			<i class="fa-solid fa-shield-halved text-white text-lg"></i>
+		  </div>
+		  <div>
+			<h1 class="font-display font-bold text-xl tracking-tight leading-none bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">NEXUS</h1>
+			<span class="text-[10px] text-brand-500 font-semibold tracking-wider uppercase">Secure Auth</span>
+		  </div>
+		</div>
+
+		<!-- Setup & Mode Indicator -->
+		<div class="flex items-center gap-3">
+		  <!-- Mode badge -->
+		  <span id="mode-badge" class="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 flex items-center gap-1.5">
+			<span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+			Demo Mode Active
+		  </span>
+
+		  <!-- Configure Firebase Trigger Button -->
+		  <button onclick="toggleConfigModal(true)" class="p-2.5 rounded-xl glass-panel hover:bg-slate-800/60 text-slate-300 hover:text-white transition-all text-xs flex items-center gap-2">
+			<i class="fa-solid fa-gear"></i>
+			<span class="hidden sm:inline">Firebase Setup</span>
+		  </button>
+		</div>
+	  </header>
+
+	  <!-- Main Wrapper -->
+	  <main class="w-full flex-grow flex items-center justify-center py-8">
+
+		<!-- AUTHENTICATION CARD -->
+		<div id="auth-card" class="w-full max-w-[460px] glass-panel rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden transition-all duration-500 transform scale-100 opacity-100">
+
+		  <!-- Card Glow Strip at Top -->
+		  <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-brand-500 via-brand-accent to-sky-400"></div>
+
+		  <!-- FORM TABS -->
+		  <div class="flex border-b border-slate-800 mb-6">
+			<button id="tab-login" onclick="switchTab('login')" class="flex-1 pb-3 text-center text-sm font-semibold border-b-2 border-brand-500 text-white transition-all duration-300">
+			  Masuk
+			</button>
+			<button id="tab-register" onclick="switchTab('register')" class="flex-1 pb-3 text-center text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-all duration-300">
+			  Registrasi
+			</button>
+		  </div>
+
+		  <!-- TITLE SECTION -->
+		  <div class="mb-6 text-center sm:text-left">
+			<h2 id="auth-title" class="font-display font-bold text-2xl text-white">Selamat Datang Kembali</h2>
+			<p id="auth-subtitle" class="text-sm text-slate-400 mt-1">Silakan masuk menggunakan kredensial Anda</p>
+		  </div>
+
+		  <!-- ACTUAL FORMS -->
+		  <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+
+			<!-- Fullname Input (Registration only - starts hidden) -->
+			<div id="field-name" class="hidden space-y-1.5 transition-all duration-300">
+			  <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Nama Lengkap</label>
+			  <div class="relative">
+				<span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
+				  <i class="fa-solid fa-user text-sm"></i>
+				</span>
+				<input type="text" id="input-name" placeholder="John Doe" class="w-full pl-10 pr-4 py-3 rounded-xl glass-input text-sm text-white placeholder-slate-500 focus:outline-none">
+			  </div>
+			</div>
+
+			<!-- Email Input -->
+			<div class="space-y-1.5">
+			  <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Alamat Email</label>
+			  <div class="relative">
+				<span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
+				  <i class="fa-solid fa-envelope text-sm"></i>
+				</span>
+				<input type="email" id="input-email" required placeholder="name@domain.com" class="w-full pl-10 pr-4 py-3 rounded-xl glass-input text-sm text-white placeholder-slate-500 focus:outline-none">
+			  </div>
+			</div>
+
+			<!-- Password Input -->
+			<div class="space-y-1.5">
+			  <div class="flex justify-between items-center">
+				<label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Kata Sandi</label>
+				<a href="#" id="forgot-password-link" onclick="handleForgotPassword(event)" class="text-xs text-brand-500 hover:text-brand-600 transition-colors">Lupa Password?</a>
+			  </div>
+			  <div class="relative">
+				<span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500">
+				  <i class="fa-solid fa-lock text-sm"></i>
+				</span>
+				<input type="password" id="input-password" required placeholder="••••••••" class="w-full pl-10 pr-10 py-3 rounded-xl glass-input text-sm text-white placeholder-slate-500 focus:outline-none">
+				<button type="button" onclick="togglePasswordVisibility('input-password')" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-500 hover:text-slate-300">
+				  <i id="eye-icon-input-password" class="fa-solid fa-eye text-xs"></i>
+				</button>
+			  </div>
+			</div>
+
+			<!-- Terms checkbox (Registration only - starts hidden) -->
+			<div id="field-terms" class="hidden flex items-start gap-2.5 pt-1">
+			  <input type="checkbox" id="input-terms" class="mt-1 rounded border-slate-700 bg-slate-800 text-brand-500 focus:ring-brand-500">
+			  <label for="input-terms" class="text-xs text-slate-400 leading-relaxed">
+				Saya menyetujui <a href="#" class="text-brand-500 hover:underline">Ketentuan Layanan</a> dan <a href="#" class="text-brand-500 hover:underline">Kebijakan Privasi</a>.
+			  </label>
+			</div>
+
+			<!-- Submit Button -->
+			<button type="submit" id="btn-submit" class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-brand-500 to-brand-accent hover:opacity-95 text-white text-sm font-bold shadow-lg shadow-brand-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-2">
+			  <span id="btn-submit-text">Masuk</span>
+			  <i class="fa-solid fa-arrow-right text-xs"></i>
+			</button>
+		  </form>
+
+		  <!-- Social Logins Separator -->
+		  <div class="relative my-6">
+			<div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-800"></div></div>
+			<div class="relative flex justify-center text-xs uppercase"><span class="px-3 bg-[#0d1527] text-slate-500 font-semibold tracking-wider">Atau Masuk Melalui</span></div>
+		  </div>
+
+		  <!-- SOCIAL AUTH BUTTONS -->
+		  <div class="grid grid-cols-2 gap-3">
+			<!-- GitHub Button -->
+			<button type="button" onclick="handleSocialLogin('github')" class="py-3 px-4 rounded-xl glass-panel hover:bg-slate-800/50 hover:border-slate-600 border-slate-800/80 transition-all flex items-center justify-center gap-2.5 group active:scale-[0.98]">
+			  <i class="fa-brands fa-github text-lg text-white group-hover:scale-110 transition-transform"></i>
+			  <span class="text-xs font-semibold text-slate-200">GitHub</span>
+			</button>
+
+			<!-- Google Button -->
+			<button type="button" onclick="handleSocialLogin('google')" class="py-3 px-4 rounded-xl glass-panel hover:bg-slate-800/50 hover:border-slate-600 border-slate-800/80 transition-all flex items-center justify-center gap-2.5 group active:scale-[0.98]">
+			  <i class="fa-brands fa-google text-lg text-red-500 group-hover:scale-110 transition-transform"></i>
+			  <span class="text-xs font-semibold text-slate-200">Google</span>
+			</button>
+		  </div>
+
+		  <!-- Footer demo notice -->
+		  <div class="mt-6 text-center">
+			<p class="text-[11px] text-slate-500 leading-relaxed">
+			  Tip: Ingin menghubungkan dengan database Firebase asli Anda? Klik tombol <strong class="text-brand-500 cursor-pointer hover:underline" onclick="toggleConfigModal(true)">Firebase Setup</strong> di kanan atas.
+			</p>
+		  </div>
+		</div>
+
+
+		<!-- PREMIUM DASHBOARD (Hidden by default) -->
+		<div id="dashboard-panel" class="hidden w-full max-w-5xl glass-panel rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden transition-all duration-500 transform scale-95 opacity-0">
+		  <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-400"></div>
+
+		  <!-- Dashboard Header -->
+		  <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-slate-800">
+			<div class="flex items-center gap-4">
+			  <div class="relative">
+				<img id="dash-user-avatar" src="https://placehold.co/150/1e293b/ffffff?text=U" alt="Profile" class="w-16 h-16 rounded-2xl object-cover border-2 border-slate-700">
+				<span class="absolute bottom-[-2px] right-[-2px] w-5 h-5 rounded-lg bg-emerald-500 border-2 border-[#090f1d] flex items-center justify-center">
+				  <i class="fa-solid fa-check text-[10px] text-white"></i>
+				</span>
+			  </div>
+			  <div>
+				<span class="text-xs font-bold text-emerald-400 uppercase tracking-widest">Akun Terverifikasi</span>
+				<h2 id="dash-user-name" class="font-display font-extrabold text-2xl text-white">Selamat Datang, User</h2>
+				<p id="dash-user-email" class="text-sm text-slate-400"></p>
+			  </div>
+			</div>
+
+			<button onclick="handleLogout()" class="px-5 py-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/40 text-red-400 hover:text-red-300 transition-all text-xs font-bold flex items-center gap-2 active:scale-95">
+			  <i class="fa-solid fa-arrow-right-from-bracket"></i>
+			  Keluar Sesi
+			</button>
+		  </div>
+
+		  <!-- Dashboard Grid -->
+		  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+
+			<!-- Column 1 & 2: Main Workspace & User Info -->
+			<div class="lg:col-span-2 space-y-6">
+
+			  <!-- Account Details Card -->
+			  <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800/80">
+				<h3 class="font-display font-bold text-lg text-slate-200 mb-4 flex items-center gap-2">
+				  <i class="fa-solid fa-circle-info text-brand-500"></i>
+				  Informasi Identitas Autentikasi
+				</h3>
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+				  <div class="space-y-1 p-3.5 rounded-lg bg-slate-950/40 border border-slate-800/50">
+					<span class="text-slate-500 font-semibold uppercase tracking-wider">User UID</span>
+					<p id="dash-user-uid" class="text-slate-300 font-mono select-all break-all"></p>
+				  </div>
+				  <div class="space-y-1 p-3.5 rounded-lg bg-slate-950/40 border border-slate-800/50">
+					<span class="text-slate-500 font-semibold uppercase tracking-wider">Metode Provider</span>
+					<p id="dash-auth-provider" class="text-slate-300 capitalize flex items-center gap-1.5"></p>
+				  </div>
+				  <div class="space-y-1 p-3.5 rounded-lg bg-slate-950/40 border border-slate-800/50">
+					<span class="text-slate-500 font-semibold uppercase tracking-wider">Dibuat Sejak</span>
+					<p id="dash-user-created" class="text-slate-300"></p>
+				  </div>
+				  <div class="space-y-1 p-3.5 rounded-lg bg-slate-950/40 border border-slate-800/50">
+					<span class="text-slate-500 font-semibold uppercase tracking-wider">Terakhir Masuk</span>
+					<p id="dash-user-last-login" class="text-slate-300"></p>
+				  </div>
+				</div>
+			  </div>
+
+			  <!-- Technical Integration Sandbox Info -->
+			  <div class="p-5 rounded-xl bg-slate-900/60 border border-slate-800/80">
+				<h3 class="font-display font-bold text-lg text-slate-200 mb-2 flex items-center gap-2">
+				  <i class="fa-solid fa-code text-brand-accent"></i>
+				  Status Integrasi Kode Web
+				</h3>
+				<p class="text-xs text-slate-400 mb-4 leading-relaxed">
+				  Antarmuka login ini berjalan sepenuhnya menggunakan standar arsitektur <strong class="text-brand-500">Firebase v11 Web SDK</strong>. 
+				  Status koneksi database di bawah menunjukkan status integrasi antara web client Anda dengan konsol Firebase.
+				</p>
+				<div class="flex flex-wrap gap-3">
+				  <div class="px-3.5 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs flex items-center gap-2">
+					<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+					OAuth Handshake Ready
+				  </div>
+				  <div class="px-3.5 py-2 rounded-lg bg-sky-500/10 border border-sky-500/25 text-sky-400 text-xs flex items-center gap-2">
+					<span class="w-1.5 h-1.5 rounded-full bg-sky-400"></span>
+					SSL Encryption Active
+				  </div>
+				  <div class="px-3.5 py-2 rounded-lg bg-slate-850 border border-slate-800 text-slate-400 text-xs flex items-center gap-2">
+					Session Storage Valid
+				  </div>
+				</div>
+			  </div>
+			</div>
+
+			<!-- Column 3: Gemini AI Daily Developer Assist Widget -->
+			<div class="space-y-6">
+			  <div class="p-5 rounded-xl bg-gradient-to-br from-brand-accent/15 to-slate-900/60 border border-brand-accent/20 flex flex-col justify-between h-full min-h-[380px]">
+				<div>
+				  <div class="flex justify-between items-start mb-4">
+					<div class="flex items-center gap-2.5">
+					  <div class="w-8 h-8 rounded-lg bg-brand-accent flex items-center justify-center">
+						<i class="fa-solid fa-wand-magic-sparkles text-white text-sm"></i>
+					  </div>
+					  <div>
+						<h4 class="font-display font-bold text-sm text-white">Nexus Gemini Assistant</h4>
+						<span class="text-[9px] text-brand-accent uppercase font-bold tracking-wider">AI Powered</span>
+					  </div>
+					</div>
+					<span class="px-2 py-0.5 rounded text-[9px] font-bold bg-purple-500/20 text-purple-300">Model: Flash</span>
+				  </div>
+
+				  <p class="text-xs text-slate-400 mb-4 leading-relaxed">
+					Tanyakan apa saja seputar tips programming, Firebase Auth, atau minta saran motivasi koding harian Anda.
+				  </p>
+
+				  <!-- AI Dialog Display Bubble -->
+				  <div class="bg-slate-950/60 border border-slate-800/80 rounded-xl p-3.5 min-h-[140px] max-h-[180px] overflow-y-auto mb-4 text-xs text-slate-300 leading-relaxed" id="ai-response-area">
+					Silakan masukkan instruksi Anda di bawah atau klik tombol generate cepat untuk memulai dialog dengan AI.
+				  </div>
+				</div>
+
+				<!-- AI Interactive Input Form -->
+				<div class="space-y-2">
+				  <div class="relative">
+					<input type="text" id="ai-user-prompt" placeholder="Tanya sesuatu tentang Firebase..." class="w-full pl-3 pr-10 py-2.5 rounded-lg glass-input text-xs text-white focus:outline-none">
+					<button onclick="askGemini()" class="absolute right-1.5 top-1/2 -translate-y-1/2 p-1.5 rounded-md bg-brand-accent/20 hover:bg-brand-accent text-brand-accent hover:text-white transition-all">
+					  <i class="fa-solid fa-paper-plane text-[10px]"></i>
+					</button>
+				  </div>
+				  <button onclick="generateDailyMotivation()" class="w-full py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white text-[10px] font-bold transition-all flex items-center justify-center gap-1.5 border border-slate-700/60">
+					<i class="fa-solid fa-sparkles text-brand-accent"></i>
+					Hasilkan Motivasi Developer
+				  </button>
+				</div>
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  </main>
+
+	  <!-- CONFIGURATION MODAL (For Real Firebase Credential setup) -->
+	  <div id="config-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+		<!-- Modal overlay -->
+		<div onclick="toggleConfigModal(false)" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+
+		<!-- Modal Body -->
+		<div class="w-full max-w-lg glass-panel rounded-2xl p-6 sm:p-8 shadow-2xl relative z-10 border border-slate-800">
+		  <button onclick="toggleConfigModal(false)" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-all">
+			<i class="fa-solid fa-xmark text-lg"></i>
+		  </button>
+
+		  <h3 class="font-display font-bold text-xl text-white mb-2 flex items-center gap-2">
+			<i class="fa-solid fa-server text-brand-500"></i>
+			Konfigurasi Firebase
+		  </h3>
+		  <p class="text-xs text-slate-400 mb-6 leading-relaxed">
+			Tempelkan objek <code class="text-brand-500 bg-brand-500/10 px-1.5 py-0.5 rounded">firebaseConfig</code> Anda dari Firebase Console untuk beralih dari <strong>Demo Mode</strong> ke sistem autentikasi nyata yang berjalan secara real-time.
+		  </p>
+
+		  <!-- Input area for config -->
+		  <div class="space-y-4">
+			<div class="space-y-1.5">
+			  <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">SDK Config (JSON Format)</label>
+			  <textarea id="firebase-json-input" rows="8" placeholder='{
+				"apiKey": "AIzaSy...",
+				"authDomain": "your-app.firebaseapp.com",
+				"projectId": "your-app",
+				"storageBucket": "your-app.appspot.com",
+				"messagingSenderId": "...",
+				"appId": "..."
+				}' class="w-full p-3.5 rounded-xl glass-input text-xs font-mono text-slate-200 placeholder-slate-600 focus:outline-none"></textarea>
+			</div>
+
+			<!-- Actions -->
+			<div class="flex gap-3 pt-2">
+			  <button onclick="saveFirebaseConfig()" class="flex-1 py-3 px-4 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold transition-all shadow-lg shadow-brand-500/10">
+				Simpan & Hubungkan
+			  </button>
+			  <button onclick="resetFirebaseConfig()" class="py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 text-xs font-bold transition-all">
+				Reset ke Demo
+			  </button>
+			</div>
+		  </div>
+		</div>
+	  </div>
+
+	  <!-- Footer -->
+	  <footer class="w-full text-center py-4 border-t border-slate-900/60 max-w-7xl mx-auto">
+		<p class="text-[11px] text-slate-600">
+		  &copy; 2026 Nexus Auth Interface. Dirancang dengan keindahan visual glassmorphism & fungsionalitas hybrid.
+		</p>
+	  </footer>
+    </div>
+
+    <!-- Script Module logic handling Firebase & Web interactions -->
+<script type="module">
+        // Import Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithEmailAndPassword, 
+            createUserWithEmailAndPassword, 
+            signInWithPopup, 
+            GithubAuthProvider, 
+            GoogleAuthProvider,
+            signOut, 
+            onAuthStateChanged,
+            sendPasswordResetEmail,
+            updateProfile
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+        // Global State Variables
+        let currentTab = 'login';
+        let isFirebaseConfigured = false;
+        let firebaseApp = null;
+        let firebaseAuth = null;
+        let activeUser = null;
+
+        // Dummy/Demo user account state for simulation when Firebase is not connected
+        const dummyUser = {
+            uid: "DEMO-USER-659e99a2cfcfb5bc4e57bf9e",
+            displayName: "Administrator Demo",
+            email: "developer@nexus.io",
+            photoURL: "https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=150&q=80",
+            metadata: {
+                creationTime: "Thu, 01 Jan 2026 00:00:00 GMT",
+                lastSignInTime: new Date().toUTCString()
+            },
+            providerId: "password"
+        };
+
+        /**
+         * Initialize Firebase using saved localStorage config or remain in Demo Mode
+         */
+        function initFirebase() {
+            const savedConfigStr = localStorage.getItem('nexus_firebase_config');
+            const modeBadge = document.getElementById('mode-badge');
+            
+            if (savedConfigStr) {
+                try {
+                    const config = JSON.parse(savedConfigStr);
+                    firebaseApp = initializeApp(config);
+                    firebaseAuth = getAuth(firebaseApp);
+                    isFirebaseConfigured = true;
+                    
+                    // Listen to auth state transitions
+                    onAuthStateChanged(firebaseAuth, (user) => {
+                        if (user) {
+                            activeUser = user;
+                            renderDashboard(user);
+                        } else {
+                            activeUser = null;
+                            showAuthPanel();
+                        }
+                    });
+
+                    // Update Badge UI
+                    modeBadge.className = "px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center gap-1.5";
+                    modeBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>Firebase Live connected`;
+                    showToast("Firebase berhasil terhubung secara live!", "success");
+                } catch (error) {
+                    console.error("Failed to parse stored Firebase configuration", error);
+                    showToast("Gagal memuat konfigurasi Firebase. Mengembalikan ke mode demo.", "error");
+                    resetToDemoMode();
+                }
+            } else {
+                resetToDemoMode();
+            }
+        }
+
+        function resetToDemoMode() {
+            isFirebaseConfigured = false;
+            firebaseApp = null;
+            firebaseAuth = null;
+            const modeBadge = document.getElementById('mode-badge');
+            modeBadge.className = "px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 flex items-center gap-1.5";
+            modeBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>Demo Mode Active`;
+        }
+
+        /**
+         * Custom elegant Toast Notification System
+         */
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let icon = 'fa-circle-info';
+            let colorClasses = 'bg-slate-900/95 border-slate-800 text-slate-200';
+            let progressColor = 'bg-slate-600';
+            
+            if (type === 'success') {
+                icon = 'fa-circle-check';
+                colorClasses = 'bg-slate-900/95 border-emerald-500/30 text-emerald-300';
+                progressColor = 'bg-emerald-500';
+            } else if (type === 'error') {
+                icon = 'fa-triangle-exclamation';
+                colorClasses = 'bg-slate-900/95 border-red-500/30 text-red-300';
+                progressColor = 'bg-red-500';
+            } else if (type === 'loading') {
+                icon = 'fa-spinner fa-spin';
+                colorClasses = 'bg-slate-900/95 border-brand-500/30 text-brand-300';
+                progressColor = 'bg-brand-500';
+            }
+
+            toast.className = `p-4 rounded-xl border flex items-center gap-3 shadow-2xl transition-all duration-300 transform translate-x-12 opacity-0 pointer-events-auto ${colorClasses}`;
+            toast.innerHTML = `
+                <div class="text-lg"><i class="fa-solid ${icon}"></i></div>
+                <div class="flex-1 text-xs font-semibold leading-relaxed">${message}</div>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Animate in
+            setTimeout(() => {
+                toast.classList.remove('translate-x-12', 'opacity-0');
+            }, 10);
+
+            // Animate out
+            const removeToast = () => {
+                toast.classList.add('translate-x-12', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            };
+
+            if (type !== 'loading') {
+                setTimeout(removeToast, 4000);
+            }
+
+            // Return element handle for dynamic close (primarily for loaders)
+            return {
+                close: removeToast,
+                update: (newMsg, newType) => {
+                    // Quick update structure
+                    let newIcon = 'fa-circle-info';
+                    if (newType === 'success') newIcon = 'fa-circle-check';
+                    if (newType === 'error') newIcon = 'fa-triangle-exclamation';
+                    
+                    toast.querySelector('.fa-solid').className = `fa-solid ${newIcon}`;
+                    toast.querySelector('.flex-1').innerText = newMsg;
+                    setTimeout(removeToast, 4000);
+                }
+            };
+        }
+
+        /**
+         * Switch between Login and Registration tabs
+         */
+        window.switchTab = function(tab) {
+            if (currentTab === tab) return;
+            currentTab = tab;
+            
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+            const fieldName = document.getElementById('field-name');
+            const fieldTerms = document.getElementById('field-terms');
+            const authTitle = document.getElementById('auth-title');
+            const authSubtitle = document.getElementById('auth-subtitle');
+            const btnSubmitText = document.getElementById('btn-submit-text');
+            const forgotPasswordLink = document.getElementById('forgot-password-link');
+
+            if (tab === 'register') {
+                tabRegister.className = "flex-1 pb-3 text-center text-sm font-semibold border-b-2 border-brand-500 text-white transition-all duration-300";
+                tabLogin.className = "flex-1 pb-3 text-center text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-all duration-300";
+                
+                // Show register-specific inputs
+                fieldName.classList.remove('hidden');
+                fieldTerms.classList.remove('hidden');
+                forgotPasswordLink.classList.add('hidden');
+                
+                authTitle.innerText = "Daftar Akun Baru";
+                authSubtitle.innerText = "Isi formulir untuk mendaftar akun di Nexus";
+                btnSubmitText.innerText = "Buat Akun";
+            } else {
+                tabLogin.className = "flex-1 pb-3 text-center text-sm font-semibold border-b-2 border-brand-500 text-white transition-all duration-300";
+                tabRegister.className = "flex-1 pb-3 text-center text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-slate-200 transition-all duration-300";
+                
+                // Hide register-specific inputs
+                fieldName.classList.add('hidden');
+                fieldTerms.classList.add('hidden');
+                forgotPasswordLink.classList.remove('hidden');
+                
+                authTitle.innerText = "Selamat Datang Kembali";
+                authSubtitle.innerText = "Silakan masuk menggunakan kredensial Anda";
+                btnSubmitText.innerText = "Masuk";
+            }
+        };
+
+        // Eye icon functionality for password viewing
+        window.togglePasswordVisibility = function(fieldId) {
+            const input = document.getElementById(fieldId);
+            const icon = document.getElementById(`eye-icon-${fieldId}`);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-solid fa-eye-slash text-xs';
+            } else {
+                input.type = 'password';
+                icon.className = 'fa-solid fa-eye text-xs';
+            }
+        };
+
+        /**
+         * Open and close modal for custom Firebase setup
+         */
+        window.toggleConfigModal = function(show) {
+            const modal = document.getElementById('config-modal');
+            const input = document.getElementById('firebase-json-input');
+            if (show) {
+                // Populate text area with existing configuration if any
+                const current = localStorage.getItem('nexus_firebase_config');
+                if (current) {
+                    try {
+                        input.value = JSON.stringify(JSON.parse(current), null, 2);
+                    } catch (e) {
+                        input.value = current;
+                    }
+                }
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        };
+
+        /**
+         * Save raw JSON of Firebase project credentials to local storage
+         */
+        window.saveFirebaseConfig = function() {
+            const input = document.getElementById('firebase-json-input').value;
+            try {
+                const parsed = JSON.parse(input);
+                if (!parsed.apiKey || !parsed.authDomain || !parsed.projectId) {
+                    throw new Error("Kunci konfigurasi tidak lengkap.");
+                }
+                localStorage.setItem('nexus_firebase_config', JSON.stringify(parsed));
+                toggleConfigModal(false);
+                
+                // Restart environment
+                initFirebase();
+            } catch (error) {
+                showToast("Format JSON salah atau tidak lengkap. Pastikan menyalin data objek konfigurasi secara tepat.", "error");
+            }
+        };
+
+        /**
+         * Reset Firebase state back to local Simulated mode
+         */
+        window.resetFirebaseConfig = function() {
+            localStorage.removeItem('nexus_firebase_config');
+            document.getElementById('firebase-json-input').value = "";
+            toggleConfigModal(false);
+            resetToDemoMode();
+            showToast("Kembali menggunakan Demo Mode.", "success");
+            
+            if (activeUser) {
+                activeUser = null;
+                showAuthPanel();
+            }
+        };
+
+        /**
+         * Action Handler for Registration and Login Forms
+         */
+        window.handleAuthSubmit = async function(event) {
+            event.preventDefault();
+            const email = document.getElementById('input-email').value;
+            const password = document.getElementById('input-password').value;
+            const name = document.getElementById('input-name').value;
+            const termsChecked = document.getElementById('input-terms').checked;
+
+            if (currentTab === 'register' && !termsChecked) {
+                showToast("Anda harus menyetujui Ketentuan Layanan kami.", "error");
+                return;
+            }
+
+            const loader = showToast(currentTab === 'login' ? "Memproses masuk akun..." : "Mendaftarkan akun baru...", "loading");
+
+            // Check if Firebase auth is active and live
+            if (isFirebaseConfigured) {
+                try {
+                    if (currentTab === 'login') {
+                        // Firebase Login logic
+                        await signInWithEmailAndPassword(firebaseAuth, email, password);
+                        loader.update("Sesi masuk terverifikasi!", "success");
+                    } else {
+                        // Firebase Register logic
+                        const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+                        if (name) {
+                            await updateProfile(userCredential.user, { displayName: name });
+                        }
+                        loader.update("Registrasi Berhasil!", "success");
+                    }
+                } catch (error) {
+                    let friendlyMessage = "Gagal memproses autentikasi.";
+                    if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+                        friendlyMessage = "Email atau Password tidak cocok.";
+                    } else if (error.code === 'auth/email-already-in-use') {
+                        friendlyMessage = "Email ini telah terdaftar.";
+                    } else if (error.code === 'auth/weak-password') {
+                        friendlyMessage = "Sandi terlalu lemah (minimal 6 karakter).";
+                    } else {
+                        friendlyMessage = error.message;
+                    }
+                    loader.update(friendlyMessage, "error");
+                }
+            } else {
+                // DEMO MODE SIMULATION
+                setTimeout(() => {
+                    if (currentTab === 'login') {
+                        if (email === "developer@nexus.io" && password === "admin123") {
+                            activeUser = { ...dummyUser };
+                        } else {
+                            // Let general input through for visual demo purposes
+                            activeUser = {
+                                ...dummyUser,
+                                email: email,
+                                displayName: email.split('@')[0]
+                            };
+                        }
+                        loader.update("Sesi masuk terverifikasi (Demo)!", "success");
+                        renderDashboard(activeUser);
+                    } else {
+                        activeUser = {
+                            ...dummyUser,
+                            displayName: name || "User Baru",
+                            email: email,
+                            metadata: {
+                                creationTime: new Date().toUTCString(),
+                                lastSignInTime: new Date().toUTCString()
+                            }
+                        };
+                        loader.update("Registrasi Berhasil (Demo)!", "success");
+                        renderDashboard(activeUser);
+                    }
+                }, 1500);
+            }
+        };
+
+        /**
+         * Handle Social Logins (Google & GitHub)
+         */
+        window.handleSocialLogin = async function(providerName) {
+            const loader = showToast(`Menghubungkan ke ${providerName}...`, "loading");
+
+            if (isFirebaseConfigured) {
+                try {
+                    let provider;
+                    if (providerName === 'github') {
+                        provider = new GithubAuthProvider();
+                    } else {
+                        provider = new GoogleAuthProvider();
+                    }
+                    
+                    await signInWithPopup(firebaseAuth, provider);
+                    loader.update(`Berhasil login dengan ${providerName}!`, "success");
+                } catch (error) {
+                    console.error(error);
+                    loader.update(`Gagal login via ${providerName}: ${error.message}`, "error");
+                }
+            } else {
+                // DEMO MODE SIMULATION
+                setTimeout(() => {
+                    activeUser = {
+                        ...dummyUser,
+                        displayName: providerName === 'github' ? "GitHub Developer" : "Google Cloud User",
+                        email: providerName === 'github' ? "github-dev@nexus.io" : "google-user@nexus.io",
+                        photoURL: providerName === 'github' ? "https://github.com/identicons/github.png" : "https://placehold.co/150/ea4335/ffffff?text=G",
+                        providerId: providerName
+                    };
+                    loader.update(`Masuk Sesi menggunakan ${providerName} (Demo)!`, "success");
+                    renderDashboard(activeUser);
+                }, 1200);
+            }
+        };
+
+        /**
+         * Password reset request simulator
+         */
+        window.handleForgotPassword = function(event) {
+            event.preventDefault();
+            const email = document.getElementById('input-email').value;
+            if (!email) {
+                showToast("Silakan isi input email terlebih dahulu untuk melakukan reset.", "error");
+                return;
+            }
+
+            const loader = showToast("Mengirim link reset password...", "loading");
+            if (isFirebaseConfigured) {
+                sendPasswordResetEmail(firebaseAuth, email)
+                    .then(() => {
+                        loader.update("Link reset berhasil dikirim ke email Anda!", "success");
+                    })
+                    .catch((error) => {
+                        loader.update(`Gagal kirim link: ${error.message}`, "error");
+                    });
+            } else {
+                setTimeout(() => {
+                    loader.update(`[Simulasi] Link reset berhasil dikirim ke ${email}!`, "success");
+                }, 1200);
+            }
+        };
+
+        /**
+         * Transition from login panel to Dashboard
+         */
+        function renderDashboard(user) {
+            const authCard = document.getElementById('auth-card');
+            const dashboardPanel = document.getElementById('dashboard-panel');
+
+            // Set user profile data
+            document.getElementById('dash-user-name').innerText = `Selamat Datang, ${user.displayName || 'User'}`;
+            document.getElementById('dash-user-email').innerText = user.email;
+            document.getElementById('dash-user-uid').innerText = user.uid;
+            document.getElementById('dash-user-avatar').src = user.photoURL || `https://placehold.co/150/1e293b/ffffff?text=${(user.displayName || 'U').charAt(0)}`;
+            document.getElementById('dash-user-created').innerText = user.metadata?.creationTime ? new Date(user.metadata.creationTime).toLocaleString('id-ID') : '-';
+            document.getElementById('dash-user-last-login').innerText = user.metadata?.lastSignInTime ? new Date(user.metadata.lastSignInTime).toLocaleString('id-ID') : '-';
+            
+            // Set Provider Graphic/Icons
+            let providerHTML = '';
+            if (user.providerId === 'github' || (user.providerData && user.providerData[0]?.providerId === 'github.com')) {
+                providerHTML = `<i class="fa-brands fa-github text-white"></i> GitHub OAuth`;
+            } else if (user.providerId === 'google' || (user.providerData && user.providerData[0]?.providerId === 'google.com')) {
+                providerHTML = `<i class="fa-brands fa-google text-red-400"></i> Google Account`;
+            } else {
+                providerHTML = `<i class="fa-solid fa-envelope text-brand-500"></i> Email & Password`;
+            }
+            document.getElementById('dash-auth-provider').innerHTML = providerHTML;
+
+            // Trigger animations
+            authCard.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                authCard.classList.add('hidden');
+                dashboardPanel.classList.remove('hidden');
+                setTimeout(() => {
+                    dashboardPanel.classList.remove('scale-95', 'opacity-0');
+                    dashboardPanel.classList.add('scale-100', 'opacity-100');
+                }, 50);
+            }, 300);
+
+            // Automatically call AI Assistant to greet user
+            generateDailyMotivation();
+        }
+
+        /**
+         * Back to authentication form (Log Out)
+         */
+        window.handleLogout = function() {
+            const authCard = document.getElementById('auth-card');
+            const dashboardPanel = document.getElementById('dashboard-panel');
+            const loader = showToast("Mengahiri sesi...", "loading");
+
+            const performUiTransition = () => {
+                dashboardPanel.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    dashboardPanel.classList.add('hidden');
+                    authCard.classList.remove('hidden');
+                    setTimeout(() => {
+                        authCard.classList.remove('scale-95', 'opacity-0');
+                        authCard.classList.add('scale-100', 'opacity-100');
+                    }, 50);
+                }, 300);
+            };
+
+            if (isFirebaseConfigured) {
+                signOut(firebaseAuth)
+                    .then(() => {
+                        loader.update("Sesi berakhir.", "success");
+                        activeUser = null;
+                        performUiTransition();
+                    })
+                    .catch((err) => {
+                        loader.update("Gagal logout.", "error");
+                    });
+            } else {
+                setTimeout(() => {
+                    loader.update("Sesi berakhir (Demo).", "success");
+                    activeUser = null;
+                    performUiTransition();
+                }, 800);
+            }
+        };
+
+        function showAuthPanel() {
+            const authCard = document.getElementById('auth-card');
+            const dashboardPanel = document.getElementById('dashboard-panel');
+            
+            dashboardPanel.classList.add('hidden');
+            authCard.classList.remove('hidden');
+            authCard.classList.remove('scale-95', 'opacity-0');
+            authCard.classList.add('scale-100', 'opacity-100');
+        }
+
+        /**
+         * Fetch content from Gemini AI API
+         */
+        async function fetchGeminiResponse(userPrompt, systemInstruction) {
+            const responseArea = document.getElementById('ai-response-area');
+            responseArea.innerHTML = `
+                <div class="space-y-2 py-2">
+                    <div class="h-3 shimmer rounded w-3/4"></div>
+                    <div class="h-3 shimmer rounded w-full"></div>
+                    <div class="h-3 shimmer rounded w-5/6"></div>
+                </div>
+            `;
+
+            // Canvas environment safely provides the key at runtime if left as empty string
+            const apiKey = "AQ.Ab8RN6LjzSUEnaAFrR-WR3yfMpo1gWyZ5iCZaGqham0Ol0GTfQ";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: {
+                    parts: [{ text: systemInstruction }]
+                }
+            };
+
+            try {
+                // Implementing backoff handling as requested
+                let delay = 1000;
+                let response = null;
+                for (let i = 0; i < 3; i++) {
+                    try {
+                        response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        if (response.ok) break;
+                    } catch (e) {
+                        if (i === 2) throw e;
+                    }
+                    await new Promise(r => setTimeout(r, delay));
+                    delay *= 2;
+                }
+
+                if (!response || !response.ok) {
+                    throw new Error("Gagal memperoleh respons API.");
+                }
+
+                const result = await response.json();
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (text) {
+                    responseArea.innerText = text;
+                } else {
+                    responseArea.innerText = "Tidak dapat memproses respons kosong.";
+                }
+            } catch (err) {
+                console.error(err);
+                responseArea.innerText = "Error: Layanan AI Asisten sedang sibuk. Silakan coba sesaat lagi.";
+            }
+        }
+
+        /**
+         * Prompt handler for user input to AI Assistant
+         */
+        window.askGemini = function() {
+            const promptInput = document.getElementById('ai-user-prompt');
+            const prompt = promptInput.value.trim();
+            if (!prompt) return;
+
+            const sys = "Anda adalah Nexus AI Assistant, asisten koding & keamanan siber bersikap bersahabat, ringkas, profesional. Jawab instruksi user maksimal 3 kalimat secara informatif.";
+            fetchGeminiResponse(prompt, sys);
+            promptInput.value = "";
+        };
+
+        /**
+         * Generates daily inspiring quotes for developers
+         */
+        window.generateDailyMotivation = function() {
+            const name = activeUser ? activeUser.displayName : "Developer";
+            const prompt = `Berikan kalimat motivasi teknis harian yang menginspirasi, keren, dan membakar semangat untuk pengembang bernama ${name}.`;
+            const sys = "Buat pesan motivasi atau saran pemrograman profesional pendek untuk memulai hari developer dengan ceria. Jawab dalam Bahasa Indonesia maksimal 2 kalimat.";
+            fetchGeminiResponse(prompt, sys);
+        };
+
+        // Window load initializations
+        window.onload = function() {
+            initFirebase();
+        };
+
+</script>
+  </body>
+</html>

@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full scroll-smooth">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tailwind CSS Masterclass Hub & Interactive Platform</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+	<!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Lucide Icons for premium visual styles -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+	<script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-out forwards',
+                        'slide-in': 'slideIn 0.3s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(0)' },
+                        }
+                    }
+                }
+            }
+        }
+</script>
+<style>
+       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; }
+      
+        /* Smooth transitions for theme switching */
+        * {
+            transition-property: background-color, border-color, text-color, fill, stroke;
+            transition-duration: 200ms;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 999px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 999px;
+        }
+</style>
+  </head>
+  <body class="h-full bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 flex flex-col font-sans">
+
+  <!-- Chosen Palette: Slate (Neutrals) & Sky (Accents) - #f8fafc (bg), #0f172a (text), #0284c7 (primary accent), #f0f9ff (highlight bg) -->
+  <!-- Application Structure Plan: The SPA uses a top-down, story-driven dashboard structure. It starts with an overview (What), introduces the team (Who), explains the philosophy via interactive tabs (Why), and concludes with an interactive timeline (When/Where/How). This structure allows users to logically follow the evolution of the framework from concept to industry standard, keeping engagement high through varied interaction models (charts, tabs, clickable timeline). -->
+  <!-- Visualization & Content Choices: 1. Architecture Size (Goal: Compare) -> Chart.js Bar Chart (Shows JIT efficiency vs Traditional CSS). 2. Creators (Goal: Organize) -> CSS Grid with hover cards (Accessible team display). 3. Philosophy (Goal: Inform/Explain) -> Vertical Tabs (Avoids overwhelming text blocks, lets users explore pain points). 4. Chronology (Goal: Change/Time) -> Interactive HTML/JS Timeline (Connects dates, events, and locations dynamically). NO SVG/Mermaid used. -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+  <!-- GLOBAL TOOLBAR -->
+  <header class="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
+	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+
+	  <!-- Left Side: Drawer Toggle & Brand Title -->
+	  <div class="flex items-center gap-4">
+		<button id="btnDrawerToggle" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 focus:outline-none" aria-label="Buka Menu">
+		  <i data-lucide="menu" class="w-6 h-6"></i>
+		</button>
+		<a href="#" onclick="navigate('home')" class="flex items-center gap-2 group">
+		  <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white shadow-md group-hover:shadow-lg transition-all">
+			<i class="ph-bold ph-wind text-xl"></i>
+		  </div>
+		  <span class="font-bold text-xl tracking-tight text-blue-700">Tailwind<span class="text-brand-600">Article</span></span>
+		</a>
+		<!--<div class="flex items-center gap-2 cursor-pointer" onclick="navigateTo('home')">
+		  <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-500 to-indigo-600 flex items-center justify-center text-white font-extrabold text-lg">
+			T
+		  </div>
+		  <span class="font-bold text-lg tracking-tight sm:block bg-gradient-to-r from-brand-600 to-indigo-500 bg-clip-text text-transparent">TailwindHub</span>
+		</div>-->
+	  </div>
+
+	  <!-- Middle: Breadcrumb / Active Page Indicator -->
+	  <div class="hidden md:flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 font-medium">
+		<i data-lucide="map-pin" class="w-4 h-4 text-brand-500"></i>
+		<span id="globalBreadcrumb">Home</span>
+	  </div>
+
+	  <!-- Right Side: Icon Menu (YouTube Link) & Options Dropdown -->
+	  <div class="flex items-center gap-3">
+		<!-- YouTube Page Icon Direct Access -->
+		<button onclick="navigateTo('youtube')" class="p-2 rounded-lg text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all flex items-center gap-1.5 focus:outline-none" title="Tonton Video Tutorial">
+		  <i data-lucide="youtube" class="w-6 h-6"></i>
+		  <span class="text-xs font-semibold hidden lg:inline">Tutorials</span>
+		</button>
+
+		<!-- Line Divider -->
+		<div class="h-6 w-[1px] bg-slate-200 dark:bg-slate-800"></div>
+
+		<!-- Options Dropdown Menu Button -->
+		<div class="relative">
+		  <button id="btnDropdownToggle" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center gap-1 focus:outline-none" aria-label="Menu Opsi">
+			<i data-lucide="more-vertical" class="w-6 h-6"></i>
+		  </button>
+		  <!-- Dropdown Panel -->
+		  <div id="optionsDropdown" class="hidden absolute right-0 mt-2 w-48 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-lg ring-1 ring-black/5 focus:outline-none z-50">
+			<div class="py-1.5 px-1.5 space-y-1">
+			  <button onclick="navigateTo('editor')" class="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+				<i data-lucide="code" class="w-4 h-4 text-brand-500"></i> Code Editor
+			  </button>
+			  <button onclick="navigateTo('gallery')" class="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+				<i data-lucide="layout" class="w-4 h-4 text-emerald-500"></i> Showcase Templates
+			  </button>
+			  <div class="border-t border-slate-100 dark:border-slate-800 my-1"></div>
+			  <button onclick="navigateTo('settings')" class="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+				<i data-lucide="settings" class="w-4 h-4 text-indigo-500"></i> Settings
+			  </button>
+			</div>
+		  </div>
+		</div>
+	  </div>
+	</div>
+  </header>
+
+  <!-- NAVIGATION DRAWER BACKDROP -->
+  <div id="drawerBackdrop" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 transition-opacity"></div>
+
+  <!-- NAVIGATION DRAWER -->
+  <aside id="navDrawer" class="fixed inset-y-0 left-0 w-80 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col shadow-2xl">
+	<!-- Drawer Header -->
+	<div class="h-16 px-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+	  <div class="flex items-center gap-2">
+		<div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-brand-500 to-indigo-600 flex items-center justify-center text-white font-extrabold text-sm">
+		  T
+		</div>
+		<span class="font-bold text-md tracking-tight dark:text-white">Menu Utama</span>
+	  </div>
+	  <button id="btnDrawerClose" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 focus:outline-none">
+		<i data-lucide="x" class="w-5 h-5"></i>
+	  </button>
+	</div>
+
+	<!-- Drawer Content (Navigation Menu) -->
+	<nav class="flex-1 overflow-y-auto px-4 py-6 space-y-2">
+	  <button onclick="navigateTo('home')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all text-left" data-page="home">
+		<i data-lucide="home" class="w-5 h-5"></i> Home
+	  </button>
+	  <button onclick="navigateTo('about')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all text-left" data-page="about">
+		<i data-lucide="info" class="w-5 h-5"></i> About
+	  </button>
+	  <button onclick="navigateTo('gallery')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all text-left" data-page="gallery">
+		<i data-lucide="image" class="w-5 h-5"></i> Gallery
+	  </button>
+	  <button onclick="navigateTo('service')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all text-left" data-page="service">
+		<i data-lucide="shield-check" class="w-5 h-5"></i> Service
+	  </button>
+	  <button onclick="navigateTo('article')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all text-left" data-page="article">
+		<i data-lucide="file-text" class="w-5 h-5"></i> Article
+	  </button>
+	  <button onclick="navigateTo('contact')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all text-left" data-page="contact">
+		<i data-lucide="mail" class="w-5 h-5"></i> Contact
+	  </button>
+
+	  <div class="h-[1px] bg-slate-200 dark:bg-slate-800 my-4"></div>
+
+	  <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 tracking-wider uppercase px-4 mb-2">Internal Tools</p>
+	  <button onclick="navigateTo('editor')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all text-left" data-page="editor">
+		<i data-lucide="code-2" class="w-5 h-5"></i> Live HTML Sandbox
+	  </button>
+	  <button onclick="navigateTo('settings')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all text-left" data-page="settings">
+		<i data-lucide="sliders" class="w-5 h-5"></i> App Settings
+	  </button>
+	</nav>
+
+	<!-- Drawer Footer -->
+	<div class="p-6 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60">
+	  <div class="flex items-center gap-3 mb-2">
+		<div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-500">
+		  <i data-lucide="user" class="w-4 h-4"></i>
+		</div>
+		<div>
+		  <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300">Tailwind Explorer</h4>
+		  <p class="text-[10px] text-slate-400 dark:text-slate-500">Premium User</p>
+		</div>
+	  </div>
+	  <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-4 leading-relaxed">
+		© 2026 TailwindHub. Crafted with absolute elegancy & Tailwind engine.
+	  </p>
+	</div>
+  </aside>
+
+  <!-- MAIN VIEW CONTAINER -->
+  <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10 focus:outline-none">
+
+	<!-- PAGE 1: HOME PAGE -->
+	<section id="page-home" class="page-view space-y-8 animate-fade-in">
+	  <!-- Breadcrumb -->
+	  <nav class="flex text-xs font-semibold text-slate-400 dark:text-slate-500 space-x-1 items-center">
+		<span class="hover:text-brand-500 cursor-pointer">Home</span>
+	  </nav>
+
+	  <!-- Hero/Jumbotron Panel -->
+	  <div class="relative bg-gradient-to-br from-brand-600 via-brand-700 to-indigo-800 text-white rounded-3xl p-6 sm:p-10 lg:p-12 overflow-hidden shadow-xl">
+		<div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent_40%)]"></div>
+		<div class="relative z-10 max-w-2xl">
+		  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm text-xs font-bold tracking-wider uppercase mb-6">
+			<i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-300"></i> Premium Edu Platform
+		  </span>
+		  <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight mb-4">
+			Mastering Utility-First Design Engine
+		  </h1>
+		  <p class="text-slate-100 text-base sm:text-lg mb-8 font-light leading-relaxed">
+			Platform integratif untuk mempelajari seluk-beluk arsitektur Tailwind CSS, bereksperimen dengan sandbox editor interaktif, dan menjelajahi ekosistem web modern paling mutakhir.
+		  </p>
+		  <div class="flex flex-wrap gap-4">
+			<button onclick="navigateTo('article')" class="px-6 py-3 rounded-xl bg-white text-slate-900 font-bold text-sm hover:shadow-lg hover:scale-105 transform active:scale-95 transition-all flex items-center gap-2">
+			  Mulai Belajar <i data-lucide="arrow-right" class="w-4 h-4"></i>
+			</button>
+			<button onclick="navigateTo('editor')" class="px-6 py-3 rounded-xl bg-slate-900/40 backdrop-blur-sm text-white font-bold text-sm hover:bg-slate-950/40 border border-white/20 hover:scale-105 transform active:scale-95 transition-all flex items-center gap-2">
+			  <i data-lucide="terminal" class="w-4 h-4"></i> Coba Sandbox Editor
+			</button>
+		  </div>
+		</div>
+	  </div>
+
+	  <!-- Dashboard Grid: Articles Section -->
+	  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+		<!-- Main Highlights -->
+		<div class="lg:col-span-2 space-y-6">
+		  <h2 class="text-2xl font-bold tracking-tight text-slate-800 dark:text-white flex items-center gap-2">
+			<i data-lucide="bookmark-check" class="w-6 h-6 text-brand-500"></i> Artikel Sorotan Utama
+		  </h2>
+
+		  <!-- Article Card 1 -->
+		  <div class="bg-white dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row gap-6">
+			<div class="flex-1">
+			  <span class="text-xs font-extrabold text-brand-500 dark:text-brand-400 tracking-wider uppercase mb-2 block">Panduan Pemula</span>
+			  <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3 hover:text-brand-500 cursor-pointer" onclick="openFullArticle('artikel-pemula')">
+				Mengenal Tailwind CSS: Framework 'Utility-First' untuk Pengembangan Web Modern
+			  </h3>
+			  <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-4 line-clamp-3">
+				Dalam dunia pengembangan web, CSS adalah tulang punggung dari desain antarmuka. Ketahui mengapa pendekatan atomik utilitas mampu merevolusi cara para pengembang berkolaborasi...
+			  </p>
+			  <div class="flex items-center justify-between">
+				<button onclick="openFullArticle('artikel-pemula')" class="text-brand-500 hover:text-brand-600 dark:hover:text-brand-400 text-sm font-bold flex items-center gap-1">
+				  Baca Selengkapnya <i data-lucide="chevron-right" class="w-4 h-4"></i>
+				</button>
+				<div class="flex gap-2">
+				  <button onclick="shareContent('Mengenal Tailwind CSS', 'artikel_tailwind_css.md')" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300" title="Bagikan">
+					<i data-lucide="share-2" class="w-4.5 h-4.5"></i>
+				  </button>
+				</div>
+			  </div>
+			</div>
+		  </div>
+
+		  <!-- Article Card 2 -->
+		  <div class="bg-white dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-800/80 p-6 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row gap-6">
+			<div class="flex-1">
+			  <span class="text-xs font-extrabold text-indigo-500 dark:text-indigo-400 tracking-wider uppercase mb-2 block">Ulasan Lanjutan</span>
+			  <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3 hover:text-indigo-500 cursor-pointer" onclick="openFullArticle('artikel-lanjutan')">
+				Menguak Asal-Usul Tailwind CSS Lanjutan: Sejarah, Filosofi, dan Evolusi di Balik Layar
+			  </h3>
+			  <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-4 line-clamp-3">
+				Bagi sebagian pengembang, Tailwind terasa seperti sebuah pustaka kaku yang lahir begitu saja. Mari gali proses evolusi arsitektur CSS di balik kode-kode penataan praktis...
+			  </p>
+			  <div class="flex items-center justify-between">
+				<button onclick="openFullArticle('artikel-lanjutan')" class="text-brand-500 hover:text-brand-600 dark:hover:text-brand-400 text-sm font-bold flex items-center gap-1">
+				  Baca Selengkapnya <i data-lucide="chevron-right" class="w-4 h-4"></i>
+				</button>
+				<div class="flex gap-2">
+				  <button onclick="shareContent('Asal-usul Tailwind CSS Lanjutan', 'artikel_tailwind_css_lanjutan.md')" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300" title="Bagikan">
+					<i data-lucide="share-2" class="w-4.5 h-4.5"></i>
+				  </button>
+				</div>
+			  </div>
+			</div>
+		  </div>
+		</div>
+
+		<!-- Right Sidebar: Interactive Summary Panel -->
+		<div class="space-y-6">
+		  <h2 class="text-2xl font-bold tracking-tight text-slate-800 dark:text-white flex items-center gap-2">
+			<i data-lucide="target" class="w-6 h-6 text-indigo-500"></i> Fokus Utama
+		  </h2>
+		  <div class="bg-gradient-to-b from-indigo-50 to-slate-100 dark:from-slate-800/50 dark:to-slate-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-800">
+			<h3 class="font-bold text-slate-900 dark:text-white text-lg mb-4">Mengapa Menggunakan TailwindHub?</h3>
+			<div class="space-y-4">
+			  <div class="flex gap-3">
+				<div class="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center flex-shrink-0 text-indigo-600 dark:text-indigo-400">
+				  <i data-lucide="check" class="w-4 h-4"></i>
+				</div>
+				<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"><strong>Efisien</strong>: Ganti file CSS puluhan baris dengan kelas utilitas inline sekali pakai.</p>
+			  </div>
+			  <div class="flex gap-3">
+				<div class="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center flex-shrink-0 text-indigo-600 dark:text-indigo-400">
+				  <i data-lucide="check" class="w-4 h-4"></i>
+				</div>
+				<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"><strong>Visual Cantik</strong>: Menggunakan skala palet warna terstandar dari perancang antarmuka profesional.</p>
+			  </div>
+			  <div class="flex gap-3">
+				<div class="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center flex-shrink-0 text-indigo-600 dark:text-indigo-400">
+				  <i data-lucide="check" class="w-4 h-4"></i>
+				</div>
+				<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed"><strong>Kecepatan Eksplorasi</strong>: Fitur editor terintegrasi memungkinkan modifikasi kode secara instan.</p>
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  </div>
+	</section>
+
+	<!-- PAGE 2: ABOUT PAGE -->
+	<section id="page-about" class="page-view space-y-8 hidden animate-fade-in">
+	  <!-- Breadcrumb -->
+	  <nav class="flex text-xs font-semibold text-slate-400 dark:text-slate-500 space-x-1 items-center">
+		<span class="hover:text-brand-500 cursor-pointer" onclick="navigateTo('home')">Home</span>
+		<i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+		<span class="text-slate-600 dark:text-slate-400">About</span>
+	  </nav>
+
+	  <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+		<!-- About Main Content -->
+		<div class="lg:col-span-2 space-y-6">
+		  <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Tentang Tailwind CSS</h2>
+		  <p class="text-lg text-slate-600 dark:text-slate-400 leading-relaxed font-light">
+			Tailwind CSS didirikan atas kebutuhan nyata untuk menghapus "peperangan" spesifisitas pada penulisan gaya modular. Pustaka ini memindahkan fokus rancangan dari penulisan berkas modular CSS terpisah ke elemen semantik HTML yang reaktif.
+		  </p>
+
+		  <div class="prose prose-slate dark:prose-invert max-w-none space-y-4">
+			<h3 class="text-xl font-bold text-slate-800 dark:text-white">Filosofi yang Menggerakkan Industri</h3>
+			<p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+			  Secara tradisional, industri pengembangan web menjunjung tinggi doktrin <em>Separation of Concerns</em> secara kaku. Namun, hal ini menyisakan kerumitan tak berkesudahan di saat aplikasi tumbuh besar. Tailwind menolak paradigma pemisahan kaku tersebut dan membuktikan bahwa "Utility-First" justru memudahkan kontrol performa dan kepraktisan kolaborasi tim pengembang.
+			</p>
+
+			<div class="p-6 rounded-2xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 my-6">
+			  <h4 class="font-bold text-slate-800 dark:text-white mb-2 flex items-center gap-2">
+				<i data-lucide="info" class="w-5 h-5 text-brand-500"></i> Penting Diketahui
+			  </h4>
+			  <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+				Tailwind tidak menyuplai Anda dengan komponen yang sudah jadi seperti tombol berwarna biru yang seragam untuk semua orang. Tailwind sebaliknya melengkapi Anda dengan bahan bangunan murni (atomic classes) yang melaluinya Anda bebas mendefinisikan desain khas merek Anda sendiri.
+			  </p>
+			</div>
+		  </div>
+		</div>
+
+		<!-- Related Articles Sidebar -->
+		<div class="space-y-6">
+		  <div class="bg-white dark:bg-slate-800/80 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+			<h3 class="font-bold text-slate-800 dark:text-white text-md mb-4 flex items-center gap-2">
+			  <i data-lucide="list-video" class="w-5 h-5 text-brand-500"></i> Artikel Terkait
+			</h3>
+			<ul class="space-y-4">
+			  <li>
+				<a onclick="openFullArticle('artikel-pemula')" class="group cursor-pointer block">
+				  <h4 class="text-sm font-semibold text-slate-800 dark:text-slate-200 group-hover:text-brand-500 transition-colors line-clamp-2">Mengenal Tailwind CSS: Dasar Framework 'Utility-First'</h4>
+				  <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">Edisi Pemula • 5 Menit Baca</p>
+				</a>
+			  </li>
+			  <li class="border-t border-slate-100 dark:border-slate-700/50 pt-4">
+				<a onclick="openFullArticle('artikel-lanjutan')" class="group cursor-pointer block">
+				  <h4 class="text-sm font-semibold text-slate-800 dark:text-slate-200 group-hover:text-brand-500 transition-colors line-clamp-2">Menguak Asal-Usul & Sejarah Berdirinya Tailwind CSS</h4>
+				  <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">Lanjutan • 10 Menit Baca</p>
+				</a>
+			  </li>
+			  <li class="border-t border-slate-100 dark:border-slate-700/50 pt-4">
+				<a onclick="openFullArticle('artikel-situs')" class="group cursor-pointer block">
+				  <h4 class="text-sm font-semibold text-slate-800 dark:text-slate-200 group-hover:text-brand-500 transition-colors line-clamp-2">Contoh-contoh Website Populer Berbasis Tailwind CSS</h4>
+				  <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">Inspirasi • 7 Menit Baca</p>
+				</a>
+			  </li>
+			</ul>
+		  </div>
+		</div>
+	  </div>
+	</section>
+
+	<!-- PAGE 3: GALLERY PAGE -->
+	<section id="page-gallery" class="page-view space-y-8 hidden animate-fade-in">
+	  <!-- Breadcrumb -->
+	  <nav class="flex text-xs font-semibold text-slate-400 dark:text-slate-500 space-x-1 items-center">
+		<span class="hover:text-brand-500 cursor-pointer" onclick="navigateTo('home')">Home</span>
+		<i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+		<span class="text-slate-600 dark:text-slate-400">Gallery</span>
+	  </nav>
+
+	  <div class="mb-6">
+		<h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Showcase & Gallery Website</h2>
+		<p class="text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+		  Eksplorasi mahakarya digital dari platform-platform paling bersinar di industri yang mempercayakan pengalaman penggunanya di atas infrastruktur visual Tailwind CSS. Unduh contoh template boilerplatenya untuk dipelajari langsung.
+		</p>
+	  </div>
+
+	  <!-- Showcase Grid -->
+	  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+		<!-- Card 1: ChatGPT -->
+		<div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+		  <div>
+			<div class="p-6 bg-slate-900 text-white relative">
+			  <span class="absolute top-4 right-4 bg-emerald-500 text-white text-[10px] font-extrabold px-2 py-1 rounded">LIVE HUB</span>
+			  <h3 class="text-lg font-bold">ChatGPT (OpenAI)</h3>
+			  <p class="text-xs text-slate-400 mt-1">Antarmuka Percakapan Masa Depan</p>
+			</div>
+			<div class="p-6 space-y-4">
+			  <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+				Memanfaatkan kepraktisan Tailwind CSS untuk menghadirkan dashboard percakapan AI yang bersih, responsif, dan kaya fungsionalitas visual yang ramah di mata pengguna.
+			  </p>
+			  <div class="flex flex-wrap gap-2">
+				<span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded text-xs">Dynamic UI</span>
+				<span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded text-xs">Conversational</span>
+			  </div>
+			</div>
+		  </div>
+		  <div class="p-6 border-t border-slate-100 dark:border-slate-700/50 flex gap-4">
+			<button onclick="downloadMockTemplate('ChatGPT Boilerplate UI')" class="flex-1 px-4 py-2 text-xs font-bold rounded-lg bg-slate-900 hover:bg-slate-800 text-white dark:bg-brand-600 dark:hover:bg-brand-700 transition-colors flex items-center justify-center gap-1.5">
+			  <i data-lucide="download" class="w-3.5 h-3.5"></i> Unduh Boilerplate
+			</button>
+		  </div>
+		</div>
+
+		<!-- Card 2: Linear -->
+		<div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+		  <div>
+			<div class="p-6 bg-indigo-950 text-white relative">
+			  <span class="absolute top-4 right-4 bg-brand-500 text-white text-[10px] font-extrabold px-2 py-1 rounded">PREMIUM DESIGN</span>
+			  <h3 class="text-lg font-bold">Linear Website</h3>
+			  <p class="text-xs text-indigo-200 mt-1">The Gold Standard of SaaS UI</p>
+			</div>
+			<div class="p-6 space-y-4">
+			  <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+				Keindahan gradasi gelap, transisi border mengkilap, dan kontras visual yang elegan dikomposisikan secara harmonis memanfaatkan fleksibilitas penuh sistem token warna Tailwind.
+			  </p>
+			  <div class="flex flex-wrap gap-2">
+				<span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded text-xs">Dark Aesthetic</span>
+				<span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded text-xs">Smooth Micro-interaction</span>
+			  </div>
+			</div>
+		  </div>
+		  <div class="p-6 border-t border-slate-100 dark:border-slate-700/50 flex gap-4">
+			<button onclick="downloadMockTemplate('Linear Aesthetic Dark UI')" class="flex-1 px-4 py-2 text-xs font-bold rounded-lg bg-slate-900 hover:bg-slate-800 text-white dark:bg-brand-600 dark:hover:bg-brand-700 transition-colors flex items-center justify-center gap-1.5">
+			  <i data-lucide="download" class="w-3.5 h-3.5"></i> Unduh Boilerplate
+			</button>
+		  </div>
+		</div>
+
+		<!-- Card 3: NASA JPL -->
+		<div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+		  <div>
+			<div class="p-6 bg-rose-950 text-white relative">
+			  <span class="absolute top-4 right-4 bg-rose-600 text-white text-[10px] font-extrabold px-2 py-1 rounded">GOVERNMENT</span>
+			  <h3 class="text-lg font-bold">NASA JPL</h3>
+			  <p class="text-xs text-rose-200 mt-1">Keandalan Visual Skala Antariksa</p>
+			</div>
+			<div class="p-6 space-y-4">
+			  <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+				Menunjukkan performa pemuatan super cepat yang handal, menyajikan informasi publik misi robotika dan sains NASA yang dioptimasi penuh agar memuat data galeri antariksa secara tangguh di koneksi internet lambat sekalipun.
+			  </p>
+			  <div class="flex flex-wrap gap-2">
+				<span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded text-xs">Performance</span>
+				<span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded text-xs">Scientific Grid</span>
+			  </div>
+			</div>
+		  </div>
+		  <div class="p-6 border-t border-slate-100 dark:border-slate-700/50 flex gap-4">
+			<button onclick="downloadMockTemplate('Scientific Portal Layout')" class="flex-1 px-4 py-2 text-xs font-bold rounded-lg bg-slate-900 hover:bg-slate-800 text-white dark:bg-brand-600 dark:hover:bg-brand-700 transition-colors flex items-center justify-center gap-1.5">
+			  <i data-lucide="download" class="w-3.5 h-3.5"></i> Unduh Boilerplate
+			</button>
+		  </div>
+		</div>
+
+	  </div>
+	</section>
+
+	<!-- PAGE 4: SERVICE PAGE -->
+	<section id="page-service" class="page-view space-y-8 hidden animate-fade-in">
+	  <!-- Breadcrumb -->
+	  <nav class="flex text-xs font-semibold text-slate-400 dark:text-slate-500 space-x-1 items-center">
+		<span class="hover:text-brand-500 cursor-pointer" onclick="navigateTo('home')">Home</span>
+		<i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+		<span class="text-slate-600 dark:text-slate-400">Services</span>
+	  </nav>
+
+	  <div class="max-w-3xl">
+		<h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Fitur-Fitur & Layanan Utama Tailwind CSS</h2>
+		<p class="text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+		  Arsitektur modern Tailwind CSS melengkapi Anda dengan aneka persenjataan canggih untuk mempermudah, mempercepat, dan merampingkan pembuatan antarmuka modern.
+		</p>
+	  </div>
+
+	  <!-- Features Grid -->
+	  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+		<!-- Feature 1 -->
+		<div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+		  <div class="w-10 h-10 rounded-xl bg-brand-100 dark:bg-brand-950/50 text-brand-500 dark:text-brand-400 flex items-center justify-center">
+			<i data-lucide="zap" class="w-5 h-5"></i>
+		  </div>
+		  <h3 class="font-bold text-slate-800 dark:text-white text-lg">Just-In-Time Compiler</h3>
+		  <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+			Mesin cerdas yang mengompilasi CSS secara instan tepat setelah Anda menuliskannya di HTML. Mengeliminasi total ukuran CSS berlebih yang tidak digunakan.
+		  </p>
+		</div>
+
+		<!-- Feature 2 -->
+		<div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+		  <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/50 text-amber-500 dark:text-amber-400 flex items-center justify-center">
+			<i data-lucide="palette" class="w-5 h-5"></i>
+		  </div>
+		  <h3 class="font-bold text-slate-800 dark:text-white text-lg">Strict Design Token</h3>
+		  <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+			Mengikat layout desainer dengan palet warna, tipografi, ukuran margin, dan padding bawaan untuk mencegah visual kustomisasi liar yang tidak teratur.
+		  </p>
+		</div>
+
+		<!-- Feature 3 -->
+		<div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+		  <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 text-emerald-500 dark:text-emerald-400 flex items-center justify-center">
+			<i data-lucide="monitor" class="w-5 h-5"></i>
+		  </div>
+		  <h3 class="font-bold text-slate-800 dark:text-white text-lg">Responsive Breakpoints</h3>
+		  <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+			Konfigurasi desain mobile-first yang intuitif hanya dengan menambahkan prefiks layar yang bersangkutan di depan utilitas CSS.
+		  </p>
+		</div>
+
+		<!-- Feature 4 -->
+		<div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+		  <div class="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-950/50 text-indigo-500 dark:text-indigo-400 flex items-center justify-center">
+			<i data-lucide="moon" class="w-5 h-5"></i>
+		  </div>
+		  <h3 class="font-bold text-slate-800 dark:text-white text-lg">Dark Mode Out-of-the-box</h3>
+		  <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+			Penerapan transisi malam dan siang secara responsif hanya menggunakan prefiks sederhana kelas `dark:` pada penataan HTML Anda.
+		  </p>
+		</div>
+
+		<!-- Feature 5 -->
+		<div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+		  <div class="w-10 h-10 rounded-xl bg-rose-100 dark:bg-rose-950/50 text-rose-500 dark:text-rose-400 flex items-center justify-center">
+			<i data-lucide="puzzle" class="w-5 h-5"></i>
+		  </div>
+		  <h3 class="font-bold text-slate-800 dark:text-white text-lg">Arbitrary Utility Values</h3>
+		  <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+			Sintaks bracket unik (misal `top-[117px]`) yang memfasilitasi penggunaan nilai-nilai acak tanpa harus terikat pada design token yang kaku.
+		  </p>
+		</div>
+
+		<!-- Feature 6 -->
+		<div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+		  <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950/50 text-purple-500 dark:text-purple-400 flex items-center justify-center">
+			<i data-lucide="sliders" class="w-5 h-5"></i>
+		  </div>
+		  <h3 class="font-bold text-slate-800 dark:text-white text-lg">Sistem Config Dinamis</h3>
+		  <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+			Mengizinkan kustomisasi skala palet warna, breakpoint, serta ekstensi animasi langsung di dalam berkas konfigurasi javascript terpusat.
+		  </p>
+		</div>
+	  </div>
+	</section>
+
+	<!-- PAGE 5: ARTICLE PAGE -->
+	<section id="page-article" class="page-view space-y-8 hidden animate-fade-in">
+	  <!-- Breadcrumb -->
+	  <nav class="flex text-xs font-semibold text-slate-400 dark:text-slate-500 space-x-1 items-center">
+		<span class="hover:text-brand-500 cursor-pointer" onclick="navigateTo('home')">Home</span>
+		<i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+		<span class="text-slate-600 dark:text-slate-400">Articles</span>
+	  </nav>
+
+	  <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+		<div>
+		  <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Direktori & Kumpulan Artikel</h2>
+		  <p class="text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+			Jelajahi kumpulan karya tulis, ulasan teknis, dan filosofi dasar framework atomik yang mendominasi industri pengembangan web modern.
+		  </p>
+		</div>
+	  </div>
+
+	  <!-- List of Articles -->
+	  <div class="space-y-6">
+		<!-- Article Item 1 -->
+		<div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row gap-6 justify-between items-start">
+		  <div class="space-y-2 flex-1">
+			<div class="flex items-center gap-2">
+			  <span class="px-2 py-0.5 rounded bg-brand-50 text-brand-600 dark:bg-brand-950/40 dark:text-brand-400 text-[10px] font-bold uppercase tracking-wider">Pemula</span>
+			  <span class="text-xs text-slate-400">Estimasi Baca: 5 Menit</span>
+			</div>
+			<h3 class="text-xl font-bold text-slate-800 dark:text-white hover:text-brand-500 transition-colors cursor-pointer" onclick="openFullArticle('artikel-pemula')">
+			  Mengenal Tailwind CSS: Framework 'Utility-First' untuk Pengembangan Web Modern
+			</h3>
+			<p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2">
+			  Ketahui alasan mengapa menata situs langsung pada file markup HTML terbukti mempercepat proses kolaborasi pengembang dan merampingkan ukuran bundel produksi visual...
+			</p>
+		  </div>
+		  <div class="flex items-center gap-3 w-full md:w-auto justify-end md:self-center">
+			<button onclick="shareContent('Mengenal Tailwind CSS', 'artikel_tailwind_css.md')" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400" title="Bagikan ke Media Sosial">
+			  <i data-lucide="share-2" class="w-4.5 h-4.5"></i>
+			</button>
+			<button onclick="openFullArticle('artikel-pemula')" class="px-4 py-2 text-xs font-bold rounded-xl bg-slate-900 dark:bg-brand-600 text-white hover:bg-slate-800 dark:hover:bg-brand-700 transition-colors">
+			  Baca Artikel
+			</button>
+		  </div>
+		</div>
+
+		<!-- Article Item 2 -->
+		<div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row gap-6 justify-between items-start">
+		  <div class="space-y-2 flex-1">
+			<div class="flex items-center gap-2">
+			  <span class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400 text-[10px] font-bold uppercase tracking-wider">Lanjutan</span>
+			  <span class="text-xs text-slate-400">Estimasi Baca: 10 Menit</span>
+			</div>
+			<h3 class="text-xl font-bold text-slate-800 dark:text-white hover:text-indigo-500 transition-colors cursor-pointer" onclick="openFullArticle('artikel-lanjutan')">
+			  Menguak Asal-Usul Tailwind CSS Lanjutan: Sejarah, Filosofi, dan Evolusi di Balik Layar
+			</h3>
+			<p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2">
+			  Simak kronologi terperinci inovasi tidak disengaja di balik terciptanya framework utilitas yang dipelopori oleh Adam Wathan, Steve Schoger, dkk...
+			</p>
+		  </div>
+		  <div class="flex items-center gap-3 w-full md:w-auto justify-end md:self-center">
+			<button onclick="shareContent('Menguak Sejarah Tailwind CSS', 'artikel_tailwind_css_lanjutan.md')" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400" title="Bagikan ke Media Sosial">
+			  <i data-lucide="share-2" class="w-4.5 h-4.5"></i>
+			</button>
+			<button onclick="openFullArticle('artikel-lanjutan')" class="px-4 py-2 text-xs font-bold rounded-xl bg-slate-900 dark:bg-brand-600 text-white hover:bg-slate-800 dark:hover:bg-brand-700 transition-colors">
+			  Baca Artikel
+			</button>
+		  </div>
+		</div>
+
+		<!-- Article Item 3 -->
+		<div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col md:flex-row gap-6 justify-between items-start">
+		  <div class="space-y-2 flex-1">
+			<div class="flex items-center gap-2">
+			  <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400 text-[10px] font-bold uppercase tracking-wider">Inspirasi</span>
+			  <span class="text-xs text-slate-400">Estimasi Baca: 7 Menit</span>
+			</div>
+			<h3 class="text-xl font-bold text-slate-800 dark:text-white hover:text-emerald-500 transition-colors cursor-pointer" onclick="openFullArticle('artikel-situs')">
+			  Menembus Batas Kreativitas: Contoh Website Populer Dunia yang Menggunakan Tailwind CSS
+			</h3>
+			<p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2">
+			  Simak daftar studi kasus website kelas global dari ChatGPT (OpenAI) hingga NASA JPL yang mempercayakan rancangannya kepada kegesitan Tailwind CSS...
+			</p>
+		  </div>
+		  <div class="flex items-center gap-3 w-full md:w-auto justify-end md:self-center">
+			<button onclick="shareContent('Inspirasi Website Tailwind', 'artikel_contoh_website.md')" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400" title="Bagikan ke Media Sosial">
+			  <i data-lucide="share-2" class="w-4.5 h-4.5"></i>
+			</button>
+			<button onclick="openFullArticle('artikel-situs')" class="px-4 py-2 text-xs font-bold rounded-xl bg-slate-900 dark:bg-brand-600 text-white hover:bg-slate-800 dark:hover:bg-brand-700 transition-colors">
+			  Baca Artikel
+			</button>
+		  </div>
+		</div>
+	  </div>
+	</section>
+
+	<!-- PAGE 6: CONTACT PAGE -->
+	<section id="page-contact" class="page-view space-y-8 hidden animate-fade-in">
+	  <!-- Breadcrumb -->
+	  <nav class="flex text-xs font-semibold text-slate-400 dark:text-slate-500 space-x-1 items-center">
+		<span class="hover:text-brand-500 cursor-pointer" onclick="navigateTo('home')">Home</span>
+		<i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+		<span class="text-slate-600 dark:text-slate-400">Contact</span>
+	  </nav>
+
+	  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+		<!-- Contact info & Social Media Links -->
+		<div class="space-y-6">
+		  <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Mari Berdiskusi Lebih Jauh</h2>
+		  <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+			Butuh bantuan merancang antarmuka reaktif menggunakan basis token desain Tailwind CSS? Kirim pesan Anda sekarang dan kami akan siap membantu Anda.
+		  </p>
+
+		  <!-- Contact Card Info -->
+		  <div class="space-y-4">
+			<div class="flex items-center gap-4">
+			  <div class="w-11 h-11 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 flex-shrink-0">
+				<i data-lucide="mail-open" class="w-5 h-5"></i>
+			  </div>
+			  <div>
+				<h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">E-Mail Dukungan</h4>
+				<p class="text-sm font-semibold text-slate-700 dark:text-slate-300">support@tailwindcss-mastery.id</p>
+			  </div>
+			</div>
+			<div class="flex items-center gap-4">
+			  <div class="w-11 h-11 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 flex-shrink-0">
+				<i data-lucide="globe-2" class="w-5 h-5"></i>
+			  </div>
+			  <div>
+				<h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Kantor Pengembang</h4>
+				<p class="text-sm font-semibold text-slate-700 dark:text-slate-300">Waterloo, Ontario, Canada</p>
+			  </div>
+			</div>
+		  </div>
+
+		  <!-- Elegant Social Media Grid -->
+		  <div class="space-y-3">
+			<h3 class="text-sm font-bold text-slate-700 dark:text-slate-300">Hubungi Kami di Media Sosial</h3>
+			<div class="flex gap-3">
+			  <a href="https://youtube.com" target="_blank" class="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-950/30 text-red-600 flex items-center justify-center hover:scale-105 transition-all">
+				<i data-lucide="youtube" class="w-5 h-5"></i>
+			  </a>
+			  <a href="https://github.com" target="_blank" class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-300 flex items-center justify-center hover:scale-105 transition-all">
+				<i data-lucide="github" class="w-5 h-5"></i>
+			  </a>
+			  <a href="https://twitter.com" target="_blank" class="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-950/30 text-sky-500 flex items-center justify-center hover:scale-105 transition-all">
+				<i data-lucide="twitter" class="w-5 h-5"></i>
+			  </a>
+			</div>
+		  </div>
+		</div>
+
+		<!-- Contact Form Card -->
+		<div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
+		  <h3 class="text-xl font-bold text-slate-800 dark:text-white">Form Kirim Email</h3>
+
+		  <form id="contactForm" onsubmit="handleContactSubmit(event)" class="space-y-4">
+			<div>
+			  <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2">NAMA LENGKAP</label>
+			  <input type="text" required class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="Contoh: Adam Wathan">
+			</div>
+			<div>
+			  <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2">EMAIL ANDA</label>
+			  <input type="email" required class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="Contoh: adam@tailwindlabs.com">
+			</div>
+			<div>
+			  <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2">PESAN / PERTANYAAN</label>
+			  <textarea rows="4" required class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="Tuliskan pesan Anda di sini..."></textarea>
+			</div>
+			<button type="submit" class="w-full py-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm transition-colors flex items-center justify-center gap-2">
+			  <i data-lucide="navigation" class="w-4.5 h-4.5"></i> Kirim Pesan Sekarang
+			</button>
+		  </form>
+		</div>
+	  </div>
+	</section>
+
+	<!-- PAGE 7: EDITOR PAGE (Sandbox playground) -->
+	<section id="page-editor" class="page-view space-y-6 hidden animate-fade-in">
+	  <!-- Breadcrumb -->
+	  <nav class="flex text-xs font-semibold text-slate-400 dark:text-slate-500 space-x-1 items-center">
+		<span class="hover:text-brand-500 cursor-pointer" onclick="navigateTo('home')">Home</span>
+		<i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+		<span class="text-slate-600 dark:text-slate-400">Playground Sandbox</span>
+	  </nav>
+
+	  <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+		<div>
+		  <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Live HTML & Tailwind Sandbox</h2>
+		  <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Eksperimen langsung dengan HTML markup reaktif. Perubahan langsung terdeteksi di sisi tinjauan.</p>
+		</div>
+
+		<!-- Sandbox Toolbar -->
+		<div class="flex flex-wrap gap-2">
+		  <button onclick="downloadSandboxedCode()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5" title="Unduh Kode HTML">
+			<i data-lucide="download" class="w-4 h-4"></i> Unduh
+		  </button>
+		  <button onclick="copySandboxedCode()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5" title="Salin Kode ke Clipboard">
+			<i data-lucide="copy" class="w-4 h-4"></i> Salin
+		  </button>
+		  <button onclick="shareSandboxedCode()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5" title="Bagikan Tautan">
+			<i data-lucide="share-2" class="w-4 h-4"></i> Bagikan
+		  </button>
+		</div>
+	  </div>
+
+	  <!-- Sub Navigation Tabs for Editor Page -->
+	  <div class="border-b border-slate-200 dark:border-slate-800 flex">
+		<button id="btnEditorTabEdit" onclick="switchEditorTab('edit')" class="px-6 py-3 border-b-2 border-brand-500 font-bold text-sm text-brand-500 flex items-center gap-2 focus:outline-none">
+		  <i data-lucide="edit-3" class="w-4 h-4"></i> Edit Kode
+		</button>
+		<button id="btnEditorTabPreview" onclick="switchEditorTab('preview')" class="px-6 py-3 border-b-2 border-transparent font-semibold text-sm text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 flex items-center gap-2 focus:outline-none">
+		  <i data-lucide="eye" class="w-4 h-4"></i> Live Preview
+		</button>
+	  </div>
+
+	  <!-- Two-Pane Editor Layout -->
+	  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[500px]">
+
+		<!-- Left Pane: The Code Area -->
+		<div id="paneEditorInput" class="h-full flex flex-col border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden bg-slate-900 text-slate-200">
+		  <div class="px-4 py-2 bg-slate-950 border-b border-slate-800 flex items-center justify-between text-xs font-mono">
+			<span class="text-slate-400">index.html (Editable HTML)</span>
+			<span class="text-brand-500">HTML & Tailwind</span>
+		  </div>
+		  <textarea id="sandboxCodeEditor" class="flex-1 w-full p-4 bg-slate-950 font-mono text-xs focus:outline-none resize-none leading-relaxed text-emerald-400" spellcheck="false" oninput="updateLivePreview()"><!-- Ubah kode di bawah untuk melihat preview langsung! -->
+			<div class="p-8 max-w-sm mx-auto bg-white rounded-3xl shadow-lg space-y-4 text-center border border-slate-100">
+			  <div class="w-16 h-16 bg-gradient-to-tr from-cyan-400 to-blue-600 rounded-2xl mx-auto flex items-center justify-center text-white text-2xl font-black">
+				T
+			  </div>
+			  <h2 class="text-xl font-bold text-slate-800">Hello Tailwind!</h2>
+			  <p class="text-sm text-slate-500 leading-relaxed">
+				Selamat datang di live sandbox editor. Coba ubah teks ini, ganti warna gradient, atau tambahkan margin untuk bereksperimen!
+			  </p>
+			  <button class="px-6 py-2.5 rounded-full bg-blue-600 text-white font-bold text-xs hover:bg-blue-700 shadow-md transition-colors">
+				Awesome Engine
+			  </button>
+			</div></textarea>
+		</div>
+
+		<!-- Right Pane: The Preview Area -->
+		<div id="paneEditorPreview" class="h-full flex flex-col border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden bg-slate-50 dark:bg-slate-950/20 lg:block hidden">
+		  <div class="px-4 py-2 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs font-semibold">
+			<span class="text-slate-500">Live Sandbox Preview</span>
+			<div class="flex gap-1.5">
+			  <span class="w-3 h-3 rounded-full bg-rose-400"></span>
+			  <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+			  <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
+			</div>
+		  </div>
+		  <div class="flex-1 p-6 overflow-y-auto flex items-center justify-center" id="sandboxPreviewContainer">
+			<!-- Instantly populated by iframe sandbox -->
+			<iframe id="sandboxPreviewIframe" class="w-full h-full border-none bg-transparent"></iframe>
+		  </div>
+		</div>
+
+	  </div>
+	</section>
+
+	<!-- PAGE 8: YOUTUBE PAGE -->
+	<section id="page-youtube" class="page-view space-y-8 hidden animate-fade-in">
+	  <!-- Breadcrumb -->
+	  <nav class="flex text-xs font-semibold text-slate-400 dark:text-slate-500 space-x-1 items-center">
+		<span class="hover:text-brand-500 cursor-pointer" onclick="navigateTo('home')">Home</span>
+		<i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+		<span class="text-slate-600 dark:text-slate-400">YouTube Channel / Playlist</span>
+	  </nav>
+
+	  <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+		<div>
+		  <h2 class="text-3xl font-bold tracking-tight text-rose-600 dark:text-rose-500 flex items-center gap-2">
+			<i data-lucide="youtube" class="w-8 h-8"></i> Video Tutorial & Dokumentasi
+		  </h2>
+		  <p class="text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+			Tingkatkan kecakapan teknis penulisan token desain Anda dengan memutar langsung serangkaian panduan, tips, dan trik Tailwind CSS.
+		  </p>
+		</div>
+	  </div>
+
+	  <!-- YouTube Custom API Key Warning (Dynamic state indication) -->
+	  <div id="ytConfigBadge" class="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 flex gap-3 text-sm text-amber-800 dark:text-amber-400">
+		<i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+		<div>
+		  <p class="font-bold">Mode Simulasi Video Aktif</p>
+		  <p class="text-xs text-amber-700 dark:text-amber-500 mt-1">Anda dapat memperbarui YouTube API Key dan Playlist ID Anda di menu <span class="underline font-bold cursor-pointer" onclick="navigateTo('settings')">Settings</span> untuk melakukan pemuatan data dinamis dari Google API.</p>
+		</div>
+	  </div>
+
+	  <!-- YouTube Videos Grid -->
+	  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="ytVideoGrid">
+		<!-- Video Item 1 -->
+		<div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm flex flex-col justify-between">
+		  <div>
+			<div class="aspect-video bg-slate-900 relative flex items-center justify-center">
+			  <iframe class="w-full h-full" src="https://www.youtube.com/embed/mO88sK5zS_c" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+			</div>
+			<div class="p-5 space-y-2">
+			  <h3 class="font-bold text-slate-800 dark:text-white leading-snug">Tailwind CSS in 100 Seconds</h3>
+			  <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">Overview super ringkas yang membahas filosofi, cara kerja compilernya, dan alasan pengembang menyukai fungsionalitas atomic classes.</p>
+			</div>
+		  </div>
+		</div>
+
+		<!-- Video Item 2 -->
+		<div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm flex flex-col justify-between">
+		  <div>
+			<div class="aspect-video bg-slate-900 relative flex items-center justify-center">
+			  <iframe class="w-full h-full" src="https://www.youtube.com/embed/lCxcTsOHr5U" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+			</div>
+			<div class="p-5 space-y-2">
+			  <h3 class="font-bold text-slate-800 dark:text-white leading-snug">Tailwind CSS - Full Course for Beginners</h3>
+			  <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">Kursus komprehensif berjam-jam untuk menuntun Anda dari pemula mutlak hingga mampu membangun tata letak layout yang rumit.</p>
+			</div>
+		  </div>
+		</div>
+
+		<!-- Video Item 3 -->
+		<div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm flex flex-col justify-between">
+		  <div>
+			<div class="aspect-video bg-slate-900 relative flex items-center justify-center">
+			  <iframe class="w-full h-full" src="https://www.youtube.com/embed/pfaSUYaSgRo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+			</div>
+			<div class="p-5 space-y-2">
+			  <h3 class="font-bold text-slate-800 dark:text-white leading-snug">Tailwind v4.0 Alpha Review</h3>
+			  <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">Simak pembahasan masa depan kegunaan compiler Rust yang lebih lincah pada rilis Tailwind versi 4.0 mendatang.</p>
+			</div>
+		  </div>
+		</div>
+	  </div>
+	</section>
+
+	<!-- PAGE 9: SETTINGS PAGE -->
+	<section id="page-settings" class="page-view space-y-8 hidden animate-fade-in">
+	  <!-- Breadcrumb -->
+	  <nav class="flex text-xs font-semibold text-slate-400 dark:text-slate-500 space-x-1 items-center">
+		<span class="hover:text-brand-500 cursor-pointer" onclick="navigateTo('home')">Home</span>
+		<i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+		<span class="text-slate-600 dark:text-slate-400">Settings</span>
+	  </nav>
+
+	  <div class="max-w-3xl space-y-8">
+		<div>
+		  <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Pengaturan Aplikasi</h2>
+		  <p class="text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+			Atur tema visual seluruh dashboard, konfigurasi API Key YouTube, serta ID Playlist untuk memuat video dinamis sesuai preferensi pribadi Anda.
+		  </p>
+		</div>
+
+		<!-- Settings Controls Box -->
+		<div class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
+
+		  <!-- 1. Themes Selector -->
+		  <div class="space-y-3">
+			<h3 class="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+			  <i data-lucide="paint-bucket" class="w-4 h-4 text-brand-500"></i> Pilih Tema Visual Dashboard
+			</h3>
+			<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+			  <button onclick="setThemeMode('light')" id="btnThemeLight" class="px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-bold flex items-center justify-between text-slate-800 hover:bg-slate-50 focus:outline-none">
+				<span class="flex items-center gap-2"><i data-lucide="sun" class="w-4 h-4 text-amber-500"></i> Mode Terang (Light)</span>
+				<i data-lucide="check-circle-2" class="theme-check-icon w-5 h-5 text-brand-500 hidden" id="checkThemeLight"></i>
+			  </button>
+			  <button onclick="setThemeMode('dark')" id="btnThemeDark" class="px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-bold flex items-center justify-between text-slate-200 hover:bg-slate-800 focus:outline-none">
+				<span class="flex items-center gap-2"><i data-lucide="moon" class="w-4 h-4 text-indigo-400"></i> Mode Gelap (Dark)</span>
+				<i data-lucide="check-circle-2" class="theme-check-icon w-5 h-5 text-brand-500 hidden" id="checkThemeDark"></i>
+			  </button>
+			</div>
+		  </div>
+
+		  <div class="border-t border-slate-100 dark:border-slate-700/50"></div>
+
+		  <!-- 2. YouTube API Key -->
+		  <div class="space-y-3">
+			<h3 class="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+			  <i data-lucide="key-round" class="w-4 h-4 text-rose-500"></i> YouTube API Key
+			</h3>
+			<input type="password" id="inputYTApiKey" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="Masukkan Google Developer Console YouTube API Key...">
+		  </div>
+
+		  <div class="border-t border-slate-100 dark:border-slate-700/50"></div>
+
+		  <!-- 3. YouTube Playlist ID -->
+		  <div class="space-y-3">
+			<h3 class="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+			  <i data-lucide="list-video" class="w-4 h-4 text-emerald-500"></i> YouTube Playlist ID
+			</h3>
+			<input type="text" id="inputYTPlaylistID" class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-transparent text-sm focus:outline-none focus:ring-2 focus:ring-brand-500" placeholder="Contoh: PL4cUxeGkc99hX_m69yI9_7Wv9k-6A8f_v">
+		  </div>
+
+		  <div class="border-t border-slate-100 dark:border-slate-700/50"></div>
+
+		  <!-- Action buttons -->
+		  <div class="flex justify-end gap-3">
+			<button onclick="resetSettings()" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-bold text-sm">
+			  Reset Default
+			</button>
+			<button onclick="saveSettings()" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm">
+			  Simpan Pengaturan
+			</button>
+		  </div>
+
+		</div>
+	  </div>
+	</section>
+
+	<!-- POPUP MODAL: FULL ARTICLE VIEWER -->
+	<div id="articleModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+	  <div class="bg-white dark:bg-slate-800 w-full max-w-4xl max-h-[85vh] rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-2xl flex flex-col">
+		<!-- Modal Header -->
+		<div class="p-6 border-b border-slate-100 dark:border-slate-700/50 flex items-center justify-between">
+		  <div>
+			<span id="modalArticleCategory" class="text-xs font-extrabold text-brand-500 uppercase tracking-widest block mb-1">Kategori</span>
+			<h3 id="modalArticleTitle" class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white line-clamp-1">Judul Artikel</h3>
+		  </div>
+		  <button onclick="closeArticleModal()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 focus:outline-none">
+			<i data-lucide="x" class="w-5 h-5"></i>
+		  </button>
+		</div>
+		<!-- Modal Body (Scrollable) -->
+		<div class="flex-1 overflow-y-auto p-6 sm:p-10 prose prose-slate dark:prose-invert max-w-none text-slate-600 dark:text-slate-300 space-y-6" id="modalArticleBody">
+		  <!-- Loaded dynamically via javascript state -->
+		</div>
+		<!-- Modal Footer -->
+		<div class="p-6 border-t border-slate-100 dark:border-slate-700/50 flex justify-between items-center bg-slate-50 dark:bg-slate-900/40">
+		  <button id="btnModalShare" class="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-sm font-semibold flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
+			<i data-lucide="share-2" class="w-4 h-4"></i> Bagikan Artikel
+		  </button>
+		  <button onclick="closeArticleModal()" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-brand-600 dark:hover:bg-brand-700 text-white text-xs font-bold transition-colors">
+			Selesai Membaca
+		  </button>
+		</div>
+	  </div>
+	</div>
+
+	<!-- GLOBAL INTERACTIVE NOTIFICATION POPUP -->
+	<div id="globalNotification" class="hidden fixed bottom-6 right-6 z-50 p-4 rounded-2xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xl flex items-center gap-3 border border-slate-800 dark:border-slate-200 max-w-md animate-slide-in">
+	  <div class="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center flex-shrink-0">
+		<i data-lucide="check" class="w-4 h-4"></i>
+	  </div>
+	  <p id="notifText" class="text-xs font-bold leading-relaxed">Notifikasi berhasil ditampilkan!</p>
+	</div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="w-full py-8 border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-950/20 text-center">
+	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+	  <div class="flex justify-center items-center gap-2">
+		<div class="w-6 h-6 rounded bg-brand-500 flex items-center justify-center text-white text-xs font-bold">T</div>
+		<span class="text-sm font-bold tracking-wider dark:text-white">TailwindHub Masterclass</span>
+	  </div>
+	  <p class="text-xs text-slate-400 dark:text-slate-500">Pusat dokumentasi, pembelajaran, dan sandbox playground interaktif yang mengulik fungsionalitas murni Tailwind CSS.</p>
+	  <p class="text-[10px] text-slate-400 dark:text-slate-600">© 2026 TailwindHub. All rights reserved.</p>
+	</div>
+  </footer>
+
+  <!-- INTERACTIVE JAVASCRIPT LOGIC -->
+  <script src="js/scripts.js"></script>
+	
+  </body>
+</html>

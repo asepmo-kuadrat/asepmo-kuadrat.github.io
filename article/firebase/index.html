@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Masterclass: Panduan Lengkap Web & Android</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons for Beautiful UI -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    colors: {
+                        firebase: {
+                            amber: '#FFCA28',
+                            orange: '#F57C00',
+                            navy: '#1A237E',
+                            dark: '#020617',
+                        }
+                    }
+                }
+            }
+        }
+</script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .code-block {
+            font-family: 'Fira Code', monospace;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+</style>
+  </head>
+  <body class="bg-slate-900 text-slate-100 min-h-screen selection:bg-firebase-orange selection:text-white">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-slate-800">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="flex items-center justify-between h-16">
+		  <div class="flex items-center space-x-3">
+			<div class="bg-gradient-to-tr from-firebase-amber to-firebase-orange p-2 rounded-xl shadow-lg shadow-firebase-orange/20">
+			  <i class="fa-solid fa-fire text-slate-950 text-xl animate-pulse"></i>
+			</div>
+			<div>
+			  <span class="text-lg font-extrabold tracking-tight bg-gradient-to-r from-firebase-amber to-firebase-orange bg-clip-text text-transparent">FIREBASE</span>
+			  <span class="text-xs block text-slate-400 font-medium">Panduan Implementasi Praktis</span>
+			</div>
+		  </div>
+		  <nav class="hidden md:flex space-x-1">
+			<a href="#konsep" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">Konsep</a>
+			<a href="#setup" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">Setup Awal</a>
+			<a href="#implementasi" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">Panduan Kode</a>
+			<a href="#simulator" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition">Simulator Live</a>
+		  </nav>
+		  <div>
+			<a href="#simulator" class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-slate-950 bg-gradient-to-r from-firebase-amber to-firebase-orange rounded-xl shadow-lg hover:brightness-110 transition active:scale-95 duration-150">
+			  Coba Simulator <i class="fa-solid fa-play ml-2 text-xs"></i>
+			</a>
+		  </div>
+		</div>
+	  </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden py-16 sm:py-24 border-b border-slate-800/80">
+	  <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,#1e1b4b,transparent_50%)]"></div>
+	  <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,#1c1917,transparent_50%)]"></div>
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+		<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+		  <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+			<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-firebase-orange/10 text-firebase-orange border border-firebase-orange/20">
+			  ⚡ Tutorial Interaktif &amp; Komprehensif
+			</span>
+			<h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight">
+			  Kuasai Firebase untuk <br>
+			  <span class="bg-gradient-to-r from-firebase-amber to-firebase-orange bg-clip-text text-transparent">Android &amp; Website</span>
+			</h1>
+			<p class="text-lg text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+			  Bangun sistem login, update profile real-time Firestore, dan integrasikan notifikasi push (FCM) dengan panduan langkah-demi-langkah berbasis percakapan interaktif kami.
+			</p>
+			<div class="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 pt-4">
+			  <a href="#implementasi" class="px-6 py-3.5 bg-slate-800 text-white hover:bg-slate-700 font-semibold rounded-xl text-center border border-slate-700 shadow-sm transition">
+				Pelajari Kode Lengkap
+			  </a>
+			  <a href="#simulator" class="px-6 py-3.5 bg-gradient-to-r from-firebase-amber to-firebase-orange text-slate-950 hover:opacity-90 font-bold rounded-xl text-center shadow-lg shadow-firebase-orange/10 transition">
+				Uji Coba Simulator Aplikasi
+			  </a>
+			</div>
+		  </div>
+		  <!-- Decorative Graphic / Summary Stats -->
+		  <div class="lg:col-span-5 grid grid-cols-2 gap-4">
+			<div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 backdrop-blur">
+			  <div class="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-xl flex items-center justify-center mb-4 border border-emerald-500/20">
+				<i class="fa-solid fa-shield-halved text-xl"></i>
+			  </div>
+			  <h3 class="font-bold text-lg text-white">Auth</h3>
+			  <p class="text-sm text-slate-400 mt-1">Sistem login, registrasi, dan proteksi rute pengguna secara real-time.</p>
+			</div>
+			<div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 backdrop-blur">
+			  <div class="w-12 h-12 bg-blue-500/10 text-blue-400 rounded-xl flex items-center justify-center mb-4 border border-blue-500/20">
+				<i class="fa-solid fa-cloud-arrow-up text-xl"></i>
+			  </div>
+			  <h3 class="font-bold text-lg text-white">Firestore</h3>
+			  <p class="text-sm text-slate-400 mt-1">Penyimpanan profil pengguna dengan singkronisasi multi-perangkat.</p>
+			</div>
+			<div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 backdrop-blur">
+			  <div class="w-12 h-12 bg-amber-500/10 text-amber-400 rounded-xl flex items-center justify-center mb-4 border border-amber-500/20">
+				<i class="fa-solid fa-bell text-xl"></i>
+			  </div>
+			  <h3 class="font-bold text-lg text-white">FCM Notif</h3>
+			  <p class="text-sm text-slate-400 mt-1">Pengiriman notifikasi instan langsung ke perangkat target.</p>
+			</div>
+			<div class="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 backdrop-blur">
+			  <div class="w-12 h-12 bg-purple-500/10 text-purple-400 rounded-xl flex items-center justify-center mb-4 border border-purple-500/20">
+				<i class="fa-solid fa-cube text-xl"></i>
+			  </div>
+			  <h3 class="font-bold text-lg text-white">Multiplatform</h3>
+			  <p class="text-sm text-slate-400 mt-1">Dukungan arsitektur modular untuk Android dan platform Web.</p>
+			</div>
+		  </div>
+		</div>
+	  </div>
+    </section>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+	  <!-- Section 1: Konsep & Pengenalan -->
+	  <section id="konsep" class="mb-20">
+		<div class="text-center max-w-3xl mx-auto mb-12">
+		  <h2 class="text-3xl font-extrabold text-white">Mengenal Apa Itu Firebase</h2>
+		  <p class="text-slate-400 mt-2">Firebase adalah platform Backend-as-a-Service (BaaS) dari Google untuk mempercepat pembangunan aplikasi modern tanpa memusingkan pengelolaan server.</p>
+		</div>
+
+		<!-- Kegunaan Card Grid -->
+		<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+		  <div class="bg-gradient-to-b from-slate-800/80 to-slate-900 border border-slate-800 p-8 rounded-2xl shadow-xl hover:border-slate-700 transition duration-300">
+			<div class="bg-amber-500/10 w-14 h-14 rounded-2xl flex items-center justify-center text-firebase-amber mb-6">
+			  <i class="fa-solid fa-user-lock text-2xl"></i>
+			</div>
+			<h3 class="text-xl font-bold text-white mb-3">Autentikasi Aman 🔐</h3>
+			<p class="text-slate-400 leading-relaxed text-sm">
+			  Firebase Authentication menyediakan sistem sign-in aman, mendukung pendaftaran via email/sandi, integrasi akun sosial (Google, Apple, Facebook), hingga verifikasi SMS secara out-of-the-box.
+			</p>
+		  </div>
+
+		  <div class="bg-gradient-to-b from-slate-800/80 to-slate-900 border border-slate-800 p-8 rounded-2xl shadow-xl hover:border-slate-700 transition duration-300">
+			<div class="bg-orange-500/10 w-14 h-14 rounded-2xl flex items-center justify-center text-firebase-orange mb-6">
+			  <i class="fa-solid fa-database text-2xl"></i>
+			</div>
+			<h3 class="text-xl font-bold text-white mb-3">Cloud Firestore 🗄️</h3>
+			<p class="text-slate-400 leading-relaxed text-sm">
+			  Database dokumen fleksibel, berskala global, dan real-time. Memungkinkan penyimpanan profil dan data dinamis terstruktur yang disinkronkan secara mulus ke jutaan pengguna dalam milidetik.
+			</p>
+		  </div>
+
+		  <div class="bg-gradient-to-b from-slate-800/80 to-slate-900 border border-slate-800 p-8 rounded-2xl shadow-xl hover:border-slate-700 transition duration-300">
+			<div class="bg-blue-500/10 w-14 h-14 rounded-2xl flex items-center justify-center text-blue-400 mb-6">
+			  <i class="fa-solid fa-paper-plane text-2xl"></i>
+			</div>
+			<h3 class="text-xl font-bold text-white mb-3">Notifikasi FCM 🔔</h3>
+			<p class="text-slate-400 leading-relaxed text-sm">
+			  Firebase Cloud Messaging (FCM) mengizinkan developer mengirimkan pesan notifikasi push secara instan ke browser web atau perangkat mobile (Android/iOS) sepenuhnya gratis.
+			</p>
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- Section 2: Setup Awal Proyek -->
+	  <section id="setup" class="mb-20 bg-slate-800/30 border border-slate-800 rounded-3xl p-8 sm:p-12 relative overflow-hidden">
+		<div class="absolute top-0 right-0 w-96 h-96 bg-firebase-orange/5 rounded-full blur-3xl"></div>
+		<div class="relative z-10">
+		  <h2 class="text-3xl font-extrabold text-white mb-6 flex items-center">
+			<i class="fa-solid fa-gears text-firebase-amber mr-3"></i> Setup Proyek Multiplatform
+		  </h2>
+
+		  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+			<!-- Setup Android -->
+			<div class="space-y-4">
+			  <div class="inline-flex items-center space-x-2 bg-emerald-500/15 text-emerald-400 px-3 py-1 rounded-lg text-sm font-semibold">
+				<i class="fa-brands fa-android"></i> <span>Platform Android</span>
+			  </div>
+			  <h3 class="text-xl font-bold text-white">Integrasi di Android Studio</h3>
+			  <ol class="space-y-3 text-slate-300 text-sm list-decimal list-inside pl-1">
+				<li>Daftarkan nama paket (*Package Name*) aplikasi Anda ke Firebase Console.</li>
+				<li>Unduh file konfigurasi <code class="text-firebase-amber font-mono bg-slate-900 px-1.5 py-0.5 rounded">google-services.json</code> dan simpan ke dalam direktori <code class="text-slate-400 font-mono">app/</code> proyek Anda.</li>
+				<li>Tambahkan plugin Google Services pada file <code class="text-slate-400 font-mono">build.gradle</code> (level proyek).</li>
+				<li>Tambahkan SDK dependensi Firebase yang diinginkan di file <code class="text-slate-400 font-mono">build.gradle</code> (level modul/app).</li>
+				<li>Klik **"Sync Now"** untuk menyelesaikan instalasi paket gradle.</li>
+			  </ol>
+			</div>
+
+			<!-- Setup Web -->
+			<div class="space-y-4">
+			  <div class="inline-flex items-center space-x-2 bg-blue-500/15 text-blue-400 px-3 py-1 rounded-lg text-sm font-semibold">
+				<i class="fa-solid fa-code"></i> <span>Platform Web (HTML &amp; JS)</span>
+			  </div>
+			  <h3 class="text-xl font-bold text-white">Integrasi Web Dasar</h3>
+			  <ol class="space-y-3 text-slate-300 text-sm list-decimal list-inside pl-1">
+				<li>Buat aplikasi web baru di Firebase Console, lalu salin modul konfigurasi objek JSON yang diberikan.</li>
+				<li>Gunakan tag skrip dengan tipe modul (<code class="text-firebase-amber font-mono bg-slate-900 px-1.5 py-0.5 rounded">type="module"</code>) agar dapat mengimpor library resmi secara bersih.</li>
+				<li>Hubungkan file konfigurasi tersebut dengan memanggil method <code class="text-slate-400 font-mono">initializeApp(firebaseConfig)</code>.</li>
+				<li>Konfigurasikan database dan rules autentikasi di dalam konsol sebelum melakukan pengujian pengiriman data.</li>
+			  </ol>
+			</div>
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- Section 3: Implementasi Kode (Interactive Tabs) -->
+	  <section id="implementasi" class="mb-20">
+		<div class="text-center max-w-3xl mx-auto mb-12">
+		  <h2 class="text-3xl font-extrabold text-white">Panduan Arsitektur Kode</h2>
+		  <p class="text-slate-400 mt-2">Berikut adalah file implementasi lengkap, terstruktur, dan bersih sesuai dengan alur percakapan pembelajaran kita.</p>
+		</div>
+
+		<!-- Tab Container -->
+		<div class="bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
+		  <!-- Tab Headers -->
+		  <div class="flex border-b border-slate-800 bg-slate-900 overflow-x-auto">
+			<button onclick="switchTab('html-tab', this)" class="tab-btn px-6 py-4 text-sm font-semibold border-b-2 border-firebase-orange text-white flex items-center gap-2 whitespace-nowrap transition">
+			  <i class="fa-solid fa-file-code text-orange-400"></i> 1. index.html
+			</button>
+			<button onclick="switchTab('js-tab', this)" class="tab-btn px-6 py-4 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2 whitespace-nowrap transition">
+			  <i class="fa-brands fa-js text-yellow-400"></i> 2. app.js
+			</button>
+			<button onclick="switchTab('sw-tab', this)" class="tab-btn px-6 py-4 text-sm font-semibold border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2 whitespace-nowrap transition">
+			  <i class="fa-solid fa-gears text-blue-400"></i> 3. firebase-messaging-sw.js
+			</button>
+		  </div>
+
+		  <!-- Tab Contents -->
+		  <div class="p-6">
+			<!-- Tab 1: HTML Code -->
+			<div id="html-tab" class="tab-content block">
+			  <div class="flex items-center justify-between mb-4">
+				<span class="text-xs text-slate-400 font-semibold tracking-wider uppercase">Struktur Formulir Antarmuka Pengguna</span>
+				<button onclick="copyCode('html-code')" class="text-xs text-slate-400 hover:text-white bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+				  <i class="fa-regular fa-copy"></i> Salin Kode
+				</button>
+			  </div>
+			  <pre class="bg-slate-900 p-5 rounded-xl overflow-x-auto text-sm text-slate-300 code-block"><code id="html-code">&lt;!DOCTYPE html&gt;
+				  &lt;html lang="id"&gt;
+				  &lt;head&gt;
+				  &lt;meta charset="UTF-8"&gt;
+				  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+				  &lt;title&gt;Firebase Auth &amp; Profile Website&lt;/title&gt;
+				  &lt;/head&gt;
+				  &lt;body&gt;
+
+				  &lt;!-- 📝 Form Registrasi --&gt;
+				  &lt;div id="register-container"&gt;
+				  &lt;h2&gt;Daftar Akun Baru&lt;/h2&gt;
+				  &lt;form id="register-form"&gt;
+				  &lt;input type="email" id="reg-email" placeholder="Masukkan Email" required&gt;&lt;br&gt;&lt;br&gt;
+				  &lt;input type="password" id="reg-password" placeholder="Masukkan Password" required&gt;&lt;br&gt;&lt;br&gt;
+				  &lt;button type="submit"&gt;Daftar&lt;/button&gt;
+				  &lt;/form&gt;
+				  &lt;/div&gt;
+
+				  &lt;hr&gt;
+
+				  &lt;!-- 🔑 Form Login --&gt;
+				  &lt;div id="login-container"&gt;
+				  &lt;h2&gt;Masuk ke Akun&lt;/h2&gt;
+				  &lt;form id="login-form"&gt;
+				  &lt;input type="email" id="login-email" placeholder="Masukkan Email" required&gt;&lt;br&gt;&lt;br&gt;
+				  &lt;input type="password" id="login-password" placeholder="Masukkan Password" required&gt;&lt;br&gt;&lt;br&gt;
+				  &lt;button type="submit"&gt;Masuk&lt;/button&gt;
+				  &lt;/form&gt;
+				  &lt;/div&gt;
+
+				  &lt;!-- 👤 Area Profil Pengguna (Disembunyikan secara bawaan) --&gt;
+				  &lt;div id="profile-container" style="display: none;"&gt;
+				  &lt;h2&gt;Profil Anda&lt;/h2&gt;
+				  &lt;p&gt;Email: &lt;span id="user-email-display"&gt;&lt;/span&gt;&lt;/p&gt;
+
+				  &lt;!-- 📝 Form Edit Profil --&gt;
+				  &lt;form id="profile-form"&gt;
+				  &lt;input type="text" id="profile-name" placeholder="Nama Lengkap" required&gt;&lt;br&gt;&lt;br&gt;
+				  &lt;input type="text" id="profile-phone" placeholder="Nomor Telepon" required&gt;&lt;br&gt;&lt;br&gt;
+				  &lt;button type="submit"&gt;Simpan Perubahan&lt;/button&gt;
+				  &lt;/form&gt;
+
+				  &lt;br&gt;
+				  &lt;button id="logout-btn"&gt;Keluar (Logout)&lt;/button&gt;
+				  &lt;/div&gt;
+
+				  &lt;!-- Menghubungkan ke file JavaScript modular kita --&gt;
+				  &lt;script type="module" src="app.js"&gt;&lt;/script&gt;
+				  &lt;/body&gt;
+				  &lt;/html&gt;</code></pre>
+			</div>
+
+			<!-- Tab 2: JavaScript Code -->
+			<div id="js-tab" class="tab-content hidden">
+			  <div class="flex items-center justify-between mb-4">
+				<span class="text-xs text-slate-400 font-semibold tracking-wider uppercase">Logika Aplikasi &amp; Integrasi Firebase</span>
+				<button onclick="copyCode('js-code')" class="text-xs text-slate-400 hover:text-white bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+				  <i class="fa-regular fa-copy"></i> Salin Kode
+				</button>
+			  </div>
+			  <pre class="bg-slate-900 p-5 rounded-xl overflow-x-auto text-sm text-slate-300 code-block"><code id="js-code">
+			   // ⚙️ Mengimpor SDK Firebase dari CDN Resmi
+				  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+				  import { 
+				  getAuth, 
+				  createUserWithEmailAndPassword, 
+				  signInWithEmailAndPassword, 
+				  onAuthStateChanged, 
+				  signOut 
+				  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+				  import { 
+				  getFirestore, 
+				  doc, 
+				  setDoc, 
+				  getDoc 
+				  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+				  import { 
+				  getMessaging, 
+				  getToken 
+				  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging.js";
+
+				  // 📝 1. Konfigurasi Firebase (Ganti dengan kredensial asli Anda)
+				  const firebaseConfig = {
+				  apiKey: "AIzaSyAIZwCXKW-tL3e6oDGOLLbrU9pD6lgrA6c",
+				  authDomain: "asepmo-article.firebaseapp.com",
+				  projectId: "asepmo-article",
+				  storageBucket: "asepmo-article.firebasestorage.app",
+				  messagingSenderId: "622595990822",
+				  appId: "1:622595990822:web:514b840a8cfb503dd34de7",
+				  measurementId: "G-HQV0SR7132"
+				  };
+
+				  // 🚀 2. Inisialisasi Firebase & Layanan Backend
+				  const app = initializeApp(firebaseConfig);
+				  const auth = getAuth(app);
+				  const db = getFirestore(app);
+				  const messaging = getMessaging(app);
+
+				  // 🔍 3. Mengambil Referensi Elemen Antarmuka HTML
+				  const registerContainer = document.getElementById('register-container');
+				  const loginContainer = document.getElementById('login-container');
+				  const profileContainer = document.getElementById('profile-container');
+				  const userEmailDisplay = document.getElementById('user-email-display');
+
+				  const registerForm = document.getElementById('register-form');
+				  const loginForm = document.getElementById('login-form');
+				  const profileForm = document.getElementById('profile-form');
+				  const logoutBtn = document.getElementById('logout-btn');
+
+				  // ==========================================
+				  // 🔐 INTEGRASI AUTENTIKASI (LOGIN & DAFTAR)
+				  // ==========================================
+
+				  // Logika Pendaftaran Akun Baru
+				  registerForm.addEventListener('submit', (e) => {
+				  e.preventDefault();
+				  const email = document.getElementById('reg-email').value;
+				  const password = document.getElementById('reg-password').value;
+
+				  createUserWithEmailAndPassword(auth, email, password)
+				  .then((userCredential) => {
+				  alert(`Pendaftaran berhasil! UID: ${userCredential.user.uid}`);
+				  registerForm.reset();
+				  })
+				  .catch((error) => alert(`Gagal daftar: ${error.message}`));
+				  });
+
+				  // Logika Masuk Akun
+				  loginForm.addEventListener('submit', (e) => {
+				  e.preventDefault();
+				  const email = document.getElementById('login-email').value;
+				  const password = document.getElementById('login-password').value;
+
+				  signInWithEmailAndPassword(auth, email, password)
+				  .then((userCredential) => {
+				  alert("Selamat datang kembali!");
+				  loginForm.reset();
+				  })
+				  .catch((error) => alert(`Gagal masuk: ${error.message}`));
+				  });
+
+				  // Logika Keluar Akun (Logout)
+				  logoutBtn.addEventListener('click', () => {
+				  signOut(auth)
+				  .then(() => alert("Anda telah keluar."))
+				  .catch((error) => alert(`Error: ${error.message}`));
+				  });
+
+				  // ==========================================
+				  // 🕵️ PEMANTAU STATUS REAL-TIME (AUTH STATE)
+				  // ==========================================
+				  onAuthStateChanged(auth, (user) => {
+				  if (user) {
+				  // Pengguna Login: Update DOM Kontainer
+				  registerContainer.style.display = 'none';
+				  loginContainer.style.display = 'none';
+				  profileContainer.style.display = 'block';
+				  userEmailDisplay.textContent = user.email;
+
+				  // Ambil Data Profil dari Firestore secara otomatis
+				  const docRef = doc(db, "users", user.uid);
+				  getDoc(docRef)
+				  .then((docSnap) => {
+				  if (docSnap.exists()) {
+				  const data = docSnap.data();
+				  document.getElementById('profile-name').value = data.namaLengkap || '';
+				  document.getElementById('profile-phone').value = data.nomorTelepon || '';
+				  }
+				  })
+				  .catch((err) => console.error("Gagal ambil profil:", err));
+
+				  // Aktifkan Notifikasi FCM
+				  aktifkanNotifikasi(user);
+				  } else {
+				  // Pengguna Keluar: Reset DOM Kontainer ke Tampilan Publik
+				  registerContainer.style.display = 'block';
+				  loginContainer.style.display = 'block';
+				  profileContainer.style.display = 'none';
+				  }
+				  });
+
+				  // ==========================================
+				  // 💾 DATABASE FIRESTORE (UPDATE PROFIL)
+				  // ==========================================
+				  profileForm.addEventListener('submit', (e) => {
+				  e.preventDefault();
+				  const user = auth.currentUser;
+				  if (!user) return;
+
+				  const name = document.getElementById('profile-name').value;
+				  const phone = document.getElementById('profile-phone').value;
+
+				  setDoc(doc(db, "users", user.uid), {
+				  namaLengkap: name,
+				  nomorTelepon: phone,
+				  email: user.email
+				  }, { merge: true })
+				  .then(() => alert("Profil berhasil diperbarui di Firestore!"))
+				  .catch((err) => alert(`Gagal simpan: ${err.message}`));
+				  });
+
+				  // ==========================================
+				  // 🔔 FIREBASE CLOUD MESSAGING (FCM)
+				  // ==========================================
+				  function aktifkanNotifikasi(user) {
+				  Notification.requestPermission().then((permission) => {
+				  if (permission === 'granted') {
+				  // Dapatkan Token FCM Anda (Ganti dengan Kunci VAPID dari Firebase Console)
+				  getToken(messaging, { vapidKey: 'YOUR_VAPID_KEY_HERE' })
+				  .then((currentToken) => {
+				  if (currentToken) {
+				  console.log("Token FCM Pengguna:", currentToken);
+				  // Simpan token ke Firestore untuk digunakan saat pengiriman notifikasi terpusat
+				  setDoc(doc(db, "users", user.uid), { fcmToken: currentToken }, { merge: true });
+				  }
+				  })
+				  .catch((err) => console.error('Kesalahan Token FCM:', err));
+				  }
+				  });
+				  }</code></pre>
+			</div>
+
+			<!-- Tab 3: Service Worker -->
+			<div id="sw-tab" class="tab-content hidden">
+			  <div class="flex items-center justify-between mb-4">
+				<span class="text-xs text-slate-400 font-semibold tracking-wider uppercase">Skrip Latar Belakang (Service Worker)</span>
+				<button onclick="copyCode('sw-code')" class="text-xs text-slate-400 hover:text-white bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+				  <i class="fa-regular fa-copy"></i> Salin Kode
+				</button>
+			  </div>
+			  <pre class="bg-slate-900 p-5 rounded-xl overflow-x-auto text-sm text-slate-300 code-block"><code id="sw-code">// ⚙️ Mengimpor SDK Firebase Messaging kompatibilitas latar belakang
+				  importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js');
+				  importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js');
+
+				  // 📝 Konfigurasi Firebase Anda (Samakan dengan index.html / app.js)
+				  const firebaseConfig = {
+				  apiKey: "AIzaSyBrgXtioo_sRYnSGAmQiCoNZHKW9GZ-11w",
+				  authDomain: "asepmo-kuadrat21.firebaseapp.com",
+				  projectId: "asepmo-kuadrat21",
+				  storageBucket: "asepmo-kuadrat21.firebasestorage.app",
+				  messagingSenderId: "834270620325",
+				  appId: "1:834270620325:web:807f2f014261b524693b4c",
+				  measurementId: "G-0HXHHP75ME"
+				  };
+
+				  // Inisialisasi Firebase Compat di Latar Belakang
+				  firebase.initializeApp(firebaseConfig);
+				  const messaging = firebase.messaging();
+
+				  // Menangkap event penerimaan notifikasi saat browser dalam keadaan tertutup/minimalis
+				  messaging.onBackgroundMessage((payload) => {
+				  console.log('[SW] Menerima pesan latar belakang:', payload);
+
+				  const notificationTitle = payload.notification.title;
+				  const notificationOptions = {
+				  body: payload.notification.body,
+				  icon: '/firebase-logo.png' // Pastikan Anda menyimpan aset ikon ini di root folder
+				  };
+
+				  self.registration.showNotification(notificationTitle, notificationOptions);
+				  });</code></pre>
+			</div>
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- Section 4: Live Simulator App -->
+	  <section id="simulator" class="mb-20">
+		<div class="text-center max-w-3xl mx-auto mb-12">
+		  <span class="px-3 py-1 text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-full">Simulator Sandbox</span>
+		  <h2 class="text-3xl font-extrabold text-white mt-3">Live Simulation Panel</h2>
+		  <p class="text-slate-400 mt-2">Coba alur kerja logika Firebase secara simulasi. Amati perubahan konsol dan database secara dinamis demi memahami hubungan antar-layanan.</p>
+		</div>
+
+		<!-- Simulator Card Layout -->
+		<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+
+		  <!-- Left: Interactive UI Form Mockup -->
+		  <div class="lg:col-span-7 bg-slate-950 rounded-2xl border border-slate-800 flex flex-col justify-between overflow-hidden shadow-2xl">
+			<!-- Browser Header -->
+			<div class="bg-slate-900 border-b border-slate-800 px-4 py-3 flex items-center justify-between">
+			  <div class="flex items-center space-x-2">
+				<span class="w-3 h-3 rounded-full bg-red-500 block"></span>
+				<span class="w-3 h-3 rounded-full bg-yellow-500 block"></span>
+				<span class="w-3 h-3 rounded-full bg-green-500 block"></span>
+			  </div>
+			  <div class="bg-slate-950 border border-slate-800/80 px-4 py-1 text-xs rounded-lg text-slate-400 font-mono w-2/3 truncate text-center">
+				https://localhost:3000/app-simulasi.html
+			  </div>
+			  <div class="w-6"></div>
+			</div>
+
+			<!-- Browser Body Content -->
+			<div class="p-8 flex-1 flex flex-col justify-center items-center min-h-[380px]">
+
+			  <!-- Sim: Register Form (Visible Default) -->
+			  <div id="sim-register-view" class="w-full max-w-md space-y-5">
+				<div class="text-center">
+				  <h4 class="text-2xl font-bold text-white">Daftar Akun Baru</h4>
+				  <p class="text-slate-400 text-sm mt-1">Registrasi cepat simulator Firebase Auth</p>
+				</div>
+				<form onsubmit="handleSimRegister(event)" class="space-y-4">
+				  <div>
+					<label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Email</label>
+					<div class="relative">
+					  <i class="fa-regular fa-envelope absolute left-3.5 top-3.5 text-slate-500"></i>
+					  <input type="email" id="sim-reg-email" class="w-full bg-slate-900 border border-slate-700/80 rounded-xl py-3 pl-10 pr-4 text-slate-200 focus:outline-none focus:border-firebase-orange text-sm transition" placeholder="nama@email.com" required>
+					</div>
+				  </div>
+				  <div>
+					<label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Password</label>
+					<div class="relative">
+					  <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-slate-500"></i>
+					  <input type="password" id="sim-reg-password" class="w-full bg-slate-900 border border-slate-700/80 rounded-xl py-3 pl-10 pr-4 text-slate-200 focus:outline-none focus:border-firebase-orange text-sm transition" placeholder="••••••••" required>
+					</div>
+				  </div>
+				  <button type="submit" class="w-full bg-gradient-to-r from-firebase-amber to-firebase-orange text-slate-950 font-bold py-3.5 rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition duration-150 text-sm">
+					Daftar Akun
+				  </button>
+				</form>
+				<div class="text-center text-sm">
+				  <span class="text-slate-400">Sudah memiliki akun?</span>
+				  <button onclick="toggleSimViews('login')" class="text-firebase-orange font-semibold hover:underline ml-1">Masuk</button>
+				</div>
+			  </div>
+
+			  <!-- Sim: Login Form (Hidden Default) -->
+			  <div id="sim-login-view" class="w-full max-w-md space-y-5 hidden">
+				<div class="text-center">
+				  <h4 class="text-2xl font-bold text-white">Masuk Akun</h4>
+				  <p class="text-slate-400 text-sm mt-1">Masukkan email dan kata sandi Anda</p>
+				</div>
+				<form onsubmit="handleSimLogin(event)" class="space-y-4">
+				  <div>
+					<label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Email</label>
+					<div class="relative">
+					  <i class="fa-regular fa-envelope absolute left-3.5 top-3.5 text-slate-500"></i>
+					  <input type="email" id="sim-log-email" class="w-full bg-slate-900 border border-slate-700/80 rounded-xl py-3 pl-10 pr-4 text-slate-200 focus:outline-none focus:border-firebase-orange text-sm transition" placeholder="nama@email.com" required>
+					</div>
+				  </div>
+				  <div>
+					<label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Password</label>
+					<div class="relative">
+					  <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-slate-500"></i>
+					  <input type="password" id="sim-log-password" class="w-full bg-slate-900 border border-slate-700/80 rounded-xl py-3 pl-10 pr-4 text-slate-200 focus:outline-none focus:border-firebase-orange text-sm transition" placeholder="••••••••" required>
+					</div>
+				  </div>
+				  <button type="submit" class="w-full bg-gradient-to-r from-firebase-amber to-firebase-orange text-slate-950 font-bold py-3.5 rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition duration-150 text-sm">
+					Masuk Aplikasi
+				  </button>
+				</form>
+				<div class="text-center text-sm">
+				  <span class="text-slate-400">Belum punya akun?</span>
+				  <button onclick="toggleSimViews('register')" class="text-firebase-orange font-semibold hover:underline ml-1">Daftar</button>
+				</div>
+			  </div>
+
+			  <!-- Sim: Profile Dashboard View (Hidden Default) -->
+			  <div id="sim-profile-view" class="w-full max-w-md space-y-6 hidden">
+				<div class="flex items-center justify-between border-b border-slate-800 pb-4">
+				  <div>
+					<h4 class="text-xl font-bold text-white">Profil Pengguna</h4>
+					<p class="text-xs text-slate-400 font-mono mt-0.5" id="sim-user-id-label">UID: Loading...</p>
+				  </div>
+				  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+					Login Aktif
+				  </span>
+				</div>
+
+				<div class="bg-slate-900 p-4 rounded-xl border border-slate-800 text-sm space-y-1">
+				  <span class="text-slate-500 font-semibold text-xs uppercase block">Email Login</span>
+				  <p class="text-slate-200 font-medium font-mono" id="sim-user-email-label">email@domain.com</p>
+				</div>
+
+				<form onsubmit="handleSimProfileUpdate(event)" class="space-y-4">
+				  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+					<div>
+					  <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Nama Lengkap</label>
+					  <input type="text" id="sim-profile-name" class="w-full bg-slate-900 border border-slate-700/80 rounded-xl py-2.5 px-3.5 text-slate-200 focus:outline-none focus:border-firebase-orange text-sm transition" placeholder="Contoh: Budi Santoso" required>
+					</div>
+					<div>
+					  <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">No. Telepon</label>
+					  <input type="text" id="sim-profile-phone" class="w-full bg-slate-900 border border-slate-700/80 rounded-xl py-2.5 px-3.5 text-slate-200 focus:outline-none focus:border-firebase-orange text-sm transition" placeholder="081234..." required>
+					</div>
+				  </div>
+				  <button type="submit" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-bold py-3 rounded-xl transition text-sm">
+					Simpan Perubahan Firestore
+				  </button>
+				</form>
+
+				<!-- FCM Trigger Simulator Panel -->
+				<div class="p-4 bg-slate-900/50 rounded-xl border border-dashed border-slate-800 space-y-3">
+				  <div class="flex items-center justify-between">
+					<span class="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+					  <i class="fa-solid fa-bell text-firebase-amber"></i> Simulasikan FCM Notifikasi
+					</span>
+					<button onclick="requestSimFCMToken()" class="text-[10px] text-firebase-orange border border-firebase-orange/30 hover:bg-firebase-orange/5 px-2 py-1 rounded transition">
+					  Minta Token FCM
+					</button>
+				  </div>
+				  <p class="text-xs text-slate-400 leading-normal">
+					Simulasikan pengujian pengiriman Cloud Message dari server cloud ke perangkat/browser ini secara instan.
+				  </p>
+				  <div class="flex gap-2">
+					<input type="text" id="sim-notif-msg" class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none" placeholder="Isi pesan notifikasi...">
+					<button onclick="triggerSimFCMNotif()" class="bg-firebase-orange/20 text-firebase-orange hover:bg-firebase-orange text-xs font-bold px-3 py-1.5 rounded-lg border border-firebase-orange/30 hover:text-slate-950 transition">
+					  Kirim Notif
+					</button>
+				  </div>
+				</div>
+
+				<button onclick="handleSimLogout()" class="w-full text-slate-400 hover:text-white hover:bg-slate-900 text-xs py-2 rounded-xl transition border border-transparent hover:border-slate-800/80">
+				  <i class="fa-solid fa-arrow-right-from-bracket mr-1.5"></i> Keluar Akun (Logout)
+				</button>
+			  </div>
+
+			</div>
+		  </div>
+
+		  <!-- Right: Sim Live Database & Console Logs -->
+		  <div class="lg:col-span-5 flex flex-col gap-6">
+			<!-- Real-time Firestore Mockup Database -->
+			<div class="bg-slate-950 rounded-2xl border border-slate-800 p-6 flex flex-col justify-between shadow-2xl flex-1">
+			  <div>
+				<div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+				  <h5 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+					<i class="fa-solid fa-server text-indigo-400"></i> Cloud Firestore Simulator (DB)
+				  </h5>
+				  <span class="h-2 w-2 rounded-full bg-indigo-400 block animate-pulse"></span>
+				</div>
+				<div class="text-xs text-slate-400 font-mono space-y-3">
+				  <div>
+					<span class="text-pink-400">koleksi:</span> <span class="text-slate-200">"users"</span>
+				  </div>
+				  <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800/60 overflow-y-auto max-h-[160px]">
+					<pre class="text-slate-300 whitespace-pre-wrap leading-relaxed" id="sim-firestore-json">{
+					  // Database Kosong
+					  // Silakan daftar dan simpan profil di simulator
+					  }</pre>
+				  </div>
+				</div>
+			  </div>
+			  <p class="text-[11px] text-slate-500 italic mt-3 leading-relaxed">
+				Representasi dokumen di Firebase Firestore. Dokumen bertipe JSON ini diindeks otomatis dengan key unik sesuai User ID (UID).
+			  </p>
+			</div>
+
+			<!-- Sandbox Event Console Log -->
+			<div class="bg-slate-950 rounded-2xl border border-slate-800 p-6 flex flex-col justify-between shadow-2xl h-48">
+			  <div>
+				<div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+				  <h5 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+					<i class="fa-solid fa-terminal text-emerald-400"></i> Log Terminal Konsol Web
+				  </h5>
+				  <button onclick="clearSimConsole()" class="text-[10px] text-slate-500 hover:text-white transition">Hapus Log</button>
+				</div>
+				<div id="sim-console" class="text-xs font-mono space-y-1.5 text-slate-400 h-24 overflow-y-auto leading-relaxed">
+				  <div class="text-slate-500">[System] Simulator siap dijalankan...</div>
+				</div>
+			  </div>
+			</div>
+		  </div>
+
+		</div>
+	  </section>
+
+    </main>
+
+    <!-- Notification Alert Popup (In-App Simulation) -->
+    <div id="sim-notif-popup" class="fixed bottom-6 right-6 z-50 bg-slate-800 border-l-4 border-firebase-orange text-white p-4 rounded-r-xl shadow-2xl max-w-sm transform translate-y-24 opacity-0 transition duration-300 pointer-events-none">
+	  <div class="flex items-start space-x-3">
+		<div class="bg-firebase-orange/20 text-firebase-orange p-1.5 rounded-lg">
+		  <i class="fa-solid fa-bell"></i>
+		</div>
+		<div class="flex-1">
+		  <h5 class="font-bold text-sm" id="sim-notif-title">Firebase Cloud Message</h5>
+		  <p class="text-xs text-slate-300 mt-1 leading-normal" id="sim-notif-body">Pesan notifikasi baru diterima secara instan di browser latar depan.</p>
+		</div>
+		<button onclick="dismissSimNotif()" class="text-slate-400 hover:text-white text-xs">
+		  <i class="fa-solid fa-xmark"></i>
+		</button>
+	  </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-800 py-12 text-slate-500 text-sm">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+		<div class="flex justify-center items-center space-x-2">
+		  <i class="fa-solid fa-fire text-firebase-orange text-lg"></i>
+		  <span class="font-bold text-white tracking-wider">FIREBASE LEARNING ROADMAP</span>
+		</div>
+		<p class="max-w-md mx-auto leading-relaxed">
+		  Platform pembelajaran interaktif dan mandiri untuk mendukung peningkatan produktivitas developer perangkat lunak Indonesia.
+		</p>
+		<div class="border-t border-slate-900/80 pt-6 text-xs text-slate-600">
+		  &copy; 2026 Firebase Masterclass Tutorial. Seluruh Hak Cipta Dilindungi.
+		</div>
+	  </div>
+    </footer>
+
+    <!-- Simulation Script Logic -->
+<script>
+        // MOCK DATABASE & LOGIC FOR LIVE SIMULATOR (Fully client-side sandbox to demonstrate Firebase lifecycle perfectly)
+        let simDatabase = {
+            auth: [], // List of created users
+            firestore: {}, // Collection 'users'
+            currentUser: null, // Logged in user state
+            fcmPermission: false,
+            fcmToken: null
+        };
+
+        // UI Tabs Switcher
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.replace('block', 'hidden'));
+            document.getElementById(tabId).classList.replace('hidden', 'block');
+            
+            document.querySelectorAll('.tab-btn').forEach(button => {
+                button.classList.remove('border-firebase-orange', 'text-white');
+                button.classList.add('border-transparent', 'text-slate-400');
+            });
+            btn.classList.add('border-firebase-orange', 'text-white');
+            btn.classList.remove('border-transparent', 'text-slate-400');
+        }
+
+        // Copy Code utility
+        function copyCode(elementId) {
+            const codeText = document.getElementById(elementId).innerText;
+            const tempInput = document.createElement('textarea');
+            tempInput.value = codeText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            
+            // Console visual log
+            logConsole("System", "Kode berhasil disalin ke clipboard!", "indigo");
+        }
+
+        // Mock Terminal Log Console
+        function logConsole(sender, text, colorClass = "slate") {
+            const colors = {
+                slate: "text-slate-400",
+                indigo: "text-indigo-400 font-semibold",
+                orange: "text-orange-400",
+                green: "text-emerald-400 font-semibold",
+                red: "text-red-400 font-semibold"
+            };
+            const consoleEl = document.getElementById('sim-console');
+            const time = new Date().toLocaleTimeString();
+            consoleEl.innerHTML += `<div class="${colors[colorClass]}">[${time}] [${sender}] ${text}</div>`;
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
+
+        function clearSimConsole() {
+            document.getElementById('sim-console').innerHTML = `<div class="text-slate-500">[System] Terminal log dibersihkan...</div>`;
+        }
+
+        // Toggle Simulator UI Views
+        function toggleSimViews(view) {
+            document.getElementById('sim-register-view').classList.add('hidden');
+            document.getElementById('sim-login-view').classList.add('hidden');
+            document.getElementById('sim-profile-view').classList.add('hidden');
+
+            if (view === 'register') {
+                document.getElementById('sim-register-view').classList.remove('hidden');
+            } else if (view === 'login') {
+                document.getElementById('sim-login-view').classList.remove('hidden');
+            } else if (view === 'profile') {
+                document.getElementById('sim-profile-view').classList.remove('hidden');
+            }
+        }
+
+        // Handle Simulator: Registrasi
+        function handleSimRegister(e) {
+            e.preventDefault();
+            const email = document.getElementById('sim-reg-email').value;
+            const pass = document.getElementById('sim-reg-password').value;
+
+            // Simple validation
+            if(pass.length < 6) {
+                logConsole("Firebase Auth", "Error: Password terlalu pendek (minimal 6 karakter).", "red");
+                return;
+            }
+
+            // Check if user exists
+            const userExists = simDatabase.auth.find(u => u.email === email);
+            if (userExists) {
+                logConsole("Firebase Auth", "Error: Alamat email sudah terdaftar.", "red");
+                return;
+            }
+
+            // Create User Mock Object
+            const uid = "uid_" + Math.random().toString(36).substr(2, 9);
+            const newUser = { uid, email, pass };
+            simDatabase.auth.push(newUser);
+            
+            logConsole("Firebase Auth", "Berhasil mendaftarkan akun baru: " + email, "green");
+            logConsole("Firebase Auth", `Status Auth diubah. Pengguna dibuat dengan ID unik: ${uid}`, "indigo");
+            
+            e.target.reset();
+            toggleSimViews('login');
+        }
+
+        // Handle Simulator: Login
+        function handleSimLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('sim-log-email').value;
+            const pass = document.getElementById('sim-log-password').value;
+
+            const user = simDatabase.auth.find(u => u.email === email && u.pass === pass);
+            if (!user) {
+                logConsole("Firebase Auth", "Error: Kredensial tidak valid (email atau password salah).", "red");
+                return;
+            }
+
+            // Set current user
+            simDatabase.currentUser = user;
+            logConsole("Firebase Auth", `Status Auth berubah. Pengguna login: ${user.email}`, "green");
+            
+            // Set user profile data display
+            document.getElementById('sim-user-id-label').textContent = `UID: ${user.uid}`;
+            document.getElementById('sim-user-email-label').textContent = user.email;
+
+            // Load existing data if any
+            if (simDatabase.firestore[user.uid]) {
+                const data = simDatabase.firestore[user.uid];
+                document.getElementById('sim-profile-name').value = data.namaLengkap;
+                document.getElementById('sim-profile-phone').value = data.nomorTelepon;
+                logConsole("Cloud Firestore", `Data profil lama ditemukan untuk UID ${user.uid}. Mengisi form secara otomatis...`, "indigo");
+            } else {
+                document.getElementById('sim-profile-name').value = "";
+                document.getElementById('sim-profile-phone').value = "";
+                logConsole("Cloud Firestore", `Pengguna baru. Dokumen belum ada di Firestore untuk UID ${user.uid}.`, "slate");
+            }
+
+            e.target.reset();
+            toggleSimViews('profile');
+            updateFirestoreDisplay();
+        }
+
+        // Handle Simulator: Logout
+        function handleSimLogout() {
+            logConsole("Firebase Auth", `Status Auth diubah. Pengguna keluar: ${simDatabase.currentUser.email}`, "orange");
+            simDatabase.currentUser = null;
+            toggleSimViews('login');
+        }
+
+        // Handle Simulator: Update Profile (Firestore)
+        function handleSimProfileUpdate(e) {
+            e.preventDefault();
+            const user = simDatabase.currentUser;
+            if(!user) return;
+
+            const name = document.getElementById('sim-profile-name').value;
+            const phone = document.getElementById('sim-profile-phone').value;
+
+            // Update Mock Firestore
+            simDatabase.firestore[user.uid] = {
+                namaLengkap: name,
+                nomorTelepon: phone,
+                email: user.email,
+                lastUpdated: new Date().toISOString()
+            };
+
+            logConsole("Cloud Firestore", `Menyimpan perubahan ke doc(db, 'users', '${user.uid}')`, "indigo");
+            logConsole("Cloud Firestore", `Success: setDoc dengan parameter { merge: true } berhasil dijalankan!`, "green");
+            
+            updateFirestoreDisplay();
+        }
+
+        // Update visual display of Firestore database
+        function updateFirestoreDisplay() {
+            const firestoreJsonEl = document.getElementById('sim-firestore-json');
+            firestoreJsonEl.textContent = JSON.stringify(simDatabase.firestore, null, 2);
+        }
+
+        // Simulator: FCM Push Notif
+        function requestSimFCMToken() {
+            const user = simDatabase.currentUser;
+            if(!user) {
+                logConsole("Firebase Messaging", "Error: Tidak ada user aktif. Login untuk meminta token.", "red");
+                return;
+            }
+
+            logConsole("Firebase Messaging", "Meminta izin Notification.requestPermission() dari browser...", "indigo");
+            
+            setTimeout(() => {
+                simDatabase.fcmPermission = true;
+                const mockToken = "fcm_token_usr_" + Math.random().toString(36).substr(2, 16);
+                simDatabase.fcmToken = mockToken;
+                
+                // Save FCM token in user's profile Firestore
+                if(simDatabase.firestore[user.uid]) {
+                    simDatabase.firestore[user.uid].fcmToken = mockToken;
+                } else {
+                    simDatabase.firestore[user.uid] = {
+                        email: user.email,
+                        fcmToken: mockToken
+                    };
+                }
+
+                logConsole("Firebase Messaging", "Izin diberikan! Berhasil mengambil token FCM perangkat.", "green");
+                logConsole("Firebase Messaging", "Token FCM baru Anda: " + mockToken, "orange");
+                
+                updateFirestoreDisplay();
+            }, 800);
+        }
+
+        function triggerSimFCMNotif() {
+            const user = simDatabase.currentUser;
+            const msgInput = document.getElementById('sim-notif-msg');
+            const msg = msgInput.value.trim() || "Selamat! Notifikasi web Anda berhasil diterima.";
+
+            if(!user) {
+                logConsole("FCM Server Simulator", "Gagal mengirim notifikasi. User simulator tidak aktif.", "red");
+                return;
+            }
+
+            const token = simDatabase.firestore[user.uid]?.fcmToken;
+            if(!token) {
+                logConsole("FCM Server Simulator", "Gagal mengirim. Perangkat tidak memiliki Token FCM terdaftar di Firestore. Klik 'Minta Token FCM' terlebih dahulu.", "red");
+                return;
+            }
+
+            logConsole("FCM Server Simulator", `POST request dikirim ke endpoint fcm.googleapis.com/...`, "indigo");
+            
+            // Trigger Visual Popup Notification
+            setTimeout(() => {
+                const popup = document.getElementById('sim-notif-popup');
+                document.getElementById('sim-notif-body').textContent = msg;
+                
+                // Slide in & Fade in
+                popup.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
+                
+                logConsole("Firebase Messaging", `Menerima pesan (foreground): "${msg}"`, "green");
+                msgInput.value = "";
+            }, 500);
+        }
+
+        function dismissSimNotif() {
+            const popup = document.getElementById('sim-notif-popup');
+            popup.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+        }
+</script>
+  </body>
+</html>

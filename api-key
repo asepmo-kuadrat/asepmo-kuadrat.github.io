@@ -1,0 +1,31 @@
+https://asepmo-article.firebaseapp.com/__/auth/handler
+
+
+Github :
+App ID: 3951933
+Client ID: Iv23liTMs0Ww5vJt4i9M
+
+Client Secret : e8e9220e7694fa287d29e9f2c34a05a921eeac22
+Private Key : 
+
+Token : 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
+Gemini Api Key :
+curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent" \
+  -H 'Content-Type: application/json' \
+  -H 'X-goog-api-key: AQ.Ab8RN6LjzSUEnaAFrR-WR3yfMpo1gWyZ5iCZaGqham0Ol0GTfQ' \
+  -X POST \
+  -d '{
+    "contents": [
+      {
+        "parts": [
+          {
+            "text": "Explain how AI works in a few words"
+          }
+        ]
+      }
+    ]
+  }'
+AQ.Ab8RN6LjzSUEnaAFrR-WR3yfMpo1gWyZ5iCZaGqham0Ol0GTfQ
+
+Gemini AI Studio :
+AQ.Ab8RN6IAL8RV6JTViD0GY83EAVt66mggbdFdOf1MlWYF7O2Ftw 

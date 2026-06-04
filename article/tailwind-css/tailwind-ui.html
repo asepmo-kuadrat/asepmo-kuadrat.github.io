@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegansi Tailwind CSS - Panduan Komponen</title>
+
+    <!-- Menggunakan Font Inter untuk tampilan modern dan elegan -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Konfigurasi Kustom Tailwind -->
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+</script>
+  </head>
+  <body class="bg-slate-50 text-slate-800 antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Navbar yang elegan dengan efek blur (Glassmorphism) -->
+    <header class="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/50">
+	  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+		<div class="flex items-center gap-2">
+		  <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-brand-500/30">
+			<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+		  </div>
+		  <span class="font-bold text-xl tracking-tight text-slate-900">TailUI<span class="text-brand-600">.</span></span>
+		</div>
+		<nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
+		  <a href="#" class="hover:text-brand-600 transition-colors">Artikel</a>
+		  <a href="#" class="hover:text-brand-600 transition-colors">Komponen</a>
+		  <a href="#" class="hover:text-brand-600 transition-colors">Tentang</a>
+		</nav>
+		<button class="md:hidden text-slate-500 hover:text-slate-900">
+		  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+		</button>
+	  </div>
+    </header>
+
+    <!-- Konten Utama (Artikel) -->
+    <main class="max-w-3xl mx-auto px-4 sm:px-6 py-28 lg:py-32">
+
+	  <!-- Implementasi Breadcrumb yang Elegan -->
+	  <div class="mb-8">
+		<nav aria-label="Breadcrumb" class="flex">
+		  <ol class="flex items-center space-x-2 rounded-xl bg-white px-5 py-3 shadow-sm border border-slate-100 w-full sm:w-auto">
+			<li>
+			  <a href="#" class="text-slate-400 hover:text-brand-600 transition-colors duration-200 flex items-center">
+				<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+				  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+				</svg>
+				<span class="sr-only">Home</span>
+			  </a>
+			</li>
+			<li>
+			  <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+			</li>
+			<li>
+			  <a href="#" class="text-sm font-medium text-slate-500 hover:text-brand-600 transition-colors duration-200">Artikel</a>
+			</li>
+			<li>
+			  <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+			</li>
+			<li aria-current="page">
+			  <span class="text-sm font-semibold text-slate-900 pointer-events-none">Desain Antarmuka</span>
+			</li>
+		  </ol>
+		</nav>
+	  </div>
+
+	  <!-- Judul Artikel & Meta -->
+	  <header class="mb-12">
+		<h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tight mb-6 leading-tight">
+		  Membangun UI Elegan dengan Material Tailwind CSS
+		</h1>
+		<div class="flex items-center gap-4 text-sm text-slate-500">
+		  <div class="flex items-center gap-2">
+			<img src="https://i.pravatar.cc/100?img=11" alt="Penulis" class="w-10 h-10 rounded-full border border-slate-200">
+			<div>
+			  <p class="font-semibold text-slate-900">Aris Developer</p>
+			  <p>2 Juni 2026 · 5 mnt membaca</p>
+			</div>
+		  </div>
+		</div>
+	  </header>
+
+	  <!-- Isi Artikel -->
+	  <article class="prose prose-slate max-w-none text-slate-600 leading-relaxed space-y-6 text-lg">
+
+		<p class="text-xl text-slate-700 leading-relaxed font-medium">
+		  Tailwind CSS telah merevolusi cara kita menulis gaya pada web. Alih-alih bergantung pada komponen bawaan yang kaku (seperti pada Bootstrap), Tailwind memberi kita *utility classes* tingkat rendah untuk merakit "material" atau komponen dengan kebebasan desain mutlak.
+		</p>
+
+		<p>
+		  Ketika kita berbicara tentang desain yang "elegan dan keren", kuncinya bukan pada seberapa banyak efek yang kita tambahkan, melainkan pada <strong>ruang (spacing), tipografi, kontras warna yang lembut, dan transisi yang masuk akal</strong>. Mari kita bedah beberapa material UI esensial dan bagaimana merancangnya dengan elegan menggunakan Tailwind.
+		</p>
+
+		<hr class="my-10 border-slate-200">
+
+		<h2 class="text-2xl font-bold text-slate-900 mt-10 mb-4">1. Breadcrumb (Navigasi Jejak)</h2>
+		<p>
+		  Breadcrumb bukan hanya soal SEO, ini adalah alat orientasi pengguna. Desain breadcrumb yang baik tidak boleh mendominasi layar. Perhatikan breadcrumb di bagian atas halaman ini.
+		</p>
+		<p>
+		  Alih-alih menyatu dengan latar belakang, kita menggunakan kartu melayang dengan bayangan tipis (<code>bg-white shadow-sm rounded-xl border border-slate-100</code>). Ikon pemisah (chevron) dibuat memudar (<code>text-slate-300</code>) agar hierarki teks lebih menonjol. Efek <em>hover</em> pada teks juga dibuat mulus dengan kelas <code>transition-colors duration-200</code>.
+		</p>
+
+		<h2 class="text-2xl font-bold text-slate-900 mt-12 mb-4">2. Cards (Kartu Konten)</h2>
+		<p>
+		  Kartu (Cards) adalah tulang punggung antarmuka modern. Mereka membungkus entitas informasi menjadi satu kesatuan. Rahasia kartu yang elegan ada pada kelengkungan sudut (border-radius) dan kualitas bayangan.
+		</p>
+
+		<!-- Demo Card -->
+		<div class="my-8 p-6 bg-slate-100/50 rounded-2xl border border-slate-200/60 flex justify-center">
+		  <div class="bg-white rounded-2xl p-5 w-full max-w-sm shadow-xl shadow-slate-200/50 border border-slate-100 group hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand-500/10 transition-all duration-300">
+			<div class="aspect-video w-full bg-slate-100 rounded-xl mb-4 overflow-hidden relative">
+			  <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Laptop" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500">
+			</div>
+			<div class="flex items-center gap-2 mb-2">
+			  <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-600 text-xs font-semibold tracking-wide">Teknologi</span>
+			</div>
+			<h3 class="text-lg font-bold text-slate-900 mb-2 leading-tight">Laptop Modern untuk Developer</h3>
+			<p class="text-sm text-slate-500 mb-4 line-clamp-2">Kinerja maksimal dibalut dengan sasis aluminium yang tipis. Sangat cocok untuk *compile* kode berat.</p>
+			<a href="#" class="text-brand-600 font-medium text-sm flex items-center gap-1 hover:text-brand-700 transition-colors">
+			  Baca selengkapnya 
+			  <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+			</a>
+		  </div>
+		</div>
+
+		<p>
+		  Pada contoh di atas, kita menggunakan <code>shadow-xl shadow-slate-200/50</code> untuk membuat bayangan terlihat lebih "menyebar" dan natural, alih-alih bayangan hitam solid yang kaku. Menambahkan efek mikro-interaksi seperti <code>hover:-translate-y-1</code> dan gambar yang membesar perlahan (<code>group-hover:scale-105</code>) memberikan nyawa pada elemen tersebut.
+		</p>
+
+		<h2 class="text-2xl font-bold text-slate-900 mt-12 mb-4">3. Buttons (Tombol Aksi)</h2>
+		<p>
+		  Tombol yang baik harus mengundang pengguna untuk mengkliknya. Elemen penting dari sebuah tombol elegan meliputi *padding* yang cukup, *state* yang jelas saat di-*hover* atau di-klik, dan *focus ring* untuk aksesibilitas.
+		</p>
+
+		<!-- Demo Buttons -->
+		<div class="my-8 p-8 bg-slate-100/50 rounded-2xl border border-slate-200/60 flex flex-wrap gap-4 items-center justify-center">
+		  <!-- Primary Button -->
+		  <button class="inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-brand-600 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 transition-all active:scale-95 shadow-brand-500/30">
+			Mulai Proyek
+		  </button>
+		  <!-- Secondary Button -->
+		  <button class="inline-flex items-center justify-center px-6 py-3 border border-slate-300 rounded-lg shadow-sm text-base font-medium text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 transition-all active:scale-95">
+			Pelajari Dokumentasi
+		  </button>
+		</div>
+
+		<p>
+		  Kelas <code>active:scale-95</code> memberikan sensasi "ditekan" yang sangat memuaskan ketika diklik. Selain itu, penambahan <code>focus:ring-2 focus:ring-offset-2</code> sangat krusial bagi pengguna yang menavigasi situs dengan menggunakan *keyboard* (Tab).
+		</p>
+
+		<h2 class="text-2xl font-bold text-slate-900 mt-12 mb-4">Kesimpulan</h2>
+		<p>
+		  Tailwind CSS memberi Anda kuas dan palet warna, tetapi kamulah senimannya. Dengan menggunakan kelas-kelas *utility* secara bijak—memperhatikan bayangan (*shadow*), kurva (*border-radius*), *padding*, dan animasi transisi—Anda dapat menciptakan desain web kelas dunia, keren, dan elegan tanpa perlu menulis satu baris kode CSS pun secara manual.
+		</p>
+
+	  </article>
+
+	  <!-- Bagian Komentar / Footer Artikel -->
+	  <footer class="mt-16 pt-8 border-t border-slate-200">
+		<div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+		  <p class="text-sm text-slate-500">© 2026 TailUI. Dirancang dengan kebanggaan.</p>
+		  <div class="flex gap-4">
+			<!-- Ikon Sosial Media (Dummy) -->
+			<a href="#" class="text-slate-400 hover:text-brand-600 transition-colors">
+			  <span class="sr-only">Twitter</span>
+			  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path></svg>
+			</a>
+			<a href="#" class="text-slate-400 hover:text-brand-600 transition-colors">
+			  <span class="sr-only">GitHub</span>
+			  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"></path></svg>
+			</a>
+		  </div>
+		</div>
+	  </footer>
+    </main>
+  </body>
+</html>

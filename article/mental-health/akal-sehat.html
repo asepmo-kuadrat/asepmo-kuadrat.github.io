@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akal Sehat & Jiwa Subur - Harmoni Pikiran dan Jiwa</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts: Plus Jakarta Sans & Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    },
+                    colors: {
+                        emerald: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            800: '#065f46',
+                            900: '#064e3b',
+                            950: '#022c22',
+                        },
+                        slate: {
+                            950: '#0f172a'
+                        }
+                    }
+                }
+            }
+        }
+</script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #059669;
+            border-radius: 4px;
+        }
+        .text-glow {
+            text-shadow: 0 0 15px rgba(5, 150, 105, 0.4);
+        }
+</style>
+  </head>
+  <body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300 min-h-screen flex flex-col">
+
+    <!-- TOP TOOLBAR -->
+    <header class="sticky top-0 z-40 glass-panel border-b border-slate-200/50 dark:border-slate-800/50 shadow-sm transition-all duration-300">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+		<!-- Left: Drawer Trigger -->
+		<div class="flex items-center space-x-3">
+		  <button id="btn-drawer-open" class="p-2 rounded-lg hover:bg-slate-200/50 dark:hover:bg-slate-800/50 text-emerald-800 dark:text-emerald-400 transition" aria-label="Open Drawer">
+			<i data-lucide="menu" class="w-6 h-6"></i>
+		  </button>
+		  <div class="flex items-center space-x-2">
+			<!--<div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-500 to-teal-700 flex items-center justify-center text-white shadow">
+			  <i data-lucide="brain" class="w-5 h-5"></i>
+			</div>-->
+			<span class="font-serif font-bold text-xl tracking-tight bg-gradient-to-r from-emerald-700 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">Akal Sehat</span>
+		  </div>
+		</div>
+
+		<!-- Center/Right Navigation links for Desktop -->
+		<nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
+		  <button onclick="switchView('home')" class="nav-link text-emerald-700 dark:text-emerald-400 hover:text-emerald-900 transition flex items-center gap-1.5"><i data-lucide="home" class="w-4 h-4"></i> Beranda</button>
+		  <button onclick="switchView('dialogue')" class="nav-link text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition flex items-center gap-1.5"><i data-lucide="messages-square" class="w-4 h-4"></i> Eksplorasi Chat</button>
+		  <button onclick="switchView('gallery')" class="nav-link text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition flex items-center gap-1.5"><i data-lucide="image" class="w-4 h-4"></i> Galeri Refleksi</button>
+		  <button onclick="switchView('youtube')" class="nav-link text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition flex items-center gap-1.5"><i data-lucide="youtube" class="w-4 h-4"></i> Video Relaksasi</button>
+		</nav>
+
+		<!-- Right: Search, Audio Widget Mini, DarkMode Toggle, Options Dropdown -->
+		<div class="flex items-center space-x-2">
+		  <!-- Search Button (triggers Modal/Search bar in Home) -->
+		  <button onclick="focusSearch()" class="p-2 rounded-lg hover:bg-slate-200/50 dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-300 transition" title="Cari Konten">
+			<i data-lucide="search" class="w-5 h-5"></i>
+		  </button>
+
+		  <!-- Mini Audio Status Indicator -->
+		  <button onclick="scrollToPlayer()" id="mini-audio-btn" class="p-2 rounded-lg hover:bg-slate-200/50 dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-300 transition relative flex items-center" title="Pemutar Musik">
+			<i data-lucide="music" class="w-5 h-5"></i>
+			<span id="audio-playing-indicator" class="absolute top-1 right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping hidden"></span>
+		  </button>
+
+		  <!-- Theme Toggle -->
+		  <button id="theme-toggle" class="p-2 rounded-lg hover:bg-slate-200/50 dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-300 transition" title="Ganti Tema">
+			<i data-lucide="sun" class="w-5 h-5 block dark:hidden"></i>
+			<i data-lucide="moon" class="w-5 h-5 hidden dark:block"></i>
+		  </button>
+
+		  <!-- Options Menu Trigger -->
+		  <div class="relative">
+			<button id="btn-options-toggle" class="p-2 rounded-lg hover:bg-slate-200/50 dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-300 transition" title="Opsi">
+			  <i data-lucide="more-vertical" class="w-5 h-5"></i>
+			</button>
+			<!-- Options Dropdown Content -->
+			<div id="options-dropdown" class="hidden absolute right-0 mt-2 w-48 rounded-xl shadow-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 py-1 text-sm z-50 transition-all">
+			  <button onclick="openModal('about')" class="w-full text-left px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-2"><i data-lucide="info" class="w-4 h-4 text-emerald-600"></i> Tentang Aplikasi</button>
+			  <button onclick="openModal('customize')" class="w-full text-left px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-2"><i data-lucide="sliders" class="w-4 h-4 text-emerald-600"></i> Kustomisasi Tema</button>
+			  <hr class="border-slate-200 dark:border-slate-800 my-1">
+			  <button onclick="openModal('reflection')" class="w-full text-left px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center gap-2 font-semibold text-emerald-700 dark:text-emerald-400"><i data-lucide="feather" class="w-4 h-4"></i> Buku Catatanku</button>
+			</div>
+		  </div>
+		</div>
+	  </div>
+    </header>
+
+    <!-- DRAWER MENU (Slide-out Sidebar) -->
+    <div id="drawer-backdrop" class="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-50 hidden transition-opacity duration-300 opacity-0"></div>
+    <aside id="drawer" class="fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-white dark:bg-slate-900 shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+	  <!-- Drawer Header -->
+	  <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+		<div class="flex items-center space-x-2">
+		  <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-emerald-500 to-teal-700 flex items-center justify-center text-white">
+			<i data-lucide="brain" class="w-5 h-5"></i>
+		  </div>
+		  <span class="font-serif font-bold text-lg text-emerald-800 dark:text-emerald-400">Navigasi Jiwa</span>
+		</div>
+		<button id="btn-drawer-close" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition">
+		  <i data-lucide="x" class="w-5 h-5"></i>
+		</button>
+	  </div>
+
+	  <!-- Drawer Content Links -->
+	  <div class="p-4 flex-1 overflow-y-auto space-y-6">
+		<div>
+		  <h3 class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-3 mb-2">Utama</h3>
+		  <nav class="space-y-1">
+			<button onclick="switchView('home')" class="drawer-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-emerald-50 dark:bg-emerald-950/40 text-emerald-900 dark:text-emerald-300"><i data-lucide="home" class="w-4 h-4"></i> Beranda Utama</button>
+			<button onclick="switchView('dialogue')" class="drawer-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"><i data-lucide="messages-square" class="w-4 h-4"></i> Eksplorasi Chat Interaktif</button>
+		  </nav>
+		</div>
+
+		<div>
+		  <h3 class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-3 mb-2">Refleksi Visual</h3>
+		  <nav class="space-y-1">
+			<button onclick="switchView('gallery', 'sabar-subur')" class="drawer-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"><i data-lucide="sprout" class="w-4 h-4 text-emerald-500"></i> Filosofi Sabar &amp; Subur</button>
+			<button onclick="switchView('gallery', 'akal-nafsu')" class="drawer-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"><i data-lucide="scale" class="w-4 h-4 text-indigo-500"></i> Akal Sehat vs Nafsu</button>
+			<button onclick="switchView('gallery')" class="drawer-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"><i data-lucide="images" class="w-4 h-4"></i> Semua Galeri Refleksi</button>
+		  </nav>
+		</div>
+
+		<div>
+		  <h3 class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-3 mb-2">Multimedia</h3>
+		  <nav class="space-y-1">
+			<button onclick="scrollToPlayer()" class="drawer-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"><i data-lucide="disc" class="w-4 h-4 text-red-500 animate-spin-slow"></i> Pemutar Musik Lokal</button>
+			<button onclick="switchView('youtube')" class="drawer-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"><i data-lucide="youtube" class="w-4 h-4 text-red-600"></i> Ketenangan Aliran YouTube</button>
+		  </nav>
+		</div>
+	  </div>
+
+	  <!-- Drawer Footer -->
+	  <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
+		<div class="flex items-center space-x-3">
+		  <img src="sabar-dan-subur.png" alt="Avatar" class="w-10 h-10 rounded-full object-cover border border-emerald-500/20" onerror="this.src='https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop'">
+		  <div>
+			<h4 class="text-xs font-bold text-slate-800 dark:text-slate-200">Refleksi Mandiri</h4>
+			<p class="text-[10px] text-slate-500 dark:text-slate-400">Jaga pikiran, rawat kesabaran</p>
+		  </div>
+		</div>
+	  </div>
+    </aside>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+	  <!-- CORE APP INTERFACE VIEWS -->
+
+	  <!-- VIEW: HOME (BERANDA) -->
+	  <section id="view-home" class="view-section space-y-12">
+		<!-- Hero Banner -->
+		<div class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-emerald-950 via-teal-900 to-slate-900 text-white p-8 sm:p-12 shadow-2xl flex flex-col md:flex-row items-center gap-8 border border-emerald-500/10">
+		  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-500/10 via-transparent to-transparent pointer-events-none"></div>
+		  <div class="space-y-6 md:w-3/5 z-10 text-center md:text-left">
+			<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+			  <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Ruang Harmoni Batin
+			</span>
+			<h1 class="font-serif text-4xl sm:text-5xl font-extrabold leading-tight text-glow">
+			  Navigasi Akal Sehat &amp; Jiwa Subur
+			</h1>
+			<p class="text-slate-300 text-base sm:text-lg max-w-xl">
+			  Selamat datang di portal eksplorasi filsafat kehidupan. Sebuah harmoni antara ketekunan yang membisikkan kesabaran, kekuatan pikiran untuk mengendalikan nafsu, dan keindahan batin yang berbuah kesuburan.
+			</p>
+			<div class="flex flex-wrap items-center justify-center md:justify-start gap-4">
+			  <button onclick="switchView('dialogue')" class="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-semibold shadow-lg hover:shadow-emerald-500/20 transition flex items-center gap-2">
+				Mulai Belajar <i data-lucide="arrow-right" class="w-4 h-4"></i>
+			  </button>
+			  <button onclick="scrollToPlayer()" class="px-6 py-3 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 font-semibold border border-slate-700 transition flex items-center gap-2">
+				<i data-lucide="play" class="w-4 h-4"></i> Dengar Musik
+			  </button>
+			</div>
+		  </div>
+		  <div class="md:w-2/5 flex justify-center z-10">
+			<div class="relative w-72 h-72 sm:w-80 sm:h-80 rounded-2xl overflow-hidden shadow-2xl border-2 border-emerald-500/20 transform rotate-1 hover:rotate-0 transition-all duration-500 group">
+			  <img src="Gemini_Generated_Image_8hcrns8hcrns8hcr.png" alt="Akal Sehat vs Nafsu" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+			  <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent flex items-end p-4">
+				<p class="text-xs font-medium text-slate-300">Medan laga Akal Sehat &amp; Nafsu</p>
+			  </div>
+			</div>
+		  </div>
+		</div>
+
+		<!-- SEARCH BAR IN HOME -->
+		<div class="max-w-xl mx-auto">
+		  <div class="relative">
+			<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+			  <i data-lucide="search" class="w-5 h-5"></i>
+			</div>
+			<input type="text" id="search-input" onkeyup="filterHomeContent()" placeholder="Cari topik kesabaran, akal sehat, nafsu, dll..." class="w-full pl-11 pr-4 py-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition text-sm">
+		  </div>
+		</div>
+
+		<!-- FEATURED GRID SECTION -->
+		<div id="content-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+		  <!-- Card 1: Sabar & Subur -->
+		  <div class="content-card bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group">
+			<div class="relative h-64 overflow-hidden">
+			  <img src="sabar-dan-subur.png" alt="Sabar dan Subur" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+			  <div class="absolute top-4 left-4 bg-emerald-900/80 backdrop-blur text-white px-3 py-1 rounded-full text-xs font-medium border border-emerald-500/20 flex items-center gap-1">
+				<i data-lucide="sprout" class="w-3.5 h-3.5"></i> Filosofi Hidup
+			  </div>
+			</div>
+			<div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+			  <div class="space-y-2">
+				<h3 class="font-serif text-2xl font-bold group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition">Menanam Sabar, Memanen Subur</h3>
+				<p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+				  Petani membuktikan bahwa kesuburan adalah hasil dari proses penantian penuh dedikasi. Menanam kesabaran berarti membiarkan akar bertumbuh kuat sebelum buah melimpah menghiasi dahan.
+				</p>
+			  </div>
+			  <div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800/80">
+				<span class="text-xs text-slate-400">Refleksi Tanah &amp; Tanaman</span>
+				<button onclick="switchView('gallery', 'sabar-subur')" class="text-emerald-600 dark:text-emerald-400 text-sm font-semibold hover:underline flex items-center gap-1">
+				  Baca Esai <i data-lucide="chevron-right" class="w-4 h-4"></i>
+				</button>
+			  </div>
+			</div>
+		  </div>
+
+		  <!-- Card 2: Akal Sehat & Nafsu -->
+		  <div class="content-card bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group">
+			<div class="relative h-64 overflow-hidden">
+			  <img src="Gemini_Generated_Image_8hcrns8hcrns8hcr.png" alt="Akal Sehat vs Nafsu" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+			  <div class="absolute top-4 left-4 bg-indigo-900/80 backdrop-blur text-white px-3 py-1 rounded-full text-xs font-medium border border-indigo-500/20 flex items-center gap-1">
+				<i data-lucide="scale" class="w-3.5 h-3.5"></i> Kendali Jiwa
+			  </div>
+			</div>
+			<div class="p-6 flex-grow flex flex-col justify-between space-y-4">
+			  <div class="space-y-2">
+				<h3 class="font-serif text-2xl font-bold group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition">Akal Sehat dan Nafsu dalam Islam</h3>
+				<p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+				  Akal laksana tali penahan atau kompas bijaksana, sedangkan nafsu bagai roda gerak yang dinamis. Harmoni hidup terwujud saat akal sehat membimbing kemudi untuk menapak jalan kedamaian sejati.
+				</p>
+			  </div>
+			  <div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800/80">
+				<span class="text-xs text-slate-400">Pertempuran di Batin</span>
+				<button onclick="switchView('gallery', 'akal-nafsu')" class="text-indigo-600 dark:text-indigo-400 text-sm font-semibold hover:underline flex items-center gap-1">
+				  Baca Esai <i data-lucide="chevron-right" class="w-4 h-4"></i>
+				</button>
+			  </div>
+			</div>
+		  </div>
+		</div>
+
+		<!-- INTERACTIVE DIARY PROMPT -->
+		<div class="bg-gradient-to-tr from-emerald-900 to-teal-800 text-white rounded-3xl p-8 shadow-xl relative overflow-hidden">
+		  <div class="absolute right-0 bottom-0 opacity-10 translate-x-12 translate-y-12">
+			<i data-lucide="feather" class="w-72 h-72"></i>
+		  </div>
+		  <div class="max-w-2xl space-y-5 z-10 relative">
+			<h3 class="font-serif text-3xl font-extrabold text-glow">Luapkan Refleksimu Hari Ini</h3>
+			<p class="text-emerald-100 text-sm">
+			  Sebuah langkah kecil untuk menstabilkan pertempuran batin: Tuliskan refleksi, apa yang paling menguji akal sehatmu hari ini? Catatan Anda aman tersimpan secara privat di peramban ini.
+			</p>
+			<div class="flex flex-col sm:flex-row gap-3">
+			  <input id="quick-note" type="text" placeholder="Hari ini saya merasa diuji saat..." class="flex-grow px-4 py-3 rounded-xl bg-emerald-950/40 text-white placeholder-emerald-300/60 border border-emerald-500/30 focus:outline-none focus:ring-2 focus:ring-emerald-400 text-sm">
+			  <button onclick="saveQuickNote()" class="px-6 py-3 rounded-xl bg-white hover:bg-slate-100 text-emerald-900 font-semibold transition shadow-md flex items-center justify-center gap-2">
+				<i data-lucide="save" class="w-4 h-4"></i> Catat
+			  </button>
+			</div>
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- VIEW: DIALOGUE (OBROLAN CHAT UTUH) -->
+	  <section id="view-dialogue" class="view-section hidden space-y-6">
+		<div class="border-b border-slate-200 dark:border-slate-800 pb-4">
+		  <h2 class="font-serif text-3xl font-bold text-slate-900 dark:text-white">Aliran Dialog Interaktif</h2>
+		  <p class="text-sm text-slate-500 dark:text-slate-400">Arsip percakapan filosofis penuh makna antara Anda dan asisten AI.</p>
+		</div>
+
+		<!-- CHAT INTERFACE SIMULATOR -->
+		<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-xl max-w-4xl mx-auto flex flex-col h-[70vh]">
+		  <!-- Chat Window Header -->
+		  <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/80 flex items-center justify-between">
+			<div class="flex items-center space-x-3">
+			  <div class="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-700 dark:text-emerald-400">
+				<i data-lucide="sparkles" class="w-5 h-5"></i>
+			  </div>
+			  <div>
+				<h3 class="text-sm font-bold text-slate-800 dark:text-slate-200">Asisten Bimbingan Batin</h3>
+				<p class="text-[10px] text-emerald-600 dark:text-emerald-400 flex items-center gap-1"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Senantiasa Merenung</p>
+			  </div>
+			</div>
+			<div class="flex items-center space-x-1">
+			  <button onclick="resetChat()" class="p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-500 transition" title="Mulai Ulang Percakapan">
+				<i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+			  </button>
+			</div>
+		  </div>
+
+		  <!-- Chat Messages Scroll Container -->
+		  <div id="chat-messages" class="flex-grow p-6 overflow-y-auto space-y-6">
+			<!-- Welcomer message -->
+			<div class="flex space-x-3 max-w-[85%]">
+			  <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white shrink-0 shadow text-xs font-bold">AI</div>
+			  <div class="p-4 rounded-2xl rounded-tl-none bg-slate-100 dark:bg-slate-800 text-sm space-y-2">
+				<p class="font-medium text-emerald-800 dark:text-emerald-400">Halo Pencari Kebijaksanaan!</p>
+				<p>Di bawah ini adalah rekam jejak bimbingan penuh kita mengenai sabar, subur, serta peperangan sehat antara akal dan nafsu dalam perspektif Islam. Klik tombol di bawah untuk menelusuri tiap tahapan.</p>
+				<button onclick="triggerDialogueStep(1)" class="mt-2 text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition">Lihat Aliran Dialog Pertama <i data-lucide="chevron-right" class="inline w-3 h-3"></i></button>
+			  </div>
+			</div>
+
+			<!-- Step 1: Sabar & Subur -->
+			<div id="step-1" class="hidden space-y-6">
+			  <!-- User Input -->
+			  <div class="flex space-x-3 max-w-[85%] ml-auto justify-end">
+				<div class="p-4 rounded-2xl rounded-tr-none bg-emerald-600 text-white text-sm">
+				  <p class="font-medium text-emerald-100">User</p>
+				  <p>Tuliskan artikel tentang sabar dan subur.</p>
+				</div>
+				<div class="w-8 h-8 rounded-full bg-emerald-700 flex items-center justify-center text-white shrink-0 shadow text-xs font-bold">U</div>
+			  </div>
+			  <!-- Gemini Output -->
+			  <div class="flex space-x-3 max-w-[85%]">
+				<div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white shrink-0 shadow text-xs font-bold">AI</div>
+				<div class="p-4 rounded-2xl rounded-tl-none bg-slate-100 dark:bg-slate-800 text-sm space-y-3">
+				  <p class="font-bold text-emerald-700 dark:text-emerald-400">Menanam Sabar, Memanen Subur: Filosofi Hidup dari Sepotong Tanah 🌾</p>
+				  <p>Pernahkah Anda memperhatikan bagaimana sebuah benih kecil bisa tumbuh menjadi pohon yang rindang dan berbuah lebat? Proses alam ini mengajarkan bahwa segala sesuatu yang bernilai tinggi membutuhkan waktu dan proses yang tidak instan.</p>
+				  <div class="bg-white dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1">
+					<p class="text-xs font-bold">1. Sabar adalah Proses Menanam dan Merawat 💧</p>
+					<p class="text-xs">Sabar bukan pasif, melainkan aktif: mempersiapkan lahan dan menjaga konsistensi menyiram benih harapan.</p>
+				  </div>
+				  <div class="bg-white dark:bg-slate-900/50 p-3 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1">
+					<p class="text-xs font-bold">2. Subur adalah Berkah dari Ketekunan 🍎</p>
+					<p class="text-xs">Ketika kesabaran melewati ujian waktu, datanglah kesuburan yang memberikan dampak meluas serta buah yang manis.</p>
+				  </div>
+				  <button onclick="triggerDialogueStep(2)" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition">Lanjut: Diskusi Akal Sehat vs Nafsu <i data-lucide="chevron-right" class="inline w-3 h-3"></i></button>
+				</div>
+			  </div>
+			</div>
+
+			<!-- Step 2: Akal Sehat & Nafsu Intro -->
+			<div id="step-2" class="hidden space-y-6">
+			  <!-- User Input -->
+			  <div class="flex space-x-3 max-w-[85%] ml-auto justify-end">
+				<div class="p-4 rounded-2xl rounded-tr-none bg-emerald-600 text-white text-sm">
+				  <p class="font-medium text-emerald-100">User</p>
+				  <p>Tuliskan artikel tentang akal sehat dan nafsu dalam islam.</p>
+				</div>
+				<div class="w-8 h-8 rounded-full bg-emerald-700 flex items-center justify-center text-white shrink-0 shadow text-xs font-bold">U</div>
+			  </div>
+			  <!-- Gemini Output -->
+			  <div class="flex space-x-3 max-w-[85%]">
+				<div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white shrink-0 shadow text-xs font-bold">AI</div>
+				<div class="p-4 rounded-2xl rounded-tl-none bg-slate-100 dark:bg-slate-800 text-sm space-y-3">
+				  <p class="font-bold text-emerald-700 dark:text-emerald-400">Akal Sehat dan Nafsu dalam Islam ⚖️</p>
+				  <p>Dalam Islam, manusia dibekali komponen batiniah yang dinamis:</p>
+				  <ul class="list-disc list-inside space-y-1 text-xs">
+					<li><strong>Akal Sehat:</strong> Kompas Spiritual untuk membedakan hak dan batil.</li>
+					<li><strong>Nafsu:</strong> Motor Penggerak yang jika tidak diarahkan akan jatuh ke <em>Ammarah</em>, namun jika stabil dapat naik menjadi <em>Mutmainnah</em>.</li>
+				  </ul>
+				  <p class="text-xs italic bg-emerald-500/10 p-2.5 rounded-lg">"Ketika akal yang memimpin, nafsu menjadi energi positif. Namun jika nafsu memegang kemudi, akal sehat tertidur."</p>
+				  <div class="p-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl space-y-2">
+					<p class="text-xs font-medium">Asisten bertanya: "Di dunia modern, situasi apa yang membuat akal sering kalah bertarung melawan nafsu?"</p>
+					<div class="flex space-x-2">
+					  <button onclick="triggerDialogueStep(3)" class="text-[11px] bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 px-2.5 py-1 rounded-lg transition">Jawab: "Tidak tahu"</button>
+					</div>
+				  </div>
+				</div>
+			  </div>
+			</div>
+
+			<!-- Step 3: Pilihan Kupasan -->
+			<div id="step-3" class="hidden space-y-6">
+			  <!-- User Input -->
+			  <div class="flex space-x-3 max-w-[85%] ml-auto justify-end">
+				<div class="p-4 rounded-2xl rounded-tr-none bg-emerald-600 text-white text-sm">
+				  <p class="font-medium text-emerald-100">User</p>
+				  <p>Tidak tahu.</p>
+				</div>
+				<div class="w-8 h-8 rounded-full bg-emerald-700 flex items-center justify-center text-white shrink-0 shadow text-xs font-bold">U</div>
+			  </div>
+			  <!-- Gemini Output -->
+			  <div class="flex space-x-3 max-w-[85%]">
+				<div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white shrink-0 shadow text-xs font-bold">AI</div>
+				<div class="p-4 rounded-2xl rounded-tl-none bg-slate-100 dark:bg-slate-800 text-sm space-y-3">
+				  <p>Tidak apa-apa! Ini topik luas. Kita bisa membedahnya lewat tiga skenario:</p>
+				  <ol class="list-decimal list-inside space-y-1 text-xs">
+					<li>Dilema Media Sosial 📱</li>
+					<li>Pengambilan Keputusan Sehari-hari 🛒</li>
+					<li>Cara Memperkuat Akal Sehat 🏋️</li>
+				  </ol>
+				  <div class="p-2.5 bg-emerald-500/10 rounded-xl">
+					<button onclick="triggerDialogueStep(4)" class="text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:underline">Saran User: "Bahas satu persatu"</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+
+			<!-- Step 4: Kupas Media Sosial -->
+			<div id="step-4" class="hidden space-y-6">
+			  <!-- User Input -->
+			  <div class="flex space-x-3 max-w-[85%] ml-auto justify-end">
+				<div class="p-4 rounded-2xl rounded-tr-none bg-emerald-600 text-white text-sm">
+				  <p class="font-medium text-emerald-100">User</p>
+				  <p>Bahas satu persatu.</p>
+				</div>
+				<div class="w-8 h-8 rounded-full bg-emerald-700 flex items-center justify-center text-white shrink-0 shadow text-xs font-bold">U</div>
+			  </div>
+			  <!-- Gemini Output -->
+			  <div class="flex space-x-3 max-w-[85%]">
+				<div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white shrink-0 shadow text-xs font-bold">AI</div>
+				<div class="p-4 rounded-2xl rounded-tl-none bg-slate-100 dark:bg-slate-800 text-sm space-y-3">
+				  <p class="font-bold">Pertama: Dilema di Media Sosial 📱</p>
+				  <p class="text-xs leading-relaxed">Nafsu menyukai pengakuan instan (*likes* atau *FOMO*), membuat kita terus bergulir mencari kesenangan. Sementara akal bertindak sebagai rem batin dengan bertanya kegunaannya.</p>
+				  <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-xl space-y-2">
+					<p class="text-xs italic">"Saat bunyi notifikasi berdering di kala kerja, apa dorongan pertamamu?"</p>
+					<button onclick="triggerDialogueStep(5)" class="text-[11px] bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 px-3 py-1.5 rounded-lg transition">Jawab: "Membuka HP"</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+
+			<!-- Step 5: Keputusan Harian -->
+			<div id="step-5" class="hidden space-y-6">
+			  <!-- User Input -->
+			  <div class="flex space-x-3 max-w-[85%] ml-auto justify-end">
+				<div class="p-4 rounded-2xl rounded-tr-none bg-emerald-600 text-white text-sm">
+				  <p class="font-medium text-emerald-100">User</p>
+				  <p>Membuka HP.</p>
+				</div>
+				<div class="w-8 h-8 rounded-full bg-emerald-700 flex items-center justify-center text-white shrink-0 shadow text-xs font-bold">U</div>
+			  </div>
+			  <!-- Gemini Output -->
+			  <div class="flex space-x-3 max-w-[85%]">
+				<div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white shrink-0 shadow text-xs font-bold">AI</div>
+				<div class="p-4 rounded-2xl rounded-tl-none bg-slate-100 dark:bg-slate-800 text-sm space-y-3">
+				  <p>Sangat jujur dan manusiawi! Nafsu penasaran bekerja lebih dulu. Sekarang, mari pindah ke poin kedua: **Pengambilan Keputusan Keuangan** 🛒.</p>
+				  <p class="text-xs">Di satu sisi, ada baju baru impian (keinginan/nafsu), tetapi di sisi lain ada tagihan wajib bulanan minggu depan (akal). Mana yang kita ambil?</p>
+				  <button onclick="triggerDialogueStep(6)" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition">Langkah Hebat: "Membayar tagihan bulanan"</button>
+				</div>
+			  </div>
+			</div>
+
+			<!-- Step 6: Metode Muhasabah -->
+			<div id="step-6" class="hidden space-y-6">
+			  <!-- User Input -->
+			  <div class="flex space-x-3 max-w-[85%] ml-auto justify-end">
+				<div class="p-4 rounded-2xl rounded-tr-none bg-emerald-600 text-white text-sm">
+				  <p class="font-medium text-emerald-100">User</p>
+				  <p>Membayar tagihan bulanan.</p>
+				</div>
+				<div class="w-8 h-8 rounded-full bg-emerald-700 flex items-center justify-center text-white shrink-0 shadow text-xs font-bold">U</div>
+			  </div>
+			  <!-- Gemini Output -->
+			  <div class="flex space-x-3 max-w-[85%]">
+				<div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white shrink-0 shadow text-xs font-bold">AI</div>
+				<div class="p-4 rounded-2xl rounded-tl-none bg-slate-100 dark:bg-slate-800 text-sm space-y-3">
+				  <p>Luar biasa! Pilihan bijaksana. Terakhir, mari bahas cara memperkuat akal sehat: **Puasa**, **Muhasabah**, dan **Mengingat Akhirat**.</p>
+				  <p class="text-xs">Dari ketiganya, mana yang paling menantang untuk konsisten?</p>
+				  <div class="bg-emerald-500/10 p-2.5 rounded-xl text-xs space-y-1">
+					<p class="font-bold text-emerald-800 dark:text-emerald-400">Jawaban Anda yang Sempurna:</p>
+					<p class="italic">"Muhasabah, karena membuat diri untuk selalu waspada."</p>
+				  </div>
+				  <div class="pt-2">
+					<button onclick="scrollToPlayer()" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white transition flex items-center gap-1.5"><i data-lucide="disc" class="w-4 h-4 animate-spin-slow"></i> Dengarkan Hasil Musik Lagu Refleksinya</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		  </div>
+
+		  <!-- Chat Footer / User Typing simulation -->
+		  <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 flex items-center space-x-2">
+			<input type="text" readonly placeholder="Aliran diskusi selesai. Gunakan tombol replay di kanan atas untuk mengulang." class="flex-grow px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950 text-xs italic text-slate-400 focus:outline-none cursor-not-allowed">
+			<button class="p-2.5 rounded-xl bg-slate-300 dark:bg-slate-800 text-slate-500 cursor-not-allowed">
+			  <i data-lucide="send" class="w-4 h-4"></i>
+			</button>
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- VIEW: GALLERY (GALERI REFLEKSI & ESAI) -->
+	  <section id="view-gallery" class="view-section hidden space-y-8">
+		<div class="border-b border-slate-200 dark:border-slate-800 pb-4">
+		  <h2 class="font-serif text-3xl font-bold text-slate-900 dark:text-white">Galeri Refleksi Estetika</h2>
+		  <p class="text-sm text-slate-500 dark:text-slate-400">Kumpulan filosofi bergambar hasil pemaknaan batin dan pemikiran jernih.</p>
+		</div>
+
+		<!-- Detailed Content: Sabar & Subur -->
+		<div id="art-sabar-subur" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 md:p-8 shadow-md grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+		  <div class="lg:col-span-5 space-y-4">
+			<div class="rounded-2xl overflow-hidden border border-emerald-500/20 shadow-lg group">
+			  <img src="sabar-dan-subur.png" alt="Sabar dan Subur" class="w-full h-auto object-cover group-hover:scale-102 transition duration-500">
+			</div>
+			<div class="text-center">
+			  <span class="text-xs text-slate-400">[Gambar: Sabar dan Subur]</span>
+			</div>
+		  </div>
+		  <div class="lg:col-span-7 space-y-5">
+			<div class="flex items-center space-x-2">
+			  <span class="px-3 py-1 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-400 rounded-full text-xs font-semibold">TEMA 1</span>
+			  <h3 class="font-serif text-3xl font-bold">Kisah Kesuburan dari Ladang Kesabaran</h3>
+			</div>
+			<p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+			  Seperti yang digambarkan dalam lukisan indah tersebut, seorang kakek dengan tulus menyiram tanaman berlabel **SABAR** (Menanam Kebaikan, Merawat Harapan) berdampingan dengan nenek yang memetik buah melimpah dalam keranjang **SUBUR** (Hasil Ketekunan &amp; Berkah Alam).
+			</p>
+			<div class="border-l-4 border-emerald-500 pl-4 italic text-sm text-slate-500 dark:text-slate-400">
+			  <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+				"Tidak pernah ada pohon kokoh berbuah manis yang tumbuh dalam satu malam. Segala keberhasilan yang bertahan lama dirajut dari helai-helai benang kesabaran yang penuh keikhlasan."
+			  </p>
+			  <div class="space-y-3 pt-2">
+				<h4 class="font-bold text-sm text-slate-800 dark:text-slate-200">Aspek Utama Filosofi Sabar &amp; Subur:</h4>
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+				  <div class="p-3 bg-emerald-50 dark:bg-emerald-950/20 rounded-xl border border-emerald-500/10">
+					<h5 class="text-xs font-bold text-emerald-800 dark:text-emerald-400 flex items-center gap-1"><i data-lucide="droplet" class="w-3.5 h-3.5"></i> Proses Aktif</h5>
+					<p class="text-[11px] text-slate-500 mt-1">Sabar bukanlah sekadar pasrah. Ia adalah konsistensi memberi pupuk spiritual demi tumbuhnya harapan baru.</p>
+				  </div>
+				  <div class="p-3 bg-teal-50 dark:bg-teal-950/20 rounded-xl border border-teal-500/10">
+					<h5 class="text-xs font-bold text-teal-800 dark:text-teal-400 flex items-center gap-1"><i data-lucide="gift" class="w-3.5 h-3.5"></i> Berkah Alamiah</h5>
+					<p class="text-[11px] text-slate-500 mt-1">Subur adalah hasil pasti bagi mereka yang ulet. Ketika akar jiwa kita kokoh, rimbun dahan kita akan meneduhkan lingkungan.</p>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		  </div>
+		</div>
+		  <!-- Detailed Content: Akal Sehat & Nafsu -->
+		  <div id="art-akal-nafsu" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 md:p-8 shadow-md grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+			<div class="lg:col-span-5 space-y-4">
+			  <div class="rounded-2xl overflow-hidden border border-indigo-500/20 shadow-lg group">
+				<img src="Gemini_Generated_Image_8hcrns8hcrns8hcr.png" alt="Akal Sehat vs Nafsu" class="w-full h-auto object-cover group-hover:scale-102 transition duration-500">
+			  </div>
+			  <div class="text-center">
+				<span class="text-xs text-slate-400">[Gambar: Akal Sehat vs Nafsu]</span>
+			  </div>
+			</div>
+			<div class="lg:col-span-7 space-y-5">
+			  <div class="flex items-center space-x-2">
+				<span class="px-3 py-1 bg-indigo-100 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-400 rounded-full text-xs font-semibold">TEMA 2</span>
+				<h3 class="font-serif text-3xl font-bold">Medan Laga Jiwa: Tarik Tambang Tak Berujung</h3>
+			  </div>
+			  <p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+				Ilustrasi menggambarkan perjuangan dahsyat manusia di tengah-tengah tarikan dua kubu. Di sisi kiri, **AKAL SEHAT** dibantu oleh kebijaksanaan (kakek sepuh, buku ilmu, kompas petunjuk hidup, dan lentera ide). Di sisi kanan, **NAFSU** berwujud bayangan berapi yang menggoda dengan kesenangan duniawi (belanja mewah, mobil balap oranye sport, makanan manis, ponsel penuh notifikasi, dan taman ria malam hari).
+			  </p>
+			  <div class="border-l-4 border-indigo-500 pl-4 italic text-sm text-slate-500 dark:text-slate-400">
+				<p class="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">"Musuh terbesarmu bukanlah orang lain, melainkan gejolak di dalam dadamu sendiri. Ketika nafsu menarikmu ke jurang kepuasan sesaat, akal sehat adalah tali penyelamat yang mengikat jiwamu di pelataran kedamaian."</p>
+				<div class="space-y-3 pt-2">
+				  <h4 class="font-bold text-sm text-slate-800 dark:text-slate-200">Kunci Utama Kemenangan Akal:</h4>
+				  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+					<div class="p-3 bg-indigo-50 dark:bg-indigo-950/20 rounded-xl border border-indigo-500/10">
+					  <h5 class="text-xs font-bold text-indigo-800 dark:text-indigo-400 flex items-center gap-1"><i data-lucide="eye" class="w-3.5 h-3.5"></i> Mawas Diri (Muhasabah)</h5>
+					  <p class="text-[11px] text-slate-500 mt-1">Mengaktifkan akal sehat melalui refleksi harian. Berhenti sejenak sebelum mengambil tindakan impulsif.</p>
+					</div>
+					<div class="p-3 bg-rose-50 dark:bg-rose-950/20 rounded-xl border border-rose-500/10">
+					  <h5 class="text-xs font-bold text-rose-800 dark:text-rose-400 flex items-center gap-1"><i data-lucide="shield-alert" class="w-3.5 h-3.5"></i> Puasa Spiritual</h5>
+					  <p class="text-[11px] text-slate-500 mt-1">Mengurangi 'makanan' bagi keinginan nafsu ammarah agar kekuatannya melemah dalam menarik tali batin kita.</p>
+					</div>
+				  </div>
+				</div>
+			  </div>
+            </div>
+		  </div>
+	  </section>
+
+	  <!-- VIEW: YOUTUBE MEDIA -->
+	  <section id="view-youtube" class="view-section hidden space-y-6">
+		<div class="border-b border-slate-200 dark:border-slate-800 pb-4">
+		  <h2 class="font-serif text-3xl font-bold text-slate-900 dark:text-white">Saluran Audio Visual Relaksasi</h2>
+		  <p class="text-sm text-slate-500 dark:text-slate-400">Nikmati konten kurasi video YouTube eksternal untuk menenangkan akal sehat Anda.</p>
+		</div>
+
+		<div class="max-w-4xl mx-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-xl p-6 space-y-6">
+		  <!-- Mock YouTube Video Embed Frame with Premium Interface -->
+		  <div class="relative aspect-video rounded-2xl overflow-hidden bg-slate-950 shadow-inner flex items-center justify-center group">
+			<!-- YouTube Curated Embed (Using a standard beautiful ambient nature video) -->
+			<iframe class="w-full h-full absolute inset-0" src="https://www.youtube.com/embed/5qap5aO4i9A" title="Ketenangan Pikiran &amp; Akal Sehat Nature Ambient" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+		  </div>
+
+		  <div class="space-y-4">
+			<div class="flex items-center gap-3">
+			  <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-600">
+				<i data-lucide="youtube" class="w-6 h-6"></i>
+			  </div>
+			  <div>
+				<h3 class="font-bold text-slate-800 dark:text-white">Lofi Ambient &amp; Alam Syahdu untuk Muhasabah</h3>
+				<p class="text-xs text-slate-400">Rekomendasi Pemutaran saat Menulis Catatan Harian</p>
+			  </div>
+			</div>
+			<p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+			  Kami mengintegrasikan video suasana alam yang menenangkan ini sebagai penunjang utama akal sehat Anda. Mendengarkan deru hujan lembut atau instrumen piano lambat sangat terbukti secara ilmiah menurunkan tegangan stres, membantu akal sehat merebut kembali kontrol dari kepungan nafsu yang menggebu-gebu.
+			</p>
+		  </div>
+		</div>
+	  </section>
+
+    </main>
+
+    <!-- FLOATING/BOTTOM MUSIC PLAYER PANEL ("Duri di Kebun") -->
+    <div class="sticky bottom-0 z-30 glass-panel border-t border-slate-200/60 dark:border-slate-800/60 shadow-2xl transition-all duration-300 py-4">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+
+		<!-- Audio Element (points to local file) -->
+		<audio id="audio-player" src="Duri_di_Kebun.mp3" preload="metadata"></audio>
+
+		<!-- Track Info & Cover -->
+		<div class="flex items-center space-x-3 w-full md:w-1/3">
+		  <div class="relative w-12 h-12 rounded-lg bg-gradient-to-tr from-emerald-600 to-indigo-900 flex items-center justify-center text-white shrink-0 overflow-hidden shadow-md group">
+			<i data-lucide="disc" id="player-cover-icon" class="w-6 h-6 animate-spin-slow"></i>
+		  </div>
+		  <div class="min-w-0">
+			<h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 truncate" id="music-title">Duri di Kebun</h4>
+			<p class="text-[11px] text-emerald-600 dark:text-emerald-400 truncate font-semibold" id="music-album">Album: Sisi Lain Pagi (Experimental Neo-Soul / Dark Ambient)</p>
+		  </div>
+		</div>
+
+		<!-- Custom Controls -->
+		<div class="flex flex-col items-center space-y-2 w-full md:w-1/3">
+		  <div class="flex items-center space-x-4">
+			<!-- Prev / Restart -->
+			<button onclick="restartAudio()" class="p-1 text-slate-500 hover:text-emerald-600 transition" title="Mulai Dari Awal">
+			  <i data-lucide="skip-back" class="w-5 h-5"></i>
+			</button>
+			<!-- Play/Pause -->
+			<button onclick="toggleAudio()" id="btn-audio-play" class="w-10 h-10 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white flex items-center justify-center shadow-md shadow-emerald-500/20 transform active:scale-95 transition" title="Mainkan">
+			  <i data-lucide="play" class="w-5 h-5 ml-0.5" id="play-icon"></i>
+			</button>
+			<!-- Stop -->
+			<button onclick="stopAudio()" class="p-1 text-slate-500 hover:text-rose-600 transition" title="Hentikan">
+			  <i data-lucide="square" class="w-4 h-4"></i>
+			</button>
+		  </div>
+		  <!-- Progress bar -->
+		  <div class="flex items-center space-x-2 w-full">
+			<span id="audio-current-time" class="text-[10px] text-slate-400 w-8 text-right">0:00</span>
+			<div id="audio-progress-container" class="flex-grow h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full cursor-pointer relative">
+			  <div id="audio-progress" class="h-full bg-emerald-500 dark:bg-emerald-400 rounded-full w-0 transition-all duration-100"></div>
+			</div>
+			<span id="audio-duration" class="text-[10px] text-slate-400 w-8">1:00</span>
+		  </div>
+		</div>
+
+		<!-- Sync Lyrics Sync Area -->
+		<div class="w-full md:w-1/3 text-center md:text-right bg-slate-100/80 dark:bg-slate-900/40 p-2.5 rounded-xl border border-slate-200/50 dark:border-slate-800/50">
+		  <p class="text-[10px] uppercase font-bold text-emerald-500 tracking-wider">Lirik Tersinkronisasi</p>
+		  <div class="h-6 overflow-hidden relative">
+			<p id="live-lyrics" class="text-xs font-medium text-slate-700 dark:text-slate-200 transition-all duration-300 transform translate-y-0 italic">
+			  [Tekan Play untuk memulai lagu...]
+			</p>
+		  </div>
+		</div>
+
+	  </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-100 dark:bg-slate-950/60 border-t border-slate-200 dark:border-slate-900 py-6 transition">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500 dark:text-slate-400">
+		<div class="flex items-center space-x-2">
+		  <i data-lucide="heart" class="w-4 h-4 text-rose-500 fill-rose-500"></i>
+		  <span>Akal Sehat &amp; Jiwa Subur © 2026</span>
+		</div>
+		<div class="flex space-x-4">
+		  <button onclick="switchView('home')" class="hover:text-emerald-600">Home</button>
+		  <button onclick="switchView('dialogue')" class="hover:text-emerald-600">Alur Chat</button>
+		  <button onclick="openModal('about')" class="hover:text-emerald-600">Tentang</button>
+		</div>
+	  </div>
+    </footer>
+
+
+    <!-- MODALS -->
+
+    <!-- Modal 1: About App -->
+    <div id="modal-about" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-4">
+	  <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 max-w-md w-full border border-slate-200 dark:border-slate-800 space-y-4">
+		<div class="flex items-center justify-between">
+		  <h3 class="font-serif text-2xl font-bold text-emerald-800 dark:text-emerald-400 flex items-center gap-2"><i data-lucide="info" class="w-6 h-6"></i> Tentang Aplikasi</h3>
+		  <button onclick="closeModal('about')" class="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="x" class="w-5 h-5"></i></button>
+		</div>
+		<div class="text-sm space-y-3 text-slate-600 dark:text-slate-300">
+		  <p><strong>Akal Sehat &amp; Jiwa Subur</strong> adalah sebuah platform micro-learning dan refleksi batin berbasis web yang menyinkronkan dialog-dialog filosofis murni tentang pengendalian nafsu dan penyemaian benih kesabaran.</p>
+		  <p>Website ini dikonstruksi secara mandiri menggunakan teknologi web modern, mengintegrasikan visual indah, pemutar musik interaktif, dan simulasi chat interaktif asisten batin Anda.</p>
+		  <p class="text-xs text-slate-400">Versi: 1.0.0 Stable (Kampanye Ramah Pikiran)</p>
+		</div>
+	  </div>
+    </div>
+
+    <!-- Modal 2: Customize Theme -->
+    <div id="modal-customize" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-4">
+	  <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 max-w-md w-full border border-slate-200 dark:border-slate-800 space-y-4">
+		<div class="flex items-center justify-between">
+		  <h3 class="font-serif text-2xl font-bold text-emerald-800 dark:text-emerald-400 flex items-center gap-2"><i data-lucide="sliders" class="w-6 h-6"></i> Kustomisasi Tema</h3>
+		  <button onclick="closeModal('customize')" class="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="x" class="w-5 h-5"></i></button>
+		</div>
+		<div class="text-sm space-y-4">
+		  <p class="text-slate-600 dark:text-slate-300">Atur skema estetika ruang refleksi pribadi Anda:</p>
+		  <div class="space-y-3">
+			<label class="block text-xs font-bold uppercase tracking-wider text-slate-400">Mode Tampilan</label>
+			<div class="grid grid-cols-2 gap-2">
+			  <button onclick="setTheme('light')" class="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 text-sm font-semibold flex items-center justify-center gap-2"><i data-lucide="sun" class="w-4 h-4 text-amber-500"></i> Terang</button>
+			  <button onclick="setTheme('dark')" class="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 text-sm font-semibold flex items-center justify-center gap-2"><i data-lucide="moon" class="w-4 h-4 text-indigo-400"></i> Gelap</button>
+			</div>
+		  </div>
+		</div>
+	  </div>
+    </div>
+
+    <!-- Modal 3: Journal Reflection -->
+    <div id="modal-reflection" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm hidden items-center justify-center p-4">
+	  <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 max-w-lg w-full border border-slate-200 dark:border-slate-800 space-y-4">
+		<div class="flex items-center justify-between">
+		  <h3 class="font-serif text-2xl font-bold text-emerald-800 dark:text-emerald-400 flex items-center gap-2"><i data-lucide="feather" class="w-6 h-6"></i> Buku Catatan Refleksi Pribadi</h3>
+		  <button onclick="closeModal('reflection')" class="p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="x" class="w-5 h-5"></i></button>
+		</div>
+		<div class="space-y-3">
+		  <p class="text-xs text-slate-500 dark:text-slate-400">Tersimpan di penyimpanan lokal peramban Anda secara aman dan privat.</p>
+
+		  <!-- Display area for notes -->
+		  <div id="notes-list" class="max-h-48 overflow-y-auto space-y-2.5 p-1">
+			<p class="text-xs text-slate-400 italic text-center py-4">Belum ada catatan hari ini. Mulai dengan menuliskan refleksi di beranda!</p>
+		  </div>
+
+		  <!-- Manual add note inside modal -->
+		  <div class="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+			<textarea id="modal-note-input" rows="3" placeholder="Tulis catatan muhasabah barumu di sini..." class="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500"></textarea>
+			<button onclick="saveModalNote()" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition shadow flex items-center justify-center gap-1">
+			  <i data-lucide="plus" class="w-4 h-4"></i> Tambah Catatan Muhasabah
+			</button>
+		  </div>
+		</div>
+	  </div>
+    </div>
+
+
+    <!-- JAVASCRIPT LOGIC -->
+<script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // 1. STATE MANAGEMENT
+        let currentView = 'home';
+        let drawerOpen = false;
+        let optionsOpen = false;
+        let notes = JSON.parse(localStorage.getItem('akal_sehat_notes')) || [];
+
+        // 2. VIEW CONTROLLER
+        function switchView(viewId, anchorId = null) {
+            // Hide all views
+            document.querySelectorAll('.view-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            // Show target view
+            const activeSection = document.getElementById(`view-${viewId}`);
+            if (activeSection) {
+                activeSection.classList.remove('hidden');
+            }
+
+            // Update state
+            currentView = viewId;
+
+            // Handle drawer close on choice
+            closeDrawer();
+
+            // Handle scrolling to specific content/anchor if requested
+            if (anchorId) {
+                setTimeout(() => {
+                    const targetEl = document.getElementById(`art-${anchorId}`);
+                    if (targetEl) {
+                        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 100);
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Update active state class on drawer links
+            updateDrawerActiveUI();
+        }
+
+        // Focus search element from top bar click
+        function focusSearch() {
+            switchView('home');
+            setTimeout(() => {
+                const searchEl = document.getElementById('search-input');
+                if (searchEl) {
+                    searchEl.focus();
+                    searchEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 150);
+        }
+
+        // Scroll smooth to footer/music player
+        function scrollToPlayer() {
+            const player = document.getElementById('audio-player');
+            if (player) {
+                player.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            // Give subtle glow animation
+            const widget = player.parentElement;
+            widget.classList.add('ring-2', 'ring-emerald-500');
+            setTimeout(() => {
+                widget.classList.remove('ring-2', 'ring-emerald-500');
+            }, 1500);
+        }
+
+        // 3. DRAWER & OPTIONS DROP-DOWN CONTROLS
+        const drawer = document.getElementById('drawer');
+        const drawerBackdrop = document.getElementById('drawer-backdrop');
+
+        function openDrawer() {
+            drawer.classList.remove('-translate-x-full');
+            drawerBackdrop.classList.remove('hidden');
+            setTimeout(() => {
+                drawerBackdrop.classList.add('opacity-100');
+            }, 10);
+            drawerOpen = true;
+        }
+
+        function closeDrawer() {
+            drawer.classList.add('-translate-x-full');
+            drawerBackdrop.classList.remove('opacity-100');
+            setTimeout(() => {
+                drawerBackdrop.classList.add('hidden');
+            }, 300);
+            drawerOpen = false;
+        }
+
+        function updateDrawerActiveUI() {
+            document.querySelectorAll('.drawer-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-50', 'dark:bg-emerald-950/40', 'text-emerald-900', 'dark:text-emerald-300');
+                btn.classList.add('hover:bg-slate-100', 'dark:hover:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
+            });
+            // Mark active based on state
+            // Simplified active marking
+        }
+
+        // Bind Drawer triggers
+        document.getElementById('btn-drawer-open').addEventListener('click', openDrawer);
+        document.getElementById('btn-drawer-close').addEventListener('click', closeDrawer);
+        drawerBackdrop.addEventListener('click', closeDrawer);
+
+        // Options dropdown trigger
+        const optionsBtn = document.getElementById('btn-options-toggle');
+        const optionsDropdown = document.getElementById('options-dropdown');
+
+        optionsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            optionsOpen = !optionsOpen;
+            if (optionsOpen) {
+                optionsDropdown.classList.remove('hidden');
+            } else {
+                optionsDropdown.classList.add('hidden');
+            }
+        });
+
+        document.addEventListener('click', () => {
+            optionsDropdown.classList.add('hidden');
+            optionsOpen = false;
+        });
+
+        // 4. THEME CONTROL (DARK/LIGHT MODE)
+        function setTheme(mode) {
+            if (mode === 'dark') {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            }
+            closeModal('customize');
+        }
+
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                setTheme('light');
+            } else {
+                setTheme('dark');
+            }
+        });
+
+        // Autodetect previous setting
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        // 5. MODAL SYSTEMS
+        function openModal(id) {
+            const modal = document.getElementById(`modal-${id}`);
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                if (id === 'reflection') {
+                    renderNotes();
+                }
+            }
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(`modal-${id}`);
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        // Close modal when click outside of modal box
+        document.querySelectorAll('[id^="modal-"]').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }
+            });
+        });
+
+        // 6. INTERACTIVE DIALOGUE STEP PROGRESSION
+        function triggerDialogueStep(step) {
+            for (let i = 1; i <= step; i++) {
+                const stepEl = document.getElementById(`step-${i}`);
+                if (stepEl) {
+                    stepEl.classList.remove('hidden');
+                    // Add cool opacity transition
+                    stepEl.classList.add('animate-fade-in');
+                }
+            }
+            // Auto scroll chat box to bottom
+            const messagesContainer = document.getElementById('chat-messages');
+            setTimeout(() => {
+                messagesContainer.scrollTo({
+                    top: messagesContainer.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }, 100);
+        }
+
+        function resetChat() {
+            for (let i = 1; i <= 6; i++) {
+                const stepEl = document.getElementById(`step-${i}`);
+                if (stepEl) {
+                    stepEl.classList.add('hidden');
+                }
+            }
+            const messagesContainer = document.getElementById('chat-messages');
+            messagesContainer.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 7. REALTIME FILTER SEARCH
+        function filterHomeContent() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const cards = document.querySelectorAll('.content-card');
+            
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // 8. MUSIC PLAYER ("Duri di Kebun") CONTROLS & LYRIC SYNCOR
+        const audio = document.getElementById('audio-player');
+        const playBtn = document.getElementById('btn-audio-play');
+        const playIcon = document.getElementById('play-icon');
+        const currentProgress = document.getElementById('audio-progress');
+        const progressContainer = document.getElementById('audio-progress-container');
+        const currentTimeLabel = document.getElementById('audio-current-time');
+        const durationLabel = document.getElementById('audio-duration');
+        const liveLyrics = document.getElementById('live-lyrics');
+        const miniAudioIndicator = document.getElementById('audio-playing-indicator');
+        const coverIcon = document.getElementById('player-cover-icon');
+
+        // Dynamic Lyrics timeline matched to song seconds (0 to 60 seconds total duration)
+        const lyricsTimeline = [
+            { time: 0, text: "🎵 (Instrumental Intro - Lembut & Tenang) 🎵" },
+            { time: 2.7, text: "Menanam benih di kebun hati... 🌱" },
+            { time: 5.3, text: "Sirami sabar, tunas pun subur... 🌾" },
+            { time: 8.0, text: "Akal membimbing, menuntun pagi... ☀️" },
+            { time: 10.7, text: "Namun nafsu datang, bagai badai duri... 🌪️" },
+            { time: 13.3, text: "⚡ (Transisi: Suasana Berubah Mencekam & Horor) ⚡" },
+            { time: 15.0, text: "Neon kota memanggil... dalam gelap! 🎡" },
+            { time: 17.5, text: "Raga ditarik, kalap tak terlepas... 🔥" },
+            { time: 20.0, text: "Suara batin tenggelam... dalam sesak! ⛓️" },
+            { time: 23.0, text: "Akal... kembalikan akalku... 🕯️" },
+            { time: 28.0, text: "Nafsu menarikku terlampau dalam... 🌪️" },
+            { time: 33.0, text: "Bebaskan aku dari jeruji ammarah... ⚖️" },
+            { time: 38.0, text: "Kembali pada sabar... kembalilah subur... 🌿" },
+            { time: 45.0, text: "Duri ini mencengkeram erat... 🥀" },
+            { time: 52.0, text: "🎵 (Outro - Sunyi & Reflektif) 🎵" }
+        ];
+
+        function toggleAudio() {
+            if (audio.paused) {
+                audio.play().then(() => {
+                    updatePlayState(true);
+                }).catch(e => {
+                    // Fallback simulated playing since actual MP3 may not exist on raw local drive first time
+                    simulateAudioPlay();
+                });
+            } else {
+                audio.pause();
+                updatePlayState(false);
+            }
+        }
+
+        function updatePlayState(isPlaying) {
+            if (isPlaying) {
+                playIcon.setAttribute('data-lucide', 'pause');
+                coverIcon.classList.add('animate-spin-slow');
+                miniAudioIndicator.classList.remove('hidden');
+            } else {
+                playIcon.setAttribute('data-lucide', 'play');
+                coverIcon.classList.remove('animate-spin-slow');
+                miniAudioIndicator.classList.add('hidden');
+            }
+            lucide.createIcons();
+        }
+
+        function stopAudio() {
+            audio.pause();
+            audio.currentTime = 0;
+            updatePlayState(false);
+            if (simulatedInterval) {
+                clearInterval(simulatedInterval);
+                simulatedInterval = null;
+            }
+            updateProgressBar(0, 60);
+        }
+
+        function restartAudio() {
+            audio.currentTime = 0;
+            if (simulatedInterval) {
+                simulatedTime = 0;
+            }
+            audio.play().catch(()=>{});
+        }
+
+        // Update progress bar & lyric sync
+        audio.addEventListener('timeupdate', () => {
+            const current = audio.currentTime;
+            const duration = audio.duration || 60;
+            updateProgressBar(current, duration);
+            syncLyrics(current);
+        });
+
+        audio.addEventListener('loadedmetadata', () => {
+            durationLabel.innerText = formatTime(audio.duration);
+        });
+
+        function updateProgressBar(current, duration) {
+            const percentage = (current / duration) * 100;
+            currentProgress.style.width = `${percentage}%`;
+            currentTimeLabel.innerText = formatTime(current);
+            durationLabel.innerText = formatTime(duration);
+        }
+
+        // Seek Audio on container click
+        progressContainer.addEventListener('click', (e) => {
+            const rect = progressContainer.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const width = rect.width;
+            const duration = audio.duration || 60;
+            const newTime = (clickX / width) * duration;
+            
+            if (simulatedInterval) {
+                simulatedTime = newTime;
+                updateProgressBar(simulatedTime, 60);
+                syncLyrics(simulatedTime);
+            } else {
+                audio.currentTime = newTime;
+            }
+        });
+
+        function syncLyrics(currentTime) {
+            let activeText = lyricsTimeline[0].text;
+            for (let i = 0; i < lyricsTimeline.length; i++) {
+                if (currentTime >= lyricsTimeline[i].time) {
+                    activeText = lyricsTimeline[i].text;
+                }
+            }
+            
+            if (liveLyrics.innerText !== activeText) {
+                liveLyrics.style.transform = 'translateY(-10px)';
+                liveLyrics.style.opacity = '0';
+                setTimeout(() => {
+                    liveLyrics.innerText = activeText;
+                    liveLyrics.style.transform = 'translateY(0)';
+                    liveLyrics.style.opacity = '1';
+                }, 150);
+            }
+        }
+
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return "0:00";
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        // Simulated player fallback if mp3 is not locally present
+        let simulatedInterval = null;
+        let simulatedTime = 0;
+        function simulateAudioPlay() {
+            if (simulatedInterval) clearInterval(simulatedInterval);
+            updatePlayState(true);
+            simulatedInterval = setInterval(() => {
+                simulatedTime += 0.5;
+                if (simulatedTime >= 60) {
+                    simulatedTime = 0;
+                    clearInterval(simulatedInterval);
+                    updatePlayState(false);
+                }
+                updateProgressBar(simulatedTime, 60);
+                syncLyrics(simulatedTime);
+            }, 500);
+        }
+
+        // 9. NOTES REFLECTION STORAGE SYSTEM
+        function saveQuickNote() {
+            const input = document.getElementById('quick-note');
+            if (input.value.trim() !== '') {
+                addNote(input.value);
+                input.value = '';
+                // Toast notifications could be placed here.
+                openModal('reflection');
+            }
+        }
+
+        function saveModalNote() {
+            const input = document.getElementById('modal-note-input');
+            if (input.value.trim() !== '') {
+                addNote(input.value);
+                input.value = '';
+                renderNotes();
+            }
+        }
+
+        function addNote(text) {
+            const timeStamp = new Date().toLocaleString('id-ID', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: 'short' });
+            notes.unshift({ text, time: timeStamp });
+            localStorage.setItem('akal_sehat_notes', JSON.stringify(notes));
+        }
+
+        function deleteNote(index) {
+            notes.splice(index, 1);
+            localStorage.setItem('akal_sehat_notes', JSON.stringify(notes));
+            renderNotes();
+        }
+
+        function renderNotes() {
+            const container = document.getElementById('notes-list');
+            if (notes.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-4">Belum ada catatan hari ini. Mulai dengan menuliskan refleksi di atas!</p>`;
+                return;
+            }
+            container.innerHTML = notes.map((note, idx) => `
+                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800/80 flex items-start justify-between gap-3 text-xs">
+                    <div class="space-y-1">
+                        <p class="text-slate-500 text-[10px]">${note.time}</p>
+                        <p class="text-slate-800 dark:text-slate-200 leading-relaxed font-medium">${note.text}</p>
+                    </div>
+                    <button onclick="deleteNote(${idx})" class="text-rose-500 hover:text-rose-700 transition" title="Hapus Catatan">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+</script>
+  </body>
+</html>

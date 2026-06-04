@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Info Perangkat & CPU</title>
+<style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; padding: 20px; color: #333; }
+        .container { background: #fff; max-width: 500px; margin: 0 auto; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { margin-top: 0; color: #2563eb; font-size: 1.5rem; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; }
+        .info-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
+        .info-row:last-child { border-bottom: none; }
+        .label { font-weight: 600; color: #6b7280; }
+        .value { font-weight: 500; color: #111827; text-align: right;}
+        .note { font-size: 0.85rem; color: #ef4444; margin-top: 20px; background: #fee2e2; padding: 10px; border-radius: 6px; }
+</style>
+  </head>
+  <body>
+
+    <div class="container">
+	  <h2>Info Perangkat & CPU</h2>
+
+	  <div class="info-row">
+		<span class="label">Tipe Perangkat:</span>
+		<span class="value" id="device-type">Mendeteksi...</span>
+	  </div>
+	  <div class="info-row">
+		<span class="label">Sistem Operasi:</span>
+		<span class="value" id="os-name">Mendeteksi...</span>
+	  </div>
+	  <div class="info-row">
+		<span class="label">Jumlah Core CPU:</span>
+		<span class="value" id="cpu-cores">Mendeteksi...</span>
+	  </div>
+	  <div class="info-row">
+		<span class="label">Arsitektur CPU:</span>
+		<span class="value" id="cpu-arch">Mendeteksi...</span>
+	  </div>
+
+	  <div class="note">
+		<strong>Catatan:</strong> Browser tidak mengizinkan JavaScript untuk melihat nama atau model spesifik CPU (misal: Snapdragon, Intel) demi alasan keamanan dan privasi.
+	  </div>
+    </div>
+
+<script>
+        async function getDeviceAndCPUInfo() {
+            // 1. Deteksi Tipe Perangkat (HP/Tablet vs Komputer)
+            const ua = navigator.userAgent;
+            const isMobile = /Mobile|Android|iP(hone|od|ad)/i.test(ua);
+            document.getElementById('device-type').textContent = isMobile ? "Smartphone / Tablet" : "Komputer / Laptop";
+
+            // 2. Deteksi OS Sederhana
+            let os = "Tidak diketahui";
+            if (/Windows/i.test(ua)) os = "Windows";
+            else if (/Mac/i.test(ua)) os = isMobile ? "iOS" : "macOS";
+            else if (/Android/i.test(ua)) os = "Android";
+            else if (/Linux/i.test(ua)) os = "Linux";
+            document.getElementById('os-name').textContent = os;
+
+            // 3. Deteksi Jumlah Core CPU (Logical Processors)
+            // Ini akan mengembalikan angka (misal: 4, 8, 12, atau 16)
+            const cores = navigator.hardwareConcurrency;
+            document.getElementById('cpu-cores').textContent = cores ? `${cores} Cores` : "Tidak didukung oleh browser ini";
+
+            // 4. Deteksi Arsitektur CPU (arm vs x86)
+            let archInfo = "Mendeteksi...";
+            
+            if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+                try {
+                    const data = await navigator.userAgentData.getHighEntropyValues(['architecture', 'bitness']);
+                    archInfo = `${data.architecture} (${data.bitness}-bit)`;
+                } catch (e) {
+                    archInfo = navigator.platform; // Fallback
+                }
+            } else {
+                // Fallback untuk browser lama atau Safari
+                if (/aarch64|arm/i.test(navigator.platform) || /aarch64|arm/i.test(ua)) {
+                    archInfo = "armeabi";
+                } else if (/armeabi-v7a|armeabi-v7l/i.test(navigator.platform) || /armeabi-v7a|armeabi-v7l/i.test(ua)) {
+                    
+				   archInfo = "armeabi-v7a";
+                		
+				} else if (/x86_64|Win64|x64/i.test(ua) || /x86_64/i.test(navigator.platform)) {
+                    archInfo = "x86 (64-bit)";
+                } else if (/Win32|i686|i386/i.test(ua) || /Win32|i686|i386/i.test(navigator.platform)) {
+                    archInfo = "x86 (32-bit)";
+                } else {
+                    archInfo = navigator.platform || "Tidak diketahui";
+                }
+            }
+            
+            document.getElementById('cpu-arch').textContent = archInfo;
+        }
+
+        // Jalankan fungsi
+        getDeviceAndCPUInfo();
+</script>
+  </body>
+</html>

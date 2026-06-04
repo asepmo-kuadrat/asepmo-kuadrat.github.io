@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sang Pemberi Rezeki</title>
+	<!-- Tailwind CSS -->
+	<script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#10b981', // Emerald 500
+                        secondary: '#047857', // Emerald 700
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+</script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	
+   
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Sidebar Transition */
+        #sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Hide scrollbar for clean UI but keep functionality */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+
+        /* Page Transitions */
+        .page-content {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .page-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .gallery-column {
+            height: 400px;
+            overflow-y: auto;
+        }
+</style>
+  </head>
+  <body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200">
+
+    <!-- Custom Modal (Replacements for Alert) -->
+    <div id="custom-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden opacity-0 transition-opacity duration-300">
+	  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 w-11/12 max-w-sm transform scale-95 transition-transform duration-300">
+		<h3 id="modal-title" class="text-xl font-bold mb-2 text-gray-900 dark:text-white">Pemberitahuan</h3>
+		<p id="modal-message" class="text-gray-600 dark:text-gray-300 mb-6">Pesan di sini.</p>
+		<div class="flex justify-end">
+		  <button onclick="closeModal()" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition-colors focus:outline-none">Tutup</button>
+		</div>
+	  </div>
+    </div>
+
+    <!-- Toolbar / Navbar -->
+    <header class="fixed top-0 left-0 right-0 h-16 bg-white dark:bg-gray-800 shadow-md z-40 flex items-center px-4 justify-between transition-colors duration-300">
+	  <div class="flex items-center">
+		<button id="menu-btn" class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary focus:outline-none p-2 rounded-lg text-2xl">
+		  <i class="fas fa-bars"></i>
+		</button>
+		<h1 class="ml-4 text-xl font-bold text-primary dark:text-emerald-400">Sang Pemberi Rezeki</h1>
+	  </div>
+	  <div class="hidden sm:block">
+		<span class="text-sm text-gray-500 dark:text-gray-400 italic">"Menebar Manfaat, Menjemput Rahmat"</span>
+	  </div>
+    </header>
+
+    <!-- Sidebar & Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden transition-opacity"></div>
+
+    <aside id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-gray-800 shadow-2xl z-50 transform -translate-x-full pt-16 flex flex-col transition-colors duration-300">
+	  <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex flex-col items-center">
+		<div class="w-20 h-20 bg-primary rounded-full flex items-center justify-center text-white text-3xl mb-3 shadow-lg">
+		  <i class="fas fa-leaf"></i>
+		</div>
+		<h2 class="font-bold text-lg dark:text-white">Menu Utama</h2>
+	  </div>
+	  <nav class="flex-1 overflow-y-auto py-4">
+		<ul class="space-y-1 px-3">
+		  <li><a href="#" onclick="navigateTo('home')" class="nav-item active flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-emerald-50 hover:text-primary dark:hover:bg-gray-700 dark:hover:text-emerald-400 transition-colors"><i class="fas fa-home w-6 text-center mr-2"></i> Home</a></li>
+		  <li><a href="#" onclick="navigateTo('about')" class="nav-item flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-emerald-50 hover:text-primary dark:hover:bg-gray-700 dark:hover:text-emerald-400 transition-colors"><i class="fas fa-info-circle w-6 text-center mr-2"></i> About</a></li>
+		  <li><a href="#" onclick="navigateTo('gallery')" class="nav-item flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-emerald-50 hover:text-primary dark:hover:bg-gray-700 dark:hover:text-emerald-400 transition-colors"><i class="fas fa-images w-6 text-center mr-2"></i> Gallery</a></li>
+		  <li><a href="#" onclick="navigateTo('service')" class="nav-item flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-emerald-50 hover:text-primary dark:hover:bg-gray-700 dark:hover:text-emerald-400 transition-colors"><i class="fas fa-hand-holding-heart w-6 text-center mr-2"></i> Service</a></li>
+		  <li><a href="#" onclick="navigateTo('contact')" class="nav-item flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-emerald-50 hover:text-primary dark:hover:bg-gray-700 dark:hover:text-emerald-400 transition-colors"><i class="fas fa-envelope w-6 text-center mr-2"></i> Contact</a></li>
+		  <li class="my-2 border-t border-gray-100 dark:border-gray-700"></li>
+		  <li><a href="#" onclick="navigateTo('ebook')" class="nav-item flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-emerald-50 hover:text-primary dark:hover:bg-gray-700 dark:hover:text-emerald-400 transition-colors"><i class="fas fa-book w-6 text-center mr-2"></i> Ebook</a></li>
+		  <li><a href="#" onclick="navigateTo('settings')" class="nav-item flex items-center px-4 py-3 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-emerald-50 hover:text-primary dark:hover:bg-gray-700 dark:hover:text-emerald-400 transition-colors"><i class="fas fa-cog w-6 text-center mr-2"></i> Settings</a></li>
+		</ul>
+	  </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="pt-20 px-4 pb-12 max-w-7xl mx-auto">
+
+	  <!-- ================= HOME PAGE ================= -->
+	  <section id="page-home" class="page-content active">
+		<article class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 md:p-10">
+		  <header class="text-center mb-10">
+			<h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">Sang Pemberi Rezeki</h1>
+			<div class="relative w-full max-w-4xl mx-auto h-64 md:h-96 rounded-xl overflow-hidden shadow-lg mb-8">
+			  <!-- Placeholder Image related to Sustenance (Nature/Growth theme) -->
+			  <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Ilustrasi Rezeki" class="object-cover w-full h-full">
+			  <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+				<p class="text-white p-4 font-medium italic">"Dan tidak ada suatu binatang melata pun di bumi melainkan Allah-lah yang memberi rezekinya."</p>
+			  </div>
+			</div>
+		  </header>
+
+		  <div class="prose prose-lg dark:prose-invert max-w-none space-y-6">
+
+			<h2 class="text-2xl font-bold border-b pb-2 text-primary">I.Muqodimah</h2>
+			<p>Segala puji bagi Allah, Sang Pencipta alam semesta, Dzat Yang Maha Memberi Rezeki (Ar-Razzaq). Salawat serta salam senantiasa tercurah kepada baginda Nabi Muhammad SAW, keluarga, sahabat, dan umatnya yang istiqomah di jalan-Nya. Tulisan ini hadir sebagai pengingat bagi kita semua tentang hakikat rezeki dan bagaimana kita menjemputnya dengan cara yang diridhai.</p>
+
+			<h2 class="text-2xl font-bold border-b pb-2 text-primary mt-8">II.Daftar Isi:</h2>
+			<div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl border border-gray-100 dark:border-gray-600">
+			  <ol class="list-decimal pl-5 space-y-1">
+				<li><a href="#sec-1" class="text-blue-600 dark:text-blue-400 hover:underline">Awal Dari Sebuah Rezeki</a></li>
+				<li><a href="#sec-2" class="text-blue-600 dark:text-blue-400 hover:underline">Al-Kisah</a></li>
+				<li><a href="#sec-3" class="text-blue-600 dark:text-blue-400 hover:underline">Langkah Meminta Rezeki Kepada Sang Pemberi Rezeki</a></li>
+				<li><a href="#sec-4" class="text-blue-600 dark:text-blue-400 hover:underline">Akhir Dari Sebuah Awal Rezeki</a></li>
+				<li><a href="#sec-5" class="text-blue-600 dark:text-blue-400 hover:underline">Dzikir Ar-Razzaq</a></li>
+				<li><a href="#sec-6" class="text-blue-600 dark:text-blue-400 hover:underline">Majelis Dzikir Ar-Razzaq</a></li>
+				<li><a href="#sec-7" class="text-blue-600 dark:text-blue-400 hover:underline">Harta Kekayaan</a></li>
+			  </ol>
+			</div>
+
+			<h2 id="sec-1" class="text-2xl font-bold text-gray-900 dark:text-white mt-10">1. Awal Dari Sebuah Rezeki</h2>
+
+			<h3 class="text-xl font-semibold mt-4">1.1. Tentang Rezeki:</h3>
+			<p>Rezeki bukanlah semata-mata harta benda, uang, atau kekayaan materi. Rezeki mencakup segala karunia Allah yang memberikan manfaat bagi kehidupan makhluk-Nya. Kesehatan, keluarga yang harmonis, ilmu yang bermanfaat, ketenangan hati, bahkan kesempatan untuk beribadah adalah bentuk rezeki yang seringkali terlupakan.</p>
+
+			<h3 class="text-xl font-semibold mt-4">1.2. Tentang Sang Pemberi Rezeki:</h3>
+			<p>Allah SWT memiliki nama Ar-Razzaq, Yang Maha Pemberi Rezeki. Dia-lah sumber segala karunia. Keyakinan penuh bahwa Allah adalah satu-satunya pemberi rezeki akan membebaskan hati manusia dari rasa takut miskin dan ketergantungan kepada selain-Nya.</p>
+
+			<h3 class="text-xl font-semibold mt-4">1.3. Tentang Seseorang Yang Mendapatkan Rezeki Dari Sang Pemberi Rezeki:</h3>
+			<p>Mereka yang mendapatkan rezeki yang berkah adalah mereka yang menyadari bahwa apa yang ada di genggamannya adalah titipan. Mereka menggunakannya untuk kebaikan, menunaikan hak-hak orang lain di dalamnya, dan tidak menjadikannya alasan untuk menyombongkan diri.</p>
+
+			<h3 class="text-xl font-semibold mt-4">1.4. Tentang Bagaimana Cara Meminta Rezeki Kepada Sang Pemberi Rezeki:</h3>
+			<p>Meminta rezeki dilakukan dengan dua sayap: Doa dan Ikhtiar. Berdoa dengan penuh ketundukan di sepertiga malam, dan berikhtiar dengan sungguh-sungguh di siang hari dengan cara-cara yang halal dan thayyib.</p>
+
+			<h3 class="text-xl font-semibold mt-4">1.5. Tentang Syukur Dan Kufur:</h3>
+			<p>Syukur adalah tali pengikat rezeki yang telah ada dan magnet penarik rezeki yang belum datang. "Lain syakartum la azidannakum" (Jika kamu bersyukur, pasti Kami akan menambah ni'mat kepadamu). Sebaliknya, kufur (mengingkari nikmat) akan mendatangkan azab dan penyempitan jalan rezeki.</p>
+
+			<h2 id="sec-2" class="text-2xl font-bold text-gray-900 dark:text-white mt-10">2. Al-Kisah</h2>
+
+			<h3 class="text-xl font-semibold mt-4">2.1. Kisah Nabi Adam a.s</h3>
+			<p>Kisah Nabi Adam turun ke bumi mengajarkan kita tentang konsekuensi sebuah pilihan, namun juga tentang rahmat Allah yang luas. Di bumi, Adam harus berpeluh untuk mencari rezeki, namun Allah tidak pernah membiarkannya kelaparan. Ini adalah awal mula ikhtiar manusia di muka bumi.</p>
+
+			<h3 class="text-xl font-semibold mt-4">2.2. Kisah Nabi Nuh a.s</h3>
+			<p>Di tengah cemoohan kaumnya, Nabi Nuh a.s terus membangun bahtera. Rezeki baginya saat itu adalah kesabaran dan petunjuk Allah. Ketika banjir datang, bahtera itu menjadi rezeki keselamatan baginya dan orang-orang yang beriman.</p>
+
+			<h2 id="sec-3" class="text-2xl font-bold text-gray-900 dark:text-white mt-10">3. Langkah Meminta Rezeki Kepada Sang Pemberi Rezeki</h2>
+			<ul class="space-y-4 list-none pl-0">
+			  <li><strong>3.1. Langkah Pertama : Mengembangkan Sabar.</strong> Sabar dalam ketaatan, sabar menjauhi maksiat, dan sabar menghadapi ujian, termasuk ujian kesempitan rezeki.</li>
+			  <li><strong>3.2. Langkah Kedua : Menyembah Allah.</strong> Memprioritaskan ibadah wajib dan memperbanyak sunnah. Shalat Dhuha adalah salah satu wasilah pembuka pintu rezeki.</li>
+			  <li><strong>3.3. Langkah Ketiga : Menjalani Ikhtiar.</strong> Bekerja keras, cerdas, dan tuntas sesuai syariat. Tidak ada rezeki yang turun dari langit tanpa usaha.</li>
+			  <li><strong>3.4. Langkah Keempat : Membuat Catatan Harian.</strong> Mengevaluasi diri (muhasabah) setiap hari. Mencatat nikmat agar bersyukur, mencatat dosa agar beristighfar.</li>
+			  <li><strong>3.5. Langkah Kelima : Mensyukuri Nikmat Allah.</strong> Menggunakan rezeki untuk hal yang diridhai-Nya dan selalu mengucapkan Alhamdulillah dalam segala kondisi.</li>
+			  <li><strong>3.6. Langkah Keenam : Menafkahkan Sebagian Rezeki Di Jalan Allah.</strong> Sedekah tidak akan mengurangi harta, justru mensucikan dan mengembangkannya.</li>
+			  <li><strong>3.7. Langkah ketujuh : Membentuk Tim Sukses.</strong> Membangun relasi (silaturahmi) dengan orang-orang shalih dan saling mendukung dalam kebaikan serta bisnis yang halal.</li>
+			  <li><strong>3.8. Langkah Kedelapan : Merayakan Kesuksesan.</strong> Bersyukur atas pencapaian tanpa kesombongan, berbagi kebahagiaan dengan orang sekitar, terutama kaum dhuafa.</li>
+			  <li><strong>3.9. Langkah Kesembilan : Mewariskan Ilmu Dan Kesabaran.</strong> Rezeki yang abadi adalah ilmu yang bermanfaat. Mengajarkan kebaikan kepada generasi penerus.</li>
+			  <li><strong>3.10. Langkah Kesepuluh : Menjalani Hidup Bahagia Tanpa Jeda.</strong> Menerima takdir dengan ridha, sehingga hati selalu damai dan bahagia terlepas dari jumlah materi yang dimiliki.</li>
+			  <li><strong>3.11. Langkah Kesebelas : Menempuh Perjalanan Menuju Akhirat.</strong> Menjadikan dunia hanya sebagai ladang persinggahan untuk mengumpulkan bekal rezeki sejati di akhirat kelak.</li>
+			</ul>
+
+			<h2 id="sec-4" class="text-2xl font-bold text-gray-900 dark:text-white mt-10">4. Akhir Dari Sebuah Awal Rezeki</h2>
+			<p>Puncak dari pencarian rezeki bukanlah seberapa banyak yang kita kumpulkan, melainkan seberapa berkah harta tersebut mengantarkan kita lebih dekat kepada Allah. Rezeki yang berkah akan membawa ketenangan, sedangkan rezeki yang tidak berkah hanya akan membawa kegelisahan.</p>
+
+			<h2 id="sec-5" class="text-2xl font-bold text-gray-900 dark:text-white mt-8">5. Dzikir Ar-Razzaq</h2>
+			<p>Memperbanyak bacaan <em>"Ya Razzaq"</em> (Wahai Yang Maha Pemberi Rezeki) dipadukan dengan istighfar. Sebagaimana janji Allah bahwa istighfar akan menurunkan hujan yang lebat dan membanyakkan harta serta anak-anak.</p>
+
+			<h2 id="sec-6" class="text-2xl font-bold text-gray-900 dark:text-white mt-8">6. Majelis Dzikir Ar-Razzaq</h2>
+			<p>Berkumpul dengan orang-orang shalih untuk mengingat Allah. Majelis ilmu dan dzikir adalah taman-taman surga di dunia di mana rahmat dan rezeki kedamaian hati diturunkan.</p>
+
+			<h2 id="sec-7" class="text-2xl font-bold text-gray-900 dark:text-white mt-8">7. Harta Kekayaan</h2>
+			<p>Harta adalah ujian. Jika disikapi dengan benar, ia menjadi kendaraan menuju surga (melalui zakat, infaq, wakaf). Jika salah, ia menjadi beban yang memberatkan hisab di akhirat.</p>
+
+			<hr class="my-8 border-gray-200 dark:border-gray-700">
+
+			<h2 class="text-xl font-bold text-primary">IV.Tentang Penulis</h2>
+			<p class="text-sm italic">Hamba Allah yang terus belajar mensyukuri nikmat-Nya. Pengembang web ini bertujuan untuk berbagi inspirasi dan mengingatkan diri sendiri serta pembaca tentang keagungan Sang Pemberi Rezeki.</p>
+
+			<h2 class="text-xl font-bold text-primary mt-6">V.Daftar Pustaka</h2>
+			<ul class="text-sm list-disc pl-5">
+			  <li>Al-Qur'anul Karim</li>
+			  <li>Riyadhus Shalihin, Imam An-Nawawi</li>
+			  <li>Ihya Ulumuddin, Imam Al-Ghazali</li>
+			</ul>
+
+			<h2 class="text-xl font-bold text-primary mt-6">VI.Referensi</h2>
+			<p class="text-sm">Materi disusun dari berbagai ceramah agama dan literatur Islam tentang konsep rezeki.</p>
+
+		  </div>
+		</article>
+	  </section>
+
+	  <!-- ================= ABOUT PAGE ================= -->
+	  <section id="page-about" class="page-content">
+		<div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 text-center max-w-3xl mx-auto">
+		  <div class="w-24 h-24 bg-primary/10 dark:bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+			<i class="fas fa-info-circle text-4xl text-primary"></i>
+		  </div>
+		  <h2 class="text-3xl font-bold mb-4 dark:text-white">Tentang Sang Pemberi Rezeki</h2>
+		  <p class="text-lg text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+			Website "Sang Pemberi Rezeki" didirikan sebagai portal inspirasi dan pengingat spiritual bagi kita semua. Di tengah hiruk-pikuk dunia modern yang seringkali mengukur kesuksesan hanya dari materi, kami hadir untuk menyajikan perspektif bahwa rezeki sejati berasal dari ketenangan hati, keberkahan, dan kedekatan dengan Sang Pencipta.
+		  </p>
+		  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+			<div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+			  <i class="fas fa-bullseye text-2xl text-primary mb-3"></i>
+			  <h3 class="font-bold mb-2 dark:text-white">Visi</h3>
+			  <p class="text-sm text-gray-500 dark:text-gray-400">Menjadi sumber literasi digital Islami yang mencerahkan jiwa.</p>
+			</div>
+			<div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+			  <i class="fas fa-hands-helping text-2xl text-primary mb-3"></i>
+			  <h3 class="font-bold mb-2 dark:text-white">Misi</h3>
+			  <p class="text-sm text-gray-500 dark:text-gray-400">Menebar konten positif terkait ikhtiar, doa, dan tawakal.</p>
+			</div>
+			<div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+			  <i class="fas fa-heart text-2xl text-primary mb-3"></i>
+			  <h3 class="font-bold mb-2 dark:text-white">Nilai</h3>
+			  <p class="text-sm text-gray-500 dark:text-gray-400">Keikhlasan, Syukur, dan Berbagi manfaat untuk sesama.</p>
+			</div>
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- ================= GALLERY PAGE ================= -->
+	  <section id="page-gallery" class="page-content">
+		<h2 class="text-3xl font-bold mb-8 text-center dark:text-white border-b pb-4">Galeri Inspirasi</h2>
+
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+
+		  <!-- Kolom 1: List Ebook -->
+		  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 flex flex-col">
+			<h3 class="font-bold text-lg mb-4 text-primary border-b border-primary/20 pb-2"><i class="fas fa-book-open mr-2"></i>Ebook Mini</h3>
+			<div class="gallery-column space-y-3 pr-2" id="gallery-ebooks">
+			  <!-- Populated by JS -->
+			</div>
+		  </div>
+
+		  <!-- Kolom 2: List Wallpaper -->
+		  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 flex flex-col">
+			<h3 class="font-bold text-lg mb-4 text-primary border-b border-primary/20 pb-2"><i class="fas fa-image mr-2"></i>Wallpaper</h3>
+			<div class="gallery-column space-y-3 pr-2" id="gallery-wallpapers">
+			  <!-- Populated by JS -->
+			</div>
+		  </div>
+
+		  <!-- Kolom 3: YouTube Playlist (Mock API) -->
+		  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 flex flex-col">
+			<h3 class="font-bold text-lg mb-4 text-red-500 border-b border-red-500/20 pb-2"><i class="fab fa-youtube mr-2"></i>Kajian</h3>
+			<div class="gallery-column space-y-4 pr-2" id="gallery-youtube">
+			  <!-- Populated by JS -->
+			</div>
+		  </div>
+
+		  <!-- Kolom 4: List Audio -->
+		  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 flex flex-col">
+			<h3 class="font-bold text-lg mb-4 text-blue-500 border-b border-blue-500/20 pb-2"><i class="fas fa-headphones mr-2"></i>Audio Dzikir</h3>
+			<div class="gallery-column space-y-4 pr-2" id="gallery-audio">
+			  <!-- Populated by JS -->
+			</div>
+		  </div>
+
+		  <!-- Kolom 5: Artikel Blogger (Mock API) -->
+		  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 flex flex-col">
+			<h3 class="font-bold text-lg mb-4 text-orange-500 border-b border-orange-500/20 pb-2"><i class="fab fa-blogger mr-2"></i>Blog Rezeki</h3>
+			<div class="gallery-column space-y-3 pr-2" id="gallery-blogger">
+			  <!-- Populated by JS -->
+			</div>
+		  </div>
+
+		</div>
+	  </section>
+
+	  <!-- ================= SERVICE PAGE ================= -->
+	  <section id="page-service" class="page-content">
+		<div class="text-center mb-12">
+		  <h2 class="text-3xl font-bold mb-4 dark:text-white">Layanan Kami</h2>
+		  <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Kami menyediakan beberapa layanan untuk membantu Anda menemukan ketenangan dan keberkahan dalam menjemput rezeki.</p>
+		</div>
+
+		<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+		  <!-- Service 1 -->
+		  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 hover:shadow-lg transition-shadow border-t-4 border-primary">
+			<div class="w-16 h-16 bg-emerald-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-6">
+			  <i class="fas fa-comments text-2xl text-primary"></i>
+			</div>
+			<h3 class="text-xl font-bold mb-3 dark:text-white">Konsultasi Spiritual & Bisnis</h3>
+			<p class="text-gray-600 dark:text-gray-400 mb-6 text-sm">Sesi diskusi untuk menyelaraskan strategi bisnis dengan prinsip syariah agar rezeki yang didapat berkah.</p>
+			<button onclick="showAlert('Layanan ini akan segera hadir. Silakan hubungi kami via Contact.')" class="text-primary font-semibold hover:underline">Pelajari lebih lanjut &rarr;</button>
+		  </div>
+		  <!-- Service 2 -->
+		  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 hover:shadow-lg transition-shadow border-t-4 border-blue-500">
+			<div class="w-16 h-16 bg-blue-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-6">
+			  <i class="fas fa-users text-2xl text-blue-500"></i>
+			</div>
+			<h3 class="text-xl font-bold mb-3 dark:text-white">Komunitas Dzikir Ar-Razzaq</h3>
+			<p class="text-gray-600 dark:text-gray-400 mb-6 text-sm">Bergabung dengan grup majelis rutin online untuk melantunkan dzikir pembuka pintu rezeki bersama-sama.</p>
+			<button onclick="showAlert('Pendaftaran komunitas sedang ditutup sementara.')" class="text-blue-500 font-semibold hover:underline">Daftar Sekarang &rarr;</button>
+		  </div>
+		  <!-- Service 3 -->
+		  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 hover:shadow-lg transition-shadow border-t-4 border-purple-500">
+			<div class="w-16 h-16 bg-purple-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-6">
+			  <i class="fas fa-chalkboard-teacher text-2xl text-purple-500"></i>
+			</div>
+			<h3 class="text-xl font-bold mb-3 dark:text-white">Webinar Manajemen Qalbu</h3>
+			<p class="text-gray-600 dark:text-gray-400 mb-6 text-sm">Pelatihan intensif tentang cara menata hati menghadapi kesulitan ekonomi dan bersyukur saat lapang.</p>
+			<button onclick="showAlert('Jadwal webinar bulan ini belum tersedia.')" class="text-purple-500 font-semibold hover:underline">Lihat Jadwal &rarr;</button>
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- ================= CONTACT PAGE ================= -->
+	  <section id="page-contact" class="page-content">
+		<div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden flex flex-col md:flex-row">
+		  <div class="bg-primary p-10 text-white md:w-2/5 flex flex-col justify-center">
+			<h2 class="text-3xl font-bold mb-4">Hubungi Kami</h2>
+			<p class="mb-8 opacity-90">Kami selalu terbuka untuk kritik, saran, maupun kolaborasi kebaikan.</p>
+
+			<div class="space-y-4">
+			  <div class="flex items-center">
+				<i class="fas fa-map-marker-alt w-8 text-xl"></i>
+				<span>Jakarta, Indonesia</span>
+			  </div>
+			  <div class="flex items-center">
+				<i class="fas fa-envelope w-8 text-xl"></i>
+				<span>info@pemberirezeki.com</span>
+			  </div>
+			</div>
+		  </div>
+
+		  <div class="p-10 md:w-3/5">
+			<h3 class="text-xl font-bold mb-6 dark:text-white border-b pb-2">Kirim Pesan (GMail)</h3>
+			<p class="mb-6 text-gray-600 dark:text-gray-400 text-sm">Silakan klik tombol di bawah ini untuk membuka aplikasi GMail Anda dan mengirimkan pesan kepada kami secara langsung.</p>
+
+			<a href="mailto:asepmo.story@gmail.com?subject=Tanya/Saran%20untuk%20Sang%20Pemberi%20Rezeki" 
+			  class="inline-flex items-center justify-center w-full md:w-auto px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors shadow-md">
+			  <i class="fab fa-google mr-2"></i> Kirim Email via GMail
+			</a>
+
+			<div class="mt-10">
+			  <h3 class="text-lg font-bold mb-4 dark:text-white border-b pb-2">Media Sosial</h3>
+			  <div class="flex space-x-4">
+				<a href="#" onclick="showAlert('Membuka Facebook...')" class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center text-xl hover:bg-blue-700 transition shadow-sm"><i class="fab fa-facebook-f"></i></a>
+				<a href="#" onclick="showAlert('Membuka Instagram...')" class="w-12 h-12 bg-pink-600 text-white rounded-full flex items-center justify-center text-xl hover:bg-pink-700 transition shadow-sm"><i class="fab fa-instagram"></i></a>
+				<a href="#" onclick="showAlert('Membuka Twitter/X...')" class="w-12 h-12 bg-gray-900 dark:bg-gray-700 text-white rounded-full flex items-center justify-center text-xl hover:bg-black transition shadow-sm"><i class="fab fa-twitter"></i></a>
+				<a href="#" onclick="showAlert('Membuka Telegram...')" class="w-12 h-12 bg-blue-400 text-white rounded-full flex items-center justify-center text-xl hover:bg-blue-500 transition shadow-sm"><i class="fab fa-telegram-plane"></i></a>
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- ================= EBOOK PAGE ================= -->
+	  <section id="page-ebook" class="page-content">
+		<div class="text-center mb-10">
+		  <h2 class="text-3xl font-bold mb-2 dark:text-white">Perpustakaan Ebook</h2>
+		  <p class="text-gray-600 dark:text-gray-400">Kumpulan bacaan pengembangan diri dan spiritual untuk memperluas wadah rezeki.</p>
+		</div>
+
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="ebook-grid">
+		  <!-- Populated by JS -->
+		</div>
+	  </section>
+
+	  <!-- ================= SETTINGS PAGE ================= -->
+	  <section id="page-settings" class="page-content">
+		<div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8">
+		  <h2 class="text-2xl font-bold mb-6 dark:text-white flex items-center"><i class="fas fa-cog mr-3 text-gray-400"></i>Pengaturan Website</h2>
+
+		  <div class="space-y-8">
+			<!-- Setting Item 1: Theme -->
+			<div class="flex items-center justify-between border-b border-gray-100 dark:border-gray-700 pb-6">
+			  <div>
+				<h3 class="font-bold text-lg dark:text-white">1. Tema (Theme)</h3>
+				<p class="text-sm text-gray-500 dark:text-gray-400">Pilih tampilan terang atau gelap.</p>
+			  </div>
+			  <div class="flex items-center space-x-3 bg-gray-100 dark:bg-gray-700 p-1 rounded-lg">
+				<button id="theme-light-btn" class="px-4 py-2 rounded-md bg-white shadow-sm text-gray-800 text-sm font-medium focus:outline-none transition-colors">Terang</button>
+				<button id="theme-dark-btn" class="px-4 py-2 rounded-md text-gray-500 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white text-sm font-medium focus:outline-none transition-colors">Gelap</button>
+			  </div>
+			</div>
+
+			<!-- Setting Item 2: Reset API -->
+			<div class="flex items-center justify-between">
+			  <div>
+				<h3 class="font-bold text-lg dark:text-white">2. Reset YouTube & Blogger API</h3>
+				<p class="text-sm text-gray-500 dark:text-gray-400">Bersihkan cache mock data API.</p>
+			  </div>
+			  <button onclick="resetApi()" class="px-4 py-2 bg-red-100 text-red-600 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50 rounded-lg font-medium transition-colors focus:outline-none">
+				<i class="fas fa-sync-alt mr-2"></i>Reset API
+			  </button>
+			</div>
+		  </div>
+		</div>
+	  </section>
+
+    </main>
+
+<script>
+        // --- Custom Modal Logic ---
+        function showAlert(message, title = "Pemberitahuan") {
+            const modal = document.getElementById('custom-modal');
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = message;
+            
+            modal.classList.remove('hidden');
+            // Small delay to allow display:block to apply before animating opacity
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('div').classList.remove('scale-95');
+                modal.querySelector('div').classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('custom-modal');
+            modal.classList.add('opacity-0');
+            modal.querySelector('div').classList.remove('scale-100');
+            modal.querySelector('div').classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300); // match transition duration
+        }
+
+        // --- Navigation Logic ---
+        const menuBtn = document.getElementById('menu-btn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        function toggleSidebar() {
+            const isClosed = sidebar.classList.contains('-translate-x-full');
+            if (isClosed) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
+        }
+
+        menuBtn.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+
+        function navigateTo(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            const targetPage = document.getElementById('page-' + pageId);
+            if(targetPage) {
+                targetPage.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Update active state in sidebar
+            navItems.forEach(item => {
+                item.classList.remove('bg-emerald-50', 'text-primary', 'dark:bg-gray-700', 'dark:text-emerald-400');
+                if (item.getAttribute('onclick').includes(pageId)) {
+                    item.classList.add('bg-emerald-50', 'text-primary', 'dark:bg-gray-700', 'dark:text-emerald-400');
+                }
+            });
+
+            // Close sidebar on mobile after clicking
+            if (window.innerWidth < 768) {
+                toggleSidebar();
+            }
+        }
+
+        // --- Theme Management ---
+        const htmlDoc = document.documentElement;
+        const btnLight = document.getElementById('theme-light-btn');
+        const btnDark = document.getElementById('theme-dark-btn');
+
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                htmlDoc.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                
+                // Style buttons
+                btnDark.classList.add('bg-gray-600', 'text-white', 'shadow-sm');
+                btnDark.classList.remove('text-gray-500', 'hover:text-gray-800');
+                btnLight.classList.remove('bg-white', 'shadow-sm', 'text-gray-800');
+                btnLight.classList.add('text-gray-400', 'hover:text-white', 'bg-transparent');
+                
+            } else {
+                htmlDoc.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                
+                // Style buttons
+                btnLight.classList.add('bg-white', 'shadow-sm', 'text-gray-800');
+                btnLight.classList.remove('text-gray-400', 'hover:text-white', 'bg-transparent');
+                btnDark.classList.remove('bg-gray-600', 'text-white', 'shadow-sm');
+                btnDark.classList.add('text-gray-500', 'hover:text-gray-800');
+            }
+        }
+
+        btnLight.addEventListener('click', () => setTheme('light'));
+        btnDark.addEventListener('click', () => setTheme('dark'));
+
+        // Init theme
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            setTheme('dark');
+        } else {
+            setTheme('light');
+        }
+
+        // --- Settings Function ---
+        function resetApi() {
+            showAlert("Koneksi API YouTube V3 dan Google Blogger V3 telah di-reset ke pengaturan awal.", "Berhasil");
+        }
+
+        
+        // --- Mock Data ---
+        const ebooksData = [
+            { title: "Magnet Rezeki", author: "Hamba Allah", cover: "https://placehold.co/100x140/10b981/white?text=Magnet+Rezeki", desc: "Cara mudah menarik rezeki dari segala penjuru." },
+            { title: "Manajemen Qalbu", author: "Aa Gym (Ilustrasi)", cover: "https://placehold.co/100x140/3b82f6/white?text=Manajemen+Qalbu", desc: "Menata hati untuk menjemput ridha Ilahi." },
+            { title: "The Power of Sedekah", author: "Yusuf Mansur", cover: "https://placehold.co/100x140/f59e0b/white?text=Power+Sedekah", desc: "Keajaiban berbagi dan dampaknya pada kekayaan." },
+            { title: "Riyadhus Shalihin", author: "Imam An-Nawawi", cover: "https://placehold.co/100x140/6366f1/white?text=Riyadhus", desc: "Kumpulan hadits shahih pembentuk karakter." },
+            { title: "Sabar & Syukur", author: "Ibnu Qayyim", cover: "https://placehold.co/100x140/ec4899/white?text=Sabar+Syukur", desc: "Dua sayap orang beriman dalam menjalani hidup." }
+        ];
+
+        const wallpapersData = [
+            "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=200&h=300&fit=crop", // Nature
+            "https://images.unsplash.com/photo-1519817650390-64a93db51149?w=200&h=300&fit=crop", // Plants
+            "https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=200&h=300&fit=crop", // Sunrise
+            "https://images.unsplash.com/photo-1505144808419-1957a94ca61e?w=200&h=300&fit=crop"  // Water
+        ];
+
+        const youtubeData = [
+            { title: "Kajian: Pintu Rezeki yang Terlupakan", thumb: "https://images.unsplash.com/photo-1610484826967-09c5720778c7?w=300&h=168&fit=crop", duration: "45:12" },
+            { title: "Murottal Surat Al-Waqi'ah Merdu", thumb: "https://images.unsplash.com/photo-1609599006353-e629aaab31f5?w=300&h=168&fit=crop", duration: "12:30" },
+            { title: "Tanya Jawab: Hutang dan Rezeki", thumb: "https://images.unsplash.com/photo-1555529902-14baa1b9f7be?w=300&h=168&fit=crop", duration: "20:05" }
+        ];
+
+        const audioData = [
+            { title: "Dzikir Pagi Lengkap", duration: "15:00" },
+            { title: "Dzikir Petang Pembuka Pintu Rahmat", duration: "18:20" },
+            { title: "Asmaul Husna - Ar Razzaq berulang", duration: "10:00" },
+            { title: "Doa Meminta Kelapangan Hati", duration: "05:45" }
+        ];
+
+        const bloggerData = [
+            { title: "Mengapa Rezeki Terasa Seret? Cek 3 Hal Ini", date: "10 Mei 2026", excerpt: "Seringkali kita merasa sudah bekerja keras namun hasilnya nihil. Mungkin ada yang salah dengan niat atau cara kita..." },
+            { title: "Kisah Penjual Kerupuk yang Sedekahnya Jutaan", date: "05 Mei 2026", excerpt: "Jangan meremehkan pendapatan kecil. Keberkahan adalah kunci. Simak kisah inspiratif dari mang Ujang..." },
+            { title: "Tips Mengatur Keuangan Secara Islami", date: "28 Apr 2026", excerpt: "Gaji besar tidak menjamin kebebasan finansial jika pengeluarannya tidak dikontrol sesuai syariat..." }
+        ];
+
+        // --- Render Functions ---
+        function renderGallery() {
+            // 1. Ebooks (Mini List)
+            const elEbook = document.getElementById('gallery-ebooks');
+            elEbook.innerHTML = ebooksData.map(b => `
+                <div class="flex items-center p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded cursor-pointer transition" onclick="showAlert('Membuka PDF ${b.title}...')">
+                    <i class="fas fa-file-pdf text-red-500 text-2xl mr-3"></i>
+                    <div>
+                        <p class="text-sm font-semibold dark:text-white line-clamp-1">${b.title}</p>
+                        <p class="text-xs text-gray-500">${b.author}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // 2. Wallpapers
+            const elWall = document.getElementById('gallery-wallpapers');
+            elWall.innerHTML = '<div class="grid grid-cols-2 gap-2">' + wallpapersData.map(img => `
+                <div class="relative group rounded overflow-hidden cursor-pointer h-24" onclick="showAlert('Mengunduh Wallpaper...')">
+                    <img src="${img}" class="w-full h-full object-cover transition transform group-hover:scale-110" alt="Wallpaper">
+                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                        <i class="fas fa-download text-white"></i>
+                    </div>
+                </div>
+            `).join('') + '</div>';
+
+            // 3. YouTube (Mock API V3)
+            const elYt = document.getElementById('gallery-youtube');
+            elYt.innerHTML = youtubeData.map(v => `
+                <div class="group cursor-pointer" onclick="showAlert('Memutar video: ${v.title} via YouTube API V3...')">
+                    <div class="relative rounded-lg overflow-hidden mb-2">
+                        <img src="${v.thumb}" class="w-full h-32 object-cover" alt="Thumb">
+                        <div class="absolute inset-0 bg-black/20 flex items-center justify-center group-hover:bg-black/40 transition">
+                            <i class="fab fa-youtube text-4xl text-white opacity-80 group-hover:opacity-100 group-hover:text-red-500 transition"></i>
+                        </div>
+                        <span class="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-1 rounded">${v.duration}</span>
+                    </div>
+                    <p class="text-sm font-medium dark:text-white line-clamp-2 leading-tight">${v.title}</p>
+                </div>
+            `).join('');
+
+            // 4. Audio
+            const elAudio = document.getElementById('gallery-audio');
+            elAudio.innerHTML = audioData.map(a => `
+                <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg border border-gray-100 dark:border-gray-600">
+                    <p class="text-sm font-semibold mb-2 dark:text-white"><i class="fas fa-music text-blue-400 mr-2"></i>${a.title}</p>
+                    <!-- Mock Audio Control -->
+                    <div class="flex items-center space-x-2 text-xs text-gray-500">
+                        <button class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center hover:bg-blue-600" onclick="showAlert('Memutar audio...')"><i class="fas fa-play text-[10px]"></i></button>
+                        <div class="flex-1 h-1 bg-gray-300 dark:bg-gray-600 rounded">
+                            <div class="w-0 h-full bg-blue-500 rounded"></div>
+                        </div>
+                        <span>${a.duration}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            // 5. Blogger (Mock API V3)
+            const elBlog = document.getElementById('gallery-blogger');
+            elBlog.innerHTML = bloggerData.map(p => `
+                <div class="border-b border-gray-100 dark:border-gray-700 pb-3 last:border-0 cursor-pointer group" onclick="showAlert('Membaca artikel dari Google Blogger API V3...')">
+                    <p class="text-xs text-orange-500 mb-1">${p.date}</p>
+                    <h4 class="text-sm font-bold dark:text-white group-hover:text-orange-500 transition line-clamp-2">${p.title}</h4>
+                    <p class="text-xs text-gray-500 mt-1 line-clamp-2">${p.excerpt}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderEbooksPage() {
+            const elGrid = document.getElementById('ebook-grid');
+            // Duplicate data to make the grid look full
+            const fullList = [...ebooksData, ...ebooksData].slice(0, 8); 
+
+            elGrid.innerHTML = fullList.map(book => `
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden flex flex-col border border-gray-100 dark:border-gray-700 hover:shadow-md transition">
+                    <div class="h-48 bg-gray-100 dark:bg-gray-700 flex justify-center items-center p-4">
+                        <img src="${book.cover}" alt="Cover" class="h-full object-contain drop-shadow-md">
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col">
+                        <h3 class="font-bold text-lg dark:text-white leading-tight mb-1">${book.title}</h3>
+                        <p class="text-xs text-primary font-medium mb-3">${book.author}</p>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 flex-1 line-clamp-3">${book.desc}</p>
+                        <div class="flex space-x-2 mt-auto">
+                            <button onclick="showAlert('Membuka penampil PDF interaktif...')" class="flex-1 py-2 bg-emerald-100 text-secondary dark:bg-emerald-900/30 dark:text-emerald-400 rounded hover:bg-emerald-200 dark:hover:bg-emerald-900/50 transition text-sm font-semibold">
+                                <i class="fas fa-book-reader mr-1"></i> Baca
+                            </button>
+                            <button onclick="showAlert('Memulai unduhan berkas PDF...')" class="py-2 px-3 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition text-sm">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Initialize dynamic content
+        renderGallery();
+        renderEbooksPage();
+
+</script>
+  </body>
+</html>

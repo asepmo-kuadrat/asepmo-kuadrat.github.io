@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Product Universe - Premium Portal & AI Assistant</title>
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+<script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        google: {
+                            blue: '#4285F4',
+                            red: '#EA4335',
+                            yellow: '#FBBC05',
+                            green: '#34A853',
+                            darkBg: '#0b0f19',
+                            darkCard: '#161e2e'
+                        }
+                    }
+                }
+            }
+        }
+</script>
+<style>
+        /* Smooth Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        
+        /* Glassmorphism & Animations */
+        .glass-panel {
+            background: rgba(22, 30, 46, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .light .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+        .glow-orb {
+            animation: pulse-glow 8s infinite ease-in-out;
+        }
+        
+        .product-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -10px rgba(66, 133, 244, 0.3);
+        }
+
+        /* Shimmer loading effect */
+        .shimmer {
+            background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.03) 75%);
+            background-size: 200% 100%;
+            animation: shimmer-load 1.5s infinite;
+        }
+        @keyframes shimmer-load {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+</style>
+  </head>
+  <body class="bg-[#0b0f19] text-slate-100 min-h-screen font-sans antialiased transition-colors duration-300 relative overflow-x-hidden">
+
+    <!-- Glowing Background Orbs -->
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+	  <div class="absolute w-[600px] h-[600px] rounded-full bg-google-blue/10 blur-[120px] top-[-10%] left-[-10%] glow-orb"></div>
+	  <div class="absolute w-[500px] h-[500px] rounded-full bg-google-red/5 blur-[100px] bottom-[-10%] right-[-10%] glow-orb" style="animation-delay: 2s;"></div>
+	  <div class="absolute w-[400px] h-[400px] rounded-full bg-google-yellow/5 blur-[80px] top-[40%] right-[20%] glow-orb" style="animation-delay: 4s;"></div>
+    </div>
+
+    <!-- Toast Notification System -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-sm w-full px-4 sm:px-0 pointer-events-none"></div>
+
+    <!-- NAVIGATION HEADER -->
+    <header class="sticky top-0 z-40 w-full glass-panel border-b transition-all duration-300">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+
+		<!-- Left Branding Logo -->
+		<div class="flex items-center gap-2 cursor-pointer" onclick="scrollToTop()">
+		  <div class="flex items-center font-display font-bold text-2xl tracking-tight leading-none">
+			<span class="text-google-blue font-extrabold">G</span>
+			<span class="text-google-red">o</span>
+			<span class="text-google-yellow">o</span>
+			<span class="text-google-blue">g</span>
+			<span class="text-google-green">l</span>
+			<span class="text-google-red">e</span>
+			<span class="text-slate-300 ml-1.5 text-lg font-medium tracking-normal">Pro</span>
+		  </div>
+		</div>
+
+		<!-- Central Search Bar -->
+		<div class="hidden md:flex flex-1 max-w-lg relative">
+		  <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+			<i class="fa-solid fa-magnifying-glass text-sm"></i>
+		  </span>
+		  <input type="text" id="global-search" oninput="handleSearch(this.value)" placeholder="Cari artikel atau produk Google..." class="w-full pl-10 pr-4 py-2 rounded-full bg-slate-900/50 border border-slate-800 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-google-blue focus:ring-2 focus:ring-google-blue/20 transition-all">
+		</div>
+
+		<!-- Right Toolbar Items -->
+		<div class="flex items-center gap-3.5">
+
+		  <!-- Theme Toggle Button -->
+		  <button onclick="toggleTheme()" class="p-2.5 rounded-full hover:bg-slate-800/60 transition-colors text-slate-300" title="Ubah Tema">
+			<i id="theme-icon" class="fa-solid fa-sun text-lg text-google-yellow"></i>
+		  </button>
+
+		  <!-- Custom Options Menu Trigger (Gear icon) -->
+		  <div class="relative">
+			<button id="options-btn" onclick="toggleOptionsMenu()" class="p-2.5 rounded-full hover:bg-slate-800/60 transition-colors text-slate-300" title="Opsi & Pengaturan">
+			  <i class="fa-solid fa-ellipsis-vertical text-lg"></i>
+			</button>
+			<!-- Options Dropdown Dialog -->
+			<div id="options-dropdown" class="hidden absolute right-0 mt-2 w-56 glass-panel rounded-xl shadow-2xl p-2 z-50 animate-fade-in text-sm">
+			  <div class="px-3 py-2 border-b border-slate-800/80 mb-1">
+				<p class="font-semibold text-slate-200">Menu Portal</p>
+				<span class="text-[10px] text-google-blue uppercase font-bold tracking-wider">Navigasi Cepat</span>
+			  </div>
+			  <a href="#articles-section" onclick="toggleOptionsMenu()" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/50 hover:text-white transition-colors">
+				<i class="fa-regular fa-newspaper text-google-blue"></i> Baca Artikel Portal
+			  </a>
+			  <a href="#ai-assistant-section" onclick="toggleOptionsMenu()" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/50 hover:text-white transition-colors">
+				<i class="fa-solid fa-wand-magic-sparkles text-google-yellow"></i> Asisten AI Gemini
+			  </a>
+			  <div class="border-t border-slate-800/80 my-1 pt-1"></div>
+			  <button onclick="showToast('Konfigurasi API Tersimpan Otomatis!', 'success')" class="w-full text-left flex items-center gap-2.5 px-3 py-2 rounded-lg text-slate-300 hover:bg-slate-800/50 hover:text-white transition-colors">
+				<i class="fa-solid fa-shield-halved text-google-green"></i> Status Sistem: OK
+			  </button>
+			</div>
+		  </div>
+
+		  <!-- Google Apps Grid Launcher (The Waffle Menu Button) -->
+		  <button onclick="toggleWaffleDialog(true)" class="p-2.5 rounded-full bg-slate-900/40 hover:bg-google-blue/10 border border-slate-800 hover:border-google-blue/30 transition-all text-slate-200 flex items-center justify-center relative group" title="Google Apps Launcher">
+			<i class="fa-solid fa-grip text-lg text-google-blue group-hover:scale-110 transition-transform"></i>
+			<!-- Pulse highlight -->
+			<span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-google-red animate-ping"></span>
+		  </button>
+
+		  <!-- User Profile Icon with dropdown -->
+		  <div class="relative">
+			<button onclick="toggleProfileMenu()" class="w-9 h-9 rounded-full overflow-hidden border border-slate-700/80 cursor-pointer focus:outline-none">
+			  <img src="https://placehold.co/100/1a73e8/ffffff?text=G" alt="Profile" class="w-full h-full object-cover">
+			</button>
+			<!-- Profile Card Dropdown -->
+			<div id="profile-dropdown" class="hidden absolute right-0 mt-2 w-72 glass-panel rounded-2xl shadow-2xl p-4 z-50 text-center">
+			  <div class="flex flex-col items-center">
+				<div class="w-16 h-16 rounded-full border-2 border-google-blue overflow-hidden mb-3">
+				  <img src="https://placehold.co/150/1a73e8/ffffff?text=User" alt="User Photo" class="w-full h-full object-cover">
+				</div>
+				<h4 class="font-semibold text-slate-200 text-base">Google Dev Enthusiast</h4>
+				<p class="text-xs text-slate-400 mb-4">user.enthusiast@google-universe.dev</p>
+				<div class="w-full border-t border-slate-800/80 pt-3 flex flex-col gap-2">
+				  <button onclick="showToast('Profil Anda Tersinkronisasi dengan baik.', 'success'); toggleProfileMenu()" class="py-2 px-3 rounded-lg bg-google-blue/25 hover:bg-google-blue/40 text-google-blue text-xs font-semibold transition-all">
+					Kelola Akun Google
+				  </button>
+				  <button onclick="toggleProfileMenu()" class="py-2 px-3 rounded-lg bg-slate-800 text-slate-400 text-xs hover:text-white transition-all">
+					Tutup
+				  </button>
+				</div>
+			  </div>
+			</div>
+		  </div>
+
+		</div>
+	  </div>
+    </header>
+
+    <!-- GOOGLE APPS GRID LAUNCHER DIALOG (Waffle Modal) -->
+    <div id="waffle-dialog" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+	  <!-- Backdrop Backdrop filter overlay -->
+	  <div onclick="toggleWaffleDialog(false)" class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity"></div>
+
+	  <!-- Dialog Container -->
+	  <div class="w-full max-w-2xl glass-panel rounded-3xl p-6 sm:p-8 shadow-2xl relative z-10 border border-slate-800/80 animate-scale-in max-h-[85vh] overflow-y-auto">
+
+		<!-- Dialog Header -->
+		<div class="flex justify-between items-start mb-6">
+		  <div>
+			<h3 class="font-display font-bold text-2xl text-white flex items-center gap-2">
+			  <i class="fa-solid fa-shapes text-google-blue"></i>
+			  Aplikasi & Layanan Google
+			</h3>
+			<p class="text-xs text-slate-400 mt-1">Pilih aplikasi untuk meluncurkan spotlight detail secara langsung.</p>
+		  </div>
+		  <button onclick="toggleWaffleDialog(false)" class="p-2 rounded-lg bg-slate-800/50 hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-all">
+			<i class="fa-solid fa-xmark text-lg"></i>
+		  </button>
+		</div>
+
+		<!-- Interactive Grid of Products -->
+		<div id="products-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+		  <!-- Dynamically populated products from JS -->
+		</div>
+
+		<!-- Dialog Footer -->
+		<div class="mt-6 pt-5 border-t border-slate-850 flex justify-between items-center flex-wrap gap-3">
+		  <span class="text-xs text-slate-500">Klik salah satu produk untuk melihat sorotan interaktif.</span>
+		  <button onclick="toggleWaffleDialog(false)" class="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-all">
+			Tutup Grid
+		  </button>
+		</div>
+	  </div>
+    </div>
+
+    <!-- MAIN APPLICATION CONTAINER -->
+    <main class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+	  <!-- INTRO HERO BANNER -->
+	  <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-slate-900/35 border border-slate-800/80 rounded-3xl p-6 sm:p-10 relative overflow-hidden">
+		<div class="absolute top-0 right-0 w-[300px] h-[300px] bg-google-blue/5 rounded-full blur-[80px]"></div>
+
+		<!-- Hero content -->
+		<div class="lg:col-span-7 space-y-6">
+		  <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-google-blue/10 border border-google-blue/20 text-google-blue">
+			<i class="fa-solid fa-circle-check text-[10px]"></i>
+			Portal Komprehensif Google &amp; AI
+		  </div>
+		  <h1 class="font-display font-bold text-3xl sm:text-5xl text-white leading-tight">
+			Jelajahi Ekosistem <br>
+			<span class="bg-gradient-to-r from-google-blue via-google-red to-google-yellow bg-clip-text text-transparent">Produk Digital Google</span>
+		  </h1>
+		  <p class="text-sm sm:text-base text-slate-400 leading-relaxed max-w-2xl">
+			Selamat datang di pusat eksplorasi ekosistem Google. Dari algoritma pencarian yang cerdas, infrastruktur cloud berkemampuan skala tak terbatas, hingga integrasi kecerdasan buatan Gemini. Cari tahu selengkapnya dengan navigasi cepat di bawah ini.
+		  </p>
+		  <div class="flex flex-wrap gap-4">
+			<button onclick="toggleWaffleDialog(true)" class="py-3 px-6 rounded-xl bg-gradient-to-r from-google-blue to-google-blue/80 text-white font-bold text-sm shadow-lg shadow-google-blue/20 transition-all transform hover:scale-[1.02] flex items-center gap-2">
+			  <i class="fa-solid fa-grip-vertical"></i>
+			  Buka Grid Produk Google
+			</button>
+			<a href="#ai-assistant-section" class="py-3 px-6 rounded-xl bg-slate-800 hover:bg-slate-750 border border-slate-700/60 text-slate-200 hover:text-white font-semibold text-sm transition-all flex items-center gap-2">
+			  <i class="fa-solid fa-brain text-google-yellow"></i>
+			  Asisten AI Gemini
+			</a>
+		  </div>
+		</div>
+
+		<!-- Hero side panel: Interactive Product Spotlight -->
+		<div class="lg:col-span-5 h-full flex flex-col justify-center">
+		  <div id="spotlight-panel" class="p-6 rounded-2xl glass-panel border border-slate-800/80 transition-all duration-500 transform scale-100 relative min-h-[220px]">
+			<div class="absolute -top-3 -right-3 px-3 py-1 rounded-lg bg-google-blue text-white text-[10px] font-bold uppercase tracking-wider">Spotlight</div>
+			<!-- Empty state is populated dynamically when user clicks a product -->
+			<div id="spotlight-content" class="space-y-4">
+			  <div class="flex items-center gap-3">
+				<div class="w-12 h-12 rounded-xl bg-google-blue/10 flex items-center justify-center text-google-blue text-2xl">
+				  <i class="fa-solid fa-wand-magic-sparkles"></i>
+				</div>
+				<div>
+				  <h4 class="font-display font-bold text-lg text-white">Google Spotlight</h4>
+				  <p class="text-xs text-slate-400">Pilih aplikasi dari menu grid di atas</p>
+				</div>
+			  </div>
+			  <p class="text-xs text-slate-400 leading-relaxed">
+				Klik menu tombol aplikasi di toolbar kanan atas, pilih salah satu produk Google, dan detail spesifikasi produk, fungsi, serta integrasi AI akan ditampilkan di panel spotlight ini.
+			  </p>
+			  <button onclick="toggleWaffleDialog(true)" class="text-xs font-bold text-google-blue hover:text-google-blue/80 transition-colors flex items-center gap-1.5 mt-2">
+				Lihat Menu Sekarang <i class="fa-solid fa-arrow-right text-[10px]"></i>
+			  </button>
+			</div>
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- ARTICLES & DOCUMENTATION SECTION -->
+	  <section id="articles-section" class="space-y-6">
+		<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-3">
+		  <div>
+			<span class="text-xs font-bold text-google-blue uppercase tracking-widest">Artikel &amp; Edukasi</span>
+			<h2 class="font-display font-bold text-2xl sm:text-3xl text-white mt-1">Evolusi dan Teknologi Google</h2>
+		  </div>
+		  <div class="flex items-center gap-2">
+			<button onclick="filterArticles('all')" class="article-filter-btn px-4 py-1.5 rounded-full bg-google-blue text-white text-xs font-medium transition-all">Semua</button>
+			<button onclick="filterArticles('search')" class="article-filter-btn px-4 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 text-xs font-medium transition-all">Search &amp; AI</button>
+			<button onclick="filterArticles('cloud')" class="article-filter-btn px-4 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 text-xs font-medium transition-all">Cloud &amp; Platform</button>
+		  </div>
+		</div>
+
+		<!-- Articles grid -->
+		<div id="articles-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+		  <!-- Article 1 -->
+		  <article data-category="search" class="article-card p-6 rounded-2xl bg-slate-900/40 border border-slate-800/80 hover:border-slate-700/80 transition-all duration-300 flex flex-col justify-between hover:shadow-xl group">
+			<div class="space-y-4">
+			  <div class="flex justify-between items-center">
+				<span class="px-3 py-1 rounded-full bg-google-blue/10 border border-google-blue/20 text-google-blue text-[10px] font-bold uppercase tracking-wide">Search &amp; AI</span>
+				<span class="text-xs text-slate-500">Juni 2026</span>
+			  </div>
+			  <h3 class="font-display font-bold text-xl text-white group-hover:text-google-blue transition-colors">Evolusi Google Search di Era Generative AI</h3>
+			  <p class="text-xs text-slate-400 leading-relaxed">
+				Google Search tidak lagi sekadar mesin pencari indeks kata kunci biasa. Dengan integrasi model bahasa teranyar, Google kini menyajikan ringkasan hasil cerdas lewat Generative AI, memungkinkannya mengerti pertanyaan kompleks langsung dalam satu pencarian tunggal.
+			  </p>
+			</div>
+			<div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-800/60">
+			  <span class="text-[11px] text-slate-500">Estimasi Baca: 4 menit</span>
+			  <button onclick="requestAiExplain('Evolusi Google Search di Era Generative AI')" class="text-xs font-bold text-google-blue group-hover:translate-x-1 transition-all flex items-center gap-1.5">
+				Tanya AI Jelaskan <i class="fa-solid fa-arrow-right text-[10px]"></i>
+			  </button>
+			</div>
+		  </article>
+
+		  <!-- Article 2 -->
+		  <article data-category="cloud" class="article-card p-6 rounded-2xl bg-slate-900/40 border border-slate-800/80 hover:border-slate-700/80 transition-all duration-300 flex flex-col justify-between hover:shadow-xl group">
+			<div class="space-y-4">
+			  <div class="flex justify-between items-center">
+				<span class="px-3 py-1 rounded-full bg-google-green/10 border border-google-green/20 text-google-green text-[10px] font-bold uppercase tracking-wide">Cloud &amp; Platform</span>
+				<span class="text-xs text-slate-500">Mei 2026</span>
+			  </div>
+			  <h3 class="font-display font-bold text-xl text-white group-hover:text-google-green transition-colors">Google Cloud &amp; Ekosistem Developer Global</h3>
+			  <p class="text-xs text-slate-400 leading-relaxed">
+				Mendukung jutaan rintisan start-up dan korporasi berskala enterprise, Google Cloud Platform menyediakan infrastruktur berbasis data berteknologi tinggi. Keunggulan Firebase, BigQuery, dan integrasi mulus Kubernetes memposisikan GCP sebagai pelopor cloud computing dunia.
+			  </p>
+			</div>
+			<div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-800/60">
+			  <span class="text-[11px] text-slate-500">Estimasi Baca: 5 menit</span>
+			  <button onclick="requestAiExplain('Google Cloud dan Ekosistem Developer')" class="text-xs font-bold text-google-green group-hover:translate-x-1 transition-all flex items-center gap-1.5">
+				Tanya AI Jelaskan <i class="fa-solid fa-arrow-right text-[10px]"></i>
+			  </button>
+			</div>
+		  </article>
+
+		  <!-- Article 3 -->
+		  <article data-category="search" class="article-card p-6 rounded-2xl bg-slate-900/40 border border-slate-800/80 hover:border-slate-700/80 transition-all duration-300 flex flex-col justify-between hover:shadow-xl group">
+			<div class="space-y-4">
+			  <div class="flex justify-between items-center">
+				<span class="px-3 py-1 rounded-full bg-google-yellow/10 border border-google-yellow/20 text-google-yellow text-[10px] font-bold uppercase tracking-wide">Search &amp; AI</span>
+				<span class="text-xs text-slate-500">April 2026</span>
+			  </div>
+			  <h3 class="font-display font-bold text-xl text-white group-hover:text-google-yellow transition-colors">Gemini: Lompatan Besar Kecerdasan Buatan Google</h3>
+			  <p class="text-xs text-slate-400 leading-relaxed">
+				Google Gemini mewakili lompatan kuantum terbesar di bidang model multimodal orisinil. Dibuat sejak awal untuk memproses teks, video, audio, dan visual secara bersamaan, Gemini mendefinisikan ulang batas-batas kemampuan asisten komputasi di masa depan.
+			  </p>
+			</div>
+			<div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-800/60">
+			  <span class="text-[11px] text-slate-500">Estimasi Baca: 6 menit</span>
+			  <button onclick="requestAiExplain('Google Gemini Kecerdasan Buatan')" class="text-xs font-bold text-google-yellow group-hover:translate-x-1 transition-all flex items-center gap-1.5">
+				Tanya AI Jelaskan <i class="fa-solid fa-arrow-right text-[10px]"></i>
+			  </button>
+			</div>
+		  </article>
+
+		  <!-- Article 4 -->
+		  <article data-category="cloud" class="article-card p-6 rounded-2xl bg-slate-900/40 border border-slate-800/80 hover:border-slate-700/80 transition-all duration-300 flex flex-col justify-between hover:shadow-xl group">
+			<div class="space-y-4">
+			  <div class="flex justify-between items-center">
+				<span class="px-3 py-1 rounded-full bg-google-red/10 border border-google-red/20 text-google-red text-[10px] font-bold uppercase tracking-wide">Cloud &amp; Platform</span>
+				<span class="text-xs text-slate-500">Maret 2026</span>
+			  </div>
+			  <h3 class="font-display font-bold text-xl text-white group-hover:text-google-red transition-colors">YouTube: Dari Berbagi Video ke Ekonomi Kreator</h3>
+			  <p class="text-xs text-slate-400 leading-relaxed">
+				Bermula dari situs web berbagi video biasa, YouTube telah berubah menjadi ekosistem ekonomi bernilai miliaran dolar untuk para kreator global. Algoritma rekomendasi cerdas didukung arsitektur Google memastikan tayangan yang relevan tersalurkan tepat sasaran.
+			  </p>
+			</div>
+			<div class="flex justify-between items-center mt-6 pt-4 border-t border-slate-800/60">
+			  <span class="text-[11px] text-slate-500">Estimasi Baca: 5 menit</span>
+			  <button onclick="requestAiExplain('Ekonomi Kreator YouTube')" class="text-xs font-bold text-google-red group-hover:translate-x-1 transition-all flex items-center gap-1.5">
+				Tanya AI Jelaskan <i class="fa-solid fa-arrow-right text-[10px]"></i>
+			  </button>
+			</div>
+		  </article>
+
+		</div>
+	  </section>
+
+	  <!-- GEMINI AI CHATBOT INTERACTIVE WIDGET -->
+	  <section id="ai-assistant-section" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+
+		<!-- Left Info Panel -->
+		<div class="lg:col-span-5 flex flex-col justify-between bg-slate-900/40 border border-slate-800/80 rounded-3xl p-6 sm:p-8">
+		  <div class="space-y-4">
+			<div class="flex items-center gap-2.5">
+			  <div class="w-10 h-10 rounded-xl bg-google-blue/10 flex items-center justify-center text-google-blue text-xl">
+				<i class="fa-solid fa-wand-magic-sparkles text-google-yellow"></i>
+			  </div>
+			  <div>
+				<h3 class="font-display font-bold text-xl text-white">Google Gemini Expert</h3>
+				<p class="text-[10px] text-google-blue uppercase font-bold tracking-wider">AI Support Chatbot</p>
+			  </div>
+			</div>
+			<p class="text-xs text-slate-400 leading-relaxed">
+			  Punya pertanyaan seputar cara mengonfigurasi Firebase, bagaimana algoritma Google Search bekerja, atau ingin membandingkan fitur Google Drive vs Google Photos?
+			</p>
+			<p class="text-xs text-slate-400 leading-relaxed">
+			  Tanyakan apa saja kepada model AI Gemini 3.1 Flash yang siap merespons secara instan, detail, dan profesional untuk Anda.
+			</p>
+		  </div>
+
+		  <!-- Custom suggested queries -->
+		  <div class="space-y-2 mt-6">
+			<span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Saran Pertanyaan</span>
+			<div class="flex flex-col gap-2 text-xs">
+			  <button onclick="submitSuggestedQuery('Bagaimana model AI diintegrasikan ke Google Search masa kini?')" class="w-full text-left p-2.5 rounded-lg bg-slate-950/40 hover:bg-slate-800 border border-slate-800/80 hover:border-slate-700 text-slate-300 hover:text-white transition-all">
+				"Bagaimana model AI diintegrasikan ke Google Search?"
+			  </button>
+			  <button onclick="submitSuggestedQuery('Apa saja keunggulan utama ekosistem Firebase untuk web developer?')" class="w-full text-left p-2.5 rounded-lg bg-slate-950/40 hover:bg-slate-800 border border-slate-800/80 hover:border-slate-700 text-slate-300 hover:text-white transition-all">
+				"Apa saja keunggulan utama ekosistem Firebase?"
+			  </button>
+			</div>
+		  </div>
+		</div>
+
+		<!-- Chatbot UI Interface (Right Panel) -->
+		<div class="lg:col-span-7 bg-[#101625] border border-slate-800/80 rounded-3xl p-4 sm:p-6 flex flex-col justify-between h-[480px]">
+
+		  <!-- Chat Log area -->
+		  <div id="chat-log" class="flex-grow overflow-y-auto space-y-4 pr-2 text-xs">
+			<!-- Default Bot greeting -->
+			<div class="flex items-start gap-3">
+			  <div class="w-8 h-8 rounded-lg bg-google-blue flex items-center justify-center text-white shrink-0">
+				<i class="fa-solid fa-robot"></i>
+			  </div>
+			  <div class="p-3.5 rounded-2xl rounded-tl-none bg-slate-900 border border-slate-850 text-slate-300 leading-relaxed max-w-[85%]">
+				Halo! Saya adalah **Google Universe AI Assistant**. Ada yang bisa saya bantu atau jelaskan hari ini mengenai ekosistem dan produk-produk andalan dari Google?
+			  </div>
+			</div>
+		  </div>
+
+		  <!-- Interactive Chat Input area -->
+		  <div class="border-t border-slate-850 pt-4 mt-4 space-y-2">
+			<form onsubmit="handleChatSubmit(event)" class="relative flex items-center">
+			  <input type="text" id="chat-input" placeholder="Tanya seputar produk Google di sini..." class="w-full pl-4 pr-12 py-3 rounded-xl bg-slate-950/60 border border-slate-800/80 text-slate-200 text-xs focus:outline-none focus:border-google-blue focus:ring-2 focus:ring-google-blue/15 transition-all">
+			  <button type="submit" class="absolute right-2 p-2 rounded-lg bg-google-blue hover:bg-google-blue/80 text-white transition-all transform active:scale-95">
+				<i class="fa-solid fa-paper-plane text-xs"></i>
+			  </button>
+			</form>
+			<div class="flex justify-between items-center px-1 text-[10px] text-slate-500">
+			  <span>Model: gemini-3-flash-preview</span>
+			  <button onclick="clearChatLog()" class="hover:text-red-400 transition-colors">Hapus Percakapan</button>
+			</div>
+		  </div>
+
+		</div>
+	  </section>
+
+    </main>
+
+    <!-- FOOTER SECTION -->
+    <footer class="relative z-10 border-t border-slate-900/80 mt-16 bg-[#090c14]">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+		<div class="flex items-center gap-2">
+		  <span class="text-slate-500 text-xs">&copy; 2026 Google Universe Developer Portal. Hak Cipta Dilindungi.</span>
+		</div>
+		<div class="flex gap-4 text-xs text-slate-500">
+		  <a href="#" onclick="event.preventDefault(); showToast('Kebijakan Privasi tersinkronisasi.', 'info')" class="hover:text-google-blue transition-colors">Kebijakan Privasi</a>
+		  <span>&bull;</span>
+		  <a href="#" onclick="event.preventDefault(); showToast('Ketentuan Layanan dimuat.', 'info')" class="hover:text-google-blue transition-colors">Ketentuan Layanan</a>
+		</div>
+	  </div>
+    </footer>
+
+    <!-- CORE SYSTEM JAVASCRIPT -->
+<script>
+        // Array Data Google Products
+        const googleProducts = [
+            {
+                id: 'search',
+                name: 'Google Search',
+                icon: 'fa-magnifying-glass',
+                color: 'text-google-blue',
+                badge: 'bg-google-blue/10 border-google-blue/20 text-google-blue',
+                url: 'https://google.com',
+                desc: 'Mesin pencari terdepan di dunia yang menyajikan informasi secara instan dengan algoritma cerdas generative AI.'
+            },
+            {
+                id: 'drive',
+                name: 'Google Drive',
+                icon: 'fa-hard-drive',
+                color: 'text-google-green',
+                badge: 'bg-google-green/10 border-google-green/20 text-google-green',
+                url: 'https://drive.google.com',
+                desc: 'Layanan penyimpanan awan (cloud storage) terpadu untuk berkas dokumen, backup data instan, dan kolaborasi tim.'
+            },
+            {
+                id: 'gmail',
+                name: 'Gmail',
+                icon: 'fa-envelope',
+                color: 'text-google-red',
+                badge: 'bg-google-red/10 border-google-red/20 text-google-red',
+                url: 'https://mail.google.com',
+                desc: 'Penyedia layanan email terpopuler dengan filter spam mutakhir, integrasi kalender, dan fitur Smart Reply AI.'
+            },
+            {
+                id: 'youtube',
+                name: 'YouTube',
+                icon: 'fa-play',
+                color: 'text-red-500',
+                badge: 'bg-red-500/10 border-red-500/20 text-red-500',
+                url: 'https://youtube.com',
+                desc: 'Platform berbagi video global yang memfasilitasi jutaan kreator konten kreatif dan sistem penyiaran video pintar.'
+            },
+            {
+                id: 'maps',
+                name: 'Google Maps',
+                icon: 'fa-map-location-dot',
+                color: 'text-google-green',
+                badge: 'bg-google-green/10 border-google-green/20 text-google-green',
+                url: 'https://maps.google.com',
+                desc: 'Layanan pemetaan interaktif, navigasi real-time, pantauan kemacetan jalan raya, dan penelusuran lokasi bisnis.'
+            },
+            {
+                id: 'translate',
+                name: 'Google Translate',
+                icon: 'fa-language',
+                color: 'text-google-blue',
+                badge: 'bg-google-blue/10 border-google-blue/20 text-google-blue',
+                url: 'https://translate.google.com',
+                desc: 'Platform penerjemah bahasa berbasis kecerdasan buatan neural network untuk konversi teks, suara, dan gambar.'
+            },
+            {
+                id: 'play',
+                name: 'Google Play',
+                icon: 'fa-circle-play',
+                color: 'text-google-blue',
+                badge: 'bg-google-blue/10 border-google-blue/20 text-google-blue',
+                url: 'https://play.google.com',
+                desc: 'Toko aplikasi digital Android utama untuk mengunduh gim, aplikasi pendukung, film digital, dan buku digital.'
+            },
+            {
+                id: 'calendar',
+                name: 'Google Calendar',
+                icon: 'fa-calendar-days',
+                color: 'text-google-blue',
+                badge: 'bg-google-blue/10 border-google-blue/20 text-google-blue',
+                url: 'https://calendar.google.com',
+                desc: 'Sistem pengaturan jadwal, penanggalan, agenda rapat terintegrasi, dan pengingat waktu otomatis yang andal.'
+            },
+            {
+                id: 'photos',
+                name: 'Google Photos',
+                icon: 'fa-images',
+                color: 'text-google-yellow',
+                badge: 'bg-google-yellow/10 border-google-yellow/20 text-google-yellow',
+                url: 'https://photos.google.com',
+                desc: 'Galeri penyimpanan media foto dan video cerdas dengan fitur pencarian berbasis objek wajah dan lokasi.'
+            },
+            {
+                id: 'meet',
+                name: 'Google Meet',
+                icon: 'fa-video',
+                color: 'text-google-green',
+                badge: 'bg-google-green/10 border-google-green/20 text-google-green',
+                url: 'https://meet.google.com',
+                desc: 'Aplikasi video konferensi jarak jauh beresolusi tinggi dengan enkripsi end-to-end andal untuk keperluan bisnis.'
+            },
+            {
+                id: 'chrome',
+                name: 'Google Chrome',
+                icon: 'fa-chrome',
+                color: 'text-google-yellow',
+                badge: 'bg-google-yellow/10 border-google-yellow/20 text-google-yellow',
+                url: 'https://google.com/chrome',
+                desc: 'Peramban web tercepat dan paling efisien dengan ribuan ekstensi fungsional serta perlindungan keamanan real-time.'
+            },
+            {
+                id: 'gemini',
+                name: 'Gemini AI',
+                icon: 'fa-wand-magic-sparkles',
+                color: 'text-purple-400',
+                badge: 'bg-purple-500/10 border-purple-500/20 text-purple-400',
+                url: 'https://gemini.google.com',
+                desc: 'Asisten AI tercanggih buatan Google yang terintegrasi secara multimodal untuk membantu proses kreasi koding dan analisis data.'
+            }
+        ];
+
+        // Toggle state controls
+        let isLightMode = false;
+
+        // Custom toast feedback notification
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let icon = 'fa-circle-info';
+            let colorClasses = 'bg-slate-900 border-slate-800 text-slate-200';
+            
+            if (type === 'success') {
+                icon = 'fa-circle-check text-google-green';
+                colorClasses = 'bg-slate-900 border-google-green/30 text-emerald-300';
+            } else if (type === 'error') {
+                icon = 'fa-triangle-exclamation text-google-red';
+                colorClasses = 'bg-slate-900 border-google-red/30 text-red-300';
+            } else if (type === 'loading') {
+                icon = 'fa-spinner fa-spin text-google-blue';
+                colorClasses = 'bg-slate-900 border-google-blue/30 text-sky-300';
+            }
+
+            toast.className = `p-4 rounded-xl border flex items-center gap-3 shadow-2xl transition-all duration-300 transform translate-x-12 opacity-0 pointer-events-auto ${colorClasses}`;
+            toast.innerHTML = `
+                <div class="text-lg"><i class="fa-solid ${icon}"></i></div>
+                <div class="flex-1 text-xs font-semibold leading-relaxed">${message}</div>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-x-12', 'opacity-0');
+            }, 10);
+
+            const removeToast = () => {
+                toast.classList.add('translate-x-12', 'opacity-0');
+                setTimeout(() => { toast.remove(); }, 300);
+            };
+
+            if (type !== 'loading') {
+                setTimeout(removeToast, 4000);
+            }
+
+            return {
+                close: removeToast,
+                update: (newMsg, newType) => {
+                    let newIcon = 'fa-circle-info';
+                    if (newType === 'success') newIcon = 'fa-circle-check text-google-green';
+                    if (newType === 'error') newIcon = 'fa-triangle-exclamation text-google-red';
+                    
+                    toast.querySelector('.fa-solid').className = `fa-solid ${newIcon}`;
+                    toast.querySelector('.flex-1').innerText = newMsg;
+                    setTimeout(removeToast, 4000);
+                }
+            };
+        }
+
+        // Initialize Google products grid list inside Waffle dialog
+        function initProductGrid() {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+            
+            googleProducts.forEach(prod => {
+                const item = document.createElement('div');
+                item.className = 'p-4 rounded-2xl bg-slate-950/40 border border-slate-850 hover:bg-slate-900 hover:border-slate-700 transition-all cursor-pointer flex flex-col items-center justify-center text-center group active:scale-95';
+                item.onclick = () => selectProductSpotlight(prod);
+                item.innerHTML = `
+                    <div class="w-12 h-12 rounded-xl bg-slate-900 group-hover:bg-slate-800 transition-colors flex items-center justify-center mb-3">
+                        <i class="fa-solid ${prod.icon} text-2xl ${prod.color}"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-200 group-hover:text-google-blue transition-colors">${prod.name}</span>
+                `;
+                grid.appendChild(item);
+            });
+        }
+
+        // Control Waffle dialog display
+        function toggleWaffleDialog(show) {
+            const dialog = document.getElementById('waffle-dialog');
+            if (show) {
+                dialog.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                dialog.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Control options menu dropdown
+        function toggleOptionsMenu() {
+            const dropdown = document.getElementById('options-dropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        // Control user profile menu dropdown
+        function toggleProfileMenu() {
+            const dropdown = document.getElementById('profile-dropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        // Light/Dark Theme Switcher
+        function toggleTheme() {
+            const htmlEl = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            isLightMode = !isLightMode;
+            
+            if (isLightMode) {
+                htmlEl.classList.remove('dark');
+                htmlEl.classList.add('light');
+                icon.className = 'fa-solid fa-moon text-lg text-slate-800';
+                showToast('Tema Terang Diaktifkan', 'info');
+            } else {
+                htmlEl.classList.remove('light');
+                htmlEl.classList.add('dark');
+                icon.className = 'fa-solid fa-sun text-lg text-google-yellow';
+                showToast('Tema Gelap Diaktifkan', 'info');
+            }
+        }
+
+        // Highlight selected Google Product into Spotlight Panel
+        function selectProductSpotlight(prod) {
+            const spotlightPanel = document.getElementById('spotlight-panel');
+            const spotlightContent = document.getElementById('spotlight-content');
+            
+            // Animation flash effect
+            spotlightPanel.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                spotlightContent.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-2xl">
+                            <i class="fa-solid ${prod.icon} ${prod.color}"></i>
+                        </div>
+                        <div>
+                            <span class="px-2 py-0.5 rounded text-[9px] font-bold ${prod.badge} uppercase tracking-wider">Terintegrasi</span>
+                            <h4 class="font-display font-bold text-lg text-white mt-0.5">${prod.name}</h4>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed">${prod.desc}</p>
+                    <div class="flex items-center gap-2 pt-2">
+                        <a href="${prod.url}" target="_blank" class="py-2 px-3 rounded-lg bg-google-blue hover:bg-google-blue/80 text-white text-[11px] font-bold transition-all flex items-center gap-1.5">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Kunjungi Situs
+                        </a>
+                        <button onclick="requestAiExplain('${prod.name}')" class="py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-750 text-slate-200 text-[11px] font-bold border border-slate-700/60 transition-all flex items-center gap-1.5">
+                            <i class="fa-solid fa-wand-magic-sparkles text-google-yellow"></i> Minta AI Jelaskan
+                        </button>
+                    </div>
+                `;
+                spotlightPanel.classList.remove('scale-95', 'opacity-0');
+                spotlightPanel.classList.add('scale-100', 'opacity-100');
+            }, 300);
+
+            toggleWaffleDialog(false);
+            showToast(`${prod.name} berhasil dimuat di Spotlight!`, 'success');
+        }
+
+        // Filter articles on display based on category
+        function filterArticles(category) {
+            const cards = document.querySelectorAll('.article-card');
+            const btns = document.querySelectorAll('.article-filter-btn');
+            
+            // Active state handling for filtering buttons
+            btns.forEach(btn => {
+                if (btn.innerText.toLowerCase().includes(category) || (category === 'all' && btn.innerText.toLowerCase().includes('semua'))) {
+                    btn.className = "article-filter-btn px-4 py-1.5 rounded-full bg-google-blue text-white text-xs font-medium transition-all";
+                } else {
+                    btn.className = "article-filter-btn px-4 py-1.5 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 text-xs font-medium transition-all";
+                }
+            });
+
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // Global search filtering mechanism
+        function handleSearch(val) {
+            const searchVal = val.toLowerCase().trim();
+            const articles = document.querySelectorAll('.article-card');
+            
+            articles.forEach(art => {
+                const title = art.querySelector('h3').innerText.toLowerCase();
+                const desc = art.querySelector('p').innerText.toLowerCase();
+                
+                if (title.includes(searchVal) || desc.includes(searchVal)) {
+                    art.classList.remove('hidden');
+                } else {
+                    art.classList.add('hidden');
+                }
+            });
+        }
+
+        // Utility to scroll window to top smoothly
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Close dropdowns when clicking outside
+        window.addEventListener('click', function(e) {
+            const optionsDropdown = document.getElementById('options-dropdown');
+            const optionsBtn = document.getElementById('options-btn');
+            if (optionsDropdown && !optionsDropdown.contains(e.target) && e.target !== optionsBtn && !optionsBtn.contains(e.target)) {
+                optionsDropdown.classList.add('hidden');
+            }
+            
+            const profileDropdown = document.getElementById('profile-dropdown');
+            const profileBtn = document.querySelector('header button[onclick="toggleProfileMenu()"]');
+            if (profileDropdown && !profileDropdown.contains(e.target) && e.target !== profileBtn && !profileBtn.contains(e.target)) {
+                profileDropdown.classList.add('hidden');
+            }
+        });
+
+        // INTEGRATIVE GEMINI API HANDLERS
+
+        // Clear chat area
+        function clearChatLog() {
+            const log = document.getElementById('chat-log');
+            log.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-google-blue flex items-center justify-center text-white shrink-0">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="p-3.5 rounded-2xl rounded-tl-none bg-slate-900 border border-slate-850 text-slate-300 leading-relaxed max-w-[85%]">
+                        Log percakapan berhasil dibersihkan. Ajukan pertanyaan seputar produk Google baru di sini!
+                    </div>
+                </div>
+            `;
+            showToast('Riwayat percakapan dihapus.', 'info');
+        }
+
+        // Render standard bubble in chatbot view
+        function appendChatMessage(sender, text) {
+            const log = document.getElementById('chat-log');
+            const item = document.createElement('div');
+            
+            if (sender === 'user') {
+                item.className = 'flex items-start gap-3 justify-end';
+                item.innerHTML = `
+                    <div class="p-3.5 rounded-2xl rounded-tr-none bg-google-blue/15 border border-google-blue/20 text-slate-200 leading-relaxed max-w-[85%]">
+                        ${text}
+                    </div>
+                    <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-300 shrink-0">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                `;
+            } else {
+                item.className = 'flex items-start gap-3';
+                item.innerHTML = `
+                    <div class="w-8 h-8 rounded-lg bg-google-blue flex items-center justify-center text-white shrink-0">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="p-3.5 rounded-2xl rounded-tl-none bg-slate-900 border border-slate-850 text-slate-300 leading-relaxed max-w-[85%] whitespace-pre-line">
+                        ${text}
+                    </div>
+                `;
+            }
+            log.appendChild(item);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        // Submit automated/suggested queries from dashboard
+        function submitSuggestedQuery(queryText) {
+            document.getElementById('chat-input').value = queryText;
+            document.querySelector('#ai-assistant-section form').dispatchEvent(new Event('submit'));
+        }
+
+        // Submits prompt directly to Gemini AI API via Canvas Free-Tier pipeline
+        async function fetchGeminiChatResponse(promptText) {
+            appendChatMessage('bot', `<div class="space-y-2 py-1"><div class="h-3.5 shimmer rounded w-3/4"></div><div class="h-3.5 shimmer rounded w-full"></div></div>`);
+            
+            // Reference the latest model and endpoint configured in the environment
+            const apiKey = "AQ.Ab8RN6LjzSUEnaAFrR-WR3yfMpo1gWyZ5iCZaGqham0Ol0GTfQ";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: promptText }] }],
+                systemInstruction: {
+                    parts: [{ text: "Anda adalah Asisten Pakar Google Universe (Google Products Specialist). Jawablah pertanyaan pengguna secara cerdas, ramah, dan solutif. Batasi tanggapan Anda maksimal 3 paragraf, terstruktur rapi dengan poin, dan fokus pada kelebihan teknis produk Google yang dibahas." }]
+                }
+            };
+
+            try {
+                let response = null;
+                let delay = 1000;
+                
+                // Exponential Backoff handling
+                for (let i = 0; i < 3; i++) {
+                    try {
+                        response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        if (response.ok) break;
+                    } catch (e) {
+                        if (i === 2) throw e;
+                    }
+                    await new Promise(r => setTimeout(r, delay));
+                    delay *= 2;
+                }
+
+                if (!response || !response.ok) {
+                    throw new Error("Layanan AI Gemini tidak menanggapi.");
+                }
+
+                const result = await response.json();
+                const replyText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                
+                // Remove loading bubble
+                const logs = document.getElementById('chat-log');
+                logs.removeChild(logs.lastChild);
+
+                if (replyText) {
+                    appendChatMessage('bot', replyText);
+                } else {
+                    appendChatMessage('bot', "Maaf, AI gagal menyusun respons yang valid.");
+                }
+            } catch (err) {
+                console.error(err);
+                const logs = document.getElementById('chat-log');
+                logs.removeChild(logs.lastChild);
+                appendChatMessage('bot', "Maaf, saat ini koneksi ke layanan AI sedang bermasalah. Pastikan integrasi internet berjalan lancar.");
+            }
+        }
+
+        // Form submit listener for Chat Bot UI
+        window.handleChatSubmit = function(event) {
+            event.preventDefault();
+            const input = document.getElementById('chat-input');
+            const prompt = input.value.trim();
+            if (!prompt) return;
+
+            appendChatMessage('user', prompt);
+            input.value = '';
+            fetchGeminiChatResponse(prompt);
+        };
+
+        // Quick explain action on clicking card links
+        window.requestAiExplain = function(topic) {
+            const assistantSection = document.getElementById('ai-assistant-section');
+            assistantSection.scrollIntoView({ behavior: 'smooth' });
+            
+            showToast(`Mengajukan analisis tentang "${topic}" ke AI...`, 'info');
+            appendChatMessage('user', `Tolong jelaskan secara mendalam tentang teknologi dan kegunaan dari: ${topic}.`);
+            fetchGeminiChatResponse(`Tolong jelaskan secara mendalam tentang teknologi dan kegunaan dari: ${topic}.`);
+        };
+
+        // Page Init Load
+        window.onload = function() {
+            initProductGrid();
+            // Load spotlight with Google Search by default
+            selectProductSpotlight(googleProducts[0]);
+        };
+</script>
+  </body>
+</html>

@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TailwindMaster - Keren & Elegan</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Custom Tailwind Config -->
+<script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+</script>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Hide scrollbar for drawer but keep functionality */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Fade in animation */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+</style>
+  </head>
+  <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none z-[100] flex items-center gap-2">
+	  <i class="ph ph-info text-xl text-brand-500"></i>
+	  <span id="toastMessage">Pesan</span>
+    </div>
+
+    <!-- Toolbar (Header) -->
+    <header class="sticky top-0 z-40 w-full backdrop-blur-md bg-white/80 border-b border-slate-200/50 shadow-sm transition-all">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="flex items-center justify-between h-16">
+		  <!-- Left: Drawer Toggle & Title -->
+		  <div class="flex items-center gap-4">
+			<button onclick="toggleDrawer()" class="p-2 rounded-xl hover:bg-slate-100 text-slate-600 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500">
+			  <i class="ph ph-list text-2xl"></i>
+			</button>
+			<a href="#" onclick="navigate('home')" class="flex items-center gap-2 group">
+			  <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white shadow-md group-hover:shadow-lg transition-all">
+				<i class="ph-bold ph-wind text-xl"></i>
+			  </div>
+			  <span class="font-bold text-xl tracking-tight text-slate-900">Tailwind<span class="text-brand-600">Master</span></span>
+			</a>
+		  </div>
+
+		  <!-- Right: Icons & Options -->
+		  <div class="flex items-center gap-2 sm:gap-4">
+			<!-- YouTube Icon Menu -->
+			<button onclick="navigate('youtube')" class="p-2 rounded-xl hover:bg-red-50 text-slate-600 hover:text-red-600 transition-colors tooltip group relative">
+			  <i class="ph-fill ph-youtube-logo text-2xl"></i>
+			</button>
+
+			<!-- Options Menu -->
+			<div class="relative">
+			  <button onclick="toggleOptions()" class="p-2 rounded-xl hover:bg-slate-100 text-slate-600 transition-colors">
+				<i class="ph ph-dots-three-vertical text-2xl"></i>
+			  </button>
+
+			  <!-- Options Dropdown -->
+			  <div id="optionsMenu" class="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 hidden z-50 transform origin-top-right transition-all">
+				<div class="px-4 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Opsi Utama</div>
+				<a href="#" onclick="navigate('editor')" class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 hover:text-brand-600 transition-colors">
+				  <i class="ph ph-code text-lg"></i> Editor
+				</a>
+				<a href="#" onclick="navigate('gallery')" class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 hover:text-brand-600 transition-colors">
+				  <i class="ph ph-layout text-lg"></i> Template
+				</a>
+				<div class="h-px bg-slate-100 my-1"></div>
+				<a href="#" onclick="navigate('settings')" class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 hover:text-brand-600 transition-colors">
+				  <i class="ph ph-gear text-lg"></i> Settings
+				</a>
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  </div>
+    </header>
+
+    <!-- Drawer Overlay -->
+    <div id="drawerOverlay" onclick="toggleDrawer()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300"></div>
+
+    <!-- Drawer Menu -->
+    <aside id="drawer" class="fixed inset-y-0 left-0 w-80 bg-white z-50 transform -translate-x-full transition-transform duration-300 shadow-2xl flex flex-col">
+	  <!-- Drawer Header -->
+	  <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+		<div class="flex items-center gap-3">
+		  <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white shadow-md">
+			<i class="ph-bold ph-wind text-2xl"></i>
+		  </div>
+		  <div>
+			<h2 class="font-bold text-lg text-slate-900 leading-tight">TailwindMaster</h2>
+			<p class="text-xs text-slate-500">Keren & Elegan</p>
+		  </div>
+		</div>
+		<button onclick="toggleDrawer()" class="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition-colors">
+		  <i class="ph ph-x text-xl"></i>
+		</button>
+	  </div>
+
+	  <!-- Drawer Navigation -->
+	  <nav class="flex-1 overflow-y-auto py-4 px-3 no-scrollbar space-y-1">
+		<a href="#" onclick="navigate('home')" class="drawer-link flex items-center gap-4 px-4 py-3 text-slate-700 rounded-xl hover:bg-brand-50 hover:text-brand-600 transition-all font-medium">
+		  <i class="ph ph-house text-xl"></i> Home
+		</a>
+		<a href="#" onclick="navigate('about')" class="drawer-link flex items-center gap-4 px-4 py-3 text-slate-700 rounded-xl hover:bg-brand-50 hover:text-brand-600 transition-all font-medium">
+		  <i class="ph ph-info text-xl"></i> About
+		</a>
+		<a href="#" onclick="navigate('gallery')" class="drawer-link flex items-center gap-4 px-4 py-3 text-slate-700 rounded-xl hover:bg-brand-50 hover:text-brand-600 transition-all font-medium">
+		  <i class="ph ph-images text-xl"></i> Gallery
+		</a>
+		<a href="#" onclick="navigate('service')" class="drawer-link flex items-center gap-4 px-4 py-3 text-slate-700 rounded-xl hover:bg-brand-50 hover:text-brand-600 transition-all font-medium">
+		  <i class="ph ph-briefcase text-xl"></i> Service
+		</a>
+		<a href="#" onclick="navigate('article')" class="drawer-link flex items-center gap-4 px-4 py-3 text-slate-700 rounded-xl hover:bg-brand-50 hover:text-brand-600 transition-all font-medium">
+		  <i class="ph ph-article text-xl"></i> Article
+		</a>
+		<a href="#" onclick="navigate('contact')" class="drawer-link flex items-center gap-4 px-4 py-3 text-slate-700 rounded-xl hover:bg-brand-50 hover:text-brand-600 transition-all font-medium">
+		  <i class="ph ph-envelope-simple text-xl"></i> Contact
+		</a>
+	  </nav>
+
+	  <!-- Drawer Footer -->
+	  <div class="p-6 border-t border-slate-100 bg-slate-50 mt-auto">
+		<div class="flex items-center justify-center gap-4 mb-4 text-slate-400">
+		  <a href="#" class="hover:text-brand-500 transition-colors"><i class="ph-fill ph-facebook-logo text-2xl"></i></a>
+		  <a href="#" class="hover:text-sky-500 transition-colors"><i class="ph-fill ph-twitter-logo text-2xl"></i></a>
+		  <a href="#" class="hover:text-pink-600 transition-colors"><i class="ph-fill ph-instagram-logo text-2xl"></i></a>
+		  <a href="#" class="hover:text-slate-900 transition-colors"><i class="ph-fill ph-github-logo text-2xl"></i></a>
+		</div>
+		<p class="text-center text-xs text-slate-500">&copy; 2026 TailwindMaster.<br>Dibuat dengan Elegan.</p>
+	  </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main id="app-content" class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 fade-in">
+	  <!-- Content will be injected here by JS -->
+    </main>
+
+<script>
+        // --- State Management ---
+        let isDrawerOpen = false;
+        let isOptionsOpen = false;
+
+        // --- Data Mockups ---
+        const articles = [
+            { id: 1, title: "Memahami Utility-First CSS", desc: "Pelajari mengapa pendekatan utility-first pada Tailwind CSS merevolusi cara kita mendesain web.", img: "https://placehold.co/600x400/4f46e5/ffffff?text=Utility-First" },
+            { id: 2, title: "Membuat Dark Mode Elegan", desc: "Panduan lengkap mengimplementasikan dark mode yang indah menggunakan fitur bawaan Tailwind.", img: "https://placehold.co/600x400/1e293b/ffffff?text=Dark+Mode" },
+            { id: 3, title: "Desain Responsif Sempurna", desc: "Kuasai breakpoint Tailwind untuk membuat layout yang terlihat memukau di semua perangkat.", img: "https://placehold.co/600x400/0ea5e9/ffffff?text=Responsive" },
+        ];
+
+        const templates = [
+            { title: "SaaS Dashboard Pro", img: "https://placehold.co/800x600/f8fafc/64748b?text=SaaS+Dashboard" },
+            { title: "E-Commerce Storefront", img: "https://placehold.co/800x600/f8fafc/64748b?text=E-Commerce" },
+            { title: "Portfolio Minimalis", img: "https://placehold.co/800x600/f8fafc/64748b?text=Portfolio" },
+            { title: "Blog Elegan", img: "https://placehold.co/800x600/f8fafc/64748b?text=Blog+Template" },
+        ];
+
+        const videos = [
+            { title: "Tailwind CSS Crash Course", id: "1" },
+            { title: "Membangun Navbar Keren", id: "2" },
+            { title: "Animasi dengan Tailwind", id: "3" },
+        ];
+
+        // --- UI Functions ---
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').innerText = message;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            toast.classList.add('opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        function toggleDrawer() {
+            const drawer = document.getElementById('drawer');
+            const overlay = document.getElementById('drawerOverlay');
+            isDrawerOpen = !isDrawerOpen;
+
+            if (isDrawerOpen) {
+                drawer.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+                document.body.style.overflow = 'hidden';
+            } else {
+                drawer.classList.add('-translate-x-full');
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        function toggleOptions() {
+            const menu = document.getElementById('optionsMenu');
+            isOptionsOpen = !isOptionsOpen;
+            if (isOptionsOpen) {
+                menu.classList.remove('hidden');
+            } else {
+                menu.classList.add('hidden');
+            }
+        }
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', function(e) {
+            if (!document.getElementById('optionsMenu').contains(e.target) && !e.target.closest('button[onclick="toggleOptions()"]')) {
+                if (isOptionsOpen) {
+                    toggleOptions();
+                }
+            }
+        });
+
+        function copyText(text) {
+            // Menggunakan execCommand sebagai alternatif untuk iFrame yang menyekat Clipboard API
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast('Teks disalin ke clipboard!');
+            } catch (err) {
+                showToast('Gagal menyalin teks.');
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // --- Page Templates ---
+        const pageContent = {
+            home: `
+                <div class="fade-in">
+                    <!-- Breadcrumb -->
+                    <nav class="flex text-sm text-slate-500 mb-8" aria-label="Breadcrumb">
+                      <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                        <li class="inline-flex items-center text-brand-600 font-medium bg-brand-50 px-3 py-1 rounded-full">
+                          <i class="ph ph-house mr-2"></i> Home
+                        </li>
+                      </ol>
+                    </nav>
+
+                    <!-- Hero Section -->
+                    <div class="bg-white rounded-3xl p-8 sm:p-12 shadow-sm border border-slate-100 mb-12 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 -mt-16 -mr-16 w-64 h-64 bg-brand-100 rounded-full blur-3xl opacity-50"></div>
+                        <div class="relative z-10 max-w-2xl">
+                            <h1 class="text-4xl sm:text-5xl font-bold text-slate-900 tracking-tight mb-4">Selamat Datang di <span class="text-brand-600">TailwindMaster</span></h1>
+                            <p class="text-lg text-slate-600 mb-8 leading-relaxed">Platform elegan untuk mempelajari, membangun, dan membagikan arsitektur web modern menggunakan Tailwind CSS.</p>
+                            <button onclick="navigate('gallery')" class="bg-brand-600 hover:bg-brand-700 text-white px-6 py-3 rounded-xl font-medium transition-all shadow-lg shadow-brand-500/30 flex items-center gap-2">
+                                <i class="ph ph-rocket-launch text-xl"></i> Mulai Eksplorasi
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Articles Grid -->
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold text-slate-900">Artikel Pilihan</h2>
+                        <a href="#" onclick="navigate('article')" class="text-sm font-medium text-brand-600 hover:text-brand-700">Lihat Semua &rarr;</a>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        ${articles.map(art => `
+                            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                                <img src="${art.img}" alt="${art.title}" class="w-full h-48 object-cover">
+                                <div class="p-6">
+                                    <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-brand-600 transition-colors">${art.title}</h3>
+                                    <p class="text-slate-500 mb-4 line-clamp-2">${art.desc}</p>
+                                    <button onclick="showToast('Membagikan artikel ke sosial media...')" class="flex items-center gap-2 text-sm font-medium text-brand-600 bg-brand-50 px-4 py-2 rounded-lg hover:bg-brand-100 transition-colors w-max">
+                                        <i class="ph ph-share-network text-lg"></i> Bagikan
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `,
+            about: `
+                <div class="fade-in max-w-4xl mx-auto">
+                    <!-- Breadcrumb -->
+                    <nav class="flex text-sm text-slate-500 mb-8" aria-label="Breadcrumb">
+                      <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                        <li><a href="#" onclick="navigate('home')" class="hover:text-brand-600 transition-colors">Home</a></li>
+                        <li><span class="mx-2">/</span></li>
+                        <li class="inline-flex items-center text-brand-600 font-medium bg-brand-50 px-3 py-1 rounded-full">
+                          <i class="ph ph-info mr-2"></i> About
+                        </li>
+                      </ol>
+                    </nav>
+
+                    <div class="bg-white rounded-3xl p-8 sm:p-12 shadow-sm border border-slate-100">
+                        <h1 class="text-3xl font-bold text-slate-900 mb-6">Tentang <span class="text-brand-600">Tailwind CSS</span></h1>
+                        <div class="prose prose-slate max-w-none text-slate-600 mb-12 space-y-4">
+                            <p class="text-lg leading-relaxed">Tailwind CSS adalah kerangka kerja CSS yang mengutamakan utilitas (utility-first) yang diisi dengan kelas-kelas seperti <code>flex</code>, <code>pt-4</code>, <code>text-center</code> dan <code>rotate-90</code> yang dapat dikomposisikan untuk membangun desain apa pun, langsung di markup Anda.</p>
+                            <p class="text-lg leading-relaxed">Alih-alih menulis CSS khusus, Anda menerapkan kelas utilitas pra-ada secara langsung ke elemen HTML Anda. Pendekatan ini secara drastis mempercepat proses pengembangan dan menjaga ukuran file CSS Anda tetap kecil.</p>
+                            
+                            <div class="my-8 p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                                <h3 class="text-lg font-bold text-slate-900 mb-4">Mengapa memilih Tailwind?</h3>
+                                <ul class="space-y-3">
+                                    <li class="flex items-center gap-3"><i class="ph-fill ph-check-circle text-brand-500 text-xl"></i> Pembangunan lebih cepat.</li>
+                                    <li class="flex items-center gap-3"><i class="ph-fill ph-check-circle text-brand-500 text-xl"></i> Tidak perlu mencari nama class (BEM, dll).</li>
+                                    <li class="flex items-center gap-3"><i class="ph-fill ph-check-circle text-brand-500 text-xl"></i> Desain responsif menjadi mudah.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h2 class="text-2xl font-bold text-slate-900 mb-6 border-t border-slate-100 pt-8">Artikel Terkait</h2>
+                        <ul class="space-y-4">
+                            ${articles.map(art => `
+                                <li>
+                                    <a href="#" onclick="showToast('Membuka artikel...')" class="flex items-center p-4 bg-slate-50 rounded-xl hover:bg-brand-50 hover:text-brand-600 transition-colors border border-slate-100 group">
+                                        <i class="ph ph-file-text text-2xl text-slate-400 group-hover:text-brand-500 mr-4"></i>
+                                        <div>
+                                            <h4 class="font-semibold text-slate-900 group-hover:text-brand-600">${art.title}</h4>
+                                            <p class="text-sm text-slate-500 line-clamp-1">${art.desc}</p>
+                                        </div>
+                                    </a>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `,
+            gallery: `
+                <div class="fade-in">
+                    <div class="text-center mb-12">
+                        <h1 class="text-4xl font-bold text-slate-900 mb-4">Galeri Template</h1>
+                        <p class="text-lg text-slate-600 max-w-2xl mx-auto">Kumpulan contoh website dan komponen yang dibangun murni menggunakan Tailwind CSS. Siap untuk diunduh dan digunakan pada proyek Anda.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-8">
+                        ${templates.map(tpl => `
+                            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden group">
+                                <div class="relative overflow-hidden">
+                                    <img src="${tpl.img}" alt="${tpl.title}" class="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105">
+                                    <div class="absolute inset-0 bg-slate-900/10 group-hover:bg-transparent transition-colors duration-300"></div>
+                                </div>
+                                <div class="p-6 flex items-center justify-between">
+                                    <h3 class="text-xl font-bold text-slate-900">${tpl.title}</h3>
+                                    <button onclick="showToast('Mengunduh template ${tpl.title}...')" class="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-xl font-medium transition-all shadow-md">
+                                        <i class="ph ph-download-simple text-lg"></i> Download
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `,
+            service: `
+                <div class="fade-in">
+                    <div class="text-center mb-16">
+                        <h1 class="text-4xl font-bold text-slate-900 mb-4">Fitur Tailwind CSS</h1>
+                        <p class="text-lg text-slate-600 max-w-2xl mx-auto">Mengapa framework ini menjadi standar industri untuk modern web development.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Feature 1 -->
+                        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl transition-all group">
+                            <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                <i class="ph ph-lightning"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-3">Utility-First</h3>
+                            <p class="text-slate-600 leading-relaxed">Bangun desain yang kompleks tanpa meninggalkan HTML Anda. Ratusan kelas utilitas tingkat rendah.</p>
+                        </div>
+                        <!-- Feature 2 -->
+                        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl transition-all group">
+                            <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                                <i class="ph ph-devices"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-3">Responsive Design</h3>
+                            <p class="text-slate-600 leading-relaxed">Setiap utilitas kelas dapat diterapkan pada breakpoint tertentu. Membangun desain responsif sangat mudah.</p>
+                        </div>
+                        <!-- Feature 3 -->
+                        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl transition-all group">
+                            <div class="w-14 h-14 bg-slate-100 text-slate-900 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-slate-900 group-hover:text-white transition-colors">
+                                <i class="ph ph-moon"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-3">Dark Mode</h3>
+                            <p class="text-slate-600 leading-relaxed">Mendukung dark mode secara native. Hanya tambahkan prefix 'dark:' untuk mengubah styling pada mode gelap.</p>
+                        </div>
+                        <!-- Feature 4 -->
+                        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl transition-all group">
+                            <div class="w-14 h-14 bg-pink-50 text-pink-600 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-pink-600 group-hover:text-white transition-colors">
+                                <i class="ph ph-palette"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-3">Kustomisasi Mudah</h3>
+                            <p class="text-slate-600 leading-relaxed">File tailwind.config.js memungkinkan Anda mendefinisikan warna, font, breakpoint sesuai brand Anda.</p>
+                        </div>
+                         <!-- Feature 5 -->
+                        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl transition-all group">
+                            <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                                <i class="ph ph-rocket"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-3">Ukuran File Kecil</h3>
+                            <p class="text-slate-600 leading-relaxed">PurgeCSS otomatis menghapus kelas yang tidak digunakan, menghasilkan ukuran CSS production yang sangat kecil.</p>
+                        </div>
+                         <!-- Feature 6 -->
+                        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl transition-all group">
+                            <div class="w-14 h-14 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-orange-600 group-hover:text-white transition-colors">
+                                <i class="ph ph-puzzle-piece"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-3">Komponen Ekosistem</h3>
+                            <p class="text-slate-600 leading-relaxed">Dukungan luas dari komunitas dengan ribuan komponen gratis maupun premium siap pakai.</p>
+                        </div>
+                    </div>
+                </div>
+            `,
+            article: `
+                <div class="fade-in max-w-5xl mx-auto">
+                    <h1 class="text-4xl font-bold text-slate-900 mb-10 text-center">Artikel <span class="text-brand-600">TailwindCSS</span></h1>
+                    
+                    <div class="space-y-6">
+                        ${articles.concat(articles).map((art, index) => `
+                            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 flex flex-col md:flex-row gap-6 hover:shadow-md transition-shadow">
+                                <img src="${art.img}" alt="${art.title}" class="w-full md:w-64 h-48 md:h-auto object-cover rounded-xl">
+                                <div class="flex-1 flex flex-col justify-center">
+                                    <div class="text-xs font-semibold text-brand-600 tracking-wider uppercase mb-2">TUTORIAL</div>
+                                    <h3 class="text-2xl font-bold text-slate-900 mb-3 hover:text-brand-600 transition-colors cursor-pointer">${art.title}</h3>
+                                    <p class="text-slate-600 mb-6 leading-relaxed">${art.desc} Baca selengkapnya untuk menguasai teknik terbaru dalam pengembangan antarmuka modern.</p>
+                                    <div class="flex items-center gap-4 mt-auto">
+                                        <button onclick="showToast('Membaca artikel...')" class="text-brand-600 font-medium hover:text-brand-700 bg-brand-50 px-4 py-2 rounded-lg transition-colors">Baca Artikel</button>
+                                        <button onclick="showToast('Link artikel dibagikan ke Media Sosial!')" class="text-slate-500 hover:text-brand-600 p-2 rounded-lg hover:bg-slate-50 transition-colors tooltip relative" title="Bagikan">
+                                            <i class="ph ph-share-network text-xl"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `,
+            contact: `
+                <div class="fade-in max-w-4xl mx-auto">
+                    <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/40 border border-slate-100 overflow-hidden flex flex-col md:flex-row">
+                        <!-- Contact Info Section -->
+                        <div class="bg-slate-900 text-white p-10 md:w-2/5 flex flex-col justify-between relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                            <div class="relative z-10">
+                                <h2 class="text-3xl font-bold mb-4">Hubungi Kami</h2>
+                                <p class="text-slate-400 mb-10 leading-relaxed">Punya pertanyaan seputar Tailwind atau ingin berkolaborasi? Kirimkan pesan kepada kami.</p>
+                                
+                                <div class="space-y-6">
+                                    <div class="flex items-start gap-4">
+                                        <i class="ph ph-map-pin text-2xl text-brand-400"></i>
+                                        <p class="text-slate-300">Jakarta Selatan, Jakarta, Indonesia</p>
+                                    </div>
+                                    <div class="flex items-center gap-4">
+                                        <i class="ph ph-phone text-2xl text-brand-400"></i>
+                                        <p class="text-slate-300">+62 812-3456-7890</p>
+                                    </div>
+                                    <div class="flex items-center gap-4">
+                                        <i class="ph ph-envelope-simple text-2xl text-brand-400"></i>
+                                        <p class="text-slate-300">hello@tailwindmaster.com</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Social Media Links -->
+                            <div class="mt-12 flex gap-4 relative z-10">
+                                <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-500 transition-colors"><i class="ph-fill ph-twitter-logo text-xl"></i></a>
+                                <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-500 transition-colors"><i class="ph-fill ph-instagram-logo text-xl"></i></a>
+                                <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-500 transition-colors"><i class="ph-fill ph-youtube-logo text-xl"></i></a>
+                            </div>
+                        </div>
+
+                        <!-- Form Section -->
+                        <div class="p-10 md:w-3/5 bg-white">
+                            <form onsubmit="event.preventDefault(); showToast('Pesan berhasil dikirim via Email!');" class="space-y-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Nama Lengkap</label>
+                                    <input type="text" required class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all" placeholder="John Doe">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Alamat Email</label>
+                                    <input type="email" required class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all" placeholder="john@example.com">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-2">Pesan</label>
+                                    <textarea required rows="4" class="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all resize-none" placeholder="Tuliskan pesan Anda di sini..."></textarea>
+                                </div>
+                                <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md shadow-brand-500/30 transition-all">
+                                    Kirim Pesan
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            `,
+            editor: `
+                <div class="fade-in max-w-6xl mx-auto h-[80vh] flex flex-col">
+                    <!-- Editor Navigation Bar -->
+                    <div class="bg-slate-900 rounded-t-2xl p-4 flex flex-col sm:flex-row items-center justify-between border-b border-slate-800 gap-4">
+                        <!-- Tabs -->
+                        <div class="flex bg-slate-800 p-1 rounded-xl">
+                            <button id="btn-edit" onclick="switchEditorTab('edit')" class="px-6 py-2 rounded-lg bg-slate-700 text-white font-medium text-sm transition-all shadow-sm">
+                                <i class="ph ph-code mr-2"></i> Edit
+                            </button>
+                            <button id="btn-preview" onclick="switchEditorTab('preview')" class="px-6 py-2 rounded-lg text-slate-400 hover:text-white font-medium text-sm transition-all">
+                                <i class="ph ph-eye mr-2"></i> Preview
+                            </button>
+                        </div>
+                        
+                        <!-- Icon Menu -->
+                        <div class="flex items-center gap-2">
+                            <button onclick="showToast('Mengunduh kode...')" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors tooltip" title="Download">
+                                <i class="ph ph-download-simple text-xl"></i>
+                            </button>
+                            <button onclick="copyText(document.getElementById('editor-textarea').value)" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors tooltip" title="Copy">
+                                <i class="ph ph-copy text-xl"></i>
+                            </button>
+                            <button onclick="showToast('Membagikan potongan kode...')" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors tooltip" title="Share">
+                                <i class="ph ph-share-network text-xl"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Editor Workspace -->
+                    <div class="flex-1 bg-white border-x border-b border-slate-200 rounded-b-2xl overflow-hidden relative shadow-sm">
+                        
+                        <!-- Edit View -->
+                        <div id="view-edit" class="absolute inset-0 w-full h-full">
+                            <textarea id="editor-textarea" class="w-full h-full p-6 bg-slate-50 text-slate-800 font-mono text-sm focus:outline-none resize-none no-scrollbar" spellcheck="false">&lt;div class="p-8 max-w-md mx-auto bg-white rounded-xl shadow-md space-y-4"&gt;
+  &lt;h1 class="text-2xl font-bold text-slate-900"&gt;Halo Dunia!&lt;/h1&gt;
+  &lt;p class="text-slate-500"&gt;Ini adalah editor Tailwind CSS sederhana. Coba ubah kode ini dan lihat hasilnya di tab Preview.&lt;/p&gt;
+  &lt;button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"&gt;Klik Saya&lt;/button&gt;
+&lt;/div&gt;</textarea>
+                        </div>
+
+                        <!-- Preview View -->
+                        <div id="view-preview" class="absolute inset-0 w-full h-full hidden bg-slate-100 p-8 overflow-auto flex items-center justify-center">
+                            <!-- Preview Content will be injected here via JS -->
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    // Internal script for Editor page logic
+                    window.switchEditorTab = function(tab) {
+                        const btnEdit = document.getElementById('btn-edit');
+                        const btnPreview = document.getElementById('btn-preview');
+                        const viewEdit = document.getElementById('view-edit');
+                        const viewPreview = document.getElementById('view-preview');
+
+                        if(tab === 'edit') {
+                            btnEdit.classList.add('bg-slate-700', 'text-white', 'shadow-sm');
+                            btnEdit.classList.remove('text-slate-400', 'hover:text-white');
+                            
+                            btnPreview.classList.remove('bg-slate-700', 'text-white', 'shadow-sm');
+                            btnPreview.classList.add('text-slate-400', 'hover:text-white');
+
+                            viewEdit.classList.remove('hidden');
+                            viewPreview.classList.add('hidden');
+                        } else {
+                            btnPreview.classList.add('bg-slate-700', 'text-white', 'shadow-sm');
+                            btnPreview.classList.remove('text-slate-400', 'hover:text-white');
+                            
+                            btnEdit.classList.remove('bg-slate-700', 'text-white', 'shadow-sm');
+                            btnEdit.classList.add('text-slate-400', 'hover:text-white');
+
+                            viewEdit.classList.add('hidden');
+                            viewPreview.classList.remove('hidden');
+
+                            // Inject code to preview
+                            const code = document.getElementById('editor-textarea').value;
+                            viewPreview.innerHTML = code;
+                        }
+                    };
+                <\/script>
+            `,
+            youtube: `
+                <div class="fade-in">
+                    <div class="flex items-center gap-4 mb-10 pb-6 border-b border-slate-200">
+                        <i class="ph-fill ph-youtube-logo text-5xl text-red-600"></i>
+                        <div>
+                            <h1 class="text-3xl font-bold text-slate-900">Tailwind di YouTube</h1>
+                            <p class="text-slate-500">Kumpulan video tutorial dan tips trick seputar Tailwind CSS.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        ${videos.map((vid, i) => `
+                            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden cursor-pointer group hover:shadow-lg transition-all" onclick="showToast('Memutar video: ${vid.title}')">
+                                <div class="relative">
+                                    <img src="https://placehold.co/640x360/e2e8f0/64748b?text=Video+${i+1}" alt="${vid.title}" class="w-full object-cover">
+                                    <div class="absolute inset-0 bg-slate-900/20 flex items-center justify-center group-hover:bg-slate-900/40 transition-colors">
+                                        <i class="ph-fill ph-play-circle text-6xl text-white opacity-90 group-hover:scale-110 transition-transform shadow-sm rounded-full"></i>
+                                    </div>
+                                    <div class="absolute bottom-2 right-2 bg-slate-900/80 text-white text-xs px-2 py-1 rounded font-medium backdrop-blur-sm">12:34</div>
+                                </div>
+                                <div class="p-5 flex gap-4">
+                                    <div class="w-10 h-10 rounded-full bg-slate-200 flex-shrink-0 flex items-center justify-center text-slate-500 font-bold">TW</div>
+                                    <div>
+                                        <h3 class="font-bold text-slate-900 leading-tight mb-1 group-hover:text-red-600 transition-colors">${vid.title}</h3>
+                                        <p class="text-xs text-slate-500">TailwindMaster • 10K x ditonton • 2 hari yang lalu</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `,
+            settings: `
+                <div class="fade-in max-w-3xl mx-auto">
+                    <h1 class="text-3xl font-bold text-slate-900 mb-8 flex items-center gap-3">
+                        <i class="ph ph-gear text-brand-600"></i> Pengaturan
+                    </h1>
+
+                    <div class="bg-white rounded-3xl shadow-sm border border-slate-100 p-8 sm:p-10">
+                        <form onsubmit="event.preventDefault(); showToast('Pengaturan berhasil disimpan!');" class="space-y-8">
+                            
+                            <!-- Theme Setting -->
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">1. Themes</h3>
+                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                                    <label class="cursor-pointer relative">
+                                        <input type="radio" name="theme" value="light" class="peer sr-only" checked>
+                                        <div class="rounded-xl border-2 border-slate-200 p-4 hover:bg-slate-50 peer-checked:border-brand-500 peer-checked:bg-brand-50 transition-all text-center">
+                                            <i class="ph ph-sun text-2xl text-slate-600 mb-2"></i>
+                                            <p class="font-medium text-slate-700">Light</p>
+                                        </div>
+                                    </label>
+                                    <label class="cursor-pointer relative">
+                                        <input type="radio" name="theme" value="dark" class="peer sr-only">
+                                        <div class="rounded-xl border-2 border-slate-200 p-4 hover:bg-slate-50 peer-checked:border-brand-500 peer-checked:bg-brand-50 transition-all text-center">
+                                            <i class="ph ph-moon text-2xl text-slate-600 mb-2"></i>
+                                            <p class="font-medium text-slate-700">Dark</p>
+                                        </div>
+                                    </label>
+                                    <label class="cursor-pointer relative">
+                                        <input type="radio" name="theme" value="system" class="peer sr-only">
+                                        <div class="rounded-xl border-2 border-slate-200 p-4 hover:bg-slate-50 peer-checked:border-brand-500 peer-checked:bg-brand-50 transition-all text-center">
+                                            <i class="ph ph-desktop text-2xl text-slate-600 mb-2"></i>
+                                            <p class="font-medium text-slate-700">System</p>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- YouTube Settings -->
+                            <div class="space-y-6">
+                                <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Pengaturan YouTube</h3>
+                                
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-700 mb-2">2. YouTube API Key</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <i class="ph ph-key text-slate-400 text-lg"></i>
+                                        </div>
+                                        <input type="password" value="AIzaSyAXXXXXXX" class="w-full pl-11 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all font-mono text-sm" placeholder="Masukkan API Key">
+                                    </div>
+                                    <p class="text-xs text-slate-500 mt-2">Dibutuhkan untuk memuat daftar video terbaru secara dinamis.</p>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-semibold text-slate-700 mb-2">3. YouTube Playlist ID</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <i class="ph ph-list-video text-slate-400 text-lg"></i>
+                                        </div>
+                                        <input type="text" value="PLXXXXXXXXXXXX" class="w-full pl-11 pr-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all font-mono text-sm" placeholder="Masukkan Playlist ID">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pt-6 border-t border-slate-100 flex justify-end gap-4">
+                                <button type="button" class="px-6 py-2.5 rounded-xl font-medium text-slate-600 hover:bg-slate-100 transition-colors">Batal</button>
+                                <button type="submit" class="px-6 py-2.5 rounded-xl font-medium bg-slate-900 text-white hover:bg-slate-800 shadow-md transition-colors">Simpan Pengaturan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `
+        };
+
+        // --- Router Logic ---
+        function navigate(pageName) {
+            const contentArea = document.getElementById('app-content');
+            
+            // Validate page
+            if (!pageContent[pageName]) pageName = 'home';
+            
+            // Render Content
+            contentArea.innerHTML = pageContent[pageName];
+            
+            // Execute internal scripts if any (needed for Editor tab logic)
+            const scripts = contentArea.getElementsByTagName("script");
+            for (let i = 0; i < scripts.length; i++) {
+                eval(scripts[i].innerText);
+            }
+
+            // Update UI State (Close menus)
+            if (isDrawerOpen) toggleDrawer();
+            if (isOptionsOpen) toggleOptions();
+
+            // Highlight Active Drawer Link
+            document.querySelectorAll('.drawer-link').forEach(link => {
+                link.classList.remove('bg-brand-50', 'text-brand-600');
+                link.classList.add('text-slate-700');
+            });
+            const activeLink = document.querySelector(`.drawer-link[onclick="navigate('${pageName}')"]`);
+            if(activeLink) {
+                activeLink.classList.remove('text-slate-700');
+                activeLink.classList.add('bg-brand-50', 'text-brand-600');
+            }
+
+            // Scroll to top smoothly
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            navigate('home');
+        });
+</script>
+  </body>
+</html>

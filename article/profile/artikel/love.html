@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AsepMo Blog - Ruang Cinta & Keindahan</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        romantic: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            200: '#fecdd3',
+                            300: '#fda4af',
+                            400: '#fb7185',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                            800: '#9f1239',
+                            900: '#4c0519',
+                            950: '#27000b',
+                        },
+                        gold: {
+                            50: '#fbf8eb',
+                            100: '#f4eca9',
+                            200: '#edd867',
+                            300: '#e1bc2a',
+                            400: '#ca9e1b',
+                            500: '#af8114',
+                            600: '#8e610e',
+                            700: '#6b440d',
+                            800: '#4c2e0b',
+                            900: '#2b1a06',
+                        }
+                    }
+                }
+            }
+        }
+</script>
+<style>
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(244, 63, 94, 0.3);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(244, 63, 94, 0.6);
+        }
+        
+        /* Ambient animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.2; }
+            50% { transform: translateY(-20px) rotate(10deg); opacity: 0.6; }
+        }
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            animation: float 6s ease-in-out infinite;
+        }
+</style>
+  </head>
+  <body class="bg-slate-950 text-slate-100 font-sans min-h-screen relative overflow-x-hidden selection:bg-romantic-600 selection:text-white">
+
+    <!-- Background Sparkles / Decorative Canvas -->
+    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden opacity-30">
+	  <div class="absolute w-[500px] h-[500px] rounded-full bg-romantic-900/20 blur-[120px] -top-40 -left-40"></div>
+	  <div class="absolute w-[600px] h-[600px] rounded-full bg-rose-800/10 blur-[150px] bottom-10 right-10"></div>
+	  <canvas id="sparkleCanvas" class="absolute inset-0 w-full h-full"></canvas>
+    </div>
+
+    <!-- Header/Navigation -->
+    <header class="relative z-10 border-b border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+		<div class="flex items-center space-x-3">
+		  <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-romantic-600 via-rose-500 to-gold-400 p-[2px] shadow-lg shadow-romantic-500/20">
+			<div class="w-full h-full bg-slate-950 rounded-full flex items-center justify-center">
+			  <i class="fa-solid fa-heart text-romantic-500 text-xl animate-pulse"></i>
+			</div>
+		  </div>
+		  <div>
+			<h1 class="font-serif text-2xl font-bold tracking-wide bg-gradient-to-r from-white via-romantic-200 to-gold-300 bg-clip-text text-transparent">
+			  AsepMo Blog
+			</h1>
+			<p class="text-[10px] tracking-widest uppercase text-slate-400 font-medium">Melodi Jiwa & Romansa</p>
+		  </div>
+		</div>
+
+		<!-- Global Search & Control -->
+		<div class="flex items-center space-x-4">
+		  <div class="relative hidden md:block">
+			<input type="text" id="globalSearch" placeholder="Cari tentang cinta..." 
+			  class="bg-slate-900/80 border border-slate-700/80 rounded-full py-1.5 pl-10 pr-4 text-sm focus:outline-none focus:border-romantic-500 text-slate-100 w-64 transition-all duration-300 placeholder:text-slate-500">
+			<i class="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-slate-500 text-sm"></i>
+		  </div>
+
+		  <button id="toggleSparkles" title="Toggle Efek Hati Romantis" 
+			class="p-2.5 rounded-full bg-slate-900 border border-slate-800 text-romantic-400 hover:text-romantic-300 hover:border-romantic-500/40 transition-all">
+			<i class="fa-solid fa-wand-magic-sparkles"></i>
+		  </button>
+		</div>
+	  </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+	  <!-- Welcome Banner/Quotes -->
+	  <div class="text-center mb-10 max-w-3xl mx-auto">
+		<span class="text-xs uppercase tracking-widest text-romantic-400 font-bold bg-romantic-950/80 border border-romantic-900/60 px-3 py-1 rounded-full">Koleksi Senandika Romansa</span>
+		<h2 class="font-serif text-3xl sm:text-4xl mt-3 font-semibold text-slate-100">
+		  Tempat Hati Berteduh, Berbagi, & Mengagumi Cinta
+		</h2>
+		<p class="text-slate-400 mt-2 text-sm sm:text-base leading-relaxed">
+		  Jelajahi kumpulan karya, pepatah, video, dan melodi yang dirajut khusus untuk merayakan setiap rasa yang tumbuh di dalam dada.
+		</p>
+	  </div>
+
+	  <!-- 4-Column Layout Grid -->
+	  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+		<!-- ==================== KOLOM 1: ARTIKEL ==================== -->
+		<section class="lg:col-span-3 bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 backdrop-blur-md shadow-xl flex flex-col h-[780px]">
+		  <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
+			<div class="flex items-center space-x-2.5">
+			  <span class="w-8 h-8 rounded-lg bg-romantic-950 flex items-center justify-center border border-romantic-900/50">
+				<i class="fa-solid fa-newspaper text-romantic-400"></i>
+			  </span>
+			  <div>
+				<h3 class="font-serif font-bold text-lg text-slate-100">Artikel :</h3>
+				<p class="text-[10px] text-slate-400">15 Esai Cinta Pilihan</p>
+			  </div>
+			</div>
+			<span class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-md font-medium" id="articleCount">15</span>
+		  </div>
+
+		  <!-- Scrollable list of articles -->
+		  <div class="space-y-3.5 overflow-y-auto pr-1 flex-1" id="articlesContainer">
+			<!-- Articles will be generated dynamically by JS -->
+		  </div>
+		</section>
+
+
+		<!-- ==================== KOLOM 2: IMAGE ==================== -->
+		<section class="lg:col-span-3 bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 backdrop-blur-md shadow-xl flex flex-col h-[780px]">
+		  <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
+			<div class="flex items-center space-x-2.5">
+			  <span class="w-8 h-8 rounded-lg bg-gold-950 flex items-center justify-center border border-gold-900/50">
+				<i class="fa-solid fa-image text-gold-400"></i>
+			  </span>
+			  <div>
+				<h3 class="font-serif font-bold text-lg text-slate-100">Image :</h3>
+				<p class="text-[10px] text-slate-400">Pepatah & Ilustrasi Cinta</p>
+			  </div>
+			</div>
+		  </div>
+
+		  <!-- Dynamic AI Proverbs & Generation Panel -->
+		  <div class="flex flex-col h-full justify-between space-y-4 overflow-y-auto pr-1">
+			<!-- Preview Card -->
+			<div class="bg-slate-950 rounded-xl border border-slate-800 p-4 relative overflow-hidden group">
+			  <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/80 z-10"></div>
+
+			  <!-- Dynamic Visual Canvas/Image Holder -->
+			  <div id="proverbDisplayFrame" class="w-full h-44 rounded-lg bg-gradient-to-tr from-romantic-950 via-slate-900 to-gold-950 flex flex-col items-center justify-center p-4 text-center border border-slate-800 relative">
+				<i class="fa-solid fa-quote-left text-romantic-500/20 text-4xl absolute top-3 left-3"></i>
+				<p id="activeProverbText" class="font-serif italic text-sm text-slate-100 relative z-20 leading-relaxed">
+				  "Cinta tidak berupa tatapan satu sama lain, tetapi memandang bersama ke arah yang sama."
+				</p>
+				<span id="activeProverbAuthor" class="text-[10px] text-gold-400 mt-2 tracking-wider uppercase relative z-20">- Antoine de Saint-Exupéry</span>
+
+				<!-- AI Image Layer (Hidden initially, shown when generated) -->
+				<img id="aiGeneratedImage" class="absolute inset-0 w-full h-full object-cover z-10 hidden transition-opacity duration-500" alt="Seni Cinta AI">
+
+				<!-- Loading animation -->
+				<div id="aiLoadingIndicator" class="absolute inset-0 bg-slate-950/90 z-30 flex flex-col items-center justify-center hidden">
+				  <div class="w-8 h-8 border-4 border-romantic-500 border-t-transparent rounded-full animate-spin"></div>
+				  <p class="text-xs text-romantic-400 mt-2 font-medium">Merajut Seni AI Romantis...</p>
+				</div>
+			  </div>
+
+			  <!-- Action Controls -->
+			  <div class="mt-4 flex flex-col gap-2 relative z-20">
+				<button id="btnGenerateIllustration" class="w-full py-2.5 rounded-lg bg-gradient-to-r from-romantic-600 to-rose-500 text-white font-semibold text-xs flex items-center justify-center gap-2 hover:from-romantic-500 hover:to-rose-400 transition-all shadow-md shadow-romantic-900/50">
+				  <i class="fa-solid fa-wand-magic-sparkles animate-pulse"></i>
+				  Buat Ilustrasi Seni AI
+				</button>
+				<div class="flex gap-2">
+				  <button id="btnDownloadCard" class="flex-1 py-1.5 rounded-md bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-[11px] text-slate-300 flex items-center justify-center gap-1.5 transition-all">
+					<i class="fa-solid fa-download"></i> Simpan
+				  </button>
+				  <button id="btnCopyText" class="flex-1 py-1.5 rounded-md bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-[11px] text-slate-300 flex items-center justify-center gap-1.5 transition-all">
+					<i class="fa-solid fa-copy"></i> Salin Teks
+				  </button>
+				</div>
+			  </div>
+			</div>
+
+			<!-- Custom Quote Input -->
+			<div class="bg-slate-950/40 p-3 rounded-xl border border-slate-800/80">
+			  <label class="text-[10px] uppercase tracking-wider text-slate-400 font-bold block mb-1">Buat Pepatah Kustom Anda</label>
+			  <textarea id="customProverbInput" rows="2" placeholder="Tulis ungkapan rasa Anda disini..." class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs focus:outline-none focus:border-romantic-500 resize-none placeholder:text-slate-600 text-slate-200"></textarea>
+			  <button id="btnApplyCustom" class="w-full mt-1.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-xs font-semibold transition-all">
+				Terapkan Pepatah
+			  </button>
+			</div>
+
+			<!-- Selected Proverbs Library -->
+			<div class="flex-1">
+			  <label class="text-[10px] uppercase tracking-wider text-slate-400 font-bold block mb-2">Koleksi Pepatah Cinta</label>
+			  <div class="grid grid-cols-1 gap-2 max-h-52 overflow-y-auto pr-1" id="proverbsContainer">
+				<!-- Custom Proverbs will be injected here -->
+			  </div>
+			</div>
+		  </div>
+		</section>
+
+
+		<!-- ==================== KOLOM 3: YOUTUBE ==================== -->
+		<section class="lg:col-span-3 bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 backdrop-blur-md shadow-xl flex flex-col h-[780px]">
+		  <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
+			<div class="flex items-center space-x-2.5">
+			  <span class="w-8 h-8 rounded-lg bg-red-950 flex items-center justify-center border border-red-900/50">
+				<i class="fa-brands fa-youtube text-red-500 animate-pulse"></i>
+			  </span>
+			  <div>
+				<h3 class="font-serif font-bold text-lg text-slate-100">YouTube :</h3>
+				<p class="text-[10px] text-slate-400">Musik & Esensi Kasih Sayang</p>
+			  </div>
+			</div>
+		  </div>
+
+		  <!-- Custom YouTube Video List & Active Player -->
+		  <div class="flex flex-col h-full justify-between space-y-4 overflow-y-auto pr-1">
+			<!-- Embedded Responsive Iframe Player -->
+			<div class="bg-black rounded-xl overflow-hidden border border-slate-800 relative aspect-video shadow-lg">
+			  <iframe id="youtubeIframe" class="absolute inset-0 w-full h-full" 
+				src="https://www.youtube.com/embed/trlOTS4nKO4?enablejsapi=1" 
+				title="Love Player" frameborder="0" 
+				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+				allowfullscreen></iframe>
+			</div>
+
+			<div id="activeVideoTitle" class="bg-slate-950 p-3 rounded-lg border border-slate-800/80">
+			  <span class="text-[9px] uppercase tracking-wider text-romantic-400 font-bold">Sedang Diputar</span>
+			  <h4 class="text-xs text-slate-200 font-semibold truncate" id="currentPlayingVideoName">Kahitna - Cantik (Official Audio)</h4>
+			</div>
+
+			<!-- Playlist Selectors -->
+			<div class="flex-1 flex flex-col">
+			  <label class="text-[10px] uppercase tracking-wider text-slate-400 font-bold block mb-2">Pilih Video Istimewa</label>
+			  <div class="space-y-2 overflow-y-auto pr-1 flex-1 max-h-96" id="youtubePlaylistContainer">
+				<!-- YouTube Items generated dynamically -->
+			  </div>
+			</div>
+		  </div>
+		</section>
+
+
+		<!-- ==================== KOLOM 4: MUSIC ==================== -->
+		<section class="lg:col-span-3 bg-slate-900/60 border border-slate-800/80 rounded-2xl p-5 backdrop-blur-md shadow-xl flex flex-col h-[780px]">
+		  <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
+			<div class="flex items-center space-x-2.5">
+			  <span class="w-8 h-8 rounded-lg bg-purple-950 flex items-center justify-center border border-purple-900/50">
+				<i class="fa-solid fa-music text-purple-400 animate-bounce"></i>
+			  </span>
+			  <div>
+				<h3 class="font-serif font-bold text-lg text-slate-100">Music :</h3>
+				<p class="text-[10px] text-slate-400">Podcast & Melodi Romantis</p>
+			  </div>
+			</div>
+		  </div>
+
+		  <!-- Custom music player design with a Canvas Visualizer -->
+		  <div class="flex flex-col h-full justify-between space-y-4">
+
+			<!-- Beautiful Vinyl / Disc Player Art -->
+			<div class="bg-slate-950 p-5 rounded-2xl border border-slate-800/80 flex flex-col items-center justify-center text-center relative overflow-hidden">
+			  <div class="absolute inset-0 bg-gradient-to-br from-purple-950/20 to-romantic-950/20"></div>
+
+			  <!-- Vinyl Disc Component -->
+			  <div class="w-32 h-32 rounded-full bg-slate-900 border-4 border-slate-800 flex items-center justify-center relative shadow-2xl transition-all duration-500" id="vinylDisc">
+				<div class="absolute inset-0 rounded-full border border-slate-700/50 animate-spin-slow duration-1000"></div>
+				<div class="w-10 h-10 rounded-full bg-slate-950 border-2 border-slate-800 flex items-center justify-center relative">
+				  <div class="w-3 h-3 rounded-full bg-romantic-500"></div>
+				</div>
+				<!-- Cover Art Overlay -->
+				<div class="absolute inset-2 rounded-full border border-dashed border-slate-700/60 flex items-center justify-center">
+				  <i class="fa-solid fa-compact-disc text-6xl text-slate-700 opacity-30"></i>
+				</div>
+			  </div>
+
+			  <!-- Canvas Audio Visualizer -->
+			  <canvas id="visualizerCanvas" class="w-full h-10 mt-4 rounded-md bg-slate-950/60 border border-slate-900"></canvas>
+
+			  <div class="mt-4 w-full">
+				<h4 id="activeTrackTitle" class="text-xs font-semibold text-slate-200 truncate">Melodi Rindu Malam</h4>
+				<p id="activeTrackArtist" class="text-[10px] text-slate-400 mt-0.5">AsepMo & Romantic Ensemble</p>
+			  </div>
+
+			  <!-- Custom Player Logic Bar -->
+			  <div class="w-full mt-4 flex flex-col gap-1.5">
+				<div class="flex items-center justify-between text-[9px] text-slate-400">
+				  <span id="musicCurrentTime">0:00</span>
+				  <span id="musicDuration">0:00</span>
+				</div>
+				<div class="w-full h-1.5 bg-slate-800 rounded-full cursor-pointer relative" id="progressBarContainer">
+				  <div class="h-full bg-gradient-to-r from-romantic-500 to-purple-500 rounded-full w-0" id="progressBarFill"></div>
+				  <div class="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full border-2 border-romantic-600 shadow opacity-0 hover:opacity-100 transition-all cursor-grab" id="progressBarKnob"></div>
+				</div>
+			  </div>
+
+			  <!-- Main Playback Controls -->
+			  <div class="flex items-center justify-center gap-5 mt-4">
+				<button id="btnPrevTrack" class="text-slate-400 hover:text-slate-100 transition-all text-sm">
+				  <i class="fa-solid fa-backward-step"></i>
+				</button>
+				<button id="btnPlayMusic" class="w-10 h-10 rounded-full bg-romantic-600 hover:bg-romantic-500 flex items-center justify-center text-white text-base shadow-lg shadow-romantic-900/40 transform active:scale-95 transition-all">
+				  <i class="fa-solid fa-play ml-0.5" id="playIcon"></i>
+				</button>
+				<button id="btnNextTrack" class="text-slate-400 hover:text-slate-100 transition-all text-sm">
+				  <i class="fa-solid fa-forward-step"></i>
+				</button>
+			  </div>
+			</div>
+
+			<!-- Music Playlist list -->
+			<div class="flex-1 flex flex-col justify-end">
+			  <label class="text-[10px] uppercase tracking-wider text-slate-400 font-bold block mb-2">Playlist Instrumental & Pod</label>
+			  <div class="space-y-1.5 overflow-y-auto pr-1 max-h-56" id="audioPlaylistContainer">
+				<!-- Populated with beautiful love tracks by JS -->
+			  </div>
+			</div>
+		  </div>
+		</section>
+
+	  </div>
+    </main>
+
+    <!-- Alert Notification System (No Alert-Fallback) -->
+    <div id="customToast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 bg-slate-900 border border-slate-800 text-slate-100 py-3 px-5 rounded-xl shadow-2xl flex items-center space-x-3 transition-all duration-300">
+	  <span class="w-8 h-8 rounded-full bg-romantic-950 flex items-center justify-center border border-romantic-900">
+		<i class="fa-solid fa-heart text-romantic-400 text-xs"></i>
+	  </span>
+	  <div>
+		<p id="toastMessage" class="text-xs font-semibold">Tautan berhasil disalin!</p>
+	  </div>
+    </div>
+
+    <!-- AI Canvas/Image Generative Modal -->
+    <div id="illustrationModal" class="fixed inset-0 bg-black/80 z-50 backdrop-blur-sm flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+	  <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 mx-4 relative shadow-2xl">
+		<button id="btnCloseModal" class="absolute top-4 right-4 text-slate-400 hover:text-slate-200">
+		  <i class="fa-solid fa-xmark text-lg"></i>
+		</button>
+		<h4 class="font-serif font-bold text-lg text-slate-100 mb-2">Pilih Lukisan Ilustrasi</h4>
+		<p class="text-xs text-slate-400 mb-4">Gunakan model AI unggul kami untuk melukis representasi pepatah cinta Anda secara instan.</p>
+
+		<div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center text-center">
+		  <p id="modalProverbQuote" class="font-serif italic text-sm text-romantic-300">"..."</p>
+		  <div class="w-full mt-4 aspect-square max-h-[300px] rounded-lg bg-slate-900 border border-slate-800 relative flex items-center justify-center overflow-hidden">
+			<img id="modalGeneratedImage" class="absolute inset-0 w-full h-full object-cover hidden" alt="Artwork Cinta">
+			<div id="modalLoadingSpinner" class="flex flex-col items-center justify-center">
+			  <i class="fa-solid fa-paintbrush text-3xl text-slate-600 animate-bounce mb-2"></i>
+			  <p class="text-xs text-slate-500">Klik tombol di bawah untuk melukis rasa...</p>
+			</div>
+		  </div>
+		</div>
+
+		<div class="mt-4 flex gap-3">
+		  <button id="btnModalGenerate" class="flex-1 py-2.5 rounded-lg bg-gradient-to-r from-romantic-600 to-rose-500 text-white font-semibold text-xs transition-all shadow-md">
+			Lukis Gambar dengan AI
+		  </button>
+		</div>
+	  </div>
+    </div>
+
+    <!-- Hidden Audio element for custom audio player -->
+    <audio id="mainAudioElement" class="hidden"></audio>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-slate-900 mt-16 bg-slate-950 py-8 text-center text-xs text-slate-500">
+	  <p>&copy; 2026 AsepMo Blog. Dibuat dengan cinta untuk jiwa romantis.</p>
+	  <p class="mt-1">Ditenagai oleh kecerdasan visual premium.</p>
+    </footer>
+
+<script>
+        /* ---------------- DATA ARRAYS ---------------- */
+        const articles = [
+            {
+                id: 1,
+                title: "Seni Mencintai Diri Sendiri (Self-Love) Sebelum Menyayangi Orang Lain",
+                desc: "Memahami mengapa kebahagiaan internal adalah jangkar utama sebuah hubungan romantis yang harmonis.",
+                url: "https://id.wikipedia.org/wiki/Mencintai_diri_sendiri",
+                tag: "Self-Love",
+                readTime: "4 mnt"
+            },
+            {
+                id: 2,
+                title: "Bahasa Kasih Sayang (Love Languages) dan Cara Memahaminya",
+                desc: "Mengenal 5 bahasa kasih utama untuk mempererat jalinan komunikasi bersama pasangan terkasih.",
+                url: "https://id.wikipedia.org/wiki/Lima_bahasa_kasih",
+                tag: "Hubungan",
+                readTime: "5 mnt"
+            },
+            {
+                id: 3,
+                title: "Filosofi Teras dalam Menghadapi Patah Hati",
+                desc: "Bagaimana Stoikisme mengajarkan kita untuk melepaskan hal-hal di luar kendali dan menyembuhkan luka batin.",
+                url: "https://id.wikipedia.org/wiki/Filosofi_Teras",
+                tag: "Filosofi",
+                readTime: "6 mnt"
+            },
+            {
+                id: 4,
+                title: "Mengapa Rindu Itu Berat? Penjelasan Ilmiah di Balik Kerinduan",
+                desc: "Bedah neurologis mengenai pelepasan hormon dopamin saat kita mendambakan kehadiran sang kekasih.",
+                url: "https://en.wikipedia.org/wiki/Limerence",
+                tag: "Sains Cinta",
+                readTime: "5 mnt"
+            },
+            {
+                id: 5,
+                title: "Komunikasi Asertif: Kunci Hubungan Langgeng Tanpa Drama",
+                desc: "Mengungkapkan perasaan secara tegas namun penuh rasa hormat demi menjalin hubungan yang sehat.",
+                url: "https://id.wikipedia.org/wiki/Komunikasi_asertif",
+                tag: "Komunikasi",
+                readTime: "3 mnt"
+            },
+            {
+                id: 6,
+                title: "Cinta Platonis: Ketika Kasih Sayang Melampaui Hasrat Fisik",
+                desc: "Memahami kedalaman ikatan emosional tanpa embel-embel ketertarikan fisik belaka.",
+                url: "https://id.wikipedia.org/wiki/Cinta_platonis",
+                tag: "Spiritual",
+                readTime: "4 mnt"
+            },
+            {
+                id: 7,
+                title: "Seni Memaafkan dalam Hubungan yang Pernah Terluka",
+                desc: "Bagaimana keikhlasan memaafkan kesalahan masa lalu dapat merevitalisasi jalinan asmara.",
+                url: "https://id.wikipedia.org/wiki/Pemaafan",
+                tag: "Psikologi",
+                readTime: "6 mnt"
+            },
+            {
+                id: 8,
+                title: "Mengapa Jatuh Cinta Membuat Dunia Terasa Lebih Indah?",
+                desc: "Efek psikologis 'rose-colored glasses' dan bagaimana persepsi kita berubah di kala kasmaran.",
+                url: "https://en.wikipedia.org/wiki/Falling_in_love",
+                tag: "Perspektif",
+                readTime: "3 mnt"
+            },
+            {
+                id: 9,
+                title: "Mengatasi Attachment Styles yang Menghambat Hubungan Anda",
+                desc: "Kenali gaya kelekatan Anda—apakah cemas, menghindar, atau aman—serta dampaknya pada pasangan.",
+                url: "https://en.wikipedia.org/wiki/Attachment_theory",
+                tag: "Terapi Batin",
+                readTime: "7 mnt"
+            },
+            {
+                id: 10,
+                title: "Menjaga Bara Asmara Tetap Menyala dalam Hubungan Jangka Panjang",
+                desc: "Tips praktis memelihara ketertarikan intim dan antusiasme setelah bertahun-tahun hidup bersama.",
+                url: "https://en.wikipedia.org/wiki/Intimate_relationship",
+                tag: "Pernikahan",
+                readTime: "5 mnt"
+            },
+            {
+                id: 11,
+                title: "Pentingnya Mindfulness Saat Menghabiskan Waktu Bersama",
+                desc: "Bagaimana hadir seutuhnya secara mental dapat mengubah kualitas obrolan dengan pasangan.",
+                url: "https://id.wikipedia.org/wiki/Kesadaran_penuh",
+                tag: "Mindfulness",
+                readTime: "4 mnt"
+            },
+            {
+                id: 12,
+                title: "Cinta Dewasa vs Cinta Remaja: Apa Perbedaannya?",
+                desc: "Analisis kedewasaan emosional yang membedakan romansa impulsif dengan komitmen dewasa.",
+                url: "https://en.wikipedia.org/wiki/Love",
+                tag: "Evolusi Rasa",
+                readTime: "5 mnt"
+            },
+            {
+                id: 13,
+                title: "Bagaimana Mengatasi Rasa Cemburu Berlebihan Secara Sehat",
+                desc: "Menyalurkan emosi cemburu menjadi bahan diskusi konstruktif demi menumbuhkan rasa saling percaya.",
+                url: "https://id.wikipedia.org/wiki/Cemburu",
+                tag: "Emosi",
+                readTime: "4 mnt"
+            },
+            {
+                id: 14,
+                title: "Romantisme Sastra Klasik: Belajar Mencintai dari Para Pujangga",
+                desc: "Kilas balik karya sastra romantis kuno dan esensi murni mencintai yang abadi melintasi zaman.",
+                url: "https://id.wikipedia.org/wiki/Romantisisme",
+                tag: "Sastra",
+                readTime: "6 mnt"
+            },
+            {
+                id: 15,
+                title: "Ketika Cinta Harus Merelakan: Filosofi Melepas dengan Keikhlasan",
+                desc: "Bagian tersulit dari perjalanan asmara adalah belajar mengikhlaskan demi kebahagiaan sejati.",
+                url: "https://en.wikipedia.org/wiki/Letting_go",
+                tag: "Keikhlasan",
+                readTime: "5 mnt"
+            }
+        ];
+
+        const proverbs = [
+            { text: "Cinta tidak berupa tatapan satu sama lain, tetapi memandang bersama ke arah yang sama.", author: "Antoine de Saint-Exupéry" },
+            { text: "Bunga tidak dapat mekar tanpa sinar matahari, begitu pula jiwa tidak dapat tumbuh tanpa cinta.", author: "Max Müller" },
+            { text: "Kita mencintai bukan karena menemukan orang yang sempurna, melainkan karena melihat kesempurnaan pada ketidaksempurnaan.", author: "Sam Keen" },
+            { text: "Kehangatan pelukanmu adalah satu-satunya tempat di mana waktu berhenti berputar.", author: "Pujangga Malam" },
+            { text: "Dalam diamku, terdapat deretan doa terbaik untuk keindahan masa depan bersamamu.", author: "AsepMo" },
+            { text: "Cinta sejati tidak pernah memiliki akhir, karena ia adalah aliran energi suci yang kekal.", author: "Filosof Cinta" }
+        ];
+
+        const youtubeVideos = [
+            { id: "gU9G6bK1y8M", title: "Kahitna - Cantik (Official Audio)", duration: "4:15", thumbnail: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&q=80&w=200" },
+            { id: "e8Ymdfb6Z34", title: "Tulus - Hati-Hati di Jalan (Official Lyric)", duration: "4:02", thumbnail: "https://images.unsplash.com/photo-1494905998402-395d579af36f?auto=format&fit=crop&q=80&w=200" },
+            { id: "Fw6hL9N8QzE", title: "Yura Yunita - Tutur Batin (Official Video)", duration: "4:30", thumbnail: "https://images.unsplash.com/photo-1484755560695-a4c730044cf0?auto=format&fit=crop&q=80&w=200" },
+            { id: "MevG_BAnmG4", title: "Andmesh - Cinta Luar Biasa", duration: "4:12", thumbnail: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&q=80&w=200" },
+            { id: "gXnZlF4x0aE", title: "Pamungkas - To The Bone (Official Music)", duration: "5:44", thumbnail: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&q=80&w=200" }
+        ];
+
+        const audioTracks = [
+            { title: "Melodi Rindu Malam", artist: "Romantic Ensemble", file: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+            { title: "Seni Menjaga Komitmen", artist: "Podcast AsepMo", file: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+            { title: "Acoustic Serenade Cinta", artist: "Warm Acoustic", file: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
+            { title: "Dua Jiwa Satu Tujuan", artist: "Dialog Malam Podcast", file: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" }
+        ];
+
+        /* ---------------- APP CORE STATE ---------------- */
+        let activeProverbIndex = 0;
+        let activeMusicTrackIndex = 0;
+        let isMusicPlaying = false;
+        let isSparklesOn = true;
+
+        /* ---------------- DOM SELECTORS ---------------- */
+        const articlesContainer = document.getElementById('articlesContainer');
+        const proverbsContainer = document.getElementById('proverbsContainer');
+        const youtubePlaylistContainer = document.getElementById('youtubePlaylistContainer');
+        const audioPlaylistContainer = document.getElementById('audioPlaylistContainer');
+        
+        const activeProverbText = document.getElementById('activeProverbText');
+        const activeProverbAuthor = document.getElementById('activeProverbAuthor');
+        const customProverbInput = document.getElementById('customProverbInput');
+        const btnApplyCustom = document.getElementById('btnApplyCustom');
+        
+        const youtubeIframe = document.getElementById('youtubeIframe');
+        const currentPlayingVideoName = document.getElementById('currentPlayingVideoName');
+
+        const mainAudioElement = document.getElementById('mainAudioElement');
+        const btnPlayMusic = document.getElementById('btnPlayMusic');
+        const playIcon = document.getElementById('playIcon');
+        const btnPrevTrack = document.getElementById('btnPrevTrack');
+        const btnNextTrack = document.getElementById('btnNextTrack');
+        const activeTrackTitle = document.getElementById('activeTrackTitle');
+        const activeTrackArtist = document.getElementById('activeTrackArtist');
+        const musicCurrentTime = document.getElementById('musicCurrentTime');
+        const musicDuration = document.getElementById('musicDuration');
+        const progressBarFill = document.getElementById('progressBarFill');
+        const progressBarKnob = document.getElementById('progressBarKnob');
+        const progressBarContainer = document.getElementById('progressBarContainer');
+        const vinylDisc = document.getElementById('vinylDisc');
+
+        const aiGeneratedImage = document.getElementById('aiGeneratedImage');
+        const aiLoadingIndicator = document.getElementById('aiLoadingIndicator');
+        const btnGenerateIllustration = document.getElementById('btnGenerateIllustration');
+        const illustrationModal = document.getElementById('illustrationModal');
+        const modalProverbQuote = document.getElementById('modalProverbQuote');
+        const modalGeneratedImage = document.getElementById('modalGeneratedImage');
+        const modalLoadingSpinner = document.getElementById('modalLoadingSpinner');
+        const btnModalGenerate = document.getElementById('btnModalGenerate');
+        const btnCloseModal = document.getElementById('btnCloseModal');
+
+        const btnDownloadCard = document.getElementById('btnDownloadCard');
+        const btnCopyText = document.getElementById('btnCopyText');
+        const globalSearch = document.getElementById('globalSearch');
+        const toggleSparkles = document.getElementById('toggleSparkles');
+
+        const customToast = document.getElementById('customToast');
+        const toastMessage = document.getElementById('toastMessage');
+
+        /* ---------------- STREAMING_CHUNK: Initializing layouts & components rendering... ---------------- */
+
+        // Render Column 1: Articles List
+        function renderArticles(list = articles) {
+            articlesContainer.innerHTML = '';
+            if (list.length === 0) {
+                articlesContainer.innerHTML = `<div class="text-xs text-slate-500 text-center py-8">Tidak ada artikel ditemukan.</div>`;
+                return;
+            }
+            list.forEach((art) => {
+                const item = document.createElement('div');
+                item.className = "bg-slate-950/70 hover:bg-slate-950 p-3.5 rounded-xl border border-slate-800/80 hover:border-romantic-500/30 transition-all duration-300 group cursor-pointer relative";
+                item.innerHTML = `
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-[9px] font-bold text-romantic-400 bg-romantic-950 px-2 py-0.5 rounded border border-romantic-900/50 uppercase tracking-wider">${art.tag}</span>
+                        <span class="text-[10px] text-slate-500 flex items-center gap-1">
+                            <i class="fa-regular fa-clock"></i> ${art.readTime}
+                        </span>
+                    </div>
+                    <h4 class="text-xs font-semibold text-slate-200 mt-2 line-clamp-1 group-hover:text-romantic-300 transition-colors">${art.title}</h4>
+                    <p class="text-[11px] text-slate-400 mt-1 line-clamp-2 leading-relaxed">${art.desc}</p>
+                    <div class="mt-2.5 flex justify-end">
+                        <span class="text-[10px] text-gold-400 font-medium group-hover:underline flex items-center gap-1">
+                            Baca Selengkapnya <i class="fa-solid fa-arrow-up-right-from-square text-[8px]"></i>
+                        </span>
+                    </div>
+                `;
+                item.addEventListener('click', () => {
+                    window.open(art.url, '_blank');
+                    showToast("Membuka artikel di halaman asli...");
+                });
+                articlesContainer.appendChild(item);
+            });
+            document.getElementById('articleCount').innerText = list.length;
+        }
+
+        // Render Column 2: Proverbs List
+        function renderProverbs() {
+            proverbsContainer.innerHTML = '';
+            proverbs.forEach((p, idx) => {
+                const item = document.createElement('button');
+                item.className = `w-full text-left p-2.5 rounded-lg border text-xs transition-all duration-300 ${
+                    idx === activeProverbIndex 
+                        ? 'bg-romantic-950/60 border-romantic-700/60 text-romantic-200' 
+                        : 'bg-slate-950 border-slate-800/80 hover:bg-slate-900 text-slate-400 hover:text-slate-200'
+                }`;
+                item.innerHTML = `
+                    <p class="font-serif italic line-clamp-1">"${p.text}"</p>
+                    <span class="text-[9px] tracking-wider text-slate-500 block mt-0.5">- ${p.author}</span>
+                `;
+                item.addEventListener('click', () => {
+                    activeProverbIndex = idx;
+                    renderProverbs();
+                    updateActiveProverbDisplay();
+                });
+                proverbsContainer.appendChild(item);
+            });
+        }
+
+        function updateActiveProverbDisplay() {
+            const active = proverbs[activeProverbIndex];
+            activeProverbText.innerText = `"${active.text}"`;
+            activeProverbAuthor.innerText = `- ${active.author}`;
+            // Hide the generated image when swapping proverbs
+            aiGeneratedImage.classList.add('hidden');
+            aiGeneratedImage.src = '';
+        }
+
+        // Apply Custom Proverb
+        btnApplyCustom.addEventListener('click', () => {
+            const txt = customProverbInput.value.trim();
+            if (!txt) {
+                showToast("Silakan tulis ungkapan rasa terlebih dahulu!");
+                return;
+            }
+            proverbs.unshift({ text: txt, author: "AsepMo Custom" });
+            activeProverbIndex = 0;
+            customProverbInput.value = '';
+            renderProverbs();
+            updateActiveProverbDisplay();
+            showToast("Pepatah cinta baru diterapkan!");
+        });
+
+        // Copy active proverb to clipboard
+        btnCopyText.addEventListener('click', () => {
+            const active = proverbs[activeProverbIndex];
+            const fullText = `"${active.text}" - ${active.author} (via AsepMo Blog)`;
+            
+            // Create dummy input to copy due to iframe restrictions
+            const dummy = document.createElement('input');
+            document.body.appendChild(dummy);
+            dummy.value = fullText;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+            
+            showToast("Pepatah disalin ke clipboard!");
+        });
+
+        // Download card utility (Simulated SVG dynamic downloader)
+        btnDownloadCard.addEventListener('click', () => {
+            const active = proverbs[activeProverbIndex];
+            showToast("Menyiapkan berkas gambar...");
+            
+            // Generate simple SVG Blob
+            const svgString = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+                    <rect width="100%" height="100%" fill="#27000b"/>
+                    <circle cx="400" cy="400" r="350" fill="none" stroke="#be123c" stroke-width="4" opacity="0.3"/>
+                    <text x="50%" y="45%" font-family="Playfair Display, Georgia, serif" font-size="32" font-style="italic" fill="#ffe4e6" text-anchor="middle" dominant-baseline="middle">
+                        "${active.text}"
+                    </text>
+                    <text x="50%" y="60%" font-family="Inter, sans-serif" font-size="20" fill="#af8114" letter-spacing="4" text-anchor="middle">
+                        - ${active.author.toUpperCase()} -
+                    </text>
+                </svg>
+            `;
+            const blob = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
+            const url = URL.createObjectURL(blob);
+            const downloadLink = document.createElement('a');
+            downloadLink.href = url;
+            downloadLink.download = `AsepMo_Pepatah_${activeProverbIndex + 1}.svg`;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        });
+
+        /* ---------------- STREAMING_CHUNK: Setting up AI Image Generation (Gemini 3.1 Flash Image integration) ---------------- */
+        
+        async function generateAIIllustration(proverbText, targetImgElement, loaderElement) {
+            loaderElement.classList.remove('hidden');
+            const apiKey = ""; // Canvas runtime automatically replaces/handles empty string with correct auth
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key=${apiKey}`;
+            
+            // Prompt engineered for premium high quality digital art style about love
+            const prompt = `A premium, elegant and modern artistic romantic illustration representing the Indonesian love proverb: "${proverbText}". Digital art style, warm cozy lighting, pastel rose and luxury gold hues, abstract and beautiful romantic realism, deeply emotional atmosphere, high resolution.`;
+            
+            const payload = {
+                contents: [{
+                    role: 'user',
+                    parts: [{ text: prompt }]
+                }],
+                generationConfig: {
+                    responseModalities: ['IMAGE'],
+                    imageConfig: { aspectRatio: "1:1" }
+                }
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) {
+                    throw new Error("Gagal memanggil API Citra");
+                }
+
+                const result = await response.json();
+                const part = result?.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
+                
+                if (part) {
+                    const imageUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+                    targetImgElement.src = imageUrl;
+                    targetImgElement.classList.remove('hidden');
+                    showToast("Seni AI berhasil diwujudkan!");
+                } else {
+                    showToast("Gagal memproses gambar dari respon AI.");
+                }
+            } catch (err) {
+                console.error("Kesalahan AI Generation:", err);
+                showToast("Gagal menghasilkan gambar AI. Silakan coba sesaat lagi.");
+            } finally {
+                loaderElement.classList.add('hidden');
+            }
+        }
+
+        // Inline AI generation button clicked
+        btnGenerateIllustration.addEventListener('click', () => {
+            const active = proverbs[activeProverbIndex];
+            generateAIIllustration(active.text, aiGeneratedImage, aiLoadingIndicator);
+        });
+
+
+        /* ---------------- STREAMING_CHUNK: Integrating YouTube Column Player and Playlists ---------------- */
+
+        // Render Column 3: YouTube Videos List
+        function renderYouTubePlaylist() {
+            youtubePlaylistContainer.innerHTML = '';
+            youtubeVideos.forEach((video) => {
+                const item = document.createElement('button');
+                item.className = "w-full flex items-center gap-3 p-2 bg-slate-950/60 hover:bg-slate-950 border border-slate-800/60 rounded-xl transition-all text-left group";
+                item.innerHTML = `
+                    <div class="w-16 h-12 rounded-lg bg-cover bg-center relative flex-shrink-0" style="background-image: url('${video.thumbnail}')">
+                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-romantic-950/40 transition-all">
+                            <i class="fa-regular fa-circle-play text-white text-sm group-hover:scale-110 transition-transform"></i>
+                        </div>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <h4 class="text-xs text-slate-300 font-semibold truncate group-hover:text-romantic-300 transition-colors">${video.title}</h4>
+                        <span class="text-[9px] text-slate-500 block mt-0.5"><i class="fa-regular fa-clock"></i> Durasi: ${video.duration}</span>
+                    </div>
+                `;
+                item.addEventListener('click', () => {
+                    youtubeIframe.src = `https://www.youtube.com/embed/${video.id}?autoplay=1&enablejsapi=1`;
+                    currentPlayingVideoName.innerText = video.title;
+                    showToast(`Memutar: ${video.title}`);
+                });
+                youtubePlaylistContainer.appendChild(item);
+            });
+        }
+
+
+        /* ---------------- STREAMING_CHUNK: Managing Music Player & Handling Audio Promise Rejections... ---------------- */
+
+        // Canvas Visualizer Logic
+        const visualizerCanvas = document.getElementById('visualizerCanvas');
+        const vCtx = visualizerCanvas.getContext('2d');
+        let visAnimFrame;
+
+        function resizeVisualizer() {
+            visualizerCanvas.width = visualizerCanvas.parentElement.clientWidth;
+            visualizerCanvas.height = 40;
+        }
+        window.addEventListener('resize', resizeVisualizer);
+        resizeVisualizer();
+
+        // Simulated Visualizer Animation for royalty-free tracks when playing
+        function animateVisualizer() {
+            vCtx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+            const w = visualizerCanvas.width;
+            const h = visualizerCanvas.height;
+            const barWidth = 4;
+            const barGap = 2;
+            const numBars = Math.floor(w / (barWidth + barGap));
+            
+            for (let i = 0; i < numBars; i++) {
+                // Generate natural-looking wave behavior if music is playing, flat if paused
+                let val = 2;
+                if (isMusicPlaying) {
+                    const time = Date.now() * 0.003;
+                    val = Math.sin(i * 0.15 + time) * Math.cos(i * 0.05 + time) * 15 + 18;
+                    // Boost center values slightly for aesthetic symmetry
+                    const centerFactor = (1 - Math.abs(i - numBars/2) / (numBars/2));
+                    val *= centerFactor;
+                }
+                
+                vCtx.fillStyle = isMusicPlaying ? 'rgba(244, 63, 94, 0.8)' : 'rgba(244, 63, 94, 0.2)';
+                vCtx.fillRect(i * (barWidth + barGap), h - val - 2, barWidth, val);
+            }
+            visAnimFrame = requestAnimationFrame(animateVisualizer);
+        }
+        animateVisualizer();
+
+        // Music Player State Managers
+        function renderMusicPlaylist() {
+            audioPlaylistContainer.innerHTML = '';
+            audioTracks.forEach((track, idx) => {
+                const item = document.createElement('button');
+                item.className = `w-full flex items-center justify-between p-2.5 rounded-xl border text-left transition-all duration-300 ${
+                    idx === activeMusicTrackIndex
+                        ? 'bg-purple-950/50 border-purple-700/60 text-purple-200'
+                        : 'bg-slate-950 border-slate-800/80 hover:bg-slate-900 text-slate-400'
+                }`;
+                item.innerHTML = `
+                    <div class="min-w-0">
+                        <h4 class="text-xs font-semibold truncate ${idx === activeMusicTrackIndex ? 'text-purple-300' : 'text-slate-200'}">${track.title}</h4>
+                        <span class="text-[9px] text-slate-500 block mt-0.5">${track.artist}</span>
+                    </div>
+                    <i class="fa-solid ${idx === activeMusicTrackIndex && isMusicPlaying ? 'fa-volume-high animate-pulse text-purple-400' : 'fa-play text-[10px]'}"></i>
+                `;
+                item.addEventListener('click', () => {
+                    activeMusicTrackIndex = idx;
+                    loadTrack(idx);
+                    playTrack();
+                });
+                audioPlaylistContainer.appendChild(item);
+            });
+        }
+
+        function loadTrack(index) {
+            const track = audioTracks[index];
+            mainAudioElement.src = track.file;
+            activeTrackTitle.innerText = track.title;
+            activeTrackArtist.innerText = track.artist;
+            renderMusicPlaylist();
+        }
+
+        function playTrack() {
+            isMusicPlaying = true;
+            
+            // Safe execution of play() to prevent and handle AbortError / Autoplay blocks
+            const playPromise = mainAudioElement.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    // Audio played successfully, update UI
+                    playIcon.className = "fa-solid fa-pause";
+                    vinylDisc.classList.add('animate-spin-slow');
+                    vinylDisc.style.animationPlayState = 'running';
+                }).catch(error => {
+                    // Safe error absorption
+                    console.log("Audio play request handled gracefully:", error.message);
+                    
+                    // If blocked due to browser policy or quick toggling, adapt state gently
+                    if (error.name === "NotAllowedError") {
+                        isMusicPlaying = false;
+                        playIcon.className = "fa-solid fa-play ml-0.5";
+                        vinylDisc.style.animationPlayState = 'paused';
+                        showToast("Ketuk tombol Play untuk memutar musik!");
+                    }
+                });
+            }
+        }
+
+        function pauseTrack() {
+            isMusicPlaying = false;
+            mainAudioElement.pause();
+            playIcon.className = "fa-solid fa-play ml-0.5";
+            vinylDisc.style.animationPlayState = 'paused';
+            renderMusicPlaylist();
+        }
+
+        btnPlayMusic.addEventListener('click', () => {
+            if (isMusicPlaying) {
+                pauseTrack();
+            } else {
+                playTrack();
+            }
+        });
+
+        btnPrevTrack.addEventListener('click', () => {
+            activeMusicTrackIndex = (activeMusicTrackIndex - 1 + audioTracks.length) % audioTracks.length;
+            loadTrack(activeMusicTrackIndex);
+            playTrack();
+        });
+
+        btnNextTrack.addEventListener('click', () => {
+            activeMusicTrackIndex = (activeMusicTrackIndex + 1) % audioTracks.length;
+            loadTrack(activeMusicTrackIndex);
+            playTrack();
+        });
+
+        // Time updates and slider triggers
+        mainAudioElement.addEventListener('timeupdate', () => {
+            const cur = mainAudioElement.currentTime;
+            const dur = mainAudioElement.duration || 0;
+            musicCurrentTime.innerText = formatTime(cur);
+            musicDuration.innerText = formatTime(dur);
+            
+            if (dur > 0) {
+                const percent = (cur / dur) * 100;
+                progressBarFill.style.width = `${percent}%`;
+                progressBarKnob.style.left = `${percent}%`;
+            }
+        });
+
+        mainAudioElement.addEventListener('ended', () => {
+            // Auto skip to next
+            activeMusicTrackIndex = (activeMusicTrackIndex + 1) % audioTracks.length;
+            loadTrack(activeMusicTrackIndex);
+            playTrack();
+        });
+
+        // Drag/Click seekable timeline
+        progressBarContainer.addEventListener('click', (e) => {
+            const rect = progressBarContainer.getBoundingClientRect();
+            const clickPos = (e.clientX - rect.left) / rect.width;
+            mainAudioElement.currentTime = clickPos * mainAudioElement.duration;
+        });
+
+        function formatTime(secs) {
+            const m = Math.floor(secs / 60);
+            const s = Math.floor(secs % 60);
+            return `${m}:${s < 10 ? '0' : ''}${s}`;
+        }
+
+
+        /* ---------------- STREAMING_CHUNK: Managing global search and aesthetic features... ---------------- */
+
+        // Global search filtering across all sections
+        globalSearch.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            
+            // 1. Filter articles
+            const filteredArticles = articles.filter(art => 
+                art.title.toLowerCase().includes(query) || 
+                art.desc.toLowerCase().includes(query) || 
+                art.tag.toLowerCase().includes(query)
+            );
+            renderArticles(filteredArticles);
+
+            // 2. Visual hint inside Search icon
+            const searchIcon = globalSearch.nextElementSibling;
+            if (query) {
+                searchIcon.className = "fa-solid fa-xmark absolute left-3.5 top-2.5 text-romantic-500 cursor-pointer";
+                searchIcon.onclick = () => {
+                    globalSearch.value = '';
+                    renderArticles();
+                    searchIcon.className = "fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-slate-500";
+                    searchIcon.onclick = null;
+                };
+            } else {
+                searchIcon.className = "fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-slate-500";
+                searchIcon.onclick = null;
+            }
+        });
+
+
+        // Live Sparkles/Hearts Animation Canvas
+        const sparkleCanvas = document.getElementById('sparkleCanvas');
+        const sCtx = sparkleCanvas.getContext('2d');
+        let sparkles = [];
+
+        function resizeSparkleCanvas() {
+            sparkleCanvas.width = window.innerWidth;
+            sparkleCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeSparkleCanvas);
+        resizeSparkleCanvas();
+
+        class Sparkle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * sparkleCanvas.width;
+                this.y = sparkleCanvas.height + 20;
+                this.size = Math.random() * 8 + 3;
+                this.speed = Math.random() * 1.5 + 0.5;
+                this.angle = Math.random() * Math.PI * 2;
+                this.angleSpeed = Math.random() * 0.02 - 0.01;
+                this.opacity = Math.random() * 0.5 + 0.1;
+                this.color = Math.random() > 0.4 ? 'rgba(244, 63, 94, ' : 'rgba(218, 165, 32, ';
+            }
+            update() {
+                this.y -= this.speed;
+                this.x += Math.sin(this.angle) * 0.5;
+                this.angle += this.angleSpeed;
+                if (this.y < -20) {
+                    this.reset();
+                }
+            }
+            draw() {
+                sCtx.save();
+                sCtx.globalAlpha = this.opacity;
+                sCtx.fillStyle = this.color + this.opacity + ')';
+                
+                // Draw a romantic stylized heart
+                sCtx.beginPath();
+                const d = this.size;
+                sCtx.moveTo(this.x, this.y + d / 4);
+                sCtx.quadraticCurveTo(this.x, this.y, this.x + d / 2, this.y);
+                sCtx.quadraticCurveTo(this.x + d, this.y, this.x + d, this.y + d / 3);
+                sCtx.quadraticCurveTo(this.x + d, this.y + d * 0.7, this.x, this.y + d * 1.2);
+                sCtx.quadraticCurveTo(this.x - d, this.y + d * 0.7, this.x - d, this.y + d / 3);
+                sCtx.quadraticCurveTo(this.x - d, this.y, this.x - d / 2, this.y);
+                sCtx.quadraticCurveTo(this.x, this.y, this.x, this.y + d / 4);
+                sCtx.closePath();
+                sCtx.fill();
+                sCtx.restore();
+            }
+        }
+
+        // Initialize sparkles array
+        for (let i = 0; i < 40; i++) {
+            sparkles.push(new Sparkle());
+        }
+
+        function runSparkleLoop() {
+            sCtx.clearRect(0, 0, sparkleCanvas.width, sparkleCanvas.height);
+            if (isSparklesOn) {
+                sparkles.forEach(s => {
+                    s.update();
+                    s.draw();
+                });
+            }
+            requestAnimationFrame(runSparkleLoop);
+        }
+        runSparkleLoop();
+
+        // Toggle Sparkle Effects
+        toggleSparkles.addEventListener('click', () => {
+            isSparklesOn = !isSparklesOn;
+            toggleSparkles.classList.toggle('bg-romantic-950', isSparklesOn);
+            toggleSparkles.classList.toggle('text-rose-400', isSparklesOn);
+            toggleSparkles.classList.toggle('text-slate-500', !isSparklesOn);
+            showToast(isSparklesOn ? "Efek hati romantis diaktifkan." : "Efek hati dinonaktifkan.");
+        });
+
+
+        // Global Toast Notification Helper
+        function showToast(message) {
+            toastMessage.innerText = message;
+            customToast.classList.remove('translate-y-20', 'opacity-0');
+            customToast.classList.add('translate-y-0', 'opacity-100');
+            
+            setTimeout(() => {
+                customToast.classList.remove('translate-y-0', 'opacity-100');
+                customToast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        /* ---------------- STREAMING_CHUNK: Starting application onload handlers... ---------------- */
+        window.onload = function() {
+            // Render articles
+            renderArticles();
+            // Render proverbs
+            renderProverbs();
+            updateActiveProverbDisplay();
+            // Render youtube playlist
+            renderYouTubePlaylist();
+            // Initialize music
+            loadTrack(0);
+        };
+</script>
+  </body>
+</html>

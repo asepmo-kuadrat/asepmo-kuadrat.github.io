@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase & Node.js Masterclass</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    colors: {
+                        fire: {
+                            yellow: '#FFCA28',
+                            orange: '#F5820D',
+                            red: '#E56027'
+                        }
+                    }
+                }
+            }
+        }
+</script>
+<style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        
+        /* Code Block Styling */
+        pre {
+            background-color: #0f172a !important;
+            border: 1px solid #1e293b;
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            overflow-x: auto;
+        }
+        code { font-family: 'Fira Code', monospace; font-size: 0.875rem; color: #e2e8f0; }
+        
+        /* Gradient Text */
+        .text-gradient {
+            background: linear-gradient(to right, #FFCA28, #F5820D, #E56027);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-link.active {
+            color: #FFCA28;
+            border-left: 3px solid #FFCA28;
+            background-color: rgba(255, 202, 40, 0.1);
+        }
+</style>
+  </head>
+  <body class="bg-slate-950 text-slate-300 font-sans antialiased selection:bg-fire-orange selection:text-white">
+
+    <!-- Mobile Menu Button -->
+    <button id="mobile-menu-btn" class="md:hidden fixed top-4 right-4 z-50 p-2 bg-slate-800 rounded-lg text-white">
+	  <i data-lucide="menu"></i>
+    </button>
+
+    <div class="flex min-h-screen">
+
+	  <!-- Sidebar Navigation -->
+	  <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 transform -translate-x-full md:translate-x-0 transition-transform duration-300 bg-slate-900 border-r border-slate-800 overflow-y-auto">
+		<div class="p-6">
+		  <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+			<i data-lucide="flame" class="text-fire-orange"></i>
+			Masterclass
+		  </h1>
+		  <p class="text-xs text-slate-500 mt-1">Panduan Lengkap Web & Backend</p>
+		</div>
+
+		<nav class="px-4 pb-6 space-y-1">
+		  <a href="#pengenalan" class="nav-link block px-4 py-2.5 rounded-r-lg text-sm font-medium hover:bg-slate-800 transition-colors">1. Apa itu Firebase?</a>
+		  <a href="#hosting" class="nav-link block px-4 py-2.5 rounded-r-lg text-sm font-medium hover:bg-slate-800 transition-colors">2. Firebase Hosting</a>
+		  <a href="#auth" class="nav-link block px-4 py-2.5 rounded-r-lg text-sm font-medium hover:bg-slate-800 transition-colors">3. Autentikasi & Login</a>
+		  <a href="#storage" class="nav-link block px-4 py-2.5 rounded-r-lg text-sm font-medium hover:bg-slate-800 transition-colors">4. Storage & Profil</a>
+		  <a href="#firestore" class="nav-link block px-4 py-2.5 rounded-r-lg text-sm font-medium hover:bg-slate-800 transition-colors">5. Cloud Firestore</a>
+		  <a href="#nodejs" class="nav-link block px-4 py-2.5 rounded-r-lg text-sm font-medium hover:bg-slate-800 transition-colors mt-4 border-t border-slate-800 pt-4">Bonus: Node.js Termux</a>
+		</nav>
+	  </aside>
+
+	  <!-- Main Content -->
+	  <main class="flex-1 md:ml-64 w-full">
+		<!-- Hero Section -->
+		<header class="py-20 px-6 md:px-12 lg:px-24 border-b border-slate-800 relative overflow-hidden">
+		  <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+			<div class="absolute -top-24 -left-24 w-96 h-96 bg-fire-orange rounded-full mix-blend-screen filter blur-[100px]"></div>
+			<div class="absolute bottom-0 right-0 w-96 h-96 bg-fire-yellow rounded-full mix-blend-screen filter blur-[100px]"></div>
+		  </div>
+
+		  <div class="relative z-10 max-w-4xl">
+			<span class="inline-block py-1 px-3 rounded-full bg-slate-800 text-fire-yellow text-xs font-semibold mb-4 border border-slate-700">Modul Pembelajaran</span>
+			<h2 class="text-4xl md:text-6xl font-bold text-white leading-tight mb-6">
+			  Membangun Aplikasi Modern dengan <span class="text-gradient">Firebase</span> & <span class="text-blue-400">Node.js</span>
+			</h2>
+			<p class="text-lg text-slate-400 mb-8 max-w-2xl leading-relaxed">
+			  Kompilasi panduan lengkap dari awal hingga mahir. Pelajari cara menggunakan infrastruktur cloud kelas dunia dan menjalankan server langsung dari genggaman Anda.
+			</p>
+			<a href="#pengenalan" class="inline-flex items-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-lg font-semibold hover:bg-slate-200 transition-colors">
+			  Mulai Belajar <i data-lucide="arrow-down" class="w-4 h-4"></i>
+			</a>
+		  </div>
+		</header>
+
+		<div class="px-6 md:px-12 lg:px-24 py-12 max-w-5xl mx-auto space-y-24">
+
+		  <!-- 1. Pengenalan -->
+		  <section id="pengenalan" class="scroll-mt-24">
+			<div class="flex items-center gap-3 mb-6">
+			  <div class="w-10 h-10 rounded-lg bg-fire-orange/20 flex items-center justify-center text-fire-orange">
+				<i data-lucide="info"></i>
+			  </div>
+			  <h3 class="text-2xl font-bold text-white">Apa itu Firebase?</h3>
+			</div>
+			<div class="prose prose-invert prose-slate max-w-none">
+			  <p class="text-slate-300 leading-relaxed mb-4">
+				<strong>Firebase</strong> adalah platform <em>Backend-as-a-Service</em> (BaaS) yang dikembangkan oleh Google. Ini memberikan solusi atas kerumitan membangun sistem backend sendiri dari awal.
+			  </p>
+			  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+				<div class="bg-slate-900 p-6 rounded-xl border border-slate-800">
+				  <h4 class="text-white font-semibold mb-2 flex items-center gap-2"><i data-lucide="zap" class="w-4 h-4 text-fire-yellow"></i> Kecepatan</h4>
+				  <p class="text-sm text-slate-400">Tidak perlu menulis kode backend yang panjang. Fitur tersedia dan terintegrasi dengan cepat.</p>
+				</div>
+				<div class="bg-slate-900 p-6 rounded-xl border border-slate-800">
+				  <h4 class="text-white font-semibold mb-2 flex items-center gap-2"><i data-lucide="bar-chart" class="w-4 h-4 text-fire-yellow"></i> Skalabilitas</h4>
+				  <p class="text-sm text-slate-400">Otomatis membesarkan kapasitasnya saat pengguna melonjak tanpa takut server down.</p>
+				</div>
+				<div class="bg-slate-900 p-6 rounded-xl border border-slate-800">
+				  <h4 class="text-white font-semibold mb-2 flex items-center gap-2"><i data-lucide="refresh-cw" class="w-4 h-4 text-fire-yellow"></i> Real-time Data</h4>
+				  <p class="text-sm text-slate-400">Perubahan data di server langsung tersinkronisasi ke semua pengguna seketika.</p>
+				</div>
+				<div class="bg-slate-900 p-6 rounded-xl border border-slate-800">
+				  <h4 class="text-white font-semibold mb-2 flex items-center gap-2"><i data-lucide="package" class="w-4 h-4 text-fire-yellow"></i> Ekosistem Lengkap</h4>
+				  <p class="text-sm text-slate-400">Analitik, database, penyimpanan file, dan hosting tersedia di satu tempat.</p>
+				</div>
+			  </div>
+			</div>
+		  </section>
+
+		  <!-- 2. Hosting -->
+		  <section id="hosting" class="scroll-mt-24">
+			<div class="flex items-center gap-3 mb-6">
+			  <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-400">
+				<i data-lucide="globe"></i>
+			  </div>
+			  <h3 class="text-2xl font-bold text-white">Firebase Hosting (Domain firebaseapp.com)</h3>
+			</div>
+			<p class="text-slate-300 leading-relaxed mb-6">
+			  Firebase Hosting memungkinkan Anda mengunggah website statis atau dinamis secara gratis dengan SSL/HTTPS terpasang otomatis.
+			</p>
+
+			<div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+			  <div class="bg-slate-800/50 px-4 py-2 border-b border-slate-800 flex items-center gap-2">
+				<i data-lucide="terminal" class="w-4 h-4 text-slate-400"></i>
+				<span class="text-xs font-mono text-slate-400">Terminal Commands</span>
+			  </div>
+			  <div class="p-6 space-y-4 font-mono text-sm">
+				<div>
+				  <p class="text-slate-500 text-xs mb-1"># 1. Instal Firebase CLI secara global</p>
+				  <span class="text-green-400">npm</span> install -g firebase-tools
+				</div>
+				<div>
+				  <p class="text-slate-500 text-xs mb-1"># 2. Login ke akun Google Anda</p>
+				  <span class="text-green-400">firebase</span> login
+				</div>
+				<div>
+				  <p class="text-slate-500 text-xs mb-1"># 3. Inisialisasi proyek di dalam folder website Anda</p>
+				  <span class="text-green-400">firebase</span> init hosting
+				</div>
+				<div>
+				  <p class="text-slate-500 text-xs mb-1"># 4. Unggah website ke internet!</p>
+				  <span class="text-green-400">firebase</span> deploy
+				</div>
+			  </div>
+			</div>
+		  </section>
+
+		  <!-- 3. Auth -->
+		  <section id="auth" class="scroll-mt-24">
+			<div class="flex items-center gap-3 mb-6">
+			  <div class="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400">
+				<i data-lucide="shield-check"></i>
+			  </div>
+			  <h3 class="text-2xl font-bold text-white">Autentikasi: Login & Register</h3>
+			</div>
+			<p class="text-slate-300 leading-relaxed mb-6">
+			  Menangani sistem login sangat mudah menggunakan Firebase Auth. Mendukung kombinasi Email/Password dan Single Sign-On (SSO) seperti Google.
+			</p>
+
+			<pre><code>import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+				import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+				const app = initializeApp({ /* Konfigurasi Firebase Anda */ });
+				const auth = getAuth(app);
+				const provider = new GoogleAuthProvider();
+
+				// Logika Login Email
+				signInWithEmailAndPassword(auth, email, password)
+				.then(user => console.log("Login Berhasil!"))
+				.catch(err => console.error(err));
+
+				// Logika Login Google
+				signInWithPopup(auth, provider)
+				.then(result => console.log("Halo, " + result.user.displayName));
+			  </code></pre>
+		  </section>
+
+		  <!-- 4. Storage -->
+		  <section id="storage" class="scroll-mt-24">
+			<div class="flex items-center gap-3 mb-6">
+			  <div class="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+				<i data-lucide="image"></i>
+			  </div>
+			  <h3 class="text-2xl font-bold text-white">Firebase Storage & Update Profil</h3>
+			</div>
+			<p class="text-slate-300 leading-relaxed mb-6">
+			  Firebase Storage digunakan untuk menyimpan berkas fisik, sangat cocok dipadukan dengan `updateProfile` untuk memperbarui foto pengguna.
+			</p>
+
+			<pre><code>import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+				import { updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+				const storage = getStorage(app);
+
+				// Fungsi Mengunggah Gambar
+				async function uploadFoto(file, user) {
+				const fileRef = ref(storage, `foto_profil/${user.uid}`);
+
+				// 1. Unggah file ke Storage
+				await uploadBytes(fileRef, file);
+
+				// 2. Dapatkan URL publik gambar
+				const url = await getDownloadURL(fileRef);
+
+				// 3. Simpan URL ke profil Auth
+				await updateProfile(user, { photoURL: url });
+				}
+			  </code></pre>
+		  </section>
+
+		  <!-- 5. Firestore -->
+		  <section id="firestore" class="scroll-mt-24">
+			<div class="flex items-center gap-3 mb-6">
+			  <div class="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center text-orange-400">
+				<i data-lucide="database"></i>
+			  </div>
+			  <h3 class="text-2xl font-bold text-white">Cloud Firestore</h3>
+			</div>
+			<p class="text-slate-300 leading-relaxed mb-6">
+			  Database NoSQL modern yang membagi data menjadi <strong>Koleksi</strong> dan <strong>Dokumen</strong>. Sempurna untuk menyimpan biodata, keranjang belanja, atau chat.
+			</p>
+
+			<pre><code>import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+				const db = getFirestore(app);
+
+				// Menyimpan Biodata
+				async function simpanBiodata(uid, teksBio) {
+				const docRef = doc(db, "users", uid); // Koleksi 'users', Dokumen 'UID'
+				await setDoc(docRef, { biodata: teksBio }, { merge: true });
+				}
+
+				// Membaca Biodata
+				async function ambilBiodata(uid) {
+				const docRef = doc(db, "users", uid);
+				const hasil = await getDoc(docRef);
+
+				if (hasil.exists()) {
+				console.log(hasil.data().biodata);
+				}
+				}
+			  </code></pre>
+		  </section>
+
+		  <!-- Bonus: Node.js Termux -->
+		  <section id="nodejs" class="scroll-mt-24 pt-8 border-t border-slate-800">
+			<div class="flex items-center gap-3 mb-6">
+			  <div class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center text-green-400">
+				<i data-lucide="smartphone"></i>
+			  </div>
+			  <h3 class="text-2xl font-bold text-white">Bonus: Node.js di Termux</h3>
+			</div>
+			<p class="text-slate-300 leading-relaxed mb-6">
+			  Node.js membawa JavaScript ke sisi server. Anda bisa menginstalnya langsung di HP Android menggunakan emulator terminal <strong>Termux</strong>.
+			</p>
+
+			<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+			  <div>
+				<h4 class="font-semibold text-white mb-4">1. Instalasi Node.js</h4>
+				<div class="bg-slate-900 rounded-xl border border-slate-800 p-4 font-mono text-sm space-y-2">
+				  <p class="text-slate-500 text-xs"># Update sistem</p>
+				  <p><span class="text-green-400">pkg</span> update && pkg upgrade</p>
+				  <p class="text-slate-500 text-xs mt-3"># Instal Node.js dan Text Editor</p>
+				  <p><span class="text-green-400">pkg</span> install nodejs nano</p>
+				</div>
+			  </div>
+			  <div>
+				<h4 class="font-semibold text-white mb-4">2. Membuat Web Server (server.js)</h4>
+				<pre class="!m-0 !p-4 !text-xs"><code>const http = require('http');
+
+					const server = http.createServer((req, res) => {
+					res.statusCode = 200;
+					res.setHeader('Content-Type', 'text/html');
+					res.end('&lt;h1&gt;Halo dari Termux!&lt;/h1&gt;');
+					});
+
+					server.listen(3000, '127.0.0.1', () => {
+					console.log('Server berjalan!');
+					});
+				  </code></pre>
+				<div class="mt-4 bg-slate-900 rounded-xl border border-slate-800 p-4 font-mono text-sm">
+				  <p class="text-slate-500 text-xs mb-1"># Jalankan server dan buka browser di localhost:3000</p>
+				  <span class="text-green-400">node</span> server.js
+				</div>
+			  </div>
+			</div>
+		  </section>
+
+		</div>
+
+		<!-- Footer -->
+		<footer class="border-t border-slate-800 py-8 text-center text-slate-500 text-sm">
+		  <p>Dibuat secara interaktif &bull; Firebase & Node.js Guide</p>
+		</footer>
+	  </main>
+    </div>
+
+    <!-- Scripts -->
+<script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const sidebar = document.getElementById('sidebar');
+
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Highlight Active Section on Scroll
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current) && current !== '') {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Close sidebar on mobile when link is clicked
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 768) {
+                    sidebar.classList.add('-translate-x-full');
+                }
+            });
+        });
+</script>
+  </body>
+</html>
