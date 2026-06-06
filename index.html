@@ -55,7 +55,29 @@
             }
         }
 </script>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
 
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyAIZwCXKW-tL3e6oDGOLLbrU9pD6lgrA6c",
+    authDomain: "asepmo-article.firebaseapp.com",
+    projectId: "asepmo-article",
+    storageBucket: "asepmo-article.firebasestorage.app",
+    messagingSenderId: "622595990822",
+    appId: "1:622595990822:web:514b840a8cfb503dd34de7",
+    measurementId: "G-HQV0SR7132"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
 <style>
         body {
             background-color: #020617; /* brand.darker */
