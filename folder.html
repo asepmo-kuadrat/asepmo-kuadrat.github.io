@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Cloud Uploader</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome untuk Ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Konfigurasi Tailwind untuk tema warna -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gray: {
+                            850: '#1f2937',
+                            900: '#111827',
+                            950: '#030712',
+                        },
+                        primary: {
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar untuk area log */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(31, 41, 55, 0.5); 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280; 
+        }
+
+        /* Animasi loading spinner */
+        .loader {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #fff;
+            width: 20px;
+            height: 20px;
+            -webkit-animation: spin 1s linear infinite;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Styling area drag & drop */
+        .drop-zone {
+            transition: all 0.3s ease;
+        }
+        .drop-zone.active {
+            border-color: #3b82f6;
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen font-sans antialiased selection:bg-primary-500 selection:text-white">
+
+    <div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 pt-12">
+        
+        <!-- Header Section -->
+        <header class="text-center mb-10">
+            <div class="inline-flex items-center justify-center p-3 bg-gray-900 rounded-2xl shadow-lg border border-gray-800 mb-4">
+                <i class="fa-brands fa-github text-4xl text-white"></i>
+            </div>
+            <h1 class="text-3xl font-bold tracking-tight text-white mb-2">GitHub Cloud Uploader</h1>
+            <p class="text-gray-400 max-w-lg mx-auto">Unggah file atau seluruh folder langsung ke repository GitHub Anda dengan aman melalui API.</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Panel Kiri: Konfigurasi -->
+            <div class="lg:col-span-5 space-y-6">
+                <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800 shadow-xl">
+                    <h2 class="text-xl font-semibold mb-6 flex items-center text-white">
+                        <i class="fa-solid fa-gear text-primary-500 mr-3"></i> Konfigurasi
+                    </h2>
+                    
+                    <form id="configForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1" for="token">
+                                Personal Access Token <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fa-solid fa-key text-gray-500"></i>
+                                </div>
+                                <input type="password" id="token" required
+                                    class="block w-full pl-10 pr-10 py-2.5 bg-gray-850 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors sm:text-sm"
+                                    placeholder="ghp_...">
+                                <button type="button" id="toggleToken" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-white transition-colors">
+                                    <i class="fa-solid fa-eye" id="eyeIcon"></i>
+                                </button>
+                            </div>
+                            <p class="mt-1 text-xs text-gray-500">Memerlukan scope <code class="bg-gray-800 px-1 rounded">repo</code>.</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-1" for="owner">
+                                    Pemilik Repo <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="owner" required
+                                    class="block w-full px-3 py-2.5 bg-gray-850 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors sm:text-sm"
+                                    placeholder="username">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-1" for="repo">
+                                    Nama Repo <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" id="repo" required
+                                    class="block w-full px-3 py-2.5 bg-gray-850 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors sm:text-sm"
+                                    placeholder="repository">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1" for="branch">
+                                Branch Tujuan (Opsional)
+                            </label>
+                            <input type="text" id="branch"
+                                class="block w-full px-3 py-2.5 bg-gray-850 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors sm:text-sm"
+                                placeholder="main (default)">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-1" for="basePath">
+                                Folder Tujuan di Repo (Opsional)
+                            </label>
+                            <input type="text" id="basePath"
+                                class="block w-full px-3 py-2.5 bg-gray-850 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors sm:text-sm"
+                                placeholder="kosongkan untuk root">
+                        </div>
+
+                        <!-- Tombol Simpan Konfigurasi ke LocalStorage -->
+                        <div class="pt-2 flex justify-end">
+                            <button type="button" id="saveConfigBtn" class="text-xs text-gray-400 hover:text-white flex items-center transition-colors">
+                                <i class="fa-solid fa-bookmark mr-1"></i> Simpan Konfigurasi di Browser
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Panel Kanan: Area Upload & Log -->
+            <div class="lg:col-span-7 flex flex-col space-y-6">
+                
+                <!-- Area Drop -->
+                <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800 shadow-xl flex-grow">
+                    <h2 class="text-xl font-semibold mb-4 flex items-center text-white">
+                        <i class="fa-solid fa-cloud-arrow-up text-primary-500 mr-3"></i> Pilih File/Folder
+                    </h2>
+                    
+                    <div id="dropZone" class="drop-zone border-2 border-dashed border-gray-700 rounded-xl p-8 text-center cursor-pointer hover:border-gray-500 bg-gray-850 flex flex-col items-center justify-center min-h-[200px]">
+                        <i class="fa-regular fa-file-code text-5xl text-gray-500 mb-4"></i>
+                        <p class="text-lg font-medium text-gray-300 mb-1">Klik atau Tarik file ke sini</p>
+                        <p class="text-sm text-gray-500 mb-4">Mendukung upload folder dengan Webkit Directory</p>
+                        
+                        <div class="flex space-x-3">
+                            <label class="cursor-pointer inline-flex items-center px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-sm font-medium text-white transition-colors">
+                                <i class="fa-solid fa-file mr-2"></i> Pilih File
+                                <input type="file" id="fileInput" class="hidden" multiple>
+                            </label>
+                            
+                            <label class="cursor-pointer inline-flex items-center px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-sm font-medium text-white transition-colors">
+                                <i class="fa-solid fa-folder-open mr-2"></i> Pilih Folder
+                                <input type="file" id="folderInput" class="hidden" webkitdirectory directory multiple>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- List File yang Dipilih -->
+                    <div id="selectedFilesContainer" class="mt-4 hidden">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-medium text-gray-400" id="fileCountText">0 file dipilih</span>
+                            <button id="clearFilesBtn" class="text-xs text-red-400 hover:text-red-300 transition-colors">Hapus Pilihan</button>
+                        </div>
+                        <div class="max-h-32 overflow-y-auto pr-2" id="fileListPreview">
+                            <!-- List file akan di-render di sini -->
+                        </div>
+                    </div>
+
+                    <button id="uploadBtn" class="mt-6 w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 focus:ring-offset-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span id="uploadBtnText">Mulai Upload</span>
+                        <div id="uploadLoader" class="loader ml-2 hidden"></div>
+                    </button>
+                </div>
+
+                <!-- Panel Log Aktivitas -->
+                <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800 shadow-xl flex-grow flex flex-col h-64">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-sm font-semibold flex items-center text-gray-300 uppercase tracking-wider">
+                            <i class="fa-solid fa-terminal text-gray-500 mr-2"></i> Output Log
+                        </h2>
+                        <button id="clearLogBtn" class="text-xs text-gray-500 hover:text-white transition-colors" title="Bersihkan log">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                    <div id="logArea" class="flex-grow bg-gray-950 border border-gray-800 rounded-xl p-4 font-mono text-xs overflow-y-auto text-gray-300 space-y-1.5">
+                        <div class="text-gray-500 italic">Menunggu aksi...</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <footer class="mt-12 text-center text-xs text-gray-600 pb-8">
+            <p><i class="fa-solid fa-shield-halved mr-1"></i> Aplikasi ini berjalan 100% di browser Anda. Token tidak dikirim ke server manapun kecuali API GitHub.</p>
+        </footer>
+    </div>
+
+    <!-- Script Logika Aplikasi -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Elemen UI ---
+            const inputs = {
+                token: document.getElementById('token'),
+                owner: document.getElementById('owner'),
+                repo: document.getElementById('repo'),
+                branch: document.getElementById('branch'),
+                basePath: document.getElementById('basePath')
+            };
+            
+            const fileInput = document.getElementById('fileInput');
+            const folderInput = document.getElementById('folderInput');
+            const dropZone = document.getElementById('dropZone');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const uploadBtnText = document.getElementById('uploadBtnText');
+            const uploadLoader = document.getElementById('uploadLoader');
+            
+            const logArea = document.getElementById('logArea');
+            const fileListPreview = document.getElementById('fileListPreview');
+            const selectedFilesContainer = document.getElementById('selectedFilesContainer');
+            const fileCountText = document.getElementById('fileCountText');
+            const toggleTokenBtn = document.getElementById('toggleToken');
+            const eyeIcon = document.getElementById('eyeIcon');
+            
+            let filesToUpload = [];
+
+            // --- Fungsi Utilitas ---
+
+            // Menulis ke log panel
+            function log(message, type = 'info', link = null) {
+                // Hapus pesan default jika ada
+                if (logArea.innerHTML.includes('Menunggu aksi...')) {
+                    logArea.innerHTML = '';
+                }
+
+                const time = new Date().toLocaleTimeString('id-ID', { hour12: false });
+                const div = document.createElement('div');
+                
+                let colorClass = 'text-gray-300';
+                let icon = '<i class="fa-solid fa-angle-right text-gray-600 mr-2"></i>';
+                
+                if (type === 'success') {
+                    colorClass = 'text-green-400';
+                    icon = '<i class="fa-solid fa-check text-green-500 mr-2"></i>';
+                } else if (type === 'error') {
+                    colorClass = 'text-red-400';
+                    icon = '<i class="fa-solid fa-xmark text-red-500 mr-2"></i>';
+                } else if (type === 'warning') {
+                    colorClass = 'text-yellow-400';
+                    icon = '<i class="fa-solid fa-triangle-exclamation text-yellow-500 mr-2"></i>';
+                }
+
+                let content = `<span class="text-gray-600 mr-2">[${time}]</span> ${icon} <span class="${colorClass}">${message}</span>`;
+                
+                if (link) {
+                    content += ` <a href="${link}" target="_blank" class="text-primary-400 hover:underline ml-1"><i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Buka</a>`;
+                }
+                
+                div.innerHTML = content;
+                logArea.appendChild(div);
+                
+                // Auto scroll ke bawah
+                logArea.scrollTop = logArea.scrollHeight;
+            }
+
+            // Bersihkan log
+            document.getElementById('clearLogBtn').addEventListener('click', () => {
+                logArea.innerHTML = '<div class="text-gray-500 italic">Menunggu aksi...</div>';
+            });
+
+            // Toggle visibilitas token
+            toggleTokenBtn.addEventListener('click', () => {
+                if (inputs.token.type === 'password') {
+                    inputs.token.type = 'text';
+                    eyeIcon.classList.remove('fa-eye');
+                    eyeIcon.classList.add('fa-eye-slash');
+                } else {
+                    inputs.token.type = 'password';
+                    eyeIcon.classList.remove('fa-eye-slash');
+                    eyeIcon.classList.add('fa-eye');
+                }
+            });
+
+            // --- Manajemen File ---
+            
+            function handleFilesSelection(files) {
+                if (files.length === 0) return;
+                
+                filesToUpload = Array.from(files);
+                selectedFilesContainer.classList.remove('hidden');
+                fileCountText.textContent = `${filesToUpload.length} file dipilih`;
+                
+                fileListPreview.innerHTML = '';
+                
+                // Tampilkan maksimal 5 file pertama sebagai preview
+                const displayCount = Math.min(filesToUpload.length, 5);
+                for (let i = 0; i < displayCount; i++) {
+                    const file = filesToUpload[i];
+                    // Jika dari input folder, gunakan webkitRelativePath, jika file biasa gunakan name
+                    const path = file.webkitRelativePath || file.name;
+                    
+                    const div = document.createElement('div');
+                    div.className = 'flex items-center text-xs text-gray-400 mb-1 bg-gray-800 p-1.5 rounded';
+                    div.innerHTML = `<i class="fa-solid fa-file-code mr-2 text-gray-500"></i> <span class="truncate">${path}</span> <span class="ml-auto text-gray-600">${formatBytes(file.size)}</span>`;
+                    fileListPreview.appendChild(div);
+                }
+
+                if (filesToUpload.length > 5) {
+                    const div = document.createElement('div');
+                    div.className = 'text-xs text-gray-500 italic mt-1 text-center';
+                    div.textContent = `... dan ${filesToUpload.length - 5} file lainnya`;
+                    fileListPreview.appendChild(div);
+                }
+            }
+
+            function formatBytes(bytes, decimals = 2) {
+                if (!+bytes) return '0 Bytes';
+                const k = 1024;
+                const dm = decimals < 0 ? 0 : decimals;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+            }
+
+            // Hapus Pilihan
+            document.getElementById('clearFilesBtn').addEventListener('click', () => {
+                filesToUpload = [];
+                fileInput.value = '';
+                folderInput.value = '';
+                selectedFilesContainer.classList.add('hidden');
+            });
+
+            // Event Listeners untuk Input File
+            fileInput.addEventListener('change', (e) => handleFilesSelection(e.target.files));
+            folderInput.addEventListener('change', (e) => handleFilesSelection(e.target.files));
+
+            // Drag & Drop Events
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => dropZone.classList.add('active'), false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, () => dropZone.classList.remove('active'), false);
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                // Catatan: Drag & Drop folder memiliki keterbatasan di beberapa browser,
+                // input file biasa / webkitdirectory lebih andal.
+                handleFilesSelection(dt.files);
+            }, false);
+
+
+            // --- Logika Upload GitHub API ---
+            
+            // Baca file sebagai Base64
+            const readFileAsBase64 = (file) => {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        const base64String = reader.result.split(',')[1];
+                        resolve(base64String);
+                    };
+                    reader.onerror = error => reject(error);
+                    reader.readAsDataURL(file);
+                });
+            };
+
+            // Dapatkan SHA file jika file sudah ada (untuk update/overwrite)
+            async function getFileSha(owner, repo, path, branch, token) {
+                let url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+                if (branch) url += `?ref=${branch}`;
+
+                try {
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        return data.sha;
+                    }
+                    return null; // File belum ada
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            // Proses upload utama
+            uploadBtn.addEventListener('click', async () => {
+                // Validasi Konfigurasi
+                const config = {
+                    token: inputs.token.value.trim(),
+                    owner: inputs.owner.value.trim(),
+                    repo: inputs.repo.value.trim(),
+                    branch: inputs.branch.value.trim(),
+                    basePath: inputs.basePath.value.trim()
+                };
+
+                if (!config.token || !config.owner || !config.repo) {
+                    log("Mohon lengkapi Token, Owner, dan Repo.", "error");
+                    return;
+                }
+
+                if (filesToUpload.length === 0) {
+                    log("Belum ada file yang dipilih untuk diunggah.", "warning");
+                    return;
+                }
+
+                // Bersihkan folder base jika diakhiri dengan slash
+                if (config.basePath && config.basePath.endsWith('/')) {
+                    config.basePath = config.basePath.slice(0, -1);
+                }
+
+                // Ubah status UI
+                uploadBtn.disabled = true;
+                uploadBtnText.textContent = `Mengunggah (0/${filesToUpload.length})...`;
+                uploadLoader.classList.remove('hidden');
+                
+                log(`Memulai proses upload ${filesToUpload.length} file ke ${config.owner}/${config.repo}...`);
+
+                let successCount = 0;
+                let errorCount = 0;
+
+                for (let i = 0; i < filesToUpload.length; i++) {
+                    const file = filesToUpload[i];
+                    
+                    // Tentukan path di repository
+                    // Jika dari input folder (webkitRelativePath ada valuenya), gunakan itu. Jika tidak, pakai nama filenya saja.
+                    let relativeFilePath = file.webkitRelativePath || file.name;
+                    
+                    // Gabungkan dengan basePath jika user mengisinya
+                    let fullPath = config.basePath ? `${config.basePath}/${relativeFilePath}` : relativeFilePath;
+                    
+                    // API GitHub tidak menerima string yang diawali slash
+                    if (fullPath.startsWith('/')) fullPath = fullPath.substring(1);
+
+                    try {
+                        uploadBtnText.textContent = `Membaca ${i+1}/${filesToUpload.length}...`;
+                        const base64Content = await readFileAsBase64(file);
+                        
+                        log(`Menyiapkan: ${fullPath} (${formatBytes(file.size)})`);
+
+                        // Cek apakah file sudah ada (untuk mendapatkan SHA)
+                        const sha = await getFileSha(config.owner, config.repo, fullPath, config.branch, config.token);
+                        const isUpdate = sha !== null;
+
+                        const bodyData = {
+                            message: `${isUpdate ? 'Update' : 'Upload'} ${relativeFilePath} via Cloud Uploader`,
+                            content: base64Content
+                        };
+                        
+                        if (config.branch) bodyData.branch = config.branch;
+                        if (sha) bodyData.sha = sha; // Wajib disertakan jika mengupdate file yang sudah ada
+
+                        uploadBtnText.textContent = `Mengirim ${i+1}/${filesToUpload.length}...`;
+                        
+                        const response = await fetch(`https://api.github.com/repos/${config.owner}/${config.repo}/contents/${fullPath}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': `Bearer ${config.token}`,
+                                'Accept': 'application/vnd.github.v3+json',
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(bodyData)
+                        });
+
+                        const responseData = await response.json();
+
+                        if (!response.ok) {
+                            throw new Error(responseData.message || `HTTP Error ${response.status}`);
+                        }
+
+                        successCount++;
+                        log(`${isUpdate ? 'Diperbarui' : 'Dibuat'}: ${fullPath}`, 'success', responseData.content.html_url);
+
+                    } catch (error) {
+                        errorCount++;
+                        log(`Gagal mengunggah ${fullPath}: ${error.message}`, 'error');
+                        
+                        // Jika error Bad Credentials, hentikan sisa antrean
+                        if (error.message.includes('Bad credentials')) {
+                            log("Proses dihentikan. Token tidak valid.", 'error');
+                            break;
+                        }
+                    }
+                }
+
+                // Selesai
+                uploadBtn.disabled = false;
+                uploadBtnText.textContent = 'Mulai Upload';
+                uploadLoader.classList.add('hidden');
+                
+                if (errorCount === 0) {
+                    log(`Selesai! ${successCount} file berhasil diunggah.`, 'success');
+                } else {
+                    log(`Selesai dengan error. Berhasil: ${successCount}, Gagal: ${errorCount}`, 'warning');
+                }
+            });
+
+            // --- Fitur LocalStorage untuk kemudahan ---
+            const saveConfigBtn = document.getElementById('saveConfigBtn');
+            
+            // Muat konfigurasi yang tersimpan
+            const loadSavedConfig = () => {
+                const saved = localStorage.getItem('ghUploaderConfig');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    if (data.owner) inputs.owner.value = data.owner;
+                    if (data.repo) inputs.repo.value = data.repo;
+                    if (data.branch) inputs.branch.value = data.branch;
+                    if (data.basePath) inputs.basePath.value = data.basePath;
+                    // Token disengaja TIDAK dimuat otomatis demi keamanan, user harus input ulang atau gunakan password manager
+                }
+            };
+
+            saveConfigBtn.addEventListener('click', () => {
+                const dataToSave = {
+                    owner: inputs.owner.value.trim(),
+                    repo: inputs.repo.value.trim(),
+                    branch: inputs.branch.value.trim(),
+                    basePath: inputs.basePath.value.trim()
+                };
+                localStorage.setItem('ghUploaderConfig', JSON.stringify(dataToSave));
+                
+                // Ubah icon sementara sebagai feedback
+                const icon = saveConfigBtn.querySelector('i');
+                icon.className = 'fa-solid fa-check text-green-500 mr-1';
+                setTimeout(() => {
+                    icon.className = 'fa-solid fa-bookmark mr-1';
+                }, 2000);
+            });
+
+            loadSavedConfig();
+        });
+    </script>
+</body>
+</html>
