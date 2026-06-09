@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Chat Firebase</title>
+<style>
+        body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .chat-container { width: 100%; max-width: 450px; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; height: 80vh; }
+        .chat-header { background: #075e54; color: white; padding: 15px; font-weight: bold; text-align: center; }
+        .messages-box { flex: 1; padding: 15px; overflow-y: auto; background: #e5ddd5; display: flex; flex-direction: column; gap: 10px; }
+        .message { padding: 8px 12px; border-radius: 8px; max-width: 75%; word-wrap: break-word; font-size: 14px; }
+        .message.sender { background: #dcf8c6; align-self: flex-end; }
+        .message.receiver { background: white; align-self: flex-start; }
+        .message .user-id { font-size: 10px; color: #777; display: block; margin-bottom: 3px; }
+        .input-box { display: flex; border-top: 1px solid #ddd; padding: 10px; background: white; }
+        .input-box input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px; outline: none; }
+        .input-box button { background: #075e54; color: white; border: none; padding: 0 15px; margin-left: 5px; border-radius: 4px; cursor: pointer; }
+</style>
+  </head>
+  <body>
+
+	<div class="chat-container">
+	  <div class="chat-header">Grup Chat Publik (Firebase)</div>
+	  <div class="messages-box" id="messagesBox">
+	  </div>
+	  <form class="input-box" id="chatForm">
+        <input type="text" id="messageInput" placeholder="Ketik pesan..." autocomplete="off" required>
+        <button type="submit">Kirim</button>
+	  </form>
+	</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // 1. MASUKKAN KONFIGURASI FIREBASE KAMU DI SINI
+    const firebaseConfig = {
+        apiKey: "AIzaSyAIZwCXKW-tL3e6oDGOLLbrU9pD6lgrA6c",
+        authDomain: "asepmo-article.firebaseapp.com",
+        projectId: "asepmo-article",
+        storageBucket: "asepmo-article.firebasestorage.app",
+        messagingSenderId: "622595990822",
+        appId: "1:622595990822:web:514b840a8cfb503dd34de7",
+        measurementId: "G-HQV0SR7132"
+    };
+
+    // Inisialisasi Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUserId = null;
+
+    // 2. Login secara Anonim (Tanpa Email/Password)
+    signInAnonymously(auth).catch((error) => console.error("Gagal login anonim:", error));
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            currentUserId = user.uid;
+            console.log("Logged in sebagai:", currentUserId);
+            // Mulai dengarkan pesan setelah berhasil login
+            loadMessages();
+        }
+    });
+
+    // 3. Fungsi Mengirim Pesan ke Firestore
+    const chatForm = document.getElementById('chatForm');
+    const messageInput = document.getElementById('messageInput');
+
+    chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const pesanTeks = messageInput.value.trim();
+
+        if (pesanTeks && currentUserId) {
+            try {
+                // Menambahkan data ke koleksi "chats"
+                await addDoc(collection(db, "chats"), {
+                    userId: currentUserId,
+                    text: pesanTeks,
+                    timestamp: new Date() // Menyimpan waktu kirim
+                });
+                messageInput.value = ""; // Kosongkan input
+            } catch (err) {
+                console.error("Gagal mengirim pesan:", err);
+            }
+        }
+    });
+
+    // 4. Fungsi Mengambil Pesan secara Real-Time (onSnapshot)
+    function loadMessages() {
+        const messagesBox = document.getElementById('messagesBox');
+        
+        // Query: Ambil dari koleksi "chats", urutkan berdasarkan waktu (timestamp)
+        const q = query(collection(db, "chats"), orderBy("timestamp", "asc"));
+
+        // Listener real-time
+        onSnapshot(q, (snapshot) => {
+            messagesBox.innerHTML = ""; // Bersihkan box chat setiap ada perubahan
+
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                const messageEl = document.createElement('div');
+                
+                // Cek apakah pesan dikirim oleh diri sendiri atau orang lain
+                const tipeUser = data.userId === currentUserId ? 'sender' : 'receiver';
+                messageEl.className = `message ${tipeUser}`;
+                
+                // Tampilkan potongan ID user agar tahu jika dikirim orang berbeda
+                const shortId = data.userId ? data.userId.substring(0, 5) : "Anon";
+                
+                messageEl.innerHTML = `<span class="user-id">User-${shortId}</span>${data.text}`;
+                messagesBox.appendChild(messageEl);
+            });
+
+            // Otomatis scroll ke pesan paling bawah
+            messagesBox.scrollTop = messagesBox.scrollHeight;
+        });
+    }
+</script>
+  </body>
+</html>
