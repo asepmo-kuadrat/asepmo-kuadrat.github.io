@@ -1,0 +1,32 @@
+{
+  "kind": "blogger#postList",
+  "items": [
+    {
+      "kind": "blogger#post",
+      "id": "448180866518146355",
+      "blog": {
+        "id": "8759801514278165118"
+      },
+      "published": "2023-10-08T03:07:00-07:00",
+      "updated": "2023-10-08T03:07:48-07:00",
+      "url": "https://appme-story.blogspot.com/2023/10/welcome-to-appme-blog.html",
+      "selfLink": "https://www.googleapis.com/blogger/v3/blogs/8759801514278165118/posts/448180866518146355",
+      "title": "Welcome To AppMe Blog",
+      "content": "\u003cp\u003e&nbsp;AppMe Adalah Sebuah Aplikasi Berbasis Manajemen Dan Monitor.\u003c/p\u003e",
+      "author": {
+        "id": "03900532928557119345",
+        "displayName": "AppMe",
+        "url": "https://www.blogger.com/profile/03900532928557119345",
+        "image": {
+          "url": "//www.blogger.com/img/blogger_logo_round_35.png"
+        }
+      },
+      "replies": {
+        "totalItems": "0",
+        "selfLink": "https://www.googleapis.com/blogger/v3/blogs/8759801514278165118/posts/448180866518146355/comments"
+      },
+      "etag": "\"dGltZXN0YW1wOiAxNjk2NzU5NjY4NzkxCm9mZnNldDogLTI1MjAwMDAwCg\""
+    }
+  ],
+  "etag": "\"MjAyMy0xMC0wOFQxMDowNzo0OC43OTFa\""
+}
