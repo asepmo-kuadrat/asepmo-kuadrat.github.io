@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload File ke GitHub Repo</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 500px; }
+    input, button { display: block; width: 100%; margin-bottom: 15px; padding: 8px; }
+    #status { margin-top: 15px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <h2>Upload File ke GitHub</h2>
+
+  <label>GitHub Personal Access Token:</label>
+  <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxx">
+
+  <label>Username (Owner):</label>
+  <input type="text" id="ghOwner" placeholder="contoh: budi">
+
+  <label>Nama Repository:</label>
+  <input type="text" id="ghRepo" placeholder="contoh: my-repo">
+
+  <label>Pilih File:</label>
+  <input type="file" id="fileInput">
+
+  <button onclick="uploadToGitHub()">Upload ke Repository</button>
+
+  <div id="status"></div>
+
+  <script>
+    async function uploadToGitHub() {
+      const token = document.getElementById('ghToken').value;
+      const owner = document.getElementById('ghOwner').value;
+      const repo = document.getElementById('ghRepo').value;
+      const fileInput = document.getElementById('fileInput');
+      const statusDiv = document.getElementById('status');
+
+      // 1. Validasi input
+      if (!token || !owner || !repo || fileInput.files.length === 0) {
+        statusDiv.innerText = "Harap isi semua kolom dan pilih file!";
+        statusDiv.style.color = "red";
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const filePath = `uploads/${file.name}`; // File akan disimpan di folder 'uploads'
+      statusDiv.innerText = "Memproses file...";
+      statusDiv.style.color = "blue";
+
+      // 2. Membaca file dan mengubahnya ke Base64
+      const reader = new FileReader();
+      reader.onload = async function(event) {
+        // Hasil dari readAsDataURL adalah string seperti: "data:image/png;base64,iVBORw0KGgo..."
+        // Kita hanya mengambil bagian Base64-nya saja (setelah koma)
+        const base64Content = event.target.result.split(',')[1];
+
+        // 3. Menyiapkan data untuk GitHub API
+        const url = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
+        const bodyData = {
+          message: `Upload ${file.name} via GitHub Pages`,
+          content: base64Content
+        };
+
+        try {
+          statusDiv.innerText = "Mengunggah ke GitHub...";
+          
+          // 4. Mengirim request ke GitHub API
+          const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Accept': 'application/vnd.github.v3+json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(bodyData)
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Gagal mengunggah");
+          }
+
+          const data = await response.json();
+          statusDiv.innerHTML = `Sukses! File diunggah ke: <br><a href="${data.content.html_url}" target="_blank">${data.content.html_url}</a>`;
+          statusDiv.style.color = "green";
+
+        } catch (error) {
+          console.error(error);
+          statusDiv.innerText = `Error: ${error.message}`;
+          statusDiv.style.color = "red";
+        }
+      };
+
+      // Memulai proses pembacaan file sebagai Data URL (Base64)
+      reader.readAsDataURL(file);
+    }
+  </script>
+
+</body>
+</html>
