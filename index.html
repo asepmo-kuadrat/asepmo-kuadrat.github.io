@@ -329,7 +329,46 @@
     </footer>
 
 <script>
-        
+      async function createFile() {
+    const OWNER = "asepmo-kuadrat";
+    const REPO = "asepmo-kuadrat.github.io";
+    const PATH = "data-baru.txt"; // Lokasi dan nama file yang ingin dibuat
+    const TOKEN = "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"; // JANGAN DIEXPOSE DI FRONTEND PRODUKSI!
+
+    // Konten isi file yang ingin dibuat
+    const isiFile = "Halo! File ini dibuat otomatis menggunakan JavaScript via GitHub API.";
+    
+    // GitHub API mewajibkan konten teks di-encode ke Base64
+    const kontenBase64 = btoa(unescape(encodeURIComponent(isiFile)));
+
+    const URL = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}`;
+
+    try {
+        const response = await fetch(URL, {
+            method: "PUT",
+            headers: {
+                "Authorization": `Bearer ${TOKEN}`,
+                "Content-Type": "application/json",
+                "Accept": "application/vnd.github+json"
+            },
+            body: JSON.stringify({
+                message: "Menciptakan file baru via JavaScript API", // Pesan Commit Git
+                content: kontenBase64 // Isi file format Base64
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert("File berhasil dibuat di GitHub Repo!");
+            console.log(data);
+        } else {
+            alert("Gagal membuat file: " + data.message);
+        }
+    } catch (error) {
+        console.error("Terjadi eror:", error);
+    }
+}  
         // Mobile menu toggle
         const btn = document.getElementById('mobile-menu-btn');
         const menu = document.getElementById('mobile-menu');
@@ -376,6 +415,7 @@
         window.addEventListener("scroll", reveal);
         // Trigger once on load
         reveal();
+	createFile()
 </script>
   </body>
 </html>
