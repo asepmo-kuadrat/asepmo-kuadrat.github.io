@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub File Manager</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            bg: '#0d1117',
+                            panel: '#161b22',
+                            border: '#30363d',
+                            hover: '#21262d',
+                            text: '#c9d1d9',
+                            muted: '#8b949e'
+                        },
+                        accent: {
+                            blue: '#58a6ff',
+                            red: '#f85149',
+                            green: '#238636'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #8b949e; }
+        
+        body { background-color: #0d1117; color: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+        
+        .glass-panel {
+            background: rgba(22, 27, 34, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid #30363d;
+        }
+
+        /* Toast Animation */
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .toast-enter { animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .toast-exit { animation: fadeOut 0.3s ease-out forwards; }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden text-sm">
+
+    <!-- Navbar / Header -->
+    <header class="h-14 flex items-center justify-between px-4 border-b border-dark-border bg-dark-panel z-10 shrink-0">
+        <div class="flex items-center space-x-3">
+            <i class="fa-brands fa-github text-2xl text-white"></i>
+            <h1 class="text-base font-semibold text-white tracking-wide">Repo Manager</h1>
+        </div>
+        
+        <div class="flex flex-1 mx-8">
+            <!-- Breadcrumbs -->
+            <div id="breadcrumbs" class="flex items-center space-x-1 text-dark-text overflow-x-auto whitespace-nowrap hide-scrollbar p-1 rounded-md bg-dark-bg border border-dark-border w-full px-3">
+                <span class="text-dark-muted italic">Menunggu konfigurasi...</span>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-2 shrink-0">
+            <button onclick="openConfigModal()" class="px-3 py-1.5 rounded-md hover:bg-dark-hover border border-transparent hover:border-dark-border transition-colors text-dark-muted hover:text-white flex items-center">
+                <i class="fa-solid fa-gear mr-2"></i> Konfigurasi
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex overflow-hidden relative">
+        <!-- Sidebar (Opsional/Bisa untuk Tree View nanti, saat ini disembunyikan untuk fokus ke tabel utama) -->
+        
+        <!-- File Explorer Area -->
+        <div class="flex-1 flex flex-col bg-dark-bg">
+            <!-- Toolbar Area -->
+            <div class="h-12 border-b border-dark-border bg-dark-panel flex items-center justify-between px-4 shrink-0">
+                <div class="flex space-x-2" id="folderStats">
+                    <span class="text-dark-muted text-xs"><i class="fa-solid fa-spinner fa-spin mr-1 hidden" id="mainLoader"></i> <span id="itemCount">0 items</span></span>
+                </div>
+                <div class="flex space-x-2">
+                    <button onclick="refreshCurrentPath()" class="px-3 py-1.5 rounded-md bg-dark-bg border border-dark-border hover:bg-dark-hover hover:text-white transition-colors">
+                        <i class="fa-solid fa-rotate-right"></i> Refresh
+                    </button>
+                    <!-- Input file hidden untuk upload -->
+                    <input type="file" id="fileUploadInput" class="hidden" multiple onchange="handleFileUpload(event)">
+                    <button onclick="document.getElementById('fileUploadInput').click()" class="px-3 py-1.5 rounded-md bg-accent-green hover:bg-[#2ea043] text-white border border-[rgba(240,246,252,0.1)] transition-colors shadow-sm font-medium flex items-center">
+                        <i class="fa-solid fa-cloud-arrow-up mr-2"></i> Upload File
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table Header -->
+            <div class="grid grid-cols-12 gap-4 px-4 py-2 border-b border-dark-border bg-dark-bg text-dark-muted font-semibold text-xs uppercase tracking-wider shrink-0">
+                <div class="col-span-6 md:col-span-7">Nama</div>
+                <div class="col-span-2 hidden md:block">Ukuran</div>
+                <div class="col-span-4 md:col-span-3 text-right">Aksi</div>
+            </div>
+
+            <!-- File List Container -->
+            <div id="fileList" class="flex-1 overflow-y-auto pb-10">
+                <!-- Data akan di-render di sini oleh JS -->
+                <div class="flex flex-col items-center justify-center h-full text-dark-muted mt-20">
+                    <i class="fa-brands fa-github text-6xl mb-4 opacity-20"></i>
+                    <p class="text-lg">Silakan atur konfigurasi terlebih dahulu.</p>
+                    <button onclick="openConfigModal()" class="mt-4 px-4 py-2 bg-dark-panel border border-dark-border rounded-md hover:bg-dark-hover text-white transition">Buka Pengaturan</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- 1. Config Modal -->
+    <div id="configModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex items-center justify-center">
+        <div class="glass-panel w-[450px] rounded-xl shadow-2xl overflow-hidden transform scale-95 transition-transform duration-200" id="configModalContent">
+            <div class="px-6 py-4 border-b border-dark-border flex justify-between items-center bg-dark-panel">
+                <h2 class="text-lg font-semibold text-white">Konfigurasi Repository</h2>
+                <button onclick="closeConfigModal()" class="text-dark-muted hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-dark-muted mb-1">GitHub Token (PAT)</label>
+                    <input type="password" id="cfgToken" class="w-full bg-dark-bg border border-dark-border rounded-md px-3 py-2 text-white focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue" placeholder="ghp_xxxxxxxxxxxx">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-dark-muted mb-1">Owner / Username</label>
+                        <input type="text" id="cfgOwner" class="w-full bg-dark-bg border border-dark-border rounded-md px-3 py-2 text-white focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue" placeholder="torvalds">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-dark-muted mb-1">Repository</label>
+                        <input type="text" id="cfgRepo" class="w-full bg-dark-bg border border-dark-border rounded-md px-3 py-2 text-white focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue" placeholder="linux">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-dark-muted mb-1">Branch (Opsional)</label>
+                    <input type="text" id="cfgBranch" class="w-full bg-dark-bg border border-dark-border rounded-md px-3 py-2 text-white focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue" placeholder="main">
+                </div>
+                <button onclick="saveConfigAndConnect()" class="w-full mt-2 bg-accent-blue hover:bg-blue-500 text-white font-medium py-2 rounded-md transition">Simpan & Hubungkan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. File Viewer / Editor Modal -->
+    <div id="editorModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 md:p-8">
+        <div class="bg-dark-panel border border-dark-border rounded-xl shadow-2xl flex flex-col w-full h-full max-w-6xl max-h-[90vh]">
+            <!-- Header -->
+            <div class="px-4 py-3 border-b border-dark-border flex justify-between items-center bg-[#010409] rounded-t-xl shrink-0">
+                <div class="flex items-center space-x-3">
+                    <i id="editorIcon" class="fa-solid fa-file-code text-dark-muted"></i>
+                    <h2 id="editorFileName" class="font-medium text-white">filename.js</h2>
+                    <span id="editorFileSize" class="text-xs px-2 py-0.5 bg-dark-border rounded text-dark-muted">0 KB</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button id="btnSaveEdit" onclick="saveEditedFile()" class="px-3 py-1.5 bg-accent-green hover:bg-[#2ea043] text-white rounded-md text-xs font-medium transition hidden">
+                        <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan
+                    </button>
+                    <button onclick="closeEditor()" class="p-1.5 text-dark-muted hover:text-accent-red transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+                </div>
+            </div>
+            <!-- Body -->
+            <div class="flex-1 overflow-hidden relative bg-dark-bg rounded-b-xl" id="editorBody">
+                <!-- Loader -->
+                <div id="editorLoader" class="absolute inset-0 flex flex-col items-center justify-center bg-dark-bg z-10">
+                    <i class="fa-solid fa-circle-notch fa-spin text-3xl text-accent-blue mb-3"></i>
+                    <p class="text-dark-muted">Memuat konten file...</p>
+                </div>
+                <!-- Textarea for Code/Text -->
+                <textarea id="fileTextarea" class="w-full h-full bg-dark-bg text-[#e6edf3] p-4 font-mono text-sm focus:outline-none resize-none hidden" spellcheck="false"></textarea>
+                <!-- Image Viewer -->
+                <div id="imageViewer" class="w-full h-full hidden flex items-center justify-center p-4 bg-[url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYNgfQEhQGHAAAwXMBwkMWI3ABmAyRzUQB4wMowbQ1QBS00waMDIQBAAw3B9g3f91RQAAAABJRU5ErkJggg==')]">
+                    <img id="imagePreview" class="max-w-full max-h-full shadow-2xl border border-dark-border object-contain" src="">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+
+    <!-- ================= SCRIPT LOGIC ================= -->
+    <script>
+        // --- STATE MANAGEMENT ---
+        let config = {
+            token: localStorage.getItem('gh_mgr_token') || '',
+            owner: localStorage.getItem('gh_mgr_owner') || '',
+            repo: localStorage.getItem('gh_mgr_repo') || '',
+            branch: localStorage.getItem('gh_mgr_branch') || ''
+        };
+        
+        let currentPath = ''; // Root is empty string
+        let currentFiles = [];
+        
+        // State untuk Editor
+        let activeFile = {
+            path: '',
+            sha: '',
+            name: '',
+            content: '',
+            isText: true
+        };
+
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', () => {
+            if (config.token && config.owner && config.repo) {
+                loadDirectory(currentPath);
+            } else {
+                openConfigModal();
+            }
+        });
+
+        // --- UTILS: BASE64 UTF-8 SAFE ---
+        // API GitHub butuh Base64, btoa/atob bawaan browser crash jika ketemu karakter unicode/emoji.
+        function b64EncodeUnicode(str) {
+            return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,
+                function toSolidBytes(match, p1) {
+                    return String.fromCharCode('0x' + p1);
+            }));
+        }
+
+        function b64DecodeUnicode(str) {
+            return decodeURIComponent(atob(str).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+        }
+
+        function formatBytes(bytes, decimals = 2) {
+            if (!+bytes) return '0 B';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+        }
+
+        function getFileIcon(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            const iconMap = {
+                'js': 'fa-js text-yellow-400', 'ts': 'fa-js text-blue-400', 'html': 'fa-html5 text-orange-500', 
+                'css': 'fa-css3-alt text-blue-500', 'json': 'fa-brackets-curly text-green-400', 'md': 'fa-markdown text-white',
+                'py': 'fa-python text-blue-400', 'java': 'fa-java text-red-500', 'php': 'fa-php text-indigo-400',
+                'jpg': 'fa-image text-purple-400', 'jpeg': 'fa-image text-purple-400', 'png': 'fa-image text-purple-400', 
+                'gif': 'fa-image text-purple-400', 'svg': 'fa-image text-purple-400', 'pdf': 'fa-file-pdf text-red-500',
+                'zip': 'fa-file-zipper text-gray-400', 'rar': 'fa-file-zipper text-gray-400'
+            };
+            return iconMap[ext] ? `fa-brands ${iconMap[ext]}` : (iconMap[ext]?.includes('fa-') ? `fa-solid ${iconMap[ext]}` : 'fa-solid fa-file text-dark-muted');
+        }
+
+        function isImage(filename) {
+            return /\.(jpg|jpeg|png|gif|svg|webp|ico)$/i.test(filename);
+        }
+
+        // --- TOAST NOTIFICATIONS ---
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            let colors, icon;
+            if (type === 'success') { colors = 'bg-[#1f2e22] border-[#2ea043] text-[#3fb950]'; icon = 'fa-check-circle'; }
+            else if (type === 'error') { colors = 'bg-[#3b1d1e] border-[#f85149] text-[#ff7b72]'; icon = 'fa-circle-xmark'; }
+            else { colors = 'bg-dark-panel border-dark-border text-white'; icon = 'fa-info-circle'; }
+
+            toast.className = `toast-enter flex items-center space-x-3 px-4 py-3 rounded-lg border shadow-lg ${colors} pointer-events-auto`;
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+            
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.replace('toast-enter', 'toast-exit');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // --- API REQUEST WRAPPER ---
+        async function githubFetch(endpoint, options = {}) {
+            let url = `https://api.github.com/repos/${config.owner}/${config.repo}${endpoint}`;
+            if (config.branch && options.method !== 'PUT' && options.method !== 'DELETE') {
+                url += `?ref=${config.branch}`;
+            }
+
+            const headers = {
+                'Authorization': `Bearer ${config.token}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json'
+            };
+
+            const response = await fetch(url, { ...options, headers });
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || `HTTP Error ${response.status}`);
+            }
+            return data;
+        }
+
+        // --- CORE FUNCTIONS ---
+        async function loadDirectory(path) {
+            currentPath = path;
+            const listEl = document.getElementById('fileList');
+            document.getElementById('mainLoader').classList.remove('hidden');
+            
+            renderBreadcrumbs();
+
+            try {
+                // Endpoint untuk contents
+                let reqPath = path ? `/contents/${path}` : '/contents';
+                const data = await githubFetch(reqPath);
+                
+                // GitHub API mengembalikan object jika itu file, array jika itu directory
+                if (Array.isArray(data)) {
+                    currentFiles = data.sort((a, b) => {
+                        if (a.type === b.type) return a.name.localeCompare(b.name);
+                        return a.type === 'dir' ? -1 : 1; // Folder di atas
+                    });
+                    renderFileList();
+                } else {
+                    // Jika path ternyata file (seharusnya tidak terjadi pada navigasi normal)
+                    showToast('Path adalah file, bukan direktori.', 'error');
+                }
+            } catch (error) {
+                listEl.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full text-red-400 mt-20">
+                        <i class="fa-solid fa-triangle-exclamation text-4xl mb-3"></i>
+                        <p>Gagal memuat direktori: ${error.message}</p>
+                    </div>`;
+                showToast(error.message, 'error');
+            } finally {
+                document.getElementById('mainLoader').classList.add('hidden');
+            }
+        }
+
+        function renderBreadcrumbs() {
+            const bcEl = document.getElementById('breadcrumbs');
+            bcEl.innerHTML = '';
+            
+            // Home Repo (Root)
+            const homeBtn = document.createElement('button');
+            homeBtn.className = "hover:text-white transition px-1";
+            homeBtn.innerHTML = `<i class="fa-solid fa-house mr-1"></i> ${config.repo}`;
+            homeBtn.onclick = () => loadDirectory('');
+            bcEl.appendChild(homeBtn);
+
+            if (!currentPath) return;
+
+            const parts = currentPath.split('/');
+            let accumPath = '';
+
+            parts.forEach((part, index) => {
+                const sep = document.createElement('span');
+                sep.className = "text-dark-border mx-1";
+                sep.innerText = "/";
+                bcEl.appendChild(sep);
+
+                accumPath += (index === 0 ? part : '/' + part);
+                const currentAccum = accumPath; // Closure fix
+
+                const btn = document.createElement('button');
+                btn.className = index === parts.length - 1 ? "text-white font-medium px-1" : "hover:text-white transition px-1";
+                btn.innerText = part;
+                btn.onclick = () => loadDirectory(currentAccum);
+                bcEl.appendChild(btn);
+            });
+        }
+
+        function renderFileList() {
+            const listEl = document.getElementById('fileList');
+            document.getElementById('itemCount').innerText = `${currentFiles.length} item(s)`;
+            listEl.innerHTML = '';
+
+            if (currentFiles.length === 0) {
+                listEl.innerHTML = `<div class="text-center text-dark-muted mt-10 p-4 border-2 border-dashed border-dark-border mx-4 rounded-xl">Direktori ini kosong.</div>`;
+                return;
+            }
+
+            currentFiles.forEach(file => {
+                const row = document.createElement('div');
+                row.className = "grid grid-cols-12 gap-4 px-4 py-2.5 border-b border-dark-border hover:bg-dark-hover transition group items-center";
+                
+                // Icon & Name (Clickable)
+                const isDir = file.type === 'dir';
+                const iconClass = isDir ? 'fa-solid fa-folder text-accent-blue' : getFileIcon(file.name);
+                
+                const nameCol = document.createElement('div');
+                nameCol.className = "col-span-6 md:col-span-7 flex items-center cursor-pointer overflow-hidden";
+                nameCol.innerHTML = `
+                    <i class="${iconClass} text-lg w-6 text-center shrink-0 mr-3"></i>
+                    <span class="truncate font-medium ${isDir ? 'text-accent-blue group-hover:underline' : 'text-dark-text group-hover:text-white'}">${file.name}</span>
+                `;
+                nameCol.onclick = () => {
+                    if (isDir) loadDirectory(file.path);
+                    else openFileViewer(file);
+                };
+
+                // Size
+                const sizeCol = document.createElement('div');
+                sizeCol.className = "col-span-2 hidden md:block text-dark-muted text-xs";
+                sizeCol.innerText = isDir ? '--' : formatBytes(file.size);
+
+                // Actions
+                const actCol = document.createElement('div');
+                actCol.className = "col-span-4 md:col-span-3 text-right space-x-1 sm:space-x-2 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity";
+                
+                if (!isDir) {
+                    actCol.innerHTML = `
+                        <button onclick="openFileViewer({path:'${file.path}', name:'${file.name}', sha:'${file.sha}', size:${file.size}})" class="p-1.5 text-dark-muted hover:text-white bg-dark-bg border border-dark-border rounded" title="Lihat/Edit"><i class="fa-solid fa-eye"></i></button>
+                        <button onclick="downloadFile('${file.download_url}', '${file.name}')" class="p-1.5 text-dark-muted hover:text-accent-green bg-dark-bg border border-dark-border rounded" title="Unduh"><i class="fa-solid fa-download"></i></button>
+                        <button onclick="confirmDelete('${file.path}', '${file.sha}', false)" class="p-1.5 text-dark-muted hover:text-accent-red bg-dark-bg border border-dark-border rounded" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
+                    `;
+                } else {
+                    // Folder tidak bisa dihapus langsung dari REST API secara mudah tanpa recursi, jadi dinonaktifkan atau warning
+                    actCol.innerHTML = `
+                        <button onclick="alert('Untuk menghapus folder melalui API statis, Anda harus menghapus semua file di dalamnya satu per satu.')" class="p-1.5 text-dark-muted hover:text-accent-red bg-dark-bg border border-dark-border rounded" title="Hapus Folder"><i class="fa-solid fa-trash-can"></i></button>
+                    `;
+                }
+
+                row.appendChild(nameCol);
+                row.appendChild(sizeCol);
+                row.appendChild(actCol);
+                listEl.appendChild(row);
+            });
+        }
+
+        // --- FILE VIEWER & EDITOR ---
+        async function openFileViewer(fileStub) {
+            const modal = document.getElementById('editorModal');
+            const loader = document.getElementById('editorLoader');
+            const textarea = document.getElementById('fileTextarea');
+            const imgViewer = document.getElementById('imageViewer');
+            const imgPreview = document.getElementById('imagePreview');
+            const btnSave = document.getElementById('btnSaveEdit');
+            
+            // Set UI awal
+            document.getElementById('editorFileName').innerText = fileStub.name;
+            document.getElementById('editorFileSize').innerText = formatBytes(fileStub.size);
+            document.getElementById('editorIcon').className = getFileIcon(fileStub.name) + " text-lg";
+            
+            textarea.classList.add('hidden');
+            imgViewer.classList.add('hidden');
+            btnSave.classList.add('hidden');
+            loader.classList.remove('hidden');
+            modal.classList.remove('hidden');
+
+            activeFile.path = fileStub.path;
+            activeFile.sha = fileStub.sha;
+            activeFile.name = fileStub.name;
+
+            try {
+                // Fetch file content via API
+                const data = await githubFetch(`/contents/${fileStub.path}`);
+                
+                // GitHub mengembalikan base64
+                if (isImage(fileStub.name)) {
+                    activeFile.isText = false;
+                    imgPreview.src = `data:image/${fileStub.name.split('.').pop()};base64,${data.content.replace(/\n/g, '')}`;
+                    loader.classList.add('hidden');
+                    imgViewer.classList.remove('hidden');
+                } else {
+                    // Anggap sebagai text/code
+                    activeFile.isText = true;
+                    // Bersihkan newline dari base64 response API GitHub sebelum decode
+                    const rawB64 = data.content.replace(/\n/g, '');
+                    activeFile.content = b64DecodeUnicode(rawB64);
+                    
+                    textarea.value = activeFile.content;
+                    loader.classList.add('hidden');
+                    textarea.classList.remove('hidden');
+                    btnSave.classList.remove('hidden'); // Tampilkan tombol save untuk text
+                }
+
+            } catch (error) {
+                loader.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-3xl text-accent-red mb-3"></i><p class="text-white">Gagal memuat file</p><p class="text-xs text-dark-muted mt-1">${error.message}</p>`;
+            }
+        }
+
+        async function saveEditedFile() {
+            const newContent = document.getElementById('fileTextarea').value;
+            const btnSave = document.getElementById('btnSaveEdit');
+            
+            btnSave.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Menyimpan...`;
+            btnSave.disabled = true;
+
+            try {
+                const b64Content = b64EncodeUnicode(newContent);
+                const bodyPayload = {
+                    message: `Update ${activeFile.name} via Web File Manager`,
+                    content: b64Content,
+                    sha: activeFile.sha
+                };
+                if (config.branch) bodyPayload.branch = config.branch;
+
+                const res = await githubFetch(`/contents/${activeFile.path}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(bodyPayload)
+                });
+
+                showToast('File berhasil disimpan!', 'success');
+                activeFile.sha = res.content.sha; // Update SHA in case they edit again
+                // Refresh list di background
+                refreshCurrentPath(); 
+                closeEditor();
+            } catch (error) {
+                showToast(`Gagal menyimpan: ${error.message}`, 'error');
+            } finally {
+                btnSave.innerHTML = `<i class="fa-solid fa-floppy-disk mr-1"></i> Simpan`;
+                btnSave.disabled = false;
+            }
+        }
+
+        function closeEditor() {
+            document.getElementById('editorModal').classList.add('hidden');
+            document.getElementById('fileTextarea').value = '';
+            document.getElementById('imagePreview').src = '';
+        }
+
+        // --- UPLOAD ---
+        async function handleFileUpload(event) {
+            const files = event.target.files;
+            if (files.length === 0) return;
+
+            showToast(`Mengunggah ${files.length} file...`);
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                try {
+                    const base64Content = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result.split(',')[1]);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(file);
+                    });
+
+                    // Cek apakah file sudah ada di dir ini
+                    const targetPath = currentPath ? `${currentPath}/${file.name}` : file.name;
+                    let existingSha = null;
+                    const existingFile = currentFiles.find(f => f.name === file.name);
+                    if (existingFile) existingSha = existingFile.sha;
+
+                    const bodyPayload = {
+                        message: `Upload ${file.name} via Web File Manager`,
+                        content: base64Content
+                    };
+                    if (existingSha) bodyPayload.sha = existingSha;
+                    if (config.branch) bodyPayload.branch = config.branch;
+
+                    await githubFetch(`/contents/${targetPath}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(bodyPayload)
+                    });
+
+                    showToast(`Berhasil upload: ${file.name}`, 'success');
+                } catch (error) {
+                    showToast(`Gagal upload ${file.name}: ${error.message}`, 'error');
+                }
+            }
+            
+            // Reset input file
+            event.target.value = '';
+            refreshCurrentPath();
+        }
+
+        // --- DOWNLOAD ---
+        function downloadFile(url, filename) {
+            if (!url) {
+                showToast('URL Download tidak tersedia', 'error');
+                return;
+            }
+            // Buat elemen a tersembunyi
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.target = '_blank'; // Sebagai fallback
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast('Memulai unduhan...', 'info');
+        }
+
+        // --- DELETE ---
+        async function confirmDelete(path, sha, isDir) {
+            if (isDir) {
+                alert("Folder deletion is not directly supported here.");
+                return;
+            }
+            
+            if (!confirm(`Apakah Anda yakin ingin menghapus file:\n${path} ?\n\nTindakan ini tidak dapat dibatalkan.`)) {
+                return;
+            }
+
+            try {
+                const bodyPayload = {
+                    message: `Delete ${path} via Web File Manager`,
+                    sha: sha
+                };
+                if (config.branch) bodyPayload.branch = config.branch;
+
+                await githubFetch(`/contents/${path}`, {
+                    method: 'DELETE',
+                    body: JSON.stringify(bodyPayload)
+                });
+
+                showToast('File berhasil dihapus.', 'success');
+                refreshCurrentPath();
+            } catch (error) {
+                showToast(`Gagal menghapus: ${error.message}`, 'error');
+            }
+        }
+
+        // --- UTILS ---
+        function refreshCurrentPath() {
+            loadDirectory(currentPath);
+        }
+
+        // --- CONFIG MODAL LOGIC ---
+        function openConfigModal() {
+            document.getElementById('cfgToken').value = config.token;
+            document.getElementById('cfgOwner').value = config.owner;
+            document.getElementById('cfgRepo').value = config.repo;
+            document.getElementById('cfgBranch').value = config.branch;
+            
+            const modal = document.getElementById('configModal');
+            const content = document.getElementById('configModalContent');
+            modal.classList.remove('hidden');
+            // Sedikit delay untuk animasi scale
+            setTimeout(() => {
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeConfigModal() {
+            const modal = document.getElementById('configModal');
+            const content = document.getElementById('configModalContent');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+        function saveConfigAndConnect() {
+            const t = document.getElementById('cfgToken').value.trim();
+            const o = document.getElementById('cfgOwner').value.trim();
+            const r = document.getElementById('cfgRepo').value.trim();
+            const b = document.getElementById('cfgBranch').value.trim();
+
+            if (!t || !o || !r) {
+                alert('Token, Owner, dan Repository wajib diisi!');
+                return;
+            }
+
+            config.token = t;
+            config.owner = o;
+            config.repo = r;
+            config.branch = b;
+
+            localStorage.setItem('gh_mgr_token', t);
+            localStorage.setItem('gh_mgr_owner', o);
+            localStorage.setItem('gh_mgr_repo', r);
+            localStorage.setItem('gh_mgr_branch', b);
+
+            closeConfigModal();
+            showToast('Konfigurasi disimpan. Menghubungkan...', 'info');
+            currentPath = ''; // Reset ke root
+            loadDirectory('');
+        }
+
+        // Close modals on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeEditor();
+                closeConfigModal();
+            }
+        });
+    </script>
+</body>
+</html>
