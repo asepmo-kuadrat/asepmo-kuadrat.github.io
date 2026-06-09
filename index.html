@@ -330,44 +330,51 @@
 
 <script>
       async function createFile() {
-    const OWNER = "asepmo-kuadrat";
-    const REPO = "asepmo-kuadrat.github.io";
-    const PATH = "upload/data-baru.txt"; // Lokasi dan nama file yang ingin dibuat
-    const TOKEN = "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"; // JANGAN DIEXPOSE DI FRONTEND PRODUKSI!
+    co// Konfigurasi utama
+const GITHUB_TOKEN = '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';
+const OWNER = 'asepmo-kuadrat';
+const REPO = 'asepmo-kuadrat.github.io';
+const FILE_PATH = 'upload/file-baru.txt'; // Contoh: folder/test.txt
 
-    // Konten isi file yang ingin dibuat
-    const isiFile = "Halo! File ini dibuat otomatis menggunakan JavaScript via GitHub API.";
-    
-    // GitHub API mewajibkan konten teks di-encode ke Base64
-    const kontenBase64 = btoa(unescape(encodeURIComponent(isiFile)));
+async function createFileOnGitHub() {
+  const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE_PATH}`;
+  
+  // Isi file yang ingin dibuat
+  const fileContent = "Halo, ini adalah teks yang dibuat melalui API JavaScript!";
+  
+  // GitHub API membutuhkan file content dalam format Base64
+  const base64Content = Buffer.from(fileContent).toString('base64');
 
-    const URL = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}`;
+  const bodyData = {
+    message: "feat: menambahkan file baru via API", // Pesan commit
+    content: base64Content
+  };
 
-    try {
-        const response = await fetch(URL, {
-            method: "PUT",
-            headers: {
-                "Authorization": `Bearer ${TOKEN}`,
-                "Content-Type": "application/json",
-                "Accept": "application/vnd.github+json"
-            },
-            body: JSON.stringify({
-                message: "Menciptakan file baru via JavaScript API", // Pesan Commit Git
-                content: kontenBase64 // Isi file format Base64
-            })
-        });
+  try {
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${GITHUB_TOKEN}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyData)
+    });
 
-        const data = await response.json();
-
-        if (response.ok) {
-            alert("File berhasil dibuat di GitHub Repo!");
-            console.log(data);
-        } else {
-            alert("Gagal membuat file: " + data.message);
-        }
-    } catch (error) {
-        console.error("Terjadi eror:", error);
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} - ${response.statusText}`);
     }
+
+    const data = await response.json();
+    console.log("File berhasil dibuat!");
+    console.log("URL File:", data.content.html_url);
+
+  } catch (error) {
+    console.error("Gagal membuat file:", error);
+  }
+}
+
+createFileOnGitHub();
 }  
         // Mobile menu toggle
         const btn = document.getElementById('mobile-menu-btn');
@@ -415,7 +422,6 @@
         window.addEventListener("scroll", reveal);
         // Trigger once on load
         reveal();
-	createFile()
 </script>
   </body>
 </html>
