@@ -331,7 +331,7 @@
 <script>
       async function createFile() {
     co// Konfigurasi utama
-const GITHUB_TOKEN = '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';
+const GITHUB_TOKEN = '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';
 const OWNER = 'asepmo-kuadrat';
 const REPO = 'asepmo-kuadrat.github.io';
 const FILE_PATH = 'upload/file-baru.txt'; // Contoh: folder/test.txt
@@ -374,8 +374,8 @@ async function createFileOnGitHub() {
   }
 }
 
-createFileOnGitHub();
-}  
+
+
         // Mobile menu toggle
         const btn = document.getElementById('mobile-menu-btn');
         const menu = document.getElementById('mobile-menu');
@@ -422,6 +422,7 @@ createFileOnGitHub();
         window.addEventListener("scroll", reveal);
         // Trigger once on load
         reveal();
+		  createFileOnGitHub();
 </script>
   </body>
 </html>
