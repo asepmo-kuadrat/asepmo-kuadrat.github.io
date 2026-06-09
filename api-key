@@ -9,7 +9,7 @@ Client Secret : e8e9220e7694fa287d29e9f2c34a05a921eeac22
 Private Key : 
 
 Token : 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
-Token 2 : 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
+Token 2 : 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
 Gemini Api Key :
 curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent" \
   -H 'Content-Type: application/json' \
