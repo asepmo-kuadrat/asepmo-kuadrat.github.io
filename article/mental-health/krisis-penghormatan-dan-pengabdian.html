@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- AsepMo Web AI Gemini Creator-->
+	<title>AsepMo Article | Harmoni Keteladanan - Krisis Penghormatan & Pengabdian</title>
+	<meta name="generator" content="Gemini Canvas Pro"/>
+	<meta property="og:title" content="AsepMo"/>
+	<meta property="og:locale" content="en_US"/>
+	<meta name="description" content="AsepMo, Sang Pengusaha Yang Sedang Mengembangkan Usahanya Di Bidang Arsitektur Rumah Mewah Minimalis."/>
+	<meta property="og:description" content="AsepMo, Sang Pengusaha Yang Sedang Mengembangkan Usahanya Di Bidang Arsitektur Rumah Mewah Minimalis."/>
+	<meta property="og:url" content="https://asepmo-kuadrat.github.io/"/>
+	<meta property="og:site_name" content="AsepMo"/>
+    <link rel="canonical" href="https://asepmo-kuadrat.github.io/"/>
+    <link rel="shortcut icon" href="favicon.ico"/>
+	
+	<!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+<script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fdfcf7',
+                            100: '#fcfaf0',
+                            200: '#f7f2d5',
+                            500: '#d4af37', // Gold accent
+                            800: '#78350f',
+                            900: '#451a03',
+                        }
+                    }
+                }
+            }
+        }
+</script>
+    <!-- Google Fonts: Inter and Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #b45309 0%, #f59e0b 50%, #d97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .dark .gold-gradient-text {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #fcd34d 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+</style>
+  </head>
+  <body class="bg-stone-50 text-stone-800 dark:bg-stone-950 dark:text-stone-100 font-sans transition-colors duration-300">
+
+    <!-- Reading Progress Bar -->
+    <div class="fixed top-0 left-0 w-full h-1 bg-stone-200 dark:bg-stone-800 z-50">
+	  <div id="progressBar" class="h-full bg-amber-500 w-0 transition-all duration-100"></div>
+    </div>
+
+    <!-- Sticky Navigation -->
+    <nav class="sticky top-0 z-40 bg-stone-50/80 dark:bg-stone-950/80 backdrop-blur-md border-b border-stone-200/50 dark:border-stone-800/50 transition-colors">
+	  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="flex items-center justify-between h-16">
+		  <div class="flex items-center space-x-2">
+			<span class="text-amber-500 text-2xl font-serif">⚜</span>
+			<span class="font-serif font-bold text-lg tracking-wide bg-gradient-to-r from-stone-900 to-stone-600 dark:from-stone-100 dark:to-stone-400 bg-clip-text text-transparent">Harmoni Keteladanan</span>
+		  </div>
+		  <div class="hidden md:flex space-x-6 text-sm font-medium">
+			<a href="#hero" class="hover:text-amber-500 transition-colors">Beranda</a>
+			<a href="#pondasi" class="hover:text-amber-500 transition-colors">Pondasi</a>
+			<a href="#artikel" class="hover:text-amber-500 transition-colors">Artikel Utama</a>
+			<a href="#kuis" class="hover:text-amber-500 transition-colors">Kuis Refleksi</a>
+			<a href="#komitmen" class="hover:text-amber-500 transition-colors">Komitmen Keluarga</a>
+		  </div>
+		  <div class="flex items-center space-x-4">
+			<!-- Theme Toggle Button -->
+			<button id="themeToggle" class="p-2 rounded-full hover:bg-stone-200 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 transition-colors" aria-label="Toggle Theme">
+			  <i id="themeIcon" class="fa-solid fa-moon text-lg"></i>
+			</button>
+			<!-- Mobile Menu Button -->
+			<button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg hover:bg-stone-200 dark:hover:bg-stone-800 transition-colors">
+			  <i class="fa-solid fa-bars text-lg"></i>
+			</button>
+		  </div>
+		</div>
+	  </div>
+	  <!-- Mobile Dropdown Menu -->
+	  <div id="mobileMenu" class="hidden md:hidden px-4 pt-2 pb-4 space-y-2 border-b border-stone-200 dark:border-stone-800 bg-stone-50 dark:bg-stone-950">
+		<a href="#hero" class="block py-2 text-stone-600 dark:text-stone-300 hover:text-amber-500">Beranda</a>
+		<a href="#pondasi" class="block py-2 text-stone-600 dark:text-stone-300 hover:text-amber-500">Pondasi</a>
+		<a href="#artikel" class="block py-2 text-stone-600 dark:text-stone-300 hover:text-amber-500">Artikel Utama</a>
+		<a href="#kuis" class="block py-2 text-stone-600 dark:text-stone-300 hover:text-amber-500">Kuis Refleksi</a>
+		<a href="#komitmen" class="block py-2 text-stone-600 dark:text-stone-300 hover:text-amber-500">Komitmen Keluarga</a>
+	  </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="hero" class="relative overflow-hidden pt-12 pb-24 md:py-32 flex items-center justify-center">
+	  <!-- Subtly styled glow shapes -->
+	  <div class="absolute top-1/4 left-1/4 -translate-x-1/2 w-96 h-96 bg-amber-200/20 dark:bg-amber-900/10 rounded-full blur-3xl pointer-events-none"></div>
+	  <div class="absolute bottom-1/4 right-1/4 translate-x-1/2 w-96 h-96 bg-stone-300/30 dark:bg-stone-800/20 rounded-full blur-3xl pointer-events-none"></div>
+
+	  <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
+		<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 mb-6 border border-amber-200/50 dark:border-amber-800/30 animate-pulse">
+		  <i class="fa-solid fa-feather-pointed mr-1.5"></i> Esai Reflektif Sosial & Karakter
+		</span>
+		<h1 class="font-serif text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight mb-8">
+		  Menjemput Keteladanan yang Hilang: <br>
+		  <span class="gold-gradient-text">Krisis Penghormatan & Pengabdian</span>
+		</h1>
+		<p class="text-lg md:text-xl text-stone-600 dark:text-stone-300 max-w-2xl mx-auto leading-relaxed mb-10 font-light">
+		  “Semuanya berawal dari keluarga, dan seluruh restorasi karakter bangsa harus diperbaiki dimulai dari pintu rumah kita sendiri.”
+		</p>
+		<div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+		  <a href="#artikel" class="w-full sm:w-auto px-8 py-3.5 bg-amber-600 hover:bg-amber-500 dark:bg-amber-500 dark:hover:bg-amber-400 text-white font-medium rounded-full shadow-lg shadow-amber-500/20 hover:shadow-amber-500/30 transition-all duration-300 transform hover:-translate-y-0.5">
+			Baca Artikel Lengkap <i class="fa-solid fa-arrow-right ml-1.5"></i>
+		  </a>
+		  <a href="#komitmen" class="w-full sm:w-auto px-8 py-3.5 bg-stone-200 hover:bg-stone-300 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-100 font-medium rounded-full transition-all duration-300">
+			Pledge Komitmen Keluarga <i class="fa-solid fa-signature ml-1.5"></i>
+		  </a>
+		</div>
+	  </div>
+    </header>
+
+    <!-- Interactive Definition Section (Tiga Pilar) -->
+    <section id="pondasi" class="py-20 bg-stone-100 dark:bg-stone-900/50 border-y border-stone-200/50 dark:border-stone-800/30 transition-colors">
+	  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="text-center max-w-2xl mx-auto mb-16">
+		  <h2 class="font-serif text-3xl font-bold tracking-tight mb-4">Pilar Konseptual Utama</h2>
+		  <div class="h-1 w-20 bg-amber-500 mx-auto rounded-full mb-4"></div>
+		  <p class="text-stone-500 dark:text-stone-400">Mari memahami terlebih dahulu tiga unsur utama yang melandasi keseimbangan sosiologis kehidupan bermasyarakat kita.</p>
+		</div>
+
+		<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+		  <!-- Pilar 1: Krisis -->
+		  <div class="group bg-stone-50 dark:bg-stone-900 p-8 rounded-2xl border border-stone-200/60 dark:border-stone-800/60 shadow-md hover:shadow-xl hover:border-amber-500/40 dark:hover:border-amber-500/30 transition-all duration-300">
+			<div class="w-12 h-12 rounded-xl bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400 flex items-center justify-center text-xl mb-6 group-hover:scale-110 transition-transform">
+			  <i class="fa-solid fa-triangle-exclamation"></i>
+			</div>
+			<h3 class="text-xl font-bold font-serif mb-3 flex items-center justify-between">
+			  Krisis <span class="text-xs text-red-500 bg-red-100 dark:bg-red-950/30 px-2 py-0.5 rounded">Genting</span>
+			</h3>
+			<p class="text-stone-600 dark:text-stone-400 text-sm leading-relaxed">
+			  Sebuah keadaan tidak stabil, gawat, atau titik balik krusial yang menuntut perhatian mendesak. Di ranah sosial, krisis pecah saat sistem nilai yang menopang kehidupan bersama mulai rapuh dan runtuh.
+			</p>
+		  </div>
+
+		  <!-- Pilar 2: Penghormatan -->
+		  <div class="group bg-stone-50 dark:bg-stone-900 p-8 rounded-2xl border border-stone-200/60 dark:border-stone-800/60 shadow-md hover:shadow-xl hover:border-amber-500/40 dark:hover:border-amber-500/30 transition-all duration-300">
+			<div class="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl mb-6 group-hover:scale-110 transition-transform">
+			  <i class="fa-solid fa-handshake"></i>
+			</div>
+			<h3 class="text-xl font-bold font-serif mb-3 flex items-center justify-between">
+			  Penghormatan <span class="text-xs text-amber-600 bg-amber-100 dark:bg-amber-950/30 px-2 py-0.5 rounded">Etis</span>
+			</h3>
+			<p class="text-stone-600 dark:text-stone-400 text-sm leading-relaxed">
+			  Sikap luhur menghargai martabat sesama manusia, pranata sosial, serta nilai hidup dengan empati. Ini bukanlah kepatuhan buta yang terpaksa, melainkan pengakuan murni atas kebaikan intrinsik seseorang.
+			</p>
+		  </div>
+
+		  <!-- Pilar 3: Pengabdian -->
+		  <div class="group bg-stone-50 dark:bg-stone-900 p-8 rounded-2xl border border-stone-200/60 dark:border-stone-800/60 shadow-md hover:shadow-xl hover:border-amber-500/40 dark:hover:border-amber-500/30 transition-all duration-300">
+			<div class="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl mb-6 group-hover:scale-110 transition-transform">
+			  <i class="fa-solid fa-heart-pulse"></i>
+			</div>
+			<h3 class="text-xl font-bold font-serif mb-3 flex items-center justify-between">
+			  Pengabdian <span class="text-xs text-emerald-600 bg-emerald-100 dark:bg-emerald-950/30 px-2 py-0.5 rounded">Dedikasi</span>
+			</h3>
+			<p class="text-stone-600 dark:text-stone-400 text-sm leading-relaxed">
+			  Pemberian diri secara tulus—baik waktu, perhatian, maupun tenaga—demi tujuan luhur yang melampaui kepentingan sempit ego pribadi, berbasis rasa cinta, tanggung jawab moral, dan kesetiaan luhur.
+			</p>
+		  </div>
+		</div>
+	  </div>
+    </section>
+
+    <!-- Editorial Article Content -->
+    <section id="artikel" class="py-24">
+	  <div class="max-w-4xl mx-auto px-4 sm:px-6">
+		<article class="prose prose-stone lg:prose-lg mx-auto dark:prose-invert">
+		  <div class="text-center mb-16">
+			<p class="text-amber-500 font-medium tracking-widest text-xs uppercase mb-2">Esai Editorial Utama</p>
+			<h2 class="font-serif text-3xl sm:text-4xl font-bold text-stone-900 dark:text-white leading-tight mb-4">
+			  Menatap Cermin Retak Sosial Kita
+			</h2>
+			<div class="flex items-center justify-center space-x-2 text-stone-500 dark:text-stone-400 text-sm">
+			  <span>Ditulis secara kolaboratif</span>
+			  <span>•</span>
+			  <span>Waktu baca 6 menit</span>
+			</div>
+		  </div>
+
+		  <!-- Blockquote / Highlight -->
+		  <div class="border-l-4 border-amber-500 pl-6 my-8 italic text-lg text-stone-700 dark:text-stone-300 bg-amber-500/5 py-4 pr-4 rounded-r-lg">
+			“Dunia saat ini terus berkembang dalam percepatan digital yang tak kenal ampun. Namun, di tengah gemerlap percepatan tersebut, kita mendapati diri kita berdiri di atas rapuhnya pilar moral dasar yang lambat laun terkikis habis.”
+		  </div>
+
+		  <div class="space-y-6 text-stone-700 dark:text-stone-300 leading-relaxed font-light text-base md:text-lg">
+			<p>
+			  Di era serba instan ini, kita dihadapkan pada disrupsi sosial yang tidak kentara tetapi berakibat fatal: <strong>Krisis Penghormatan dan Pengabdian</strong>. Di satu sisi, kita menyaksikan hilangnya kehangatan tata krama di media sosial dan melemahnya wibawa pendidik serta orang tua. Di sisi lain, esensi tulus pengabdian kepada sesama kian langka, tergeser oleh motivasi transaksional yang mengagungkan keuntungan materi semata.
+			</p>
+
+			<!-- Accordion / Interactive Breakdown: Akar Masalah -->
+			<div class="my-10 bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 overflow-hidden shadow-sm">
+			  <button onclick="toggleSection('rootCauses')" class="w-full flex justify-between items-center p-6 text-left hover:bg-stone-50 dark:hover:bg-stone-800/50 transition-colors">
+				<span class="font-serif text-xl font-semibold flex items-center">
+				  <span class="w-2 h-6 bg-red-500 rounded mr-3 inline-block"></span>
+				  1. Mengapa Ini Terjadi? (Akar Penyebab)
+				</span>
+				<i id="rootCausesIcon" class="fa-solid fa-chevron-up text-stone-400 transition-transform"></i>
+			  </button>
+			  <div id="rootCauses" class="p-6 border-t border-stone-100 dark:border-stone-800 space-y-4">
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+				  <div class="p-4 bg-stone-50 dark:bg-stone-950 rounded-xl">
+					<h4 class="font-bold mb-2 text-amber-600 dark:text-amber-400 text-sm uppercase">Krisis Keteladanan</h4>
+					<p class="text-sm text-stone-500 dark:text-stone-400">Ketika pemegang otoritas dan figur publik bertindak kontradiktif antara ucapan dan tindakan, memicu lenyapnya kompas moral masyarakat.</p>
+				  </div>
+				  <div class="p-4 bg-stone-50 dark:bg-stone-950 rounded-xl">
+					<h4 class="font-bold mb-2 text-amber-600 dark:text-amber-400 text-sm uppercase">Individualisme Ekstrem</h4>
+					<p class="text-sm text-stone-500 dark:text-stone-400">Ambisi dan kenyamanan personal mengalahkan tanggung jawab sosial, membuat konsep pengorbanan kolektif kehilangan daya pikatnya.</p>
+				  </div>
+				  <div class="p-4 bg-stone-50 dark:bg-stone-950 rounded-xl">
+					<h4 class="font-bold mb-2 text-amber-600 dark:text-amber-400 text-sm uppercase">Budaya Instan Digital</h4>
+					<p class="text-sm text-stone-500 dark:text-stone-400">Interaksi tanpa wajah (anonim) yang dangkal mengikis kemampuan berempati, melahirkan kritik pedas tanpa ruang sopan santun.</p>
+				  </div>
+				</div>
+			  </div>
+			</div>
+
+			<!-- Accordion / Interactive Breakdown: Dampak Nyata -->
+			<div class="my-10 bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 overflow-hidden shadow-sm">
+			  <button onclick="toggleSection('impacts')" class="w-full flex justify-between items-center p-6 text-left hover:bg-stone-50 dark:hover:bg-stone-800/50 transition-colors">
+				<span class="font-serif text-xl font-semibold flex items-center">
+				  <span class="w-2 h-6 bg-amber-500 rounded mr-3 inline-block"></span>
+				  2. Dampak di Berbagai Sendi Kehidupan
+				</span>
+				<i id="impactsIcon" class="fa-solid fa-chevron-down text-stone-400 transition-transform rotate-180"></i>
+			  </button>
+			  <div id="impacts" class="p-6 border-t border-stone-100 dark:border-stone-800 space-y-4 hidden">
+				<ul class="space-y-4 text-sm text-stone-600 dark:text-stone-400">
+				  <li class="flex items-start">
+					<span class="w-6 h-6 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200 flex items-center justify-center text-xs font-bold mr-3 mt-0.5">A</span>
+					<div>
+					  <strong class="text-stone-800 dark:text-stone-200">Dekadensi Moral Dunia Pendidikan:</strong>
+					  Hubungan antara guru dan peserta didik mengalami degradasi menjadi relasi transaksional, melenyapkan kekhidmatan dalam menuntut ilmu.
+					</div>
+				  </li>
+				  <li class="flex items-start">
+					<span class="w-6 h-6 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200 flex items-center justify-center text-xs font-bold mr-3 mt-0.5">B</span>
+					<div>
+					  <strong class="text-stone-800 dark:text-stone-200">Ketidakpercayaan Sosial (Social Distrust):</strong>
+					  Setiap tindakan kebajikan dicurigai memiliki pamrih tersembunyi, memicu sikap waswas dan mengubur persaudaraan kemanusiaan yang tulus.
+					</div>
+				  </li>
+				  <li class="flex items-start">
+					<span class="w-6 h-6 rounded-full bg-stone-100 dark:bg-stone-800 text-stone-800 dark:text-stone-200 flex items-center justify-center text-xs font-bold mr-3 mt-0.5">C</span>
+					<div>
+					  <strong class="text-stone-800 dark:text-stone-200">Kehilangan Marwah Pelayanan Publik:</strong>
+					  Merosotnya jiwa ikhlas dalam mengabdi menggiring sektor layanan publik ke arah pragmatisme yang hanya berpihak pada kepemilikan kapital.
+					</div>
+				  </li>
+				</ul>
+			  </div>
+			</div>
+
+			<!-- Accordion / Interactive Breakdown: Solusi Praktis -->
+			<div class="my-10 bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-800 overflow-hidden shadow-sm">
+			  <button onclick="toggleSection('solutions')" class="w-full flex justify-between items-center p-6 text-left hover:bg-stone-50 dark:hover:bg-stone-800/50 transition-colors">
+				<span class="font-serif text-xl font-semibold flex items-center">
+				  <span class="w-2 h-6 bg-emerald-500 rounded mr-3 inline-block"></span>
+				  3. Solusi Nyata: Memulai Kembali dari Rumah
+				</span>
+				<i id="solutionsIcon" class="fa-solid fa-chevron-down text-stone-400 transition-transform rotate-180"></i>
+			  </button>
+			  <div id="solutions" class="p-6 border-t border-stone-100 dark:border-stone-800 space-y-4 hidden">
+				<p class="text-sm text-stone-500 dark:text-stone-400 mb-4">Membangun kembali pilar yang runtuh bukanlah pekerjaan satu malam, tetapi perubahan yang solid dapat dirintis melalui hal-hal kecil berikut di rumah:</p>
+				<div class="space-y-4">
+				  <div class="p-4 bg-emerald-50/50 dark:bg-emerald-950/20 border-l-4 border-emerald-500 rounded">
+					<h5 class="font-bold text-emerald-800 dark:text-emerald-400 text-sm">Keteladanan Orang Tua (Makan Malam Bebas Gawai)</h5>
+					<p class="text-xs text-stone-600 dark:text-stone-400 mt-1">Saling mendengarkan tanpa distraksi layar gawai menunjukkan rasa hormat tertinggi pada kehormatan keluarga.</p>
+				  </div>
+				  <div class="p-4 bg-emerald-50/50 dark:bg-emerald-950/20 border-l-4 border-emerald-500 rounded">
+					<h5 class="font-bold text-emerald-800 dark:text-emerald-400 text-sm">Ritual Salam di Ambang Pintu</h5>
+					<p class="text-xs text-stone-600 dark:text-stone-400 mt-1">Membiasakan mengucap salam saat akan keluar dan setibanya kembali ke rumah guna menghidupkan salam hangat rasa sayang.</p>
+				  </div>
+				</div>
+			  </div>
+			</div>
+
+			<p>
+			  Pondasi moral suatu bangsa diuji bukan dalam peristiwa-peristiwa besar dan megah, melainkan dalam dinamika sepi tanpa sorot kamera di dalam rumah tangga kita. Ketika keteladanan orang tua bersinar secara konsisten dalam kata dan perbuatan, kita tak sekadar sedang menertibkan perilaku anak, melainkan mengembalikan sumbu peradaban yang beradab dan penuh cinta kasih.
+			</p>
+		  </div>
+		</article>
+	  </div>
+    </section>
+
+    <!-- Interactive Reflection Quiz Section -->
+    <section id="kuis" class="py-20 bg-stone-100 dark:bg-stone-900 border-t border-stone-200/50 dark:border-stone-800/30 transition-colors">
+	  <div class="max-w-3xl mx-auto px-4 sm:px-6">
+		<div class="bg-white dark:bg-stone-950 p-8 md:p-12 rounded-3xl border border-stone-200/80 dark:border-stone-800/80 shadow-xl">
+		  <div class="text-center mb-10">
+			<span class="text-xs font-semibold uppercase tracking-wider text-amber-500 bg-amber-500/10 px-3 py-1 rounded-full"><i class="fa-solid fa-clipboard-question mr-1"></i> Evaluasi Mandiri</span>
+			<h3 class="font-serif text-3xl font-bold mt-4">Kuis Refleksi: Indeks Kesehatan Keteladanan</h3>
+			<p class="text-stone-500 dark:text-stone-400 text-sm mt-2">Mari melihat sejauh mana praktik keteladanan telah mengakar di lingkungan keluarga terdekat Anda hari ini.</p>
+		  </div>
+
+		  <!-- Quiz Container -->
+		  <div id="quizContainer" class="space-y-8">
+			<!-- Progress Step bar -->
+			<div class="flex items-center space-x-2">
+			  <div id="step-1-indicator" class="h-2 flex-1 rounded-full bg-amber-500 transition-colors"></div>
+			  <div id="step-2-indicator" class="h-2 flex-1 rounded-full bg-stone-200 dark:bg-stone-800 transition-colors"></div>
+			  <div id="step-3-indicator" class="h-2 flex-1 rounded-full bg-stone-200 dark:bg-stone-800 transition-colors"></div>
+			</div>
+
+			<!-- Question 1 -->
+			<div id="q-1" class="quiz-question space-y-4">
+			  <h4 class="text-lg font-medium font-serif"><span class="text-amber-500 font-bold text-xl mr-2">01.</span> Bagaimana kebiasaan menyapa atau bersalam di rumah Anda ketika ada anggota keluarga pergi atau baru tiba?</h4>
+			  <div class="grid grid-cols-1 gap-3">
+				<button onclick="answerQuestion(1, 3)" class="text-left p-4 rounded-xl border border-stone-200 dark:border-stone-800 hover:border-amber-500/60 dark:hover:border-amber-500/40 hover:bg-stone-50 dark:hover:bg-stone-900/40 transition-all text-sm flex items-center justify-between">
+				  <span>Selalu dilakukan dengan hangat dan penuh perhatian</span>
+				  <i class="fa-regular fa-circle text-stone-300"></i>
+				</button>
+				<button onclick="answerQuestion(1, 2)" class="text-left p-4 rounded-xl border border-stone-200 dark:border-stone-800 hover:border-amber-500/60 dark:hover:border-amber-500/40 hover:bg-stone-50 dark:hover:bg-stone-900/40 transition-all text-sm flex items-center justify-between">
+				  <span>Hanya dilakukan sesekali jika ingat atau tidak terburu-buru</span>
+				  <i class="fa-regular fa-circle text-stone-300"></i>
+				</button>
+				<button onclick="answerQuestion(1, 1)" class="text-left p-4 rounded-xl border border-stone-200 dark:border-stone-800 hover:border-amber-500/60 dark:hover:border-amber-500/40 hover:bg-stone-50 dark:hover:bg-stone-900/40 transition-all text-sm flex items-center justify-between">
+				  <span>Hampir tidak pernah, masing-masing langsung berlalu begitu saja</span>
+				  <i class="fa-regular fa-circle text-stone-300"></i>
+				</button>
+			  </div>
+			</div>
+
+			<!-- Question 2 (Hidden initially) -->
+			<div id="q-2" class="quiz-question space-y-4 hidden">
+			  <h4 class="text-lg font-medium font-serif"><span class="text-amber-500 font-bold text-xl mr-2">02.</span> Saat makan bersama di meja makan, bagaimana penggunaan gawai (HP) diatur?</h4>
+			  <div class="grid grid-cols-1 gap-3">
+				<button onclick="answerQuestion(2, 3)" class="text-left p-4 rounded-xl border border-stone-200 dark:border-stone-800 hover:border-amber-500/60 dark:hover:border-amber-500/40 hover:bg-stone-50 dark:hover:bg-stone-900/40 transition-all text-sm flex items-center justify-between">
+				  <span>Ada komitmen bersama untuk menyimpan HP dan saling fokus mengobrol</span>
+				  <i class="fa-regular fa-circle text-stone-300"></i>
+				</button>
+				<button onclick="answerQuestion(2, 2)" class="text-left p-4 rounded-xl border border-stone-200 dark:border-stone-800 hover:border-amber-500/60 dark:hover:border-amber-500/40 hover:bg-stone-50 dark:hover:bg-stone-900/40 transition-all text-sm flex items-center justify-between">
+				  <span>Anak-anak dilarang memakai HP, tapi orang tua sesekali masih mengecek HP</span>
+				  <i class="fa-regular fa-circle text-stone-300"></i>
+				</button>
+				<button onclick="answerQuestion(2, 1)" class="text-left p-4 rounded-xl border border-stone-200 dark:border-stone-800 hover:border-amber-500/60 dark:hover:border-amber-500/40 hover:bg-stone-50 dark:hover:bg-stone-900/40 transition-all text-sm flex items-center justify-between">
+				  <span>Semua sibuk dengan gawai masing-masing bahkan saat makan bersama</span>
+				  <i class="fa-regular fa-circle text-stone-300"></i>
+				</button>
+			  </div>
+			</div>
+
+			<!-- Question 3 (Hidden initially) -->
+			<div id="q-3" class="quiz-question space-y-4 hidden">
+			  <h4 class="text-lg font-medium font-serif"><span class="text-amber-500 font-bold text-xl mr-2">03.</span> Seberapa sering tiga kata kurban kesopanan ("Tolong", "Maaf", "Terima Kasih") diucapkan di dalam rumah?</h4>
+			  <div class="grid grid-cols-1 gap-3">
+				<button onclick="answerQuestion(3, 3)" class="text-left p-4 rounded-xl border border-stone-200 dark:border-stone-800 hover:border-amber-500/60 dark:hover:border-amber-500/40 hover:bg-stone-50 dark:hover:bg-stone-900/40 transition-all text-sm flex items-center justify-between">
+				  <span>Sangat terbiasa dan diucapkan secara konsisten oleh seluruh anggota keluarga</span>
+				  <i class="fa-regular fa-circle text-stone-300"></i>
+				</button>
+				<button onclick="answerQuestion(3, 2)" class="text-left p-4 rounded-xl border border-stone-200 dark:border-stone-800 hover:border-amber-500/60 dark:hover:border-amber-500/40 hover:bg-stone-50 dark:hover:bg-stone-900/40 transition-all text-sm flex items-center justify-between">
+				  <span>Hanya diucapkan kepada tamu, jarang terbiasa sesama penghuni rumah</span>
+				  <i class="fa-regular fa-circle text-stone-300"></i>
+				</button>
+				<button onclick="answerQuestion(3, 1)" class="text-left p-4 rounded-xl border border-stone-200 dark:border-stone-800 hover:border-amber-500/60 dark:hover:border-amber-500/40 hover:bg-stone-50 dark:hover:bg-stone-900/40 transition-all text-sm flex items-center justify-between">
+				  <span>Sangat jarang terdengar, instruksi di rumah cenderung berupa perintah kaku</span>
+				  <i class="fa-regular fa-circle text-stone-300"></i>
+				</button>
+			  </div>
+			</div>
+
+			<!-- Quiz Result Container (Hidden initially) -->
+			<div id="quizResult" class="hidden text-center space-y-6 py-6">
+			  <div class="w-20 h-20 rounded-full bg-amber-100 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-4xl mx-auto border-4 border-amber-200 dark:border-amber-800/50">
+				<i id="resultIcon" class="fa-solid fa-medal"></i>
+			  </div>
+			  <h4 class="text-2xl font-bold font-serif" id="resultTitle">Peringkat Kesehatan Karakter Anda</h4>
+			  <p id="resultText" class="text-stone-600 dark:text-stone-300 max-w-lg mx-auto leading-relaxed text-sm"></p>
+			  <button onclick="resetQuiz()" class="mt-4 px-6 py-2 bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-100 text-sm font-medium rounded-full transition-all">
+				Coba Refleksi Kembali <i class="fa-solid fa-arrow-rotate-right ml-1"></i>
+			  </button>
+			</div>
+		  </div>
+		</div>
+	  </div>
+    </section>
+
+    <!-- Interactive Pledge Corner -->
+    <section id="komitmen" class="py-24">
+	  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="text-center max-w-2xl mx-auto mb-16">
+		  <span class="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full"><i class="fa-solid fa-signature mr-1"></i> Aksi Nyata Digital</span>
+		  <h2 class="font-serif text-3xl md:text-4xl font-bold tracking-tight mt-4">Pledge: Ikrar Restorasi Keluarga</h2>
+		  <div class="h-1 w-20 bg-emerald-500 mx-auto rounded-full mt-4 mb-4"></div>
+		  <p class="text-stone-500 dark:text-stone-400">Mulailah langkah nyata hari ini. Ketik nama keluarga Anda, pilih butir janji aksi kecil, dan terbitkan "Piagam Komitmen Keluarga" Anda sendiri.</p>
+		</div>
+
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+		  <!-- Input Controls -->
+		  <div class="bg-stone-100 dark:bg-stone-900 p-8 rounded-3xl border border-stone-200/50 dark:border-stone-800/30 space-y-6">
+			<div>
+			  <label for="familyName" class="block text-sm font-bold text-stone-700 dark:text-stone-300 mb-2">Nama Keluarga Anda:</label>
+			  <input type="text" id="familyName" oninput="updatePledgePreview()" placeholder="Contoh: Keluarga Pratama" class="w-full px-4 py-3 bg-white dark:bg-stone-950 border border-stone-300 dark:border-stone-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 font-medium text-stone-800 dark:text-stone-100 transition-all shadow-sm">
+			</div>
+
+			<div class="space-y-3">
+			  <span class="block text-sm font-bold text-stone-700 dark:text-stone-300 mb-1">Pilih Tindakan Nyata Anda:</span>
+
+			  <label class="flex items-start p-4 bg-white dark:bg-stone-950 rounded-xl border border-stone-200 dark:border-stone-800/80 hover:border-emerald-500/60 transition-colors cursor-pointer select-none">
+				<input type="checkbox" checked onchange="updatePledgePreview()" id="opt-salam" class="mt-1 mr-3 w-4 h-4 text-emerald-600 border-stone-300 rounded focus:ring-emerald-500">
+				<div>
+				  <span class="block font-semibold text-sm">Menyapa & Salam Pintu</span>
+				  <span class="block text-xs text-stone-500 mt-1">Mengucapkan salam dengan senyuman hangat setiap kali meninggalkan atau tiba kembali di rumah.</span>
+				</div>
+			  </label>
+
+			  <label class="flex items-start p-4 bg-white dark:bg-stone-950 rounded-xl border border-stone-200 dark:border-stone-800/80 hover:border-emerald-500/60 transition-colors cursor-pointer select-none">
+				<input type="checkbox" onchange="updatePledgePreview()" id="opt-gadget" class="mt-1 mr-3 w-4 h-4 text-emerald-600 border-stone-300 rounded focus:ring-emerald-500">
+				<div>
+				  <span class="block font-semibold text-sm">Makan Malam Tanpa Gawai</span>
+				  <span class="block text-xs text-stone-500 mt-1">Membuat sebuah wadah kecil di tengah meja untuk menyimpan seluruh gawai selama makan bersama.</span>
+				</div>
+			  </label>
+
+			  <label class="flex items-start p-4 bg-white dark:bg-stone-950 rounded-xl border border-stone-200 dark:border-stone-800/80 hover:border-emerald-500/60 transition-colors cursor-pointer select-none">
+				<input type="checkbox" onchange="updatePledgePreview()" id="opt-magic" class="mt-1 mr-3 w-4 h-4 text-emerald-600 border-stone-300 rounded focus:ring-emerald-500">
+				<div>
+				  <span class="block font-semibold text-sm">Tiga Kata Sakti Keseharian</span>
+				  <span class="block text-xs text-stone-500 mt-1">Menggunakan kata "Tolong", "Maaf", dan "Terima Kasih" secara konisten di segala interaksi rumah.</span>
+				</div>
+			  </label>
+
+			  <label class="flex items-start p-4 bg-white dark:bg-stone-950 rounded-xl border border-stone-200 dark:border-stone-800/80 hover:border-emerald-500/60 transition-colors cursor-pointer select-none">
+				<input type="checkbox" onchange="updatePledgePreview()" id="opt-weekly" class="mt-1 mr-3 w-4 h-4 text-emerald-600 border-stone-300 rounded focus:ring-emerald-500">
+				<div>
+				  <span class="block font-semibold text-sm">Apresiasi Keluarga Mingguan</span>
+				  <span class="block text-xs text-stone-500 mt-1">Mengadakan lingkar apresiasi 10 menit di akhir pekan untuk saling bertukar terima kasih.</span>
+				</div>
+			  </label>
+			</div>
+
+			<!-- Custom Success Dialog instead of alerts -->
+			<div id="successDialog" class="hidden p-4 bg-emerald-100 dark:bg-emerald-950/40 border-l-4 border-emerald-500 text-emerald-800 dark:text-emerald-300 text-xs rounded transition-all duration-300">
+			  <i class="fa-solid fa-circle-check mr-1.5 text-sm"></i> Komitmen berhasil disalin ke papan klip! Tempelkan dan bagikan ke grup keluarga Anda.
+			</div>
+
+			<button onclick="copyPledgeText()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white font-semibold rounded-2xl shadow-lg shadow-emerald-500/15 transition-all flex items-center justify-center space-x-2">
+			  <i class="fa-regular fa-copy"></i>
+			  <span>Salin Teks Komitmen Keluarga</span>
+			</button>
+		  </div>
+
+		  <!-- Live Elegant Certificate Preview -->
+		  <div class="relative group">
+			<div class="absolute inset-0 bg-gradient-to-r from-emerald-500/10 to-amber-500/10 rounded-3xl blur-2xl opacity-75 group-hover:opacity-100 transition-opacity"></div>
+			<div id="certificate" class="relative bg-white dark:bg-stone-900 p-8 sm:p-12 rounded-3xl border-8 border-stone-200 dark:border-stone-800 shadow-2xl transition-all font-serif">
+			  <!-- Elegant borders and corners decoration -->
+			  <div class="absolute top-4 left-4 right-4 bottom-4 border border-stone-300/60 dark:border-stone-700/60 pointer-events-none rounded-xl"></div>
+			  <div class="absolute top-6 left-6 right-6 bottom-6 border border-stone-200/40 dark:border-stone-800/40 pointer-events-none rounded-lg"></div>
+
+			  <div class="text-center space-y-6">
+				<span class="text-amber-500 text-4xl block">⚜</span>
+				<h4 class="text-xs uppercase tracking-widest text-stone-400 dark:text-stone-500 font-sans font-bold">Piagam Ikrar Bersama</h4>
+				<h3 class="text-3xl font-bold italic text-stone-900 dark:text-white" id="pledgeTitle">Keluarga Kami</h3>
+
+				<p class="text-stone-600 dark:text-stone-400 font-sans font-light text-sm max-w-sm mx-auto leading-relaxed">
+				  Berkomitmen penuh untuk memulihkan sendi harmoni sosiologis, melahirkan keteladanan yang nyata, dan melatih jiwa pengabdian murni dimulai dari pintu rumah kami sendiri.
+				</p>
+
+				<!-- Live Action Bullet Points on Card -->
+				<div class="border-t border-b border-stone-200/80 dark:border-stone-800/80 py-6 max-w-sm mx-auto">
+				  <ul id="pledgeList" class="text-left font-sans text-xs space-y-3 text-stone-700 dark:text-stone-300">
+					<li class="flex items-start">
+					  <i class="fa-regular fa-square-check text-emerald-500 mt-0.5 mr-2.5 text-sm"></i>
+					  <span>Menyapa & Salam Pintu</span>
+					</li>
+				  </ul>
+				</div>
+
+				<div class="pt-4 flex flex-col items-center">
+				  <div class="h-10 border-b border-stone-400 dark:border-stone-600 w-32 mb-1"></div>
+				  <span class="text-[10px] font-sans text-stone-400">Tanda Tangan Komitmen</span>
+				  <span class="text-[9px] font-sans text-stone-500 mt-1" id="pledgeDate">Mulai: Juni 2026</span>
+				</div>
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  </div>
+    </section>
+
+    <!-- Simple Footer -->
+    <footer class="bg-stone-100 dark:bg-stone-950 py-12 border-t border-stone-200/50 dark:border-stone-800/50 transition-colors text-center text-sm text-stone-500 dark:text-stone-400">
+	  <div class="max-w-6xl mx-auto px-4 space-y-4">
+		<p class="font-serif italic">"Restorasi keteladanan bukan menuntut orang lain untuk berubah, melainkan memimpin perbaikan diri."</p>
+		<div class="h-px w-20 bg-stone-300 dark:bg-stone-800 mx-auto"></div>
+		<p>&copy; 2026 Harmoni Keteladanan. Dibuat secara tulus sebagai refleksi kolaboratif kemanusiaan.</p>
+	  </div>
+    </footer>
+
+    <!-- Script Logic for the Application -->
+<script>
+        // Setup initial dates
+        const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        const today = new Date();
+        document.getElementById('pledgeDate').innerText = `Mulai: ${today.getDate()} ${months[today.getMonth()]} ${today.getFullYear()}`;
+
+        // Dark/Light Theme Switcher Logic
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        
+        // Detect current system preference or previous storage
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            themeIcon.className = 'fa-solid fa-sun text-lg';
+        } else {
+            document.documentElement.classList.remove('dark');
+            themeIcon.className = 'fa-solid fa-moon text-lg';
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                themeIcon.className = 'fa-solid fa-moon text-lg';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                themeIcon.className = 'fa-solid fa-sun text-lg';
+            }
+        });
+
+        // Mobile Menu Navigation Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu on clicking any links
+        document.querySelectorAll('#mobileMenu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Reading Scroll Progress Indicator
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        // Editorial Article Accordion Toggle Handler
+        function toggleSection(id) {
+            const section = document.getElementById(id);
+            const icon = document.getElementById(id + 'Icon');
+            if (section.classList.contains('hidden')) {
+                section.classList.remove('hidden');
+                icon.className = 'fa-solid fa-chevron-up text-stone-400 transition-transform';
+            } else {
+                section.classList.add('hidden');
+                icon.className = 'fa-solid fa-chevron-down text-stone-400 transition-transform rotate-180';
+            }
+        }
+
+        // Reflection Quiz State Management
+        let currentStep = 1;
+        let scoreSum = 0;
+
+        function answerQuestion(qIndex, val) {
+            scoreSum += val;
+            
+            // Advance indicator states
+            document.getElementById(`step-${currentStep}-indicator`).classList.replace('bg-amber-500', 'bg-emerald-500');
+            
+            if (currentStep < 3) {
+                document.getElementById(`q-${currentStep}`).classList.add('hidden');
+                currentStep++;
+                document.getElementById(`q-${currentStep}`).classList.remove('hidden');
+                document.getElementById(`step-${currentStep}-indicator`).classList.replace('bg-stone-200', 'bg-amber-500');
+                document.getElementById(`step-${currentStep}-indicator`).classList.replace('dark:bg-stone-800', 'bg-amber-500');
+            } else {
+                // Last step answered, calculate score
+                showQuizResult();
+            }
+        }
+
+        function showQuizResult() {
+            // Hide final question container
+            document.getElementById(`q-3`).classList.add('hidden');
+            const resultBox = document.getElementById('quizResult');
+            resultBox.classList.remove('hidden');
+
+            const titleEl = document.getElementById('resultTitle');
+            const textEl = document.getElementById('resultText');
+            const iconEl = document.getElementById('resultIcon');
+
+            // Grade feedback based on score metrics
+            if (scoreSum >= 8) {
+                iconEl.className = 'fa-solid fa-circle-check text-emerald-500 text-4xl';
+                titleEl.innerText = "Karakter Harmonis & Luhur";
+                titleEl.className = "text-2xl font-bold font-serif text-emerald-600 dark:text-emerald-400";
+                textEl.innerText = "Luar biasa! Keluarga Anda berhasil mengimplementasikan keteladanan dengan sangat konsisten. Anda merupakan garda terdepan penentu arah masa depan bangsa yang harmonis.";
+            } else if (scoreSum >= 5) {
+                iconEl.className = 'fa-solid fa-circle-info text-amber-500 text-4xl';
+                titleEl.innerText = "Karakter Transisi Berkembang";
+                titleEl.className = "text-2xl font-bold font-serif text-amber-600 dark:text-amber-400";
+                textEl.innerText = "Keluarga Anda memiliki fondasi yang cukup baik, namun tantangan waktu dan gawai sesekali masih menghalangi komitmen penuh. Sedikit disiplin tambahan akan mewujudkan perubahan yang transformatif.";
+            } else {
+                iconEl.className = 'fa-solid fa-triangle-exclamation text-red-500 text-4xl';
+                titleEl.innerText = "Keluarga Butuh Restorasi Segera";
+                titleEl.className = "text-2xl font-bold font-serif text-red-600 dark:text-red-400";
+                textEl.innerText = "Waspadalah, kesibukan modern dan ego individual saat ini berpotensi membahayakan hubungan kehangatan keluarga Anda. Inilah saat yang paling tepat untuk merintis perubahan kecil dari pintu rumah.";
+            }
+        }
+
+        function resetQuiz() {
+            scoreSum = 0;
+            currentStep = 1;
+            document.getElementById('quizResult').classList.add('hidden');
+            document.getElementById('q-1').classList.remove('hidden');
+            
+            // Reset indicators
+            for (let i = 1; i <= 3; i++) {
+                const ind = document.getElementById(`step-${i}-indicator`);
+                ind.className = "h-2 flex-1 rounded-full transition-colors bg-stone-200 dark:bg-stone-800";
+            }
+            document.getElementById('step-1-indicator').className = "h-2 flex-1 rounded-full bg-amber-500 transition-colors";
+        }
+
+        // Live Pledge Customizer Preview Handler
+        function updatePledgePreview() {
+            const inputVal = document.getElementById('familyName').value.trim();
+            const pledgeTitle = document.getElementById('pledgeTitle');
+            
+            pledgeTitle.innerText = inputVal !== "" ? inputVal : "Keluarga Kami";
+
+            const listEl = document.getElementById('pledgeList');
+            listEl.innerHTML = ''; // clear preview items
+
+            const options = [
+                { id: 'opt-salam', label: 'Menyapa & Salam Pintu' },
+                { id: 'opt-gadget', label: 'Makan Malam Tanpa Gawai' },
+                { id: 'opt-magic', label: 'Tiga Kata Sakti Keseharian' },
+                { id: 'opt-weekly', label: 'Apresiasi Keluarga Mingguan' }
+            ];
+
+            let hasSelection = false;
+            options.forEach(opt => {
+                if (document.getElementById(opt.id).checked) {
+                    hasSelection = true;
+                    const li = document.createElement('li');
+                    li.className = 'flex items-start';
+                    li.innerHTML = `
+                        <i class="fa-regular fa-square-check text-emerald-500 mt-0.5 mr-2.5 text-sm"></i>
+                        <span>${opt.label}</span>
+                    `;
+                    listEl.appendChild(li);
+                }
+            });
+
+            if (!hasSelection) {
+                const li = document.createElement('li');
+                li.className = 'text-stone-400 dark:text-stone-500 text-center italic py-2';
+                li.innerText = 'Pilih salah satu komitmen di samping.';
+                listEl.appendChild(li);
+            }
+        }
+
+        // Actionable clipboard utility
+        function copyPledgeText() {
+            const familyName = document.getElementById('familyName').value.trim() || "Keluarga Kami";
+            let pledgeText = `📜 IKRAR RESTORASI KELUARGA - ${familyName.toUpperCase()}\n\nKami berkomitmen penuh untuk memulihkan sendi harmoni sosiologis, melahirkan keteladanan nyata, dan melatih jiwa pengabdian murni dari rumah kami. Komitmen kami:\n`;
+
+            const options = [
+                { id: 'opt-salam', text: '- Menyapa & Salam Pintu (Melakukan salam hangat setiap pergi & pulang)' },
+                { id: 'opt-gadget', text: '- Makan Malam Tanpa Gawai (Menyimpan seluruh gawai selama makan bersama)' },
+                { id: 'opt-magic', text: '- Tiga Kata Sakti Keseharian (Mengucapkan "Tolong", "Maaf", & "Terima Kasih")' },
+                { id: 'opt-weekly', text: '- Apresiasi Keluarga Mingguan (Menyediakan waktu khusus saling berterima kasih)' }
+            ];
+
+            let count = 0;
+            options.forEach(opt => {
+                if (document.getElementById(opt.id).checked) {
+                    pledgeText += `${opt.text}\n`;
+                    count++;
+                }
+            });
+
+            if (count === 0) {
+                pledgeText += `(Belum ada komitmen spesifik yang dipilih, kami akan merenungkannya bersama hari ini)\n`;
+            }
+
+            pledgeText += `\nDitandatangani secara tulus pada ${today.getDate()} ${months[today.getMonth()]} ${today.getFullYear()}.`;
+
+            // Copy to Clipboard
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = pledgeText;
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+
+            // Show Toast Success Notification (Instead of alerts)
+            const successDialog = document.getElementById('successDialog');
+            successDialog.classList.remove('hidden');
+            setTimeout(() => {
+                successDialog.classList.add('hidden');
+            }, 4000);
+        }
+
+        // Initialize first render preview
+        updatePledgePreview();
+</script>
+  </body>
+</html>
