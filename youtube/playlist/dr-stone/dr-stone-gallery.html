@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraGallery - Galeri Foto Premium & Elegan</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Playfair Display & Plus Jakarta Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f5f3ff',
+                            100: '#eedeeb',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            900: '#1e1b4b',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+</script>
+<style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        .glass-nav {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glass-input {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-input:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+        }
+</style>
+  </head>
+  <body class="transition-colors duration-300">
+
+    <!-- Top Navigation Bar -->
+    <nav class="glass-nav fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="flex items-center justify-between h-20">
+		  <!-- Logo -->
+		  <div class="flex items-center gap-2 cursor-pointer" onclick="switchTab('explore')">
+			<div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-fuchsia-500 flex items-center justify-center text-white shadow-lg shadow-violet-500/20">
+			  <i class="fa-solid fa-camera-retro text-lg"></i>
+			</div>
+			<span class="text-xl font-bold tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400 font-serif">Dr.Stone<span class="text-violet-500 font-sans font-medium text-base ml-1">GALLERY</span></span>
+		  </div>
+
+		  <!-- Navigation Tabs -->
+		  <div class="hidden md:flex items-center space-x-1">
+			<button onclick="switchTab('explore')" id="tab-btn-explore" class="px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 text-white bg-violet-600/20 border border-violet-500/30">
+			  <i class="fa-solid fa-compass mr-2"></i>Eksplorasi
+			</button>
+			<button onclick="switchTab('upload')" id="tab-btn-upload" class="px-5 py-2.5 rounded-full text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-300">
+			  <i class="fa-solid fa-cloud-arrow-up mr-2"></i>Unggah Foto
+			</button>
+			<button onclick="switchTab('about')" id="tab-btn-about" class="px-5 py-2.5 rounded-full text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-300">
+			  <i class="fa-solid fa-circle-info mr-2"></i>Tentang
+			</button>
+		  </div>
+
+		  <!-- Right Quick CTA -->
+		  <div class="flex items-center gap-4">
+			<button onclick="switchTab('upload')" class="px-5 py-2.5 rounded-full text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-300">
+			  <i class="fa-solid fa-home mr-0"></i>
+			</button>
+			<!-- Mobile Menu Button -->
+			<button id="mobile-menu-btn" class="md:hidden text-gray-300 hover:text-white p-2">
+			  <i class="fa-solid fa-bars text-xl"></i>
+			</button>
+		  </div>
+		</div>
+	  </div>
+
+	  <!-- Mobile Navigation Menu -->
+	  <div id="mobile-menu" class="hidden md:hidden px-4 pt-2 pb-6 border-t border-white/5 bg-slate-950/95 backdrop-blur-xl">
+		<div class="space-y-2 pt-2">
+		  <button onclick="switchTab('explore')" id="mobile-tab-btn-explore" class="w-full text-left px-4 py-3 rounded-xl text-base font-medium text-white bg-violet-600/20 block">
+			<i class="fa-solid fa-compass mr-3"></i>Eksplorasi
+		  </button>
+		  <button onclick="switchTab('upload')" id="mobile-tab-btn-upload" class="w-full text-left px-4 py-3 rounded-xl text-base font-medium text-gray-400 hover:text-white hover:bg-white/5 block">
+			<i class="fa-solid fa-cloud-arrow-up mr-3"></i>Unggah Foto
+		  </button>
+		  <button onclick="switchTab('about')" id="mobile-tab-btn-about" class="w-full text-left px-4 py-3 rounded-xl text-base font-medium text-gray-400 hover:text-white hover:bg-white/5 block">
+			<i class="fa-solid fa-circle-info mr-3"></i>Tentang
+		  </button>
+		</div>
+	  </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="pt-24 min-h-screen pb-16">
+
+	  <!-- ================= EXPLORATION PAGE ================= -->
+	  <div id="page-explore" class="animate-fade-in">
+
+		<!-- Hero / Slideshow Section -->
+		<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+		  <div class="relative h-[400px] sm:h-[500px] lg:h-[600px] w-full rounded-3xl overflow-hidden shadow-2xl group border border-white/10">
+
+			<!-- Slides Container -->
+			<div id="slides-container" class="relative w-full h-full">
+			  <!-- Slides will be inserted dynamically via JavaScript -->
+			</div>
+
+			<!-- Slide Controls -->
+			<button onclick="prevSlide()" class="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 hover:bg-violet-600/80 text-white flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 focus:opacity-100 border border-white/10 backdrop-blur-md">
+			  <i class="fa-solid fa-chevron-left text-lg"></i>
+			</button>
+			<button onclick="nextSlide()" class="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/40 hover:bg-violet-600/80 text-white flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 focus:opacity-100 border border-white/10 backdrop-blur-md">
+			  <i class="fa-solid fa-chevron-right text-lg"></i>
+			</button>
+
+			<!-- Slide Indicators / Pagination -->
+			<div id="slide-indicators" class="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
+			  <!-- Dots will be inserted dynamically -->
+			</div>
+
+			<!-- Autoplay progress bar -->
+			<div class="absolute bottom-0 left-0 right-0 h-1 bg-white/10">
+			  <div id="autoplay-progress" class="h-full bg-gradient-to-r from-violet-600 to-fuchsia-500 transition-all duration-[5000ms] linear" style="width: 0%"></div>
+			</div>
+		  </div>
+		</section>
+
+		<!-- Gallery Filter & Search Section -->
+		<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 mb-8">
+		  <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-white/5">
+			<div>
+			  <h2 class="text-3xl font-bold tracking-tight text-white font-serif">Koleksi Karya Seni</h2>
+			  <p class="text-gray-400 mt-1">Eksplorasi keindahan dunia melalui lensa fotografer profesional.</p>
+			</div>
+
+			<!-- Search Input & Filter Group -->
+			<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+			  <!-- Search Box -->
+			  <div class="relative min-w-[260px]">
+				<i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+				<input type="text" id="search-input" oninput="filterPhotos()" placeholder="Cari foto, fotografer..." class="w-full glass-input pl-11 pr-4 py-3 rounded-full text-sm text-white focus:outline-none placeholder-gray-500 transition-all duration-300">
+			  </div>
+			</div>
+		  </div>
+
+		  <!-- Category Filters -->
+		  <div class="flex items-center gap-2 mt-6 overflow-x-auto pb-3 scrollbar-none" id="categories-container">
+			<!-- Categories will be generated dynamically -->
+		  </div>
+		</section>
+
+		<!-- Main Masonry / Grid Gallery -->
+		<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+		  <!-- Loading State -->
+		  <div id="gallery-loading" class="hidden py-24 text-center">
+			<div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-violet-500"></div>
+			<p class="text-gray-400 mt-4">Memuat karya indah untuk Anda...</p>
+		  </div>
+
+		  <!-- Empty State -->
+		  <div id="gallery-empty" class="hidden py-20 text-center glass-card rounded-3xl p-8 border border-white/5">
+			<div class="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+			  <i class="fa-solid fa-camera text-2xl text-gray-500"></i>
+			</div>
+			<h3 class="text-xl font-semibold text-white">Tidak ada foto ditemukan</h3>
+			<p class="text-gray-400 mt-2 max-w-sm mx-auto">Kami tidak dapat menemukan foto yang sesuai dengan kriteria pencarian atau kategori Anda.</p>
+			<button onclick="resetFilters()" class="mt-5 px-6 py-2.5 rounded-full bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium transition-all">Lihat Semua Foto</button>
+		  </div>
+
+		  <!-- Photos Grid Layout -->
+		  <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+			<!-- Photo cards will be injected here -->
+		  </div>
+		</section>
+
+	  </div>
+
+
+	  <!-- ================= UPLOAD PAGE ================= -->
+	  <div id="page-upload" class="hidden max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 animate-fade-in">
+		<div class="text-center mb-10">
+		  <span class="px-3 py-1 rounded-full text-xs font-semibold tracking-wider text-violet-400 bg-violet-500/10 border border-violet-500/20 uppercase">Pusat Kreator</span>
+		  <h1 class="text-4xl font-bold font-serif text-white mt-3">Bagikan Mahakarya Anda</h1>
+		  <p class="text-gray-400 mt-2 max-w-md mx-auto">Unggah karya terbaik Anda dan biarkan jutaan penikmat seni mengapresiasi keindahan tangkapan lensa Anda.</p>
+		</div>
+
+		<div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+		  <!-- Upload Drop Zone (Left/Top) -->
+		  <div class="md:col-span-7">
+			<div id="dropzone" class="relative group border-2 border-dashed border-gray-700 hover:border-violet-500 rounded-3xl p-8 text-center cursor-pointer bg-slate-900/40 hover:bg-violet-950/10 transition-all duration-300 flex flex-col items-center justify-center min-h-[380px]">
+			  <input type="file" id="file-input" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="handleFileSelect(event)">
+
+			  <!-- Upload Prompts -->
+			  <div id="upload-prompt" class="space-y-4">
+				<div class="w-20 h-20 bg-violet-600/10 text-violet-400 rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition-all duration-300">
+				  <i class="fa-solid fa-cloud-arrow-up text-3xl"></i>
+				</div>
+				<div>
+				  <p class="text-lg font-medium text-white">Seret & lepas foto di sini</p>
+				  <p class="text-sm text-gray-500 mt-1">atau klik untuk menelusuri file lokal</p>
+				</div>
+				<div class="text-xs text-gray-500 space-y-1">
+				  <p>Mendukung format JPG, PNG, WEBP, atau GIF</p>
+				  <p>Ukuran file maksimal disarankan adalah 10 MB</p>
+				</div>
+			  </div>
+
+			  <!-- Image Preview Container -->
+			  <div id="preview-container" class="hidden w-full h-full flex flex-col justify-between items-center absolute inset-0 p-4 bg-slate-950/90 rounded-3xl z-20">
+				<div class="relative w-full h-[280px] rounded-2xl overflow-hidden border border-white/10">
+				  <img id="image-preview" src="" alt="Pratinjau Foto" class="w-full h-full object-contain">
+				  <button onclick="clearPreview(event)" class="absolute top-3 right-3 w-10 h-10 rounded-full bg-black/60 hover:bg-red-600 text-white flex items-center justify-center backdrop-blur-md transition-colors z-30">
+					<i class="fa-solid fa-times"></i>
+				  </button>
+				</div>
+				<div class="mt-4 text-sm text-violet-400 font-medium truncate max-w-xs" id="preview-filename"></div>
+			  </div>
+			</div>
+		  </div>
+
+		  <!-- Form Meta Data (Right/Bottom) -->
+		  <div class="md:col-span-5 glass-card rounded-3xl p-6 border border-white/5 space-y-5">
+			<h3 class="text-lg font-semibold text-white border-b border-white/5 pb-3">Informasi Foto</h3>
+
+			<form id="upload-form" onsubmit="submitPhoto(event)" class="space-y-4">
+			  <!-- Title -->
+			  <div>
+				<label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Judul Karya <span class="text-red-500">*</span></label>
+				<input type="text" id="form-title" required placeholder="Contoh: Senja di Borobudur" class="w-full glass-input px-4 py-3 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none">
+			  </div>
+
+			  <!-- Photographer -->
+			  <div>
+				<label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Fotografer <span class="text-red-500">*</span></label>
+				<input type="text" id="form-photographer" required placeholder="Nama Anda" class="w-full glass-input px-4 py-3 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none">
+			  </div>
+
+			  <!-- Category -->
+			  <div>
+				<label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Kategori <span class="text-red-500">*</span></label>
+				<select id="form-category" required class="w-full glass-input px-4 py-3 rounded-xl text-sm text-gray-300 focus:outline-none bg-slate-900">
+				  <option value="" disabled selected class="text-gray-600">Pilih Kategori</option>
+				  <option value="Alam" class="bg-slate-900">Alam & Lanskap</option>
+				  <option value="Arsitektur" class="bg-slate-900">Arsitektur & Kota</option>
+				  <option value="Potret" class="bg-slate-900">Potret & Manusia</option>
+				  <option value="Seni" class="bg-slate-900">Seni Abstrak & Makro</option>
+				  <option value="Lainnya" class="bg-slate-900">Lainnya</option>
+				</select>
+			  </div>
+
+			  <!-- Description -->
+			  <div>
+				<label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Deskripsi Karya</label>
+				<textarea id="form-description" rows="3" placeholder="Ceritakan kisah indah di balik karya foto ini..." class="w-full glass-input px-4 py-3 rounded-xl text-sm text-white placeholder-gray-600 focus:outline-none resize-none"></textarea>
+			  </div>
+
+			  <button type="submit" class="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white py-4 rounded-xl font-semibold transition-all duration-300 shadow-lg shadow-violet-500/20 hover:shadow-violet-500/40 transform hover:-translate-y-0.5">
+				<i class="fa-solid fa-cloud-arrow-up mr-2"></i> Publikasikan Foto
+			  </button>
+			</form>
+		  </div>
+		</div>
+	  </div>
+
+
+	  <!-- ================= ABOUT PAGE ================= -->
+	  <div id="page-about" class="hidden max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 animate-fade-in">
+		<div class="glass-card rounded-3xl p-8 sm:p-12 border border-white/5 relative overflow-hidden">
+		  <div class="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-violet-600/10 blur-3xl"></div>
+		  <div class="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-fuchsia-500/10 blur-3xl"></div>
+
+		  <div class="relative z-10 space-y-8">
+			<div class="text-center md:text-left space-y-4">
+			  <div class="w-14 h-14 bg-gradient-to-tr from-violet-600 to-fuchsia-500 rounded-2xl flex items-center justify-center text-white mx-auto md:mx-0 shadow-lg">
+				<i class="fa-solid fa-camera text-2xl"></i>
+			  </div>
+			  <h2 class="text-4xl font-bold font-serif text-white">AuraGallery</h2>
+			  <p class="text-violet-400 font-medium">Platform Eksibisi Karya Fotografi Premium</p>
+			</div>
+
+			<p class="text-gray-300 text-lg leading-relaxed">
+			  AuraGallery adalah galeri digital yang didesain secara khusus bagi penikmat, kolektor, dan pencipta seni visual berkualitas tinggi. Melalui perpaduan estetika elegan, animasi modern, dan teknologi ramah pengguna, kami menghadirkan cara baru untuk mengagumi keindahan lanskap, menangkap ekspresi manusia, dan menyimpan kenangan tak bernilai.
+			</p>
+
+			<div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 border-t border-white/5">
+			  <div class="text-center sm:text-left">
+				<div class="text-3xl font-extrabold text-white font-serif">100%</div>
+				<div class="text-sm text-gray-500 mt-1">Gratis & Bebas Diunduh</div>
+			  </div>
+			  <div class="text-center sm:text-left">
+				<div class="text-3xl font-extrabold text-white font-serif">Ultra HD</div>
+				<div class="text-sm text-gray-500 mt-1">Kualitas Foto Maksimal</div>
+			  </div>
+			  <div class="text-center sm:text-left">
+				<div class="text-3xl font-extrabold text-white font-serif">Instan</div>
+				<div class="text-sm text-gray-500 mt-1">Unggah Tanpa Registrasi</div>
+			  </div>
+			</div>
+
+			<div class="pt-6 border-t border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+			  <div class="text-xs text-gray-500">
+				&copy; 2026 AuraGallery. Dibuat dengan penuh dedikasi seni.
+			  </div>
+			  <div class="flex items-center gap-4">
+				<a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa-brands fa-instagram text-xl"></i></a>
+				<a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa-brands fa-pinterest text-xl"></i></a>
+				<a href="#" class="text-gray-400 hover:text-white transition-colors"><i class="fa-brands fa-unsplash text-xl"></i></a>
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  </div>
+
+    </main>
+
+
+    <!-- ================= LIGHTBOX MODAL ================= -->
+    <div id="lightbox" class="hidden fixed inset-0 z-[100] bg-slate-950/98 backdrop-blur-xl flex flex-col md:flex-row items-stretch justify-between animate-fade-in">
+
+	  <!-- Lightbox Left: Image Viewer (Main) -->
+	  <div class="flex-1 relative flex items-center justify-center p-4 min-h-0">
+		<!-- Close Button for Mobile (top right corner) -->
+		<button onclick="closeLightbox()" class="absolute top-4 right-4 z-50 w-11 h-11 rounded-full bg-white/5 hover:bg-white/15 border border-white/10 text-white flex items-center justify-center backdrop-blur-md transition-all">
+		  <i class="fa-solid fa-xmark text-lg"></i>
+		</button>
+
+		<!-- Slide Navigation Buttons in Lightbox -->
+		<button onclick="navigateLightbox(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-full bg-white/5 hover:bg-violet-600/80 text-white flex items-center justify-center border border-white/10 backdrop-blur-md transition-all">
+		  <i class="fa-solid fa-arrow-left"></i>
+		</button>
+		<button onclick="navigateLightbox(1)" class="absolute right-4 top-1/2 -translate-y-1/2 z-40 w-12 h-12 rounded-full bg-white/5 hover:bg-violet-600/80 text-white flex items-center justify-center border border-white/10 backdrop-blur-md transition-all">
+		  <i class="fa-solid fa-arrow-right"></i>
+		</button>
+
+		<!-- Dynamic Image Target -->
+		<img id="lightbox-img" src="" alt="Detail Gambar" class="max-w-full max-h-[85vh] md:max-h-[90vh] object-contain rounded-xl shadow-2xl transition-all duration-300 transform scale-95 opacity-0">
+	  </div>
+
+	  <!-- Lightbox Right: Metadata & Details Panel -->
+	  <div class="w-full md:w-[400px] bg-slate-900 border-t md:border-t-0 md:border-l border-white/10 p-6 flex flex-col justify-between overflow-y-auto">
+		<div class="space-y-6">
+		  <!-- Close Button (Desktop Desktop) -->
+		  <div class="hidden md:flex justify-end">
+			<button onclick="closeLightbox()" class="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white flex items-center justify-center transition-colors">
+			  <i class="fa-solid fa-xmark"></i>
+			</button>
+		  </div>
+
+		  <!-- Photographer Info -->
+		  <div class="flex items-center gap-3">
+			<div class="w-12 h-12 rounded-full bg-gradient-to-tr from-violet-600 to-fuchsia-500 flex items-center justify-center text-white font-bold text-lg">
+			  <span id="lightbox-initial"></span>
+			</div>
+			<div>
+			  <p class="text-xs text-gray-500 font-medium uppercase tracking-wider">Fotografer</p>
+			  <h4 id="lightbox-photographer" class="text-lg font-bold text-white">Nama Kreator</h4>
+			</div>
+		  </div>
+
+		  <!-- Image Meta Details -->
+		  <div class="space-y-2">
+			<span id="lightbox-category" class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-violet-600/20 text-violet-400 border border-violet-500/20">Kategori</span>
+			<h3 id="lightbox-title" class="text-2xl font-bold font-serif text-white">Judul Foto</h3>
+			<p id="lightbox-description" class="text-sm text-gray-400 leading-relaxed">Deskripsi karya foto yang menjelaskan keindahan karya seni ini dan kisah menarik di balik proses pengambilannya.</p>
+		  </div>
+
+		  <!-- Stats details / metadata mockup -->
+		  <div class="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
+			<div class="bg-white/5 p-3 rounded-2xl border border-white/5 text-center">
+			  <div class="text-gray-500 text-xs uppercase font-semibold">Tipe File</div>
+			  <div class="text-white text-sm font-medium mt-1">JPEG Image</div>
+			</div>
+			<div class="bg-white/5 p-3 rounded-2xl border border-white/5 text-center">
+			  <div class="text-gray-500 text-xs uppercase font-semibold">Resolusi</div>
+			  <div class="text-white text-sm font-medium mt-1">Ultra HD</div>
+			</div>
+		  </div>
+		</div>
+
+		<!-- Download CTA -->
+		<div class="mt-8 pt-6 border-t border-white/5 space-y-3">
+		  <a id="lightbox-download-link" href="#" download class="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white py-4 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all duration-300 shadow-lg shadow-violet-500/20 transform hover:-translate-y-0.5">
+			<i class="fa-solid fa-download"></i> Unduh Resolusi Penuh
+		  </a>
+		  <p class="text-[10px] text-gray-500 text-center leading-normal">
+			Dengan mengunduh, Anda menyetujui Lisensi Kreatif AuraGallery untuk penggunaan personal dan non-komersial.
+		  </p>
+		</div>
+	  </div>
+
+    </div>
+
+
+    <!-- ================= NOTIFICATION BOX ================= -->
+    <div id="toast" class="hidden fixed bottom-6 right-6 z-[120] max-w-sm glass-card border border-emerald-500/30 p-4 rounded-2xl shadow-xl shadow-emerald-950/20 flex items-start gap-3 transition-all duration-300 transform translate-y-10 opacity-0">
+	  <div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+		<i class="fa-solid fa-circle-check"></i>
+	  </div>
+	  <div class="flex-1">
+		<h5 class="text-sm font-semibold text-white">Sukses!</h5>
+		<p id="toast-message" class="text-xs text-gray-400 mt-1">Operasi berhasil dilaksanakan.</p>
+	  </div>
+	  <button onclick="hideToast()" class="text-gray-500 hover:text-white"><i class="fa-solid fa-xmark text-xs"></i></button>
+    </div>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+<script>
+        // Initial Mock Database
+        let photos = [
+            {
+                id: 1,
+                title: "Senja Keemasan di Pesisir Pantai",
+                photographer: "Andi Wijaya",
+                category: "Alam",
+                description: "Menangkap momen transisi dramatis di mana langit merengkuh laut dengan kehangatan warna emas murni.",
+                src: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80"
+            },
+            {
+                id: 2,
+                title: "Siluet Menara dalam Kabut Kota",
+                photographer: "Rian Herdian",
+                category: "Arsitektur",
+                description: "Menampilkan pesona fajar berkabut di kawasan perkotaan metropolitan modern yang berbalut misteri pagi.",
+                src: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1200&q=80"
+            },
+            {
+                id: 3,
+                title: "Pesona Gadis Desa & Tatapan Hangat",
+                photographer: "Siti Rahma",
+                category: "Potret",
+                description: "Sebuah bidikan potret ekspresif yang menangkap ketulusan dan kedalaman jiwa melalui sorot mata alami.",
+                src: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80"
+            },
+            {
+                id: 4,
+                title: "Estetika Garis Simetris Struktur Kaca",
+                photographer: "Budi Santoso",
+                category: "Arsitektur",
+                description: "Detail geometris arsitektur modern yang memanfaatkan kontras bayangan, kaca reflektif, dan logam futuristik.",
+                src: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80"
+            },
+            {
+                id: 5,
+                title: "Puncak Salju Abadi Alpen",
+                photographer: "Alifia Zahra",
+                category: "Alam",
+                description: "Keagungan puncak gunung Alpen berselimut salju yang bersinar gemerlap di bawah sinar mentari dingin.",
+                src: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80"
+            },
+            {
+                id: 6,
+                title: "Harmoni Alam & Hutan Pinus Berkabut",
+                photographer: "Dewi Lestari",
+                category: "Alam",
+                description: "Menyajikan ketenangan lanskap hutan pinus yang diselimuti kabut sejuk, menciptakan suasana damai tak tertandingi.",
+                src: "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?auto=format&fit=crop&w=1200&q=80"
+            },
+            {
+                id: 7,
+                title: "Ekspresi Emosi di Bawah Rintik Hujan",
+                photographer: "Roni Saputra",
+                category: "Potret",
+                description: "Sebuah karya seni sinematik mengeksplorasi emosi mendalam di tengah guyuran air hujan malam hari.",
+                src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=80"
+            },
+            {
+                id: 8,
+                title: "Fraktal Abstrak Kaca & Bias Cahaya",
+                photographer: "Galang Prasetyo",
+                category: "Seni",
+                description: "Keindahan mikroskopis abstrak yang terbentuk dari pembiasan cahaya prisma di atas permukaan kristal.",
+                src: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1200&q=80"
+            }
+        ];
+
+        // Highlight Slideshow Photos
+        let slidePhotos = [
+            {
+                title: "Symphony Gelombang Samudra",
+                photographer: "Andi Wijaya",
+                description: "Kombinasi luar biasa gerakan dinamis air laut dan pancaran mentari senja yang menghanyutkan.",
+                src: "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&w=1600&q=80"
+            },
+            {
+                title: "Cahaya Kosmik di Langit Utara",
+                photographer: "Alifia Zahra",
+                description: "Keajaiban langit malam dengan tarian aurora borealis hijau cemerlang di atas danau beku.",
+                src: "https://images.unsplash.com/photo-1483168527879-c66136b56105?auto=format&fit=crop&w=1600&q=80"
+            },
+            {
+                title: "Lentera Harapan di Kuil Kuno",
+                photographer: "Siti Rahma",
+                description: "Kedamaian ritual spiritual di bawah lambaian ribuan lentera gantung kuno yang penuh makna.",
+                src: "https://images.unsplash.com/photo-1528164344705-47542687000d?auto=format&fit=crop&w=1600&q=80"
+            }
+        ];
+
+        // State variables
+        let currentSlideIndex = 0;
+        let slideInterval;
+        let selectedCategory = "Semua";
+        let currentLightboxIndex = 0;
+        let filteredPhotoList = [];
+
+        // ON WINDOW LOAD
+        window.onload = function() {
+            // Setup Hero Slideshow
+            setupSlides();
+            startAutoplay();
+
+            // Load Gallery Data
+            renderCategories();
+            renderGallery();
+
+            // Setup Mobile Menu Toggle
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const menu = document.getElementById('mobile-menu');
+            menuBtn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+            });
+        };
+
+        // ================= SLIDESHOW LOGIC =================
+        function setupSlides() {
+            const container = document.getElementById('slides-container');
+            const indicators = document.getElementById('slide-indicators');
+            container.innerHTML = '';
+            indicators.innerHTML = '';
+
+            slidePhotos.forEach((slide, idx) => {
+                // Slide element
+                const slideElem = document.createElement('div');
+                slideElem.id = `slide-${idx}`;
+                slideElem.className = `absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out transform ${idx === 0 ? 'opacity-100 scale-100 z-10' : 'opacity-0 scale-105 z-0'}`;
+                
+                // Use absolute path or fallback UI to describe beautiful nature photography
+                slideElem.innerHTML = `
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent z-10"></div>
+                    <img src="${slide.src}" alt="${slide.title}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/1600x900/1e293b/fff?text=Foto+Keren+${idx+1}'">
+                    
+                    <div class="absolute bottom-12 left-6 sm:left-12 lg:left-16 z-20 max-w-2xl text-left space-y-3 p-4 sm:p-0">
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold tracking-wider text-violet-400 bg-violet-500/10 border border-violet-500/20 uppercase">Sorotan Karya</span>
+                        <h1 class="text-3xl sm:text-5xl font-bold font-serif text-white tracking-tight leading-tight">${slide.title}</h1>
+                        <p class="text-sm sm:text-base text-gray-300 leading-relaxed">${slide.description}</p>
+                        <div class="flex items-center gap-3 pt-2 text-xs sm:text-sm text-gray-400">
+                            <i class="fa-solid fa-camera"></i>
+                            <span>Diabadikan oleh <strong class="text-white">${slide.photographer}</strong></span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(slideElem);
+
+                // Indicator dot
+                const dot = document.createElement('button');
+                dot.className = `w-12 h-1.5 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-violet-600' : 'bg-white/20 hover:bg-white/40'}`;
+                dot.onclick = () => goToSlide(idx);
+                dot.setAttribute('aria-label', `Slide ${idx + 1}`);
+                indicators.appendChild(dot);
+            });
+        }
+
+        function showSlide(index) {
+            const total = slidePhotos.length;
+            const container = document.getElementById('slides-container');
+            const indicators = document.getElementById('slide-indicators').children;
+            
+            // Loop boundaries
+            if (index >= total) currentSlideIndex = 0;
+            else if (index < 0) currentSlideIndex = total - 1;
+            else currentSlideIndex = index;
+
+            // Transition Slides
+            for (let i = 0; i < total; i++) {
+                const slide = document.getElementById(`slide-${i}`);
+                if (i === currentSlideIndex) {
+                    slide.className = "absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out transform opacity-100 scale-100 z-10";
+                    indicators[i].className = "w-12 h-1.5 rounded-full transition-all duration-300 bg-violet-600";
+                } else {
+                    slide.className = "absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out transform opacity-0 scale-105 z-0";
+                    indicators[i].className = "w-12 h-1.5 rounded-full transition-all duration-300 bg-white/20 hover:bg-white/40";
+                }
+            }
+
+            resetAutoplayProgress();
+        }
+
+        function nextSlide() {
+            showSlide(currentSlideIndex + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlideIndex - 1);
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+        }
+
+        function startAutoplay() {
+            resetAutoplayProgress();
+            slideInterval = setInterval(nextSlide, 5000);
+        }
+
+        function resetAutoplayProgress() {
+            const bar = document.getElementById('autoplay-progress');
+            bar.style.transition = 'none';
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.transition = 'width 5000ms linear';
+                bar.style.width = '100%';
+            }, 50);
+        }
+
+        // ================= NAVIGATION TAB SYSTEM =================
+        function switchTab(tabId) {
+            const tabs = ['explore', 'upload', 'about'];
+            tabs.forEach(tab => {
+                const page = document.getElementById(`page-${tab}`);
+                const btn = document.getElementById(`tab-btn-${tab}`);
+                const mBtn = document.getElementById(`mobile-tab-btn-${tab}`);
+                
+                if (tab === tabId) {
+                    page.classList.remove('hidden');
+                    if (btn) btn.className = "px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 text-white bg-violet-600/20 border border-violet-500/30";
+                    if (mBtn) mBtn.className = "w-full text-left px-4 py-3 rounded-xl text-base font-medium text-white bg-violet-600/20 block";
+                } else {
+                    page.classList.add('hidden');
+                    if (btn) btn.className = "px-5 py-2.5 rounded-full text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-300";
+                    if (mBtn) mBtn.className = "w-full text-left px-4 py-3 rounded-xl text-base font-medium text-gray-400 hover:text-white hover:bg-white/5 block";
+                }
+            });
+
+            // Close mobile menu after navigation
+            document.getElementById('mobile-menu').classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+
+        // ================= DYNAMIC CATEGORIES =================
+        function renderCategories() {
+            const categories = ["Semua", "Alam", "Arsitektur", "Potret", "Seni"];
+            const container = document.getElementById('categories-container');
+            container.innerHTML = '';
+
+            categories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = `px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 whitespace-nowrap border ${
+                    selectedCategory === cat 
+                        ? 'bg-white text-slate-950 border-white shadow-lg' 
+                        : 'bg-white/5 text-gray-400 border-white/5 hover:bg-white/10 hover:text-white'
+                }`;
+                btn.onclick = () => {
+                    selectedCategory = cat;
+                    renderCategories();
+                    filterPhotos();
+                };
+                btn.innerText = cat === "Semua" ? "Semua Kategori" : cat;
+                container.appendChild(btn);
+            });
+        }
+
+
+        // ================= GALLERY RENDERING & FILTERS =================
+        function renderGallery() {
+            const grid = document.getElementById('gallery-grid');
+            const empty = document.getElementById('gallery-empty');
+            const loading = document.getElementById('gallery-loading');
+
+            grid.innerHTML = '';
+            
+            // Get filtered list based on state
+            const searchVal = document.getElementById('search-input').value.toLowerCase();
+            
+            filteredPhotoList = photos.filter(p => {
+                const matchesCat = selectedCategory === "Semua" || p.category === selectedCategory;
+                const matchesSearch = p.title.toLowerCase().includes(searchVal) || 
+                                      p.photographer.toLowerCase().includes(searchVal) ||
+                                      p.category.toLowerCase().includes(searchVal);
+                return matchesCat && matchesSearch;
+            });
+
+            if (filteredPhotoList.length === 0) {
+                empty.classList.remove('hidden');
+                grid.classList.add('hidden');
+                return;
+            }
+
+            empty.classList.add('hidden');
+            grid.classList.remove('hidden');
+
+            filteredPhotoList.forEach((photo, idx) => {
+                const card = document.createElement('div');
+                card.className = "group relative rounded-2xl overflow-hidden glass-card border border-white/5 hover:border-violet-500/40 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl hover:shadow-violet-950/20 animate-slide-up";
+                card.style.animationDelay = `${idx * 50}ms`;
+
+                card.innerHTML = `
+                    <div class="aspect-square w-full overflow-hidden relative cursor-pointer" onclick="openLightbox(${idx})">
+                        <img src="${photo.src}" alt="${photo.title}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" onerror="this.src='https://placehold.co/600x600/1e293b/fff?text=${encodeURIComponent(photo.title)}'">
+                        <!-- Dark Overlay on Hover -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
+                            <span class="text-[10px] uppercase tracking-wider text-violet-400 font-semibold mb-1">${photo.category}</span>
+                            <h4 class="text-white font-bold text-base line-clamp-1">${photo.title}</h4>
+                            <p class="text-gray-400 text-xs mt-1">Oleh ${photo.photographer}</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Card Footer Actions -->
+                    <div class="p-4 flex items-center justify-between border-t border-white/5 bg-slate-900/40">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full bg-violet-600/20 text-white font-bold text-xs flex items-center justify-center">
+                                ${photo.photographer.charAt(0)}
+                            </div>
+                            <span class="text-xs text-gray-300 font-medium truncate max-w-[110px]">${photo.photographer}</span>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="flex items-center gap-1">
+                            <button onclick="downloadImage('${photo.src}', '${photo.title}')" title="Unduh Foto" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-violet-600 hover:text-white text-gray-400 flex items-center justify-center transition-colors">
+                                <i class="fa-solid fa-download text-xs"></i>
+                            </button>
+                            <button onclick="openLightbox(${idx})" title="Perbesar" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white flex items-center justify-center transition-colors">
+                                <i class="fa-solid fa-expand text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterPhotos() {
+            renderGallery();
+        }
+
+        function resetFilters() {
+            document.getElementById('search-input').value = '';
+            selectedCategory = "Semua";
+            renderCategories();
+            renderGallery();
+        }
+
+
+        // ================= FILE UPLOAD SYSTEM (STATE) =================
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                alert('Silakan pilih file gambar yang valid.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const previewImg = document.getElementById('image-preview');
+                const previewContainer = document.getElementById('preview-container');
+                const prompt = document.getElementById('upload-prompt');
+                const filenameText = document.getElementById('preview-filename');
+
+                previewImg.src = evt.target.result;
+                previewContainer.classList.remove('hidden');
+                filenameText.innerText = file.name;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearPreview(e) {
+            if (e) e.stopPropagation();
+            const fileInput = document.getElementById('file-input');
+            const previewContainer = document.getElementById('preview-container');
+            const previewImg = document.getElementById('image-preview');
+            
+            fileInput.value = '';
+            previewImg.src = '';
+            previewContainer.classList.add('hidden');
+        }
+
+        function submitPhoto(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('file-input');
+            const titleInput = document.getElementById('form-title');
+            const photographerInput = document.getElementById('form-photographer');
+            const categorySelect = document.getElementById('form-category');
+            const descriptionInput = document.getElementById('form-description');
+            const previewImg = document.getElementById('image-preview');
+
+            if (!previewImg.src || fileInput.files.length === 0) {
+                showToastError("Silakan pilih/unggah foto terlebih dahulu.");
+                return;
+            }
+
+            // Create new photo item
+            const newPhoto = {
+                id: photos.length + 1,
+                title: titleInput.value,
+                photographer: photographerInput.value,
+                category: categorySelect.value,
+                description: descriptionInput.value || "Karya luar biasa yang dibagikan secara bebas.",
+                src: previewImg.src // Base64 data URL
+            };
+
+            // Add to database
+            photos.unshift(newPhoto);
+
+            // Reset form
+            document.getElementById('upload-form').reset();
+            clearPreview();
+
+            // Notify User
+            showToastSuccess(`Foto "${newPhoto.title}" berhasil diunggah ke galeri!`);
+            
+            // Switch view to explore
+            setTimeout(() => {
+                selectedCategory = "Semua";
+                renderCategories();
+                renderGallery();
+                switchTab('explore');
+            }, 1000);
+        }
+
+
+        // ================= DOWNLOAD FUNCTION =================
+        function downloadImage(src, title) {
+            // Because browser iframe restrictions sometimes block direct downloads of external URLs,
+            // we handle standard anchor triggering & provide dynamic canvas downloading for base64 files
+            try {
+                const link = document.createElement('a');
+                link.href = src;
+                link.download = `${title.replace(/\s+/g, '-').toLowerCase()}.jpg`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToastSuccess("Unduhan dimulai!");
+            } catch (err) {
+                // Clipboard fallback if download fails inside sandbox iframe
+                document.execCommand('copy');
+                showToastSuccess("Tautan gambar disalin karena pembatasan sistem.");
+            }
+        }
+
+
+        // ================= LIGHTBOX SYSTEM =================
+        function openLightbox(index) {
+            currentLightboxIndex = index;
+            const photo = filteredPhotoList[index];
+            if (!photo) return;
+
+            const lightbox = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            const initial = document.getElementById('lightbox-initial');
+            const photographer = document.getElementById('lightbox-photographer');
+            const category = document.getElementById('lightbox-category');
+            const title = document.getElementById('lightbox-title');
+            const description = document.getElementById('lightbox-description');
+            const dlLink = document.getElementById('lightbox-download-link');
+
+            // Set content
+            img.src = photo.src;
+            initial.innerText = photo.photographer.charAt(0);
+            photographer.innerText = photo.photographer;
+            category.innerText = photo.category;
+            title.innerText = photo.title;
+            description.innerText = photo.description;
+
+            // Handle download binding
+            dlLink.onclick = (e) => {
+                e.preventDefault();
+                downloadImage(photo.src, photo.title);
+            };
+
+            // Show Box
+            lightbox.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Stop scrolling behind
+
+            // Animation kick in
+            setTimeout(() => {
+                img.classList.remove('opacity-0', 'scale-95');
+                img.classList.add('opacity-100', 'scale-100');
+            }, 50);
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            
+            img.classList.remove('opacity-100', 'scale-100');
+            img.classList.add('opacity-0', 'scale-95');
+
+            setTimeout(() => {
+                lightbox.classList.add('hidden');
+                document.body.style.overflow = ''; // Restore scrolling
+            }, 300);
+        }
+
+        function navigateLightbox(direction) {
+            let nextIndex = currentLightboxIndex + direction;
+            if (nextIndex >= filteredPhotoList.length) nextIndex = 0;
+            if (nextIndex < 0) nextIndex = filteredPhotoList.length - 1;
+            
+            // Fade out current
+            const img = document.getElementById('lightbox-img');
+            img.classList.remove('opacity-100', 'scale-100');
+            img.classList.add('opacity-0', 'scale-95');
+
+            setTimeout(() => {
+                openLightbox(nextIndex);
+            }, 200);
+        }
+
+
+        // ================= CUSTOM TOAST =================
+        function showToastSuccess(message) {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toast-message');
+            toast.className = toast.className.replace('border-red-500/30', 'border-emerald-500/30');
+            toast.querySelector('.bg-emerald-500\\/20').className = "w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0";
+            toast.querySelector('.bg-emerald-500\\/20 i').className = "fa-solid fa-circle-check";
+            
+            msg.innerText = message;
+            toast.classList.remove('hidden');
+            
+            setTimeout(() => {
+                toast.classList.remove('opacity-0', 'translate-y-10');
+                toast.classList.add('opacity-100', 'translate-y-0');
+            }, 10);
+
+            // Auto Close
+            setTimeout(hideToast, 4000);
+        }
+
+        function showToastError(message) {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toast-message');
+            toast.className = toast.className.replace('border-emerald-500/30', 'border-red-500/30');
+            toast.querySelector('.shrink-0').className = "w-8 h-8 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center shrink-0";
+            toast.querySelector('.shrink-0 i').className = "fa-solid fa-circle-exclamation";
+            
+            msg.innerText = message;
+            toast.classList.remove('hidden');
+            
+            setTimeout(() => {
+                toast.classList.remove('opacity-0', 'translate-y-10');
+                toast.classList.add('opacity-100', 'translate-y-0');
+            }, 10);
+
+            // Auto Close
+            setTimeout(hideToast, 4000);
+        }
+
+        function hideToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('opacity-100', 'translate-y-0');
+            toast.classList.add('opacity-0', 'translate-y-10');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 300);
+        }
+
+        // Keyboard support for Lightbox
+        document.addEventListener('keydown', (e) => {
+            const lightbox = document.getElementById('lightbox');
+            if (!lightbox.classList.contains('hidden')) {
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowRight') navigateLightbox(1);
+                if (e.key === 'ArrowLeft') navigateLightbox(-1);
+            }
+        });
+</script>
+  </body>
+</html>

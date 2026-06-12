@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AsepMo Kuadrat - Arsitek Minimalis Mewah</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            gold: '#D4AF37',
+                            dark: '#0f172a',
+                            light: '#f8fafc',
+                            cardDark: '#1e293b',
+                            cardLight: '#ffffff'
+                        }
+                    }
+                }
+            }
+        }
+</script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        
+        /* Hide scrollbar for horizontal list but keep functionality */
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Drawer Animation */
+        #drawer { transition: transform 0.3s ease-in-out; }
+        .drawer-open { transform: translateX(0); }
+        .drawer-closed { transform: translateX(-100%); }
+
+        /* Options Menu Animation */
+        #options-menu { transition: opacity 0.2s, transform 0.2s; transform-origin: top right; }
+        .options-open { opacity: 1; transform: scale(1); pointer-events: auto; }
+        .options-closed { opacity: 0; transform: scale(0.95); pointer-events: none; }
+
+        /* Page Transitions */
+        .page-content { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+		.glass-nav {
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(194, 155, 98, 0.15);
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #e0b976, #c29b62, #e0b976);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 200% auto;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Subtle gold glow around images */
+        .gold-glow {
+            box-shadow: 0 0 40px rgba(194, 155, 98, 0.15);
+        }
+        /* Toast */
+        #toast { transition: bottom 0.3s, opacity 0.3s; }
+</style>
+  </head>
+  <body class="bg-brand-light dark:bg-brand-dark text-slate-800 dark:text-slate-200 flex flex-col min-h-screen pt-16">
+
+    <!-- Header -->
+    <header class="fixed top-0 w-full bg-white/80 dark:bg-brand-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 z-50 transition-colors duration-300">
+	  <div class="flex items-center justify-between px-4 h-16">
+		<!-- Left: Drawer Toggle & Title -->
+		<div class="flex items-center gap-4">
+		  <button onclick="toggleDrawer()" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 focus:outline-none">
+			<i class="fas fa-bars text-xl"></i>
+		  </button>
+		  <div class="flex items-center gap-2 cursor-pointer" onclick="navigate('home')">	
+			<span class="font-serif font-bold text-2xl tracking-widest text-brand-light">AsepMo</span>		
+		  </div>
+		</div>
+
+		<!-- Right: Icons & Options -->
+		<div class="flex items-center gap-2">
+		  <button onclick="navigate('website')" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 relative group">
+			<i class="fas fa-globe"></i>
+			<span class="absolute top-full right-0 mt-1 w-auto p-1 text-xs bg-slate-800 text-white rounded hidden group-hover:block whitespace-nowrap">Website</span>
+		  </button>
+		  <button onclick="navigate('download')" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 relative group">
+			<i class="fas fa-download"></i>
+			<span class="absolute top-full right-0 mt-1 w-auto p-1 text-xs bg-slate-800 text-white rounded hidden group-hover:block whitespace-nowrap">Download</span>
+		  </button>
+
+		  <!-- Options Menu Toggle -->
+		  <div class="relative">
+			<button onclick="toggleOptions()" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300">
+			  <i class="fas fa-ellipsis-v"></i>
+			</button>
+			<!-- Options Dropdown -->
+			<div id="options-menu" class="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700 py-1 options-closed z-50">
+			  <a href="https://android.com" target="_blank" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"><i class="fab fa-android w-6 text-green-500"></i> Android</a>
+			  <a href="https://google.com" target="_blank" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"><i class="fab fa-google w-6 text-blue-500"></i> Google</a>
+			  <a href="https://github.com" target="_blank" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"><i class="fab fa-github w-6 text-slate-900 dark:text-white"></i> Github</a>
+			  <a href="https://wikipedia.org" target="_blank" class="block px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700"><i class="fab fa-wikipedia-w w-6"></i> Wikipedia</a>
+			</div>
+		  </div>
+		</div>
+	  </div>
+    </header>
+
+    <!-- Drawer Navigation -->
+    <div id="drawer-overlay" onclick="toggleDrawer()" class="fixed inset-0 bg-black/50 z-40 hidden transition-opacity"></div>
+    <nav id="drawer" class="fixed inset-y-0 left-0 w-64 bg-white dark:bg-brand-cardDark border-r border-slate-200 dark:border-slate-800 z-50 drawer-closed flex flex-col h-full shadow-2xl">
+	  <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center gap-4">
+		<img class="h-10 w-10 rounded-full border border-brand-gold/30 p-0.5 object-cover grayscale" src="gallery/image/asepmo-premium-logo.jpg" alt="AsepMo Logo Small">
+		<div>
+		  <span class="font-serif font-bold text-2xl tracking-widest text-brand-light">ASEPMO</span>
+		  <p class="text-xs text-slate-500">Arsitek Mewah</p>
+		</div>
+	  </div>
+	  <div class="flex items-center gap-4 mb-6">
+		<div class="h-[1px] w-12 bg-brand-gold"></div>
+		<span class="text-brand-gold uppercase tracking-widest text-sm">Menu :</span>
+	  </div>
+	  <div class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+		<button onclick="navigate('home')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"><i class="fas fa-home w-5 text-center"></i> Home</button>
+		<button onclick="navigate('about')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"><i class="fas fa-user w-5 text-center"></i> About</button>
+		<button onclick="navigate('gallery')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"><i class="fas fa-images w-5 text-center"></i> Gallery</button>
+		<button onclick="navigate('service')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"><i class="fas fa-tools w-5 text-center"></i> Service</button>
+		<button onclick="navigate('blog')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"><i class="fas fa-blog w-5 text-center"></i> Blog</button>
+		<button onclick="navigate('contact')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"><i class="fas fa-envelope w-5 text-center"></i> Contact</button>
+		<div class="my-2 border-t border-slate-200 dark:border-slate-800"></div>
+		<button onclick="navigate('ai-tools')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-brand-gold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors font-medium"><i class="fas fa-robot w-5 text-center"></i> AI Tools</button>
+		<button onclick="navigate('file-tree')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"><i class="fas fa-folder-tree w-5 text-center"></i> File Tree</button>
+		<div class="my-2 border-t border-slate-200 dark:border-slate-800"></div>
+		<button onclick="navigate('settings')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"><i class="fas fa-cog w-5 text-center"></i> Settings</button>
+		<button onclick="navigate('login')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"><i class="fas fa-sign-in-alt w-5 text-center"></i> Login</button>
+	  </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 w-full max-w-5xl mx-auto p-4 lg:p-8 pb-24 relative overflow-hidden">
+
+	  <!-- Home Page -->
+	  <section id="page-home" class="page-content block">
+		<!-- Breadcrumb -->
+		<div class="mb-8">
+		  <nav aria-label="Breadcrumb" class="flex">
+			<ol class="flex items-center space-x-2 dark:bg-brand-cardDark px-5 py-3 shadow-sm w-full sm:w-auto">
+			  <li>
+				<a href="#" onclick="navigate('home')" class="text-slate-400 hover:text-brand-600 transition-colors duration-200 flex items-center">
+				  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+				  </svg>
+				  <span class="sr-only">Home</span>
+				</a>
+			  </li>
+			  <li>
+				<svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+			  </li>	  
+			</ol>
+		  </nav>
+		</div>
+		
+		<!-- Article -->
+		<article class="bg-white dark:bg-brand-cardDark rounded-2xl p-6 md:p-8 shadow-xl border border-slate-100 dark:border-slate-800 mb-8 relative overflow-hidden">
+		  <div class="absolute top-0 right-0 w-32 h-32 bg-brand-gold opacity-10 rounded-bl-full z-0"></div>
+		  <div class="relative z-10">
+			<h2 class="text-3xl font-bold mb-4 text-slate-900 dark:text-white">AsepMo Kuadrat: Sang Arsitek Visi</h2>
+			<div class="flex-shrink-0 flex items-center gap-4 cursor-pointer" onclick="window.scrollTo(0,0)">
+			  <img class="h-16 w-16 rounded-full border border-brand-gold/30 p-1 object-cover" src="gallery/image/asepmo.jpg" alt="AsepMo Logo" onerror="this.src='https://placehold.co/100x100/020617/c29b62?text=AM'">
+			   <div>
+				<p class="font-semibold text-brand-gold">AsepMo Kuadrat</p>
+				<p class="text-sm text-slate-500">Pengusaha & Arsitek</p>
+			  </div>
+			</div>
+			<div class="space-y-4 text-slate-600 dark:text-slate-300 leading-relaxed">
+			  <p>AsepMo Kuadrat bukanlah sekadar nama, ia adalah simbol dedikasi dalam menciptakan ruang hidup yang memadukan estetika modern dengan kenyamanan hakiki. Sebagai seorang pengusaha muda yang visioner, AsepMo sedang gencar mengembangkan usahanya di bidang arsitektur, berfokus pada desain rumah minimalis mewah.</p>
+			  <p>Karyanya dikenal dengan garis-garis yang bersih, pemanfaatan cahaya alami yang optimal, dan material premium yang menyatu sempurna dengan lingkungan. Setiap proyek adalah kanvas kosong tempat ia melukiskan impian klien menjadi realitas megah namun tetap bersahaja.</p>
+			</div>
+			<div class="mt-8 flex gap-3">
+			  <button onclick="shareLink()" class="px-6 py-2.5 bg-gradient-to-r from-brand-gold to-yellow-600 text-white rounded-lg font-medium shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-2">
+				<i class="fas fa-share-alt"></i> Share Profile
+			  </button>
+			</div>
+		  </div>
+		</article>
+
+		<!-- YouTube Playlist Area (Mock Content) -->
+		<div class="mb-8">
+		  <h3 class="text-2xl font-bold mb-4 flex items-center gap-2">
+			<i class="fab fa-youtube text-red-500"></i> Inspirasi Rumah & Gaming Room
+		  </h3>
+		  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+			<div class="bg-white dark:bg-brand-cardDark rounded-xl overflow-hidden shadow border border-slate-100 dark:border-slate-800 group cursor-pointer">
+			  <div class="relative aspect-video bg-slate-200 dark:bg-slate-700">
+				<img src="https://placehold.co/600x400/1e293b/D4AF37?text=Minimalist+House+Tour" alt="Video" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+				<div class="absolute inset-0 flex items-center justify-center">
+				  <div class="w-12 h-12 bg-black/50 rounded-full flex items-center justify-center text-white backdrop-blur-sm group-hover:bg-red-600 transition-colors"><i class="fas fa-play"></i></div>
+				</div>
+			  </div>
+			  <div class="p-4">
+				<h4 class="font-semibold line-clamp-2">Tour Rumah Minimalis Modern Tropis 2026</h4>
+				<p class="text-sm text-slate-500 mt-1">AsepMo Kuadrat • 1.2M Views</p>
+			  </div>
+			</div>
+			<div class="bg-white dark:bg-brand-cardDark rounded-xl overflow-hidden shadow border border-slate-100 dark:border-slate-800 group cursor-pointer">
+			  <div class="relative aspect-video bg-slate-200 dark:bg-slate-700">
+				<img src="https://placehold.co/600x400/1e293b/D4AF37?text=Luxury+Gaming+Room" alt="Video" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+				<div class="absolute inset-0 flex items-center justify-center">
+				  <div class="w-12 h-12 bg-black/50 rounded-full flex items-center justify-center text-white backdrop-blur-sm group-hover:bg-red-600 transition-colors"><i class="fas fa-play"></i></div>
+				</div>
+			  </div>
+			  <div class="p-4">
+				<h4 class="font-semibold line-clamp-2">Setup Gaming Room Mewah Impian</h4>
+				<p class="text-sm text-slate-500 mt-1">AsepMo Kuadrat • 850K Views</p>
+			  </div>
+			</div>
+		  </div>
+		</div>
+		<footer id="kontak" class="bg-brand-darker border-t border-brand-gold/20 pt-16 pb-8">
+		  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+			  <!-- Brand -->
+			  <div class="lg:col-span-2">
+				<div class="flex items-center gap-3 mb-6">
+				  <img class="h-10 w-10 rounded-full border border-brand-gold/30 p-0.5 object-cover grayscale" src="gallery/image/asepmo-premium-logo.jpg" alt="AsepMo Logo Small">
+				  <span class="font-serif font-bold text-xl tracking-widest text-brand-light">ASEPMO</span>
+				</div>
+				<p class="text-gray-400 font-light text-sm leading-relaxed max-w-sm">
+				  Mewujudkan visi rumah mewah minimalis yang merepresentasikan identitas premium Anda. Konsultasikan rencana pembangunan hunian impian Anda bersama kami.
+				</p>
+			  </div>
+
+			  <!-- Links -->
+			  <div>
+				<h4 class="text-white font-serif font-semibold mb-6 tracking-wider">NAVIGASI</h4>
+				<ul class="space-y-3">
+				  <li><a href="#beranda" class="text-sm text-gray-500 hover:text-brand-gold transition-colors">Beranda</a></li>
+				  <li><a href="#profil" class="text-sm text-gray-500 hover:text-brand-gold transition-colors">Profil AsepMo</a></li>
+				  <li><a href="#filosofi" class="text-sm text-gray-500 hover:text-brand-gold transition-colors">Filosofi Desain</a></li>
+				</ul>
+			  </div>
+
+			  <!-- Contact -->
+			  <div>
+				<h4 class="text-white font-serif font-semibold mb-6 tracking-wider">KANTOR</h4>
+				<ul class="space-y-3 text-sm text-gray-500 font-light">
+				  <li class="flex items-start gap-3">
+					<svg class="w-5 h-5 text-brand-gold shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+					<span>Jl. Arsitektur Premium No. 88, Jakarta Selatan, Indonesia</span>
+				  </li>
+				  <li class="flex items-center gap-3">
+					<svg class="w-5 h-5 text-brand-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+					<span>contact@asepmo-architecture.com</span>
+				  </li>
+				</ul>
+			  </div>
+			</div>
+
+			<div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+			  <p class="text-gray-600 text-xs text-center md:text-left mb-4 md:mb-0">
+				&copy; 2026 AsepMo Architecture. All rights reserved. Premium Identity.
+			  </p>
+			  <div class="flex space-x-4">
+				<!-- Social Icons placeholders -->
+				<a href="#" class="text-gray-500 hover:text-brand-gold transition-colors">
+				  <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+				</a>
+				<a href="#" class="text-gray-500 hover:text-brand-gold transition-colors">
+				  <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+				</a>
+			  </div>
+			</div>
+		  </div>
+		</footer>
+		
+	  </section>
+
+	  <!-- About Page -->
+	  <section id="page-about" class="page-content hidden">
+		<!-- Breadcrumb -->
+		<div class="mb-8">
+		  <nav aria-label="Breadcrumb" class="flex">
+			<ol class="flex items-center space-x-2 dark:bg-brand-cardDark px-5 py-3 shadow-sm w-full sm:w-auto">
+			  <li>
+				<a href="#" onclick="navigate('home')" class="text-slate-400 hover:text-brand-600 transition-colors duration-200 flex items-center">
+				  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+				  </svg>
+				  <span class="sr-only">Home</span>
+				</a>
+			  </li>
+			  <li>
+				<svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+			  </li>
+			  <li aria-current="page">
+				<span class="text-sm font-semibold text-slate-600 dark:text-slate-400 pointer-events-none">About</span>
+			  </li>
+			</ol>
+		  </nav>
+		</div>
+		
+		<div class="bg-white dark:bg-brand-cardDark rounded-2xl p-8 shadow-xl border border-slate-100 dark:border-slate-800 text-center relative overflow-hidden">
+		  <div class="absolute inset-0 bg-gradient-to-b from-brand-gold/10 to-transparent h-32"></div>
+		  <div class="relative z-10">
+			<img src="FB_IMG_17807259780950872.jpg" alt="AsepMo" class="w-32 h-32 rounded-full mx-auto border-4 border-brand-gold object-cover shadow-2xl mb-6">
+			<h2 class="text-3xl font-bold mb-2">AsepMo Kuadrat</h2>
+			<p class="text-brand-gold font-medium mb-6">Sang Arsitek Rumah Minimalis Mewah</p>
+			<p class="max-w-2xl mx-auto text-slate-600 dark:text-slate-300 mb-8 leading-relaxed">
+			  Berawal dari passion terhadap geometri dan harmoni ruang, saya mendirikan firma arsitektur ini untuk mendefinisikan ulang kemewahan. Kemewahan bagi saya bukan sekadar ornamen berlebihan, melainkan ketepatan presisi, kualitas material, dan ruang yang memberikan kedamaian.
+			</p>
+
+			<div class="max-w-md mx-auto bg-slate-50 dark:bg-slate-800/50 p-6 rounded-xl border border-slate-200 dark:border-slate-700">
+			  <h3 class="font-semibold mb-4 text-left"><i class="fas fa-paper-plane mr-2 text-brand-gold"></i> Kirim Pesan</h3>
+			  <form onsubmit="event.preventDefault(); showMessage('Pesan terkirim (Mock)');" class="space-y-4 text-left">
+				<div>
+				  <label class="block text-sm mb-1 text-slate-500">To: asepmo.kuadrat@gmail.com</label>
+				  <input type="text" placeholder="Nama Anda" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-brand-gold outline-none" required>
+				</div>
+				<div>
+				  <textarea placeholder="Pesan Anda" rows="3" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-brand-gold outline-none resize-none" required></textarea>
+				</div>
+				<button type="submit" class="w-full bg-brand-gold text-white rounded-lg py-2 font-medium hover:bg-yellow-600 transition">Kirim Via Form</button>
+				<a href="mailto:asepmo.kuadrat@gmail.com" class="block text-center w-full bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white rounded-lg py-2 font-medium hover:bg-slate-300 dark:hover:bg-slate-600 transition mt-2">Atau Buka Email App</a>
+			  </form>
+			</div>
+
+			<div class="mt-8 flex justify-center gap-4">
+			  <a href="#" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-blue-600 hover:bg-blue-100 transition"><i class="fab fa-facebook-f"></i></a>
+			  <a href="#" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-pink-600 hover:bg-pink-100 transition"><i class="fab fa-instagram"></i></a>
+			  <a href="#" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-blue-400 hover:bg-blue-100 transition"><i class="fab fa-twitter"></i></a>
+			  <a href="#" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-blue-700 hover:bg-blue-100 transition"><i class="fab fa-linkedin-in"></i></a>
+			</div>
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- Gallery Page -->
+	  <section id="page-gallery" class="page-content hidden">
+		<h2 class="text-3xl font-bold mb-6 border-b-2 border-brand-gold pb-2 inline-block">Galeri Karya</h2>
+
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+		  <!-- Gallery Item 1 -->
+		  <div class="group rounded-xl overflow-hidden shadow-lg relative bg-brand-cardDark cursor-pointer">
+			<img src="https://placehold.co/600x800/1e293b/D4AF37?text=Rumah+Minimalis+1" alt="Gallery" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500">
+			<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+			  <p class="text-white font-medium">Villa Kaca Tropis</p>
+			</div>
+		  </div>
+		  <!-- Gallery Item 2 -->
+		  <div class="group rounded-xl overflow-hidden shadow-lg relative bg-brand-cardDark cursor-pointer">
+			<img src="https://placehold.co/600x800/1e293b/D4AF37?text=Cityscape+View" alt="Gallery" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500">
+			<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+			  <p class="text-white font-medium">Pemandangan Kota Malam</p>
+			</div>
+		  </div>
+		  <!-- Gallery Item 3 -->
+		  <div class="group rounded-xl overflow-hidden shadow-lg relative bg-brand-cardDark cursor-pointer">
+			<img src="https://placehold.co/600x800/1e293b/D4AF37?text=Interior+Mewah" alt="Gallery" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500">
+			<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+			  <p class="text-white font-medium">Interior Ruang Keluarga</p>
+			</div>
+		  </div>
+		</div>
+		<!-- Simple Slideshow Indicator Mock -->
+		<div class="flex justify-center mt-6 gap-2">
+		  <div class="w-3 h-3 rounded-full bg-brand-gold"></div>
+		  <div class="w-3 h-3 rounded-full bg-slate-300 dark:bg-slate-700"></div>
+		  <div class="w-3 h-3 rounded-full bg-slate-300 dark:bg-slate-700"></div>
+		</div>
+	  </section>
+
+	  <!-- Service Page -->
+	  <section id="page-service" class="page-content hidden">
+		<h2 class="text-3xl font-bold mb-8 text-center">Layanan Profesional</h2>
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+		  <!-- Service 1 -->
+		  <div class="bg-white dark:bg-brand-cardDark p-8 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800 hover:-translate-y-2 transition-transform duration-300 group">
+			<div class="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-brand-gold text-3xl mb-6 group-hover:scale-110 transition-transform">
+			  <i class="fas fa-home"></i>
+			</div>
+			<h3 class="text-xl font-bold mb-3">Pembangunan Rumah Baru</h3>
+			<p class="text-slate-600 dark:text-slate-400">Merancang dan membangun rumah minimalis mewah dari nol, disesuaikan dengan lahan dan gaya hidup Anda dengan material terbaik.</p>
+		  </div>
+		  <!-- Service 2 -->
+		  <div class="bg-white dark:bg-brand-cardDark p-8 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800 hover:-translate-y-2 transition-transform duration-300 group">
+			<div class="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-brand-gold text-3xl mb-6 group-hover:scale-110 transition-transform">
+			  <i class="fas fa-hammer"></i>
+			</div>
+			<h3 class="text-xl font-bold mb-3">Renovasi Premium</h3>
+			<p class="text-slate-600 dark:text-slate-400">Mengubah rumah lama Anda menjadi mahakarya modern. Dari fasad hingga tata ruang interior, kami tingkatkan nilai estetika properti Anda.</p>
+		  </div>
+		  <!-- Service 3 -->
+		  <div class="bg-white dark:bg-brand-cardDark p-8 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800 hover:-translate-y-2 transition-transform duration-300 group">
+			<div class="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-brand-gold text-3xl mb-6 group-hover:scale-110 transition-transform">
+			  <i class="fas fa-couch"></i>
+			</div>
+			<h3 class="text-xl font-bold mb-3">Desain Interior</h3>
+			<p class="text-slate-600 dark:text-slate-400">Pemilihan furnitur, pencahayaan, dan detail ornamen yang seirama dengan arsitektur rumah untuk kenyamanan maksimal.</p>
+		  </div>
+		  <!-- Service 4 -->
+		  <div class="bg-white dark:bg-brand-cardDark p-8 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-800 hover:-translate-y-2 transition-transform duration-300 group">
+			<div class="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-brand-gold text-3xl mb-6 group-hover:scale-110 transition-transform">
+			  <i class="fas fa-drafting-compass"></i>
+			</div>
+			<h3 class="text-xl font-bold mb-3">Konsultasi Arsitektur</h3>
+			<p class="text-slate-600 dark:text-slate-400">Sesi diskusi mendalam untuk merencanakan visi pembangunan Anda, perhitungan budget, dan feasibility study.</p>
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- Blog Page -->
+	  <section id="page-blog" class="page-content hidden">
+		<h2 class="text-3xl font-bold mb-8">Artikel Terkini</h2>
+		<div class="space-y-6">
+		  <!-- Blog Post 1 -->
+		  <article class="flex flex-col md:flex-row gap-6 bg-white dark:bg-brand-cardDark rounded-xl overflow-hidden shadow border border-slate-100 dark:border-slate-800 p-4">
+			<img src="https://placehold.co/400x300/1e293b/D4AF37?text=Tips+Renovasi" alt="Blog" class="w-full md:w-64 h-48 object-cover rounded-lg">
+			<div class="flex-1 flex flex-col justify-center">
+			  <div class="text-sm text-brand-gold font-medium mb-2">Renovasi • 12 Jun 2026</div>
+			  <h3 class="text-xl font-bold mb-2 hover:text-brand-gold cursor-pointer transition">5 Kesalahan Umum Saat Merenovasi Fasad Rumah Minimalis</h3>
+			  <p class="text-slate-600 dark:text-slate-400 mb-4 line-clamp-2">Merenovasi bagian depan rumah membutuhkan perencanaan matang. Hindari kesalahan pemilihan warna cat dan proporsi kanopi agar rumah tidak terlihat bantet.</p>
+			  <button class="text-sm font-semibold flex items-center gap-1 w-fit hover:text-brand-gold transition">Baca Selengkapnya <i class="fas fa-arrow-right"></i></button>
+			</div>
+		  </article>
+		  <!-- Blog Post 2 -->
+		  <article class="flex flex-col md:flex-row gap-6 bg-white dark:bg-brand-cardDark rounded-xl overflow-hidden shadow border border-slate-100 dark:border-slate-800 p-4">
+			<img src="https://placehold.co/400x300/1e293b/D4AF37?text=Material+Premium" alt="Blog" class="w-full md:w-64 h-48 object-cover rounded-lg">
+			<div class="flex-1 flex flex-col justify-center">
+			  <div class="text-sm text-brand-gold font-medium mb-2">Material • 05 Jun 2026</div>
+			  <h3 class="text-xl font-bold mb-2 hover:text-brand-gold cursor-pointer transition">Tren Penggunaan Marmer Statuario Untuk Lantai Mewah</h3>
+			  <p class="text-slate-600 dark:text-slate-400 mb-4 line-clamp-2">Keindahan urat abu-abu pada marmer statuario memberikan kesan elegan yang tak lekang oleh waktu. Pelajari cara merawatnya agar tetap mengkilap.</p>
+			  <button class="text-sm font-semibold flex items-center gap-1 w-fit hover:text-brand-gold transition">Baca Selengkapnya <i class="fas fa-arrow-right"></i></button>
+			</div>
+		  </article>
+		</div>
+	  </section>
+
+	  <!-- Contact Page -->
+	  <section id="page-contact" class="page-content hidden">
+		<div class="max-w-3xl mx-auto bg-white dark:bg-brand-cardDark rounded-2xl shadow-xl overflow-hidden border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row">
+		  <!-- Info Side -->
+		  <div class="bg-slate-900 p-8 text-white md:w-2/5 flex flex-col justify-between">
+			<div>
+			  <h2 class="text-2xl font-bold mb-2">Hubungi Kami</h2>
+			  <p class="text-slate-400 text-sm mb-8">Mulai wujudkan rumah impian Anda bersama kami. Tim kami siap merespon konsultasi Anda.</p>
+
+			  <div class="space-y-4">
+				<div class="flex items-start gap-4">
+				  <i class="fas fa-map-marker-alt text-brand-gold mt-1"></i>
+				  <p class="text-sm text-slate-300">Jl. Sudirman Kav 21, South Jakarta, Indonesia</p>
+				</div>
+				<div class="flex items-center gap-4">
+				  <i class="fas fa-envelope text-brand-gold"></i>
+				  <p class="text-sm text-slate-300">asepmo.kuadrat@gmail.com</p>
+				</div>
+				<div class="flex items-center gap-4">
+				  <i class="fas fa-phone-alt text-brand-gold"></i>
+				  <p class="text-sm text-slate-300">+62 812 3456 7890</p>
+				</div>
+			  </div>
+			</div>
+			<div class="mt-8 flex gap-4">
+			  <a href="#" class="text-slate-400 hover:text-white transition"><i class="fab fa-instagram text-xl"></i></a>
+			  <a href="#" class="text-slate-400 hover:text-white transition"><i class="fab fa-youtube text-xl"></i></a>
+			  <a href="#" class="text-slate-400 hover:text-white transition"><i class="fab fa-linkedin text-xl"></i></a>
+			</div>
+		  </div>
+		  <!-- Form Side -->
+		  <div class="p-8 md:w-3/5">
+			<form onsubmit="event.preventDefault(); showMessage('Pesan terkirim ke email');" class="space-y-4">
+			  <div class="grid grid-cols-2 gap-4">
+				<div>
+				  <label class="block text-sm font-medium mb-1">Nama Depan</label>
+				  <input type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-gold outline-none" required>
+				</div>
+				<div>
+				  <label class="block text-sm font-medium mb-1">Nama Belakang</label>
+				  <input type="text" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-gold outline-none">
+				</div>
+			  </div>
+			  <div>
+				<label class="block text-sm font-medium mb-1">Email</label>
+				<input type="email" value="asepmo.kuadrat@gmail.com" readonly class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 outline-none text-slate-500 cursor-not-allowed">
+			  </div>
+			  <div>
+				<label class="block text-sm font-medium mb-1">Pesan</label>
+				<textarea rows="4" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-brand-gold outline-none resize-none" required></textarea>
+			  </div>
+			  <button type="submit" class="w-full bg-brand-gold text-white font-bold rounded-lg py-3 hover:bg-yellow-600 transition shadow-lg">Kirim Pesan</button>
+			</form>
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- AI Tools Page -->
+	  <section id="page-ai-tools" class="page-content hidden h-[calc(100vh-8rem)]">
+		<div class="flex flex-col h-full bg-white dark:bg-brand-cardDark rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800 overflow-hidden">
+		  <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50">
+			<h2 class="font-bold text-lg flex items-center gap-2"><i class="fas fa-sparkles text-brand-gold"></i> Gemini AI Assistant</h2>
+			<span id="ai-status" class="text-xs bg-red-100 text-red-600 dark:bg-red-900/30 px-2 py-1 rounded border border-red-200 dark:border-red-800">API Key Missing</span>
+		  </div>
+
+		  <!-- Chat Area -->
+		  <div id="ai-chat-area" class="flex-1 overflow-y-auto p-4 space-y-4">
+			<!-- Initial Bot Message -->
+			<div class="flex gap-3">
+			  <div class="w-8 h-8 rounded-full bg-brand-gold flex items-center justify-center text-white flex-shrink-0"><i class="fas fa-robot"></i></div>
+			  <div class="bg-slate-100 dark:bg-slate-800 rounded-2xl rounded-tl-sm px-4 py-3 max-w-[80%] text-sm">
+				Halo! Saya asisten AI AsepMo Kuadrat. Pastikan Anda telah memasukkan Gemini API Key di halaman Settings untuk menggunakan fitur text chat atau pembuatan gambar (contoh: "buatkan gambar rumah...").
+			  </div>
+			</div>
+		  </div>
+
+		  <!-- Input Area -->
+		  <div class="p-3 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-brand-cardDark">
+			<form id="ai-form" onsubmit="handleAiSubmit(event)" class="flex gap-2">
+			  <input type="text" id="ai-input" placeholder="Tanya AI atau suruh buat gambar..." class="flex-1 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2 focus:ring-2 focus:ring-brand-gold outline-none text-sm">
+			  <button type="submit" class="bg-brand-gold text-white w-10 h-10 rounded-xl flex items-center justify-center hover:bg-yellow-600 transition disabled:opacity-50" id="ai-submit-btn">
+				<i class="fas fa-paper-plane"></i>
+			  </button>
+			</form>
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- File Tree Page -->
+	  <section id="page-file-tree" class="page-content hidden">
+		<div class="bg-white dark:bg-brand-cardDark rounded-2xl p-6 shadow-xl border border-slate-100 dark:border-slate-800">
+		  <h2 class="text-2xl font-bold mb-6 border-b border-slate-200 dark:border-slate-700 pb-2">Asset Explorer</h2>
+
+		  <ul class="space-y-2 font-mono text-sm">
+			<!-- Root Folder -->
+			<li>
+			  <div class="flex items-center gap-2 py-1 hover:bg-slate-50 dark:hover:bg-slate-800 rounded px-2 cursor-pointer text-brand-gold font-bold">
+				<i class="fas fa-folder-open"></i> root/
+			  </div>
+			  <ul class="pl-6 mt-1 space-y-1 border-l border-slate-200 dark:border-slate-700 ml-3">
+				<!-- Images Folder -->
+				<li>
+				  <div class="flex items-center gap-2 py-1 hover:bg-slate-50 dark:hover:bg-slate-800 rounded px-2 cursor-pointer text-blue-500">
+					<i class="fas fa-folder"></i> images/
+				  </div>
+				  <ul class="pl-6 mt-1 space-y-1 border-l border-slate-200 dark:border-slate-700 ml-3">
+					<li class="flex items-center justify-between group py-1 px-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded">
+					  <div class="flex items-center gap-2 text-slate-700 dark:text-slate-300"><i class="fas fa-image text-purple-400"></i> logo-asepmo.png</div>
+					  <button onclick="startMockDownload('logo-asepmo.png')" class="text-slate-400 hover:text-brand-gold opacity-0 group-hover:opacity-100 transition"><i class="fas fa-download"></i></button>
+					</li>
+					<li class="flex items-center justify-between group py-1 px-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded">
+					  <div class="flex items-center gap-2 text-slate-700 dark:text-slate-300"><i class="fas fa-image text-purple-400"></i> desain_fasad_v1.jpg</div>
+					  <button onclick="startMockDownload('desain_fasad_v1.jpg')" class="text-slate-400 hover:text-brand-gold opacity-0 group-hover:opacity-100 transition"><i class="fas fa-download"></i></button>
+					</li>
+				  </ul>
+				</li>
+				<!-- Media Folder -->
+				<li>
+				  <div class="flex items-center gap-2 py-1 hover:bg-slate-50 dark:hover:bg-slate-800 rounded px-2 cursor-pointer text-blue-500">
+					<i class="fas fa-folder"></i> media/
+				  </div>
+				  <ul class="pl-6 mt-1 space-y-1 border-l border-slate-200 dark:border-slate-700 ml-3">
+					<li class="flex items-center justify-between group py-1 px-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded">
+					  <div class="flex items-center gap-2 text-slate-700 dark:text-slate-300"><i class="fas fa-file-video text-red-400"></i> promo_2026.mp4</div>
+					  <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition">
+						<button onclick="showMessage('Memutar Video...')" class="text-slate-400 hover:text-blue-500"><i class="fas fa-play-circle"></i></button>
+						<button onclick="startMockDownload('promo_2026.mp4')" class="text-slate-400 hover:text-brand-gold"><i class="fas fa-download"></i></button>
+					  </div>
+					</li>
+					<li class="flex items-center justify-between group py-1 px-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded">
+					  <div class="flex items-center gap-2 text-slate-700 dark:text-slate-300"><i class="fas fa-file-audio text-green-400"></i> bgm_relax.mp3</div>
+					  <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition">
+						<button onclick="showMessage('Memutar Audio...')" class="text-slate-400 hover:text-blue-500"><i class="fas fa-play-circle"></i></button>
+						<button onclick="startMockDownload('bgm_relax.mp3')" class="text-slate-400 hover:text-brand-gold"><i class="fas fa-download"></i></button>
+					  </div>
+					</li>
+				  </ul>
+				</li>
+			  </ul>
+			</li>
+		  </ul>
+		</div>
+	  </section>
+
+	  <!-- Settings Page -->
+	  <section id="page-settings" class="page-content hidden">
+		<div class="max-w-2xl mx-auto">
+		  <h2 class="text-3xl font-bold mb-6">Pengaturan Sistem</h2>
+
+		  <form id="settings-form" onsubmit="saveSettings(event)" class="space-y-6">
+
+			<!-- Theme Settings -->
+			<div class="bg-white dark:bg-brand-cardDark p-6 rounded-xl shadow border border-slate-100 dark:border-slate-800 flex items-center justify-between">
+			  <div>
+				<h3 class="font-bold text-lg"><i class="fas fa-palette text-brand-gold mr-2"></i> Tema Tampilan</h3>
+				<p class="text-sm text-slate-500">Ubah antara mode gelap dan terang</p>
+			  </div>
+			  <label class="relative inline-flex items-center cursor-pointer">
+				<input type="checkbox" id="theme-toggle" class="sr-only peer" checked onchange="toggleTheme(this.checked)">
+				<div class="w-14 h-7 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-brand-gold"></div>
+			  </label>
+			</div>
+
+			<!-- API Keys Section -->
+			<div class="bg-white dark:bg-brand-cardDark p-6 rounded-xl shadow border border-slate-100 dark:border-slate-800 space-y-4">
+			  <h3 class="font-bold text-lg border-b border-slate-200 dark:border-slate-700 pb-2"><i class="fas fa-key text-brand-gold mr-2"></i> Konfigurasi API</h3>
+
+			  <!-- Gemini -->
+			  <div>
+				<label class="block text-sm font-medium mb-1">Gemini AI API Key</label>
+				<input type="password" id="set-gemini" placeholder="AIzaSy..." class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-brand-gold outline-none font-mono text-sm">
+			  </div>
+
+			  <!-- YouTube -->
+			  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-200 dark:border-slate-700 pt-4">
+				<div class="col-span-full">
+				  <label class="block text-sm font-medium mb-1">YouTube API Key</label>
+				  <input type="password" id="set-yt-key" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-brand-gold outline-none font-mono text-sm">
+				</div>
+				<div>
+				  <label class="block text-sm font-medium mb-1">Channel ID</label>
+				  <input type="text" id="set-yt-channel" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-brand-gold outline-none text-sm">
+				</div>
+				<div>
+				  <label class="block text-sm font-medium mb-1">Playlist ID</label>
+				  <input type="text" id="set-yt-playlist" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-brand-gold outline-none text-sm">
+				</div>
+			  </div>
+
+			  <!-- Firebase -->
+			  <div class="border-t border-slate-200 dark:border-slate-700 pt-4">
+				<label class="block text-sm font-medium mb-1">Firebase Config (JSON)</label>
+				<textarea id="set-firebase" rows="3" placeholder='{"apiKey": "...", "authDomain": "..."}' class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-brand-gold outline-none font-mono text-xs resize-none"></textarea>
+			  </div>
+
+			  <!-- Others Compact -->
+			  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-200 dark:border-slate-700 pt-4">
+				<div>
+				  <label class="block text-sm font-medium mb-1">Flickr API Key</label>
+				  <input type="password" id="set-flickr" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 outline-none text-sm">
+				</div>
+				<div>
+				  <label class="block text-sm font-medium mb-1">Drive API Key / File ID</label>
+				  <input type="password" id="set-drive" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 outline-none text-sm">
+				</div>
+				<div class="col-span-full">
+				  <label class="block text-sm font-medium mb-1">Blogger API Key & Blog ID</label>
+				  <input type="password" id="set-blogger" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2 outline-none text-sm">
+				</div>
+			  </div>
+			</div>
+
+			<button type="submit" class="w-full bg-brand-gold text-white font-bold rounded-xl py-3 hover:bg-yellow-600 transition shadow-lg flex items-center justify-center gap-2">
+			  <i class="fas fa-save"></i> Simpan Pengaturan Ke LocalStorage
+			</button>
+		  </form>
+		</div>
+	  </section>
+
+	  <!-- Login Page -->
+	  <section id="page-login" class="page-content hidden">
+		<div class="max-w-md mx-auto bg-white dark:bg-brand-cardDark rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800 overflow-hidden mt-10">
+		  <div class="p-8">
+			<div class="text-center mb-8">
+			  <img src="gallery/image/asepmo.jpg" alt="Logo" class="w-16 h-16 mx-auto rounded-full border-2 border-brand-gold mb-4">
+			  <h2 class="text-2xl font-bold">Selamat Datang</h2>
+			  <p class="text-sm text-slate-500">Login untuk mengakses fitur penuh</p>
+			</div>
+
+			<form onsubmit="event.preventDefault(); showMessage('Login disimulasikan');" class="space-y-4">
+			  <div>
+				<label class="block text-sm font-medium mb-1">Email</label>
+				<input type="email" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 outline-none focus:border-brand-gold" required>
+			  </div>
+			  <div>
+				<label class="block text-sm font-medium mb-1">Password</label>
+				<input type="password" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-2.5 outline-none focus:border-brand-gold" required>
+			  </div>
+			  <button type="submit" class="w-full bg-brand-gold text-white font-bold rounded-lg py-2.5 hover:bg-yellow-600 transition">Login</button>
+			</form>
+
+			<div class="mt-6 flex items-center justify-between">
+			  <hr class="w-full border-slate-200 dark:border-slate-700">
+			  <span class="p-2 text-xs text-slate-400 bg-white dark:bg-brand-cardDark">ATAU</span>
+			  <hr class="w-full border-slate-200 dark:border-slate-700">
+			</div>
+
+			<div class="mt-6 space-y-3">
+			  <button onclick="showMessage('Mock Google Auth via Firebase')" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-medium rounded-lg py-2.5 hover:bg-slate-50 dark:hover:bg-slate-700 transition flex items-center justify-center gap-2">
+				<i class="fab fa-google text-red-500"></i> Login dengan Google
+			  </button>
+			  <button onclick="showMessage('Mock Github Auth via Firebase')" class="w-full bg-[#24292e] text-white font-medium rounded-lg py-2.5 hover:bg-black transition flex items-center justify-center gap-2">
+				<i class="fab fa-github"></i> Login dengan Github
+			  </button>
+			</div>
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- Website Page -->
+	  <section id="page-website" class="page-content hidden">
+		<h2 class="text-3xl font-bold mb-6">Website Populer & Favorit</h2>
+		<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+		  <a href="https://google.com" target="_blank" class="bg-white dark:bg-brand-cardDark p-6 rounded-xl shadow border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center gap-3 hover:-translate-y-1 transition group">
+			<i class="fab fa-google text-4xl text-blue-500 group-hover:scale-110 transition"></i>
+			<span class="font-medium">Google</span>
+		  </a>
+		  <a href="https://youtube.com" target="_blank" class="bg-white dark:bg-brand-cardDark p-6 rounded-xl shadow border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center gap-3 hover:-translate-y-1 transition group">
+			<i class="fab fa-youtube text-4xl text-red-600 group-hover:scale-110 transition"></i>
+			<span class="font-medium">YouTube</span>
+		  </a>
+		  <a href="https://archdaily.com" target="_blank" class="bg-white dark:bg-brand-cardDark p-6 rounded-xl shadow border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center gap-3 hover:-translate-y-1 transition group">
+			<i class="fas fa-building text-4xl text-slate-800 dark:text-slate-200 group-hover:scale-110 transition"></i>
+			<span class="font-medium">ArchDaily</span>
+		  </a>
+		  <a href="https://pinterest.com" target="_blank" class="bg-white dark:bg-brand-cardDark p-6 rounded-xl shadow border border-slate-100 dark:border-slate-800 flex flex-col items-center justify-center gap-3 hover:-translate-y-1 transition group">
+			<i class="fab fa-pinterest text-4xl text-red-500 group-hover:scale-110 transition"></i>
+			<span class="font-medium">Pinterest</span>
+		  </a>
+		</div>
+	  </section>
+
+	  <!-- Download Page -->
+	  <section id="page-download" class="page-content hidden">
+		<div class="max-w-2xl mx-auto bg-white dark:bg-brand-cardDark rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800 p-8">
+		  <h2 class="text-2xl font-bold mb-6 flex items-center gap-2"><i class="fas fa-cloud-download-alt text-brand-gold"></i> Pusat Unduhan</h2>
+
+		  <!-- Active Download -->
+		  <div id="active-download" class="mb-8 hidden">
+			<div class="flex justify-between text-sm mb-2 font-medium">
+			  <span id="dl-filename" class="text-brand-gold">file_name.zip</span>
+			  <span id="dl-percentage">0%</span>
+			</div>
+			<div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5 mb-2 overflow-hidden">
+			  <div id="dl-progress" class="bg-brand-gold h-2.5 rounded-full" style="width: 0%"></div>
+			</div>
+			<div class="flex justify-between text-xs text-slate-500">
+			  <span id="dl-speed">Menghitung kecepatan...</span>
+			  <span id="dl-size">0 MB / 0 MB</span>
+			</div>
+		  </div>
+
+		  <!-- Empty State -->
+		  <div id="dl-empty" class="text-center py-8">
+			<i class="fas fa-inbox text-4xl text-slate-300 dark:text-slate-600 mb-3"></i>
+			<p class="text-slate-500">Belum ada proses unduhan aktif.</p>
+			<button onclick="navigate('file-tree')" class="mt-4 text-sm text-brand-gold hover:underline">Pergi ke File Tree</button>
+		  </div>
+
+		  <!-- Downloaded List -->
+		  <div class="mt-8 border-t border-slate-200 dark:border-slate-700 pt-6">
+			<h3 class="font-bold text-sm text-slate-500 mb-4 uppercase tracking-wider">Selesai Diunduh</h3>
+			<ul id="dl-history" class="space-y-3 text-sm">
+			  <!-- History items will be prepended here -->
+			</ul>
+		  </div>
+		</div>
+	  </section>
+
+    </main>
+
+    <!-- Footer with YouTube Horizontal List -->
+    <footer class="fixed bottom-0 w-full bg-white dark:bg-brand-cardDark border-t border-slate-200 dark:border-slate-800 z-30 h-24 flex flex-col justify-center">
+	  <div class="px-4 text-xs font-bold text-slate-400 mb-1 pl-6"><i class="fab fa-youtube text-red-500 mr-1"></i> AsepMo Playlist</div>
+	  <div class="flex overflow-x-auto hide-scroll gap-4 px-4 pb-2 snap-x">
+		<!-- Mock YouTube Items - In a real app, these would be populated via YouTube API v3 based on keys in localStorage -->
+		<div class="snap-center shrink-0 w-40 h-14 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center p-2 gap-2 border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+		  <img src="https://placehold.co/120x90/1e293b/D4AF37?text=Vlog+1" class="w-16 h-10 object-cover rounded">
+		  <div class="flex-1 min-w-0">
+			<p class="text-[10px] font-bold truncate">Proyek Pondok Indah</p>
+			<p class="text-[9px] text-slate-500">Day 1</p>
+		  </div>
+		</div>
+		<div class="snap-center shrink-0 w-40 h-14 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center p-2 gap-2 border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+		  <img src="https://placehold.co/120x90/1e293b/D4AF37?text=Vlog+2" class="w-16 h-10 object-cover rounded">
+		  <div class="flex-1 min-w-0">
+			<p class="text-[10px] font-bold truncate">Review Material</p>
+			<p class="text-[9px] text-slate-500">Marmer Italia</p>
+		  </div>
+		</div>
+		<div class="snap-center shrink-0 w-40 h-14 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center p-2 gap-2 border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+		  <img src="https://placehold.co/120x90/1e293b/D4AF37?text=Vlog+3" class="w-16 h-10 object-cover rounded">
+		  <div class="flex-1 min-w-0">
+			<p class="text-[10px] font-bold truncate">Q&A Arsitektur</p>
+			<p class="text-[9px] text-slate-500">Eps 12</p>
+		  </div>
+		</div>
+		<div class="snap-center shrink-0 w-40 h-14 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center p-2 gap-2 border border-slate-200 dark:border-slate-700 flex-col justify-center text-center cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+		  <p class="text-xs text-brand-gold font-medium">Load More API</p>
+		</div>
+	  </div>
+    </footer>
+
+    <!-- Custom Toast Notification -->
+    <div id="toast" class="fixed bottom-[-100px] left-1/2 transform -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full shadow-2xl z-50 opacity-0 flex items-center gap-2">
+	  <i class="fas fa-info-circle text-brand-gold"></i>
+	  <span id="toast-msg" class="text-sm font-medium">Message</span>
+    </div>
+
+    <!-- Application Logic -->
+<script>
+        // State
+        let currentRoute = 'home';
+        let appSettings = {};
+
+        // Initialization
+        window.onload = () => {
+            loadSettings();
+            checkApiKeys();
+            // Default load home
+            navigate('home');
+        };
+
+        // --- Navigation & UI Logic ---
+
+        function toggleDrawer() {
+            const drawer = document.getElementById('drawer');
+            const overlay = document.getElementById('drawer-overlay');
+            if (drawer.classList.contains('drawer-closed')) {
+                drawer.classList.remove('drawer-closed');
+                drawer.classList.add('drawer-open');
+                overlay.classList.remove('hidden');
+            } else {
+                drawer.classList.remove('drawer-open');
+                drawer.classList.add('drawer-closed');
+                overlay.classList.add('hidden');
+            }
+        }
+
+        function toggleOptions() {
+            const menu = document.getElementById('options-menu');
+            if (menu.classList.contains('options-closed')) {
+                menu.classList.remove('options-closed');
+                menu.classList.add('options-open');
+            } else {
+                menu.classList.remove('options-open');
+                menu.classList.add('options-closed');
+            }
+        }
+
+        // Close options when clicking outside
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('options-menu');
+            const btn = menu.previousElementSibling;
+            if (!menu.contains(event.target) && !btn.contains(event.target)) {
+                menu.classList.remove('options-open');
+                menu.classList.add('options-closed');
+            }
+        });
+
+        function navigate(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
+            // Show target
+            const target = document.getElementById(`page-${pageId}`);
+            if (target) {
+                target.classList.remove('hidden');
+                target.classList.add('block');
+                
+                // Trigger animation by re-adding class
+                target.classList.remove('page-content');
+                void target.offsetWidth; // trigger reflow
+                target.classList.add('page-content');
+            }
+            
+			
+            // Highlight nav item (simple implementation)
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'text-brand-gold');
+                if(el.innerText.toLowerCase().includes(pageId.replace('-', ' '))) {
+                    // Basic active state
+                }
+            });
+
+            // Close drawer if open
+            const drawer = document.getElementById('drawer');
+            if(drawer.classList.contains('drawer-open')) toggleDrawer();
+            
+             // Smooth scroll to top of viewport
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+		function updateBreadcrumbText(pageId) {
+            const breadcrumbEl = document.getElementById('globalBreadcrumb');
+            const uppercaseMap = {
+                'home': 'Home',
+                'about': 'Home | About',
+                'gallery': 'Home | Gallery',
+                'service': 'Home | Services',
+                'article': 'Home | Articles',
+                'contact': 'Home | Contact',
+                'editor': 'Home | Code Sandbox',
+                'youtube': 'Home | YouTube Channel',
+                'settings': 'Home | Settings'
+            };
+            breadcrumbEl.textContent = uppercaseMap[pageId] || 'Home';
+        }
+		
+        function showMessage(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.style.bottom = '100px'; // above footer
+            toast.style.opacity = '1';
+            
+            setTimeout(() => {
+                toast.style.bottom = '-100px';
+                toast.style.opacity = '0';
+            }, 3000);
+        }
+
+        function shareLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                showMessage("Link disalin ke clipboard!");
+            }).catch(err => {
+                // Fallback for older browsers or iframe context where clipboard fails
+                const dummy = document.createElement('input'), text = window.location.href;
+                document.body.appendChild(dummy); dummy.value = text; dummy.select();
+                document.execCommand('copy'); document.body.removeChild(dummy);
+                showMessage("Link disalin (Fallback)!");
+            });
+        }
+
+        // --- Settings Logic ---
+
+        function toggleTheme(isDark) {
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            // Update settings object
+            appSettings.darkMode = isDark;
+        }
+
+        function saveSettings(e) {
+            if(e) e.preventDefault();
+            
+            appSettings = {
+                darkMode: document.getElementById('theme-toggle').checked,
+                geminiKey: document.getElementById('set-gemini').value,
+                ytKey: document.getElementById('set-yt-key').value,
+                ytChannel: document.getElementById('set-yt-channel').value,
+                ytPlaylist: document.getElementById('set-yt-playlist').value,
+                firebaseConfig: document.getElementById('set-firebase').value,
+                flickrKey: document.getElementById('set-flickr').value,
+                driveKey: document.getElementById('set-drive').value,
+                bloggerKey: document.getElementById('set-blogger').value,
+            };
+
+            localStorage.setItem('asepmoSettings', JSON.stringify(appSettings));
+            showMessage("Pengaturan berhasil disimpan");
+            checkApiKeys();
+        }
+
+        function loadSettings() {
+            const stored = localStorage.getItem('asepmoSettings');
+            if (stored) {
+                appSettings = JSON.parse(stored);
+                
+                // Apply theme
+                const isDark = appSettings.darkMode !== false; // default true
+                document.getElementById('theme-toggle').checked = isDark;
+                toggleTheme(isDark);
+
+                // Populate fields
+                if(appSettings.geminiKey) document.getElementById('set-gemini').value = appSettings.geminiKey;
+                if(appSettings.ytKey) document.getElementById('set-yt-key').value = appSettings.ytKey;
+                if(appSettings.ytChannel) document.getElementById('set-yt-channel').value = appSettings.ytChannel;
+                if(appSettings.ytPlaylist) document.getElementById('set-yt-playlist').value = appSettings.ytPlaylist;
+                if(appSettings.firebaseConfig) document.getElementById('set-firebase').value = appSettings.firebaseConfig;
+                if(appSettings.flickrKey) document.getElementById('set-flickr').value = appSettings.flickrKey;
+                if(appSettings.driveKey) document.getElementById('set-drive').value = appSettings.driveKey;
+                if(appSettings.bloggerKey) document.getElementById('set-blogger').value = appSettings.bloggerKey;
+            }
+        }
+
+        function checkApiKeys() {
+            const status = document.getElementById('ai-status');
+            if (appSettings.geminiKey && appSettings.geminiKey.length > 10) {
+                status.innerText = "API Ready";
+                status.className = "text-xs bg-green-100 text-green-700 dark:bg-green-900/30 px-2 py-1 rounded border border-green-200 dark:border-green-800";
+            } else {
+                status.innerText = "Need API Key";
+                status.className = "text-xs bg-red-100 text-red-600 dark:bg-red-900/30 px-2 py-1 rounded border border-red-200 dark:border-red-800";
+            }
+        }
+
+        // --- Mock Download Logic ---
+
+        function startMockDownload(filename) {
+            navigate('download');
+            const emptyState = document.getElementById('dl-empty');
+            const activeDl = document.getElementById('active-download');
+            
+            emptyState.classList.add('hidden');
+            activeDl.classList.remove('hidden');
+            
+            document.getElementById('dl-filename').innerText = filename;
+            const progress = document.getElementById('dl-progress');
+            const percentText = document.getElementById('dl-percentage');
+            const speedText = document.getElementById('dl-speed');
+            const sizeText = document.getElementById('dl-size');
+            
+            let width = 0;
+            const totalSize = (Math.random() * 50 + 5).toFixed(1); // Random size 5-55MB
+            
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    activeDl.classList.add('hidden');
+                    emptyState.classList.remove('hidden');
+                    
+                    // Add to history
+                    const historyList = document.getElementById('dl-history');
+                    const li = document.createElement('li');
+                    li.className = "flex items-center justify-between p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded border border-transparent hover:border-slate-200 dark:hover:border-slate-700";
+                    li.innerHTML = `
+                        <div class="flex items-center gap-2"><i class="fas fa-check-circle text-green-500"></i> ${filename}</div>
+                        <span class="text-xs text-slate-400">${totalSize} MB</span>
+                    `;
+                    historyList.insertBefore(li, historyList.firstChild);
+                    
+                    showMessage(`Download ${filename} selesai!`);
+                } else {
+                    width += Math.random() * 15; // Random jump
+                    if(width > 100) width = 100;
+                    
+                    progress.style.width = width + '%';
+                    percentText.innerText = Math.floor(width) + '%';
+                    
+                    const currentSize = ((width / 100) * totalSize).toFixed(1);
+                    sizeText.innerText = `${currentSize} MB / ${totalSize} MB`;
+                    speedText.innerText = `${(Math.random() * 3 + 1).toFixed(1)} MB/s`;
+                }
+            }, 500);
+        }
+
+        // --- AI (Gemini) Logic ---
+        
+        function appendMessage(sender, text, isImage = false) {
+            const chatArea = document.getElementById('ai-chat-area');
+            const div = document.createElement('div');
+            div.className = `flex gap-3 ${sender === 'user' ? 'flex-row-reverse' : ''}`;
+            
+            let avatar = sender === 'user' 
+                ? `<div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-500 flex-shrink-0"><i class="fas fa-user"></i></div>`
+                : `<div class="w-8 h-8 rounded-full bg-brand-gold flex items-center justify-center text-white flex-shrink-0"><i class="fas fa-robot"></i></div>`;
+                
+            let bubbleClass = sender === 'user'
+                ? `bg-brand-gold text-white rounded-2xl rounded-tr-sm px-4 py-3 max-w-[80%] text-sm`
+                : `bg-slate-100 dark:bg-slate-800 rounded-2xl rounded-tl-sm px-4 py-3 max-w-[80%] text-sm overflow-hidden`;
+            
+            let content = text;
+            if (isImage) {
+                 content = `<img src="${text}" alt="Generated AI" class="rounded-lg max-w-full h-auto mt-2">`;
+            } else {
+                 // Simple markdown bold formatting
+                 content = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+            }
+
+            div.innerHTML = `
+                ${avatar}
+                <div class="${bubbleClass}">
+                    ${content}
+                </div>
+            `;
+            chatArea.appendChild(div);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        async function handleAiSubmit(e) {
+            e.preventDefault();
+            const inputEl = document.getElementById('ai-input');
+            const btn = document.getElementById('ai-submit-btn');
+            const prompt = inputEl.value.trim();
+            if (!prompt) return;
+
+            const apiKey = appSettings.geminiKey;
+            
+            appendMessage('user', prompt);
+            inputEl.value = '';
+            btn.disabled = true;
+
+            if (!apiKey) {
+                setTimeout(() => {
+                    appendMessage('bot', '⚠️ Mohon masukkan Gemini API Key di halaman Settings terlebih dahulu.');
+                    btn.disabled = false;
+                }, 500);
+                return;
+            }
+
+            // Check if user is asking for an image based on simple keywords
+            const isImageRequest = prompt.toLowerCase().includes('buatkan gambar') || 
+                                   prompt.toLowerCase().includes('generate image') || 
+                                   prompt.toLowerCase().includes('draw');
+
+            appendMessage('bot', '<i class="fas fa-circle-notch fa-spin text-brand-gold"></i> Sedang memproses...');
+            
+            try {
+                if (isImageRequest) {
+                     // Normally we'd call the Imagen or Flash-Image API here.
+                     // But since the system prompt specifies how to use gemini-3.1-flash-image-preview
+                     // and requires an API key, we will attempt the call.
+                     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image-preview:generateContent?key=${apiKey}`;
+                     const payload = {
+                        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+                        generationConfig: { responseModalities: ['IMAGE'] }
+                     };
+
+                     const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                     });
+
+                     if(!response.ok) throw new Error("API Image Request Failed");
+                     const result = await response.json();
+                     const part = result?.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
+                     
+                     // Remove loading message
+                     document.getElementById('ai-chat-area').lastChild.remove();
+
+                     if (part && part.inlineData) {
+                         const imageUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+                         appendMessage('bot', 'Berikut gambar yang Anda minta:');
+                         appendMessage('bot', imageUrl, true);
+                     } else {
+                         appendMessage('bot', 'Maaf, gagal menghasilkan gambar dari API.');
+                     }
+
+                } else {
+                    // Text Generation
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+                    const payload = {
+                        contents: [{ parts: [{ text: prompt }] }],
+                        systemInstruction: { parts: [{ text: "Anda adalah asisten virtual untuk AsepMo Kuadrat, seorang arsitek rumah minimalis mewah. Jawab dengan profesional dan elegan." }] }
+                    };
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if(!response.ok) throw new Error("API Text Request Failed");
+                    const result = await response.json();
+                    
+                    // Remove loading message
+                    document.getElementById('ai-chat-area').lastChild.remove();
+
+                    if (result.candidates && result.candidates[0].content.parts[0].text) {
+                        appendMessage('bot', result.candidates[0].content.parts[0].text);
+                    } else {
+                        appendMessage('bot', 'Terjadi kesalahan dalam membaca respons AI.');
+                    }
+                }
+            } catch (error) {
+                 // Remove loading message
+                 document.getElementById('ai-chat-area').lastChild.remove();
+                 appendMessage('bot', '❌ Gagal menghubungi API. Periksa kembali API Key Anda atau koneksi internet.');
+                 console.error(error);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+</script>
+  </body>
+</html>

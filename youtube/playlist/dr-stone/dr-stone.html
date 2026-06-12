@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. STONE - Era Kerajaan Sains</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        science: ['Orbitron', 'sans-serif'],
+                    },
+                    colors: {
+                        stoneDark: {
+                            50: '#f4f6f5',
+                            100: '#e6eae8',
+                            800: '#212924',
+                            900: '#141a16',
+                            950: '#0a0d0b',
+                        },
+                        scienceGreen: '#10b981', // Emerald-500
+                        scienceGold: '#f59e0b', // Amber-500
+                        scienceBlue: '#06b6d4', // Cyan-500
+                    }
+                }
+            }
+        }
+</script>
+<style>
+        /* Desain Scrollbar Bertema Sains */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0d0b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f2a22;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #10b981;
+        }
+        /* Efek Glow Neon */
+        .glow-green {
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
+        }
+        .glow-gold {
+            text-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+        }
+        /* Gradient Overlay untuk gambar bawah (Shadow Bottom) */
+        .shadow-bottom-overlay {
+            background: linear-gradient(to top, rgba(10, 13, 11, 0.95) 0%, rgba(10, 13, 11, 0.4) 60%, transparent 100%);
+        }
+</style>
+  </head>
+  <body class="bg-stoneDark-950 text-gray-100 font-sans overflow-x-hidden">
+
+    <!-- HEADER -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-stoneDark-950/80 backdrop-blur-md border-b border-stoneDark-900/60 transition-all duration-300">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+
+		<!-- Brand / Logo -->
+		<a href="#home" class="flex items-center gap-3 group">
+		  <div class="w-10 h-10 rounded-lg bg-gradient-to-tr from-scienceGreen to-scienceGold flex items-center justify-center text-stoneDark-950 font-black text-xl font-science shadow-lg shadow-scienceGreen/20 group-hover:rotate-6 transition-all duration-300">
+			S
+		  </div>
+		  <span class="font-science text-xl font-black tracking-widest bg-gradient-to-r from-white via-stoneDark-100 to-scienceGreen bg-clip-text text-transparent group-hover:to-scienceGold transition-all duration-500">
+			DR.STONE
+		  </span>
+		</a>
+
+		<!-- Menu Navigasi Desktop -->
+		<nav class="hidden md:flex items-center gap-8">
+		  <a href="#home" class="text-xs font-bold tracking-widest text-scienceGreen hover:text-white transition-all flex items-center gap-1.5"><i class="fa-solid fa-house"></i> HOME</a>
+		  <a href="#sinopsis" class="text-xs font-bold tracking-widest hover:text-scienceGreen transition-all">SINOPSIS</a>
+		  <a href="#trailer" class="text-xs font-bold tracking-widest hover:text-scienceGreen transition-all">TRAILER</a>
+		  <a href="#playlist" class="text-xs font-bold tracking-widest hover:text-scienceGreen transition-all">PLAYLIST</a>
+		  <a href="#sessions" class="bg-gradient-to-r from-scienceGreen/10 to-scienceGold/10 hover:from-scienceGreen/20 hover:to-scienceGold/20 text-scienceGreen border border-scienceGreen/30 px-4 py-2 rounded-lg text-xs font-bold tracking-widest transition-all">EXPLORE SEASONS</a>
+		</nav>
+
+		<!-- Tombol Drawer Mobile -->
+		<button id="btn-open-drawer" class="md:hidden text-gray-300 hover:text-scienceGreen text-2xl transition-all" aria-label="Buka Menu">
+		  <i class="fa-solid fa-bars-staggered"></i>
+		</button>
+	  </div>
+    </header>
+
+    <!-- DRAWER MENU (MOBILE NAV) -->
+    <div id="drawer-menu" class="fixed inset-y-0 right-0 w-80 bg-stoneDark-900 border-l border-stoneDark-800 z-50 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out">
+	  <div class="p-6 h-full flex flex-col justify-between">
+		<div>
+		  <!-- Header Drawer -->
+		  <div class="flex items-center justify-between mb-10">
+			<span class="font-science font-bold text-sm tracking-wider text-scienceGold"><i class="fa-solid fa-flask-vial mr-2"></i>MENU NAVIGASI</span>
+			<button id="btn-close-drawer" class="text-gray-400 hover:text-red-500 text-2xl transition-all">
+			  <i class="fa-solid fa-xmark"></i>
+			</button>
+		  </div>
+
+		  <!-- Link Navigasi Drawer -->
+		  <nav class="flex flex-col gap-6">
+			<a href="#home" class="drawer-link text-lg font-bold text-gray-300 hover:text-scienceGreen flex items-center gap-3 transition-all">
+			  <i class="fa-solid fa-house text-scienceGreen w-6"></i> Home
+			</a>
+			<a href="#sinopsis" class="drawer-link text-lg font-bold text-gray-300 hover:text-scienceGreen flex items-center gap-3 transition-all">
+			  <i class="fa-solid fa-book-open text-scienceGreen w-6"></i> Sinopsis
+			</a>
+			<a href="#trailer" class="drawer-link text-lg font-bold text-gray-300 hover:text-scienceGreen flex items-center gap-3 transition-all">
+			  <i class="fa-solid fa-play text-scienceGreen w-6"></i> Trailer Resmi
+			</a>
+			<a href="#playlist" class="drawer-link text-lg font-bold text-gray-300 hover:text-scienceGreen flex items-center gap-3 transition-all">
+			  <i class="fa-solid fa-music text-scienceGreen w-6"></i> Playlist
+			</a>
+			<a href="#sessions" class="drawer-link text-lg font-bold text-gray-300 hover:text-scienceGreen flex items-center gap-3 transition-all">
+			  <i class="fa-solid fa-layer-group text-scienceGreen w-6"></i> Session 1-3
+			</a>
+		  </nav>
+		</div>
+
+		<!-- Footer Drawer -->
+		<div class="border-t border-stoneDark-800/80 pt-6 text-center">
+		  <p class="text-[10px] text-gray-500 tracking-widest font-science">SENKU ISHIGAMI KERAJAAN SAINS</p>
+		  <p class="text-[9px] text-gray-600 mt-1">10.000.000.000% Akurasi Teknologi</p>
+		</div>
+	  </div>
+    </div>
+    <!-- Overlay tirai untuk drawer -->
+    <div id="drawer-backdrop" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden transition-opacity duration-300 opacity-0"></div>
+
+
+    <!-- 1. HOME / HERO SECTION -->
+    <section id="home" class="relative min-h-screen flex items-center pt-24 overflow-hidden">
+	  <!-- Visual Latar Belakang Campuran Batu & Sains -->
+	  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-stoneDark-900/50 via-stoneDark-950 to-stoneDark-950 z-0"></div>
+	  <div class="absolute inset-0 bg-[linear-gradient(to_right,#10b98105_1px,transparent_1px),linear-gradient(to_bottom,#10b98105_1px,transparent_1px)] bg-[size:4rem_4rem] z-0"></div>
+
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full py-12">
+		<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+		  <!-- Sisi Kiri: Slogan dan Pengantar -->
+		  <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+			<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-scienceGreen/10 border border-scienceGreen/30 text-scienceGreen text-xs font-bold tracking-wider uppercase">
+			  <i class="fa-solid fa-flask-vial text-xs animate-bounce"></i> Kebangkitan Melalui Ilmu Pengetahuan
+			</div>
+			<h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight leading-none text-white">Peradaban Batu <br>
+			  <span class="text-transparent bg-clip-text bg-gradient-to-r from-scienceGreen via-emerald-400 to-scienceGold glow-green font-science font-black">3.700 Tahun</span>
+			</h1>
+			
+			<!-- Thumbnail -->
+			<!-- Container Utama Cover -->
+			<div class="w-full max-w-7xl mx-auto px-4 py-8">
+			  <div class="relative group overflow-hidden rounded-3xl shadow-2xl shadow-gray-200 transition-all duration-500 hover:shadow-indigo-100 ring-1 ring-gray-100">
+
+				<!-- Gambar Cover dengan Rasio Emas (Aspek Rasi 2:1 atau Video) -->
+				<img src="tokoh-dr-stone.png"  alt="Dr.Stone" class="w-full h-full aspect-video md:aspect-[2/1] object-cover transition-transform duration-700 group-hover:scale-105"/>
+
+				<!-- Overlay Gradien & Konten Teks -->
+				<div class="absolute inset-0 bg-gradient-to-t from-gray-950/90 via-gray-900/60 to-transparent flex flex-col justify-end p-6 md:p-12">
+
+				  <!-- Kategori & Meta -->
+				  <div class="flex items-center gap-4 mb-4">
+					<span class="inline-flex items-center rounded-full bg-indigo-500/20 px-4 py-1.5 text-xs font-semibold text-indigo-200 backdrop-blur-sm ring-1 ring-indigo-400/30">Teknologi</span>
+					<span class="text-sm text-gray-300 font-medium">5 Menit Baca</span>
+				  </div>
+
+				  <!-- Judul Artikel -->
+				  <p class="text-1xl md:text-2xl font-extrabold text-white leading-tight mb-5 tracking-tight group-hover:text-indigo-100 transition-colors">Kebangkitan Melalui Ilmu Pengetahuan</p>
+
+				  <!-- Penulis & Tanggal -->
+				  <div class="flex items-center gap-4 border-t border-gray-700/50 pt-5 mt-2">
+					<img src="senku-ishigami.png" alt="Senku Ishigami" class="w-11 h-11 rounded-full border-2 border-indigo-400" />
+					<div>
+					  <p class="text-base font-semibold text-white">Senku Ishigami</p>
+					  <p class="text-xs text-gray-400">Published: 24 Mei 2024</p>
+					</div>
+				  </div>
+
+				</div>
+			  </div>
+			</div> 
+			<p class="text-gray-400 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed">Ketika Sebuah Kilatan Cahaya Misterius Mengubah Seluruh apopulasi Manusia Menjadi Batu, Peradaban Modern Runtuh Kembali Ke Zaman Pra Sejarah. Berabad-abad Berlalu Hingga Seorang Ilmuwan Jenius Muda, <span class="text-scienceGreen font-bold">Senku Ishigami</span>, Terbebas Dari Belenggu Batu. Bersama Sains, Ia Bertekad Untuk Mengembalikan Peradaban Dunia!</p>
+
+			<!-- Tombol Aksi Utama -->
+			<div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+			  <a href="#sinopsis" class="px-8 py-4 bg-gradient-to-r from-scienceGreen to-emerald-600 hover:from-scienceGreen hover:to-emerald-700 text-stoneDark-950 font-extrabold rounded-xl transition duration-300 shadow-lg shadow-scienceGreen/20 text-center tracking-wider">
+				<i class="fa-solid fa-book-open mr-2"></i> BACA SINOPSIS
+			  </a>
+			  <a href="#sessions" class="px-8 py-4 bg-stoneDark-900 hover:bg-stoneDark-800 text-white font-bold rounded-xl border border-stoneDark-800 transition duration-300 text-center tracking-wider flex items-center justify-center gap-2">
+				<i class="fa-solid fa-layer-group text-scienceGold"></i> JELAJAH SESSION
+			  </a>
+			</div>
+		  </div>
+
+		  <!-- Sisi Kanan: Visual Representasi Poster Dr. Stone -->
+		  <div class="lg:col-span-5 relative flex justify-center">
+			<div class="relative w-80 h-[420px] sm:w-96 sm:h-[480px] rounded-2xl overflow-hidden shadow-2xl border border-stoneDark-800/80 group">
+
+			  <!-- Gambar Simulasi Sains (Placeholder Bertema Dr. Stone) -->
+			  <div class="absolute inset-0 bg-stoneDark-900 flex flex-col justify-between p-6">
+				<div class="flex justify-between items-start">
+				  <span class="px-3 py-1 rounded bg-scienceGreen/20 text-scienceGreen text-xs font-mono font-bold tracking-widest">KERAJAAN SAINS</span>
+				  <i class="fa-solid fa-atom text-2xl text-scienceGold animate-spin" style="animation-duration: 8s;"></i>
+				</div>
+
+				<div class="my-auto text-center space-y-4">
+				  <div class="relative w-32 h-32 mx-auto">
+					  <img src="senku-ishigami.png" alt="Senku Ishigami"  class="w-full h-full object-cover rounded-full p-1.5 ring-2 ring-slate-200 dark:ring-slate-700 bg-gold dark:bg-slate-800 shadow-xl hover:shadow-2xl hover:ring-indigo-500 transition-all duration-300"/>
+				  </div>		  
+				  <h3 class="font-science text-xl font-bold tracking-widest text-white">SENKU ISHIGAMI</h3>
+				  <p class="text-xs text-gray-500 font-mono">Formula Penyelamat: HNO3 + C2H5OH</p>
+				</div>
+
+				<div class="bg-stoneDark-950/90 p-4 rounded-xl border border-stoneDark-800 text-center">
+				  <p class="text-xs text-scienceGreen italic font-semibold">"Sains tidak akan pernah kalah dalam mengembalikan kehidupan!"</p>
+				</div>
+			  </div>
+
+			  <!-- Efek Shadow Bottom (Menggelapkan bagian bawah gambar) -->
+			  <div class="absolute inset-x-0 bottom-0 h-1/2 shadow-bottom-overlay pointer-events-none"></div>
+			</div>
+		  </div>
+
+		</div>
+	  </div>
+    </section>
+
+
+    <!-- 2. CONTENT - SINOPSIS -->
+    <section id="sinopsis" class="py-24 bg-stoneDark-900/40 border-t border-stoneDark-900 relative">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+		<!-- Judul Utama Section -->
+		<div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+		  <h2 class="font-science text-xs font-black tracking-widest text-scienceGreen uppercase"><i class="fa-solid fa-scroll mr-2"></i> Arsip Sejarah</h2>
+		  <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Sinopsis Lengkap Dr. Stone</h3>
+		  <p class="text-gray-400 text-sm sm:text-base">Perjalanan merangkai kembali miliaran tahun penciptaan sains dari dunia primitif tak berteknologi.</p>
+		  <div class="h-1 w-24 bg-gradient-to-r from-scienceGreen to-scienceGold mx-auto rounded-full"></div>
+		</div>
+
+		<!-- Konten Utama Sinopsis -->
+		<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+		  <!-- Sisi Kiri: Deskripsi Alur Cerita -->
+		  <div class="lg:col-span-7 space-y-6">
+			<h3 class="text-2xl font-bold text-white font-science">Merombak Zaman Batu Menjadi Era Industri Modern</h3>
+			<p class="text-gray-400 leading-relaxed text-base">
+			  Semua bermula saat kilatan cahaya hijau misterius membatu-kan seluruh manusia secara global. Setelah 3.700 tahun, siswa jenius pecinta ilmu pengetahuan, **Senku Ishigami**, terbangun di tengah hutan belantara purba. Mengetahui semua kemajuan teknologi telah lenyap terkikis waktu, Senku bersumpah untuk menggunakan kepintarannya untuk melompati sejarah teknologi jutaan tahun.
+			</p>
+			<p class="text-gray-400 leading-relaxed text-base">
+			  Namun, jalannya tidaklah mudah. Ia harus menghadapi konflik ideologi yang besar dengan **Tsukasa Shio**, pemuda terkuat yang ingin membangun dunia murni tanpa polusi industri ataupun kebusukan kaum dewasa dari masa lalu. Perang ideologi antara **Kerajaan Sains (Senku)** dan **Kekaisaran Tsukasa (Kekuatan Fisik)** pun tak terelakkan.
+			</p>
+
+			<div class="pt-4 flex flex-wrap gap-2">
+			  <span class="px-3.5 py-1.5 bg-stoneDark-900 border border-stoneDark-800 rounded-lg text-xs font-semibold text-gray-300">Sci-Fi (Sains)</span>
+			  <span class="px-3.5 py-1.5 bg-stoneDark-900 border border-stoneDark-800 rounded-lg text-xs font-semibold text-gray-300">Adventure</span>
+			  <span class="px-3.5 py-1.5 bg-stoneDark-900 border border-stoneDark-800 rounded-lg text-xs font-semibold text-gray-300">Survival</span>
+			  <span class="px-3.5 py-1.5 bg-stoneDark-900 border border-stoneDark-800 rounded-lg text-xs font-semibold text-gray-300">Shounen</span>
+			</div>
+		  </div>
+
+		  <!-- Sisi Kanan: Papan Statistik Formula Kunci -->
+		  <div class="lg:col-span-5 space-y-4">
+			<div class="bg-stoneDark-900 p-6 rounded-2xl border border-stoneDark-800/80 space-y-4">
+			  <h4 class="font-science text-sm font-bold text-scienceGold flex items-center gap-2">
+				<i class="fa-solid fa-atom"></i> ALGORITMA PENEMUAN UTAMA
+			  </h4>
+			  <div class="space-y-3">
+				<div class="flex items-start gap-3">
+				  <div class="w-6 h-6 rounded bg-scienceGreen/20 flex items-center justify-center text-scienceGreen font-bold text-xs shrink-0 mt-0.5">1</div>
+				  <p class="text-xs text-gray-400"><strong class="text-white">Cairan Nital (Nitric Acid + Alcohol):</strong> Senyawa pelarut pembatuan untuk membangkitkan manusia dari batu.</p>
+				</div>
+				<div class="flex items-start gap-3">
+				  <div class="w-6 h-6 rounded bg-scienceGreen/20 flex items-center justify-center text-scienceGreen font-bold text-xs shrink-0 mt-0.5">2</div>
+				  <p class="text-xs text-gray-400"><strong class="text-white">Sulfa Drug:</strong> Obat penyembuh infeksi paru-paru Ruri, tonggak sejarah medis pertama Kerajaan Sains.</p>
+				</div>
+				<div class="flex items-start gap-3">
+				  <div class="w-6 h-6 rounded bg-scienceGreen/20 flex items-center justify-center text-scienceGreen font-bold text-xs shrink-0 mt-0.5">3</div>
+				  <p class="text-xs text-gray-400"><strong class="text-white">Generator Listrik & Telekomunikasi:</strong> Memasuki era telekomunikasi lewat telepon kabel sederhana di dunia batu.</p>
+				</div>
+			  </div>
+			</div>
+		  </div>
+
+		</div>
+
+		<!-- Karakter Utama Grid -->
+		<div class="mt-20">
+		  <h4 class="font-science text-center text-sm font-bold tracking-widest text-scienceGold mb-10 uppercase">Tokoh Sentral Kerajaan Sains</h4>
+		  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+			<!-- Senku -->
+			<div class="bg-stoneDark-900 rounded-xl p-6 border border-stoneDark-800 hover:border-scienceGreen/40 transition-all duration-300 text-center space-y-4 group">
+			  <div class="relative w-32 h-32 mx-auto">
+				<img src="senku-ishigami.png" alt="Senku Ishigami"  class="w-full h-full object-cover rounded-full p-1.5 ring-2 ring-slate-200 dark:ring-slate-700 bg-gold dark:bg-slate-800 shadow-xl hover:shadow-2xl hover:ring-indigo-500 transition-all duration-300"/>
+			  </div>	
+			  <div>
+				<h5 class="font-science font-bold text-white text-base">Senku Ishigami</h5>
+				<p class="text-xs text-scienceGreen font-mono">Otak & Pendiri Sains</p>
+			  </div>
+			  <p class="text-xs text-gray-400 leading-relaxed">Otak jenius luar biasa dengan ingatan jutaan rumus fisika dan kimia bumi.</p>
+			</div>
+
+			<!-- Chrome -->
+			<div class="bg-stoneDark-900 rounded-xl p-6 border border-stoneDark-800 hover:border-scienceGreen/40 transition-all duration-300 text-center space-y-4 group">
+			  <div class="relative w-32 h-32 mx-auto">
+				<img src="chrome.png" alt="Chrome"  class="w-full h-full object-cover rounded-full p-1.5 ring-2 ring-slate-200 dark:ring-slate-700 bg-gold dark:bg-slate-800 shadow-xl hover:shadow-2xl hover:ring-indigo-500 transition-all duration-300"/>
+			  </div>	
+			  <div>
+				<h5 class="font-science font-bold text-white text-base">Chrome</h5>
+				<p class="text-xs text-scienceBlue font-mono">Penyihir Sains Lokal</p>
+			  </div>
+			  <p class="text-xs text-gray-400 leading-relaxed">Pemuda lokal berbakat tinggi yang awalnya mengira sains murni sebagai kekuatan sihir.</p>
+			</div>
+
+			<!-- Kohaku -->
+			<div class="bg-stoneDark-900 rounded-xl p-6 border border-stoneDark-800 hover:border-scienceGreen/40 transition-all duration-300 text-center space-y-4 group">
+			  <div class="relative w-32 h-32 mx-auto">
+				<img src="kohaku.png" alt="Kohaku"  class="w-full h-full object-cover rounded-full p-1.5 ring-2 ring-slate-200 dark:ring-slate-700 bg-gold dark:bg-slate-800 shadow-xl hover:shadow-2xl hover:ring-indigo-500 transition-all duration-300"/>
+			  </div>	
+			  <div>
+				<h5 class="font-science font-bold text-white text-base">Kohaku</h5>
+				<p class="text-xs text-orange-400 font-mono">Kekuatan Tempur Utama</p>
+			  </div>
+			  <p class="text-xs text-gray-400 leading-relaxed">Prajurit wanita terkuat di desa dengan visi mata elang yang sangat tajam luar biasa.</p>
+			</div>
+
+			<!-- Asagiri Gen -->
+			<div class="bg-stoneDark-900 rounded-xl p-6 border border-stoneDark-800 hover:border-scienceGreen/40 transition-all duration-300 text-center space-y-4 group">
+			  <div class="relative w-32 h-32 mx-auto">
+				<img src="asagari-gen.png" alt="Asagari Gen"  class="w-full h-full object-cover rounded-full p-1.5 ring-2 ring-slate-200 dark:ring-slate-700 bg-gold dark:bg-slate-800 shadow-xl hover:shadow-2xl hover:ring-indigo-500 transition-all duration-300"/>
+			  </div>	
+			  <div>
+				<h5 class="font-science font-bold text-white text-base">Asagiri Gen</h5>
+				<p class="text-xs text-purple-400 font-mono">Ahli Mentalis & Diplomasi</p>
+			  </div>
+			  <p class="text-xs text-gray-400 leading-relaxed">Pakar psikologis ulung yang membelot dari kerajaan Tsukasa demi cola ilmu sains.</p>
+			</div>
+
+		  </div>
+		</div>
+
+	  </div>
+    </section>
+
+
+    <!-- 3. TRAILER AREA -->
+    <section id="trailer" class="py-24 bg-stoneDark-950 relative overflow-hidden">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+
+		<!-- Judul Section -->
+		<div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+		  <h2 class="font-science text-xs font-black tracking-widest text-scienceGold uppercase"><i class="fa-solid fa-clapperboard mr-2"></i> Media Resmi</h2>
+		  <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Trailer Resmi Dr. Stone</h3>
+		  <p class="text-gray-400 text-sm sm:text-base">Tonton sekilas visual berkualitas tinggi yang menakjubkan dari petualangan sains Senku.</p>
+		  <div class="h-1 w-24 bg-gradient-to-r from-scienceGold to-scienceGreen mx-auto rounded-full"></div>
+		</div>
+
+		<!-- Video Player Interaktif -->
+		<div class="max-w-4xl mx-auto">
+		  <div class="relative aspect-video rounded-2xl overflow-hidden border border-stoneDark-800 shadow-2xl bg-stoneDark-900">
+			<iframe 
+			  id="youtube-player"
+			  class="absolute inset-0 w-full h-full"
+			  src="https://www.youtube.com/embed/S9Vz7t7I18Y" 
+			  title="Dr. STONE Official Trailer" 
+			  frameborder="0" 
+			  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+			  allowfullscreen>
+			</iframe>
+		  </div>
+
+		  <!-- Pemilih Cuplikan Trailer Season -->
+		  <div class="mt-6 grid grid-cols-3 gap-2 sm:gap-4 text-center">
+			<button onclick="changeTrailer('S9Vz7t7I18Y', this)" class="trailer-tab-btn px-4 py-3 bg-scienceGreen text-stoneDark-950 font-black rounded-xl text-xs sm:text-sm tracking-wider transition-all duration-300 shadow-lg shadow-scienceGreen/10">
+			  TRAILER S1
+			</button>
+			<button onclick="changeTrailer('u3tX_A6Y1g4', this)" class="trailer-tab-btn px-4 py-3 bg-stoneDark-900 hover:bg-stoneDark-800 text-gray-300 font-bold rounded-xl text-xs sm:text-sm tracking-wider transition-all duration-300 border border-stoneDark-800">
+			  TRAILER S2
+			</button>
+			<button onclick="changeTrailer('96V2Wp4Y-uA', this)" class="trailer-tab-btn px-4 py-3 bg-stoneDark-900 hover:bg-stoneDark-800 text-gray-300 font-bold rounded-xl text-xs sm:text-sm tracking-wider transition-all duration-300 border border-stoneDark-800">
+			  TRAILER S3
+			</button>
+		  </div>
+		</div>
+
+	  </div>
+    </section>
+
+
+    <!-- 4. PLAYLIST SECTION WITH SHADOW-BOTTOM -->
+    <section id="playlist" class="py-24 bg-stoneDark-900/20 border-t border-stoneDark-900">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+		<!-- Judul Section -->
+		<div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+		  <h2 class="font-science text-xs font-black tracking-widest text-scienceGreen uppercase"><i class="fa-solid fa-list-music mr-2"></i> Daftar Putar Pilihan</h2>
+		  <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Playlist OST & Musik Tema</h3>
+		  <p class="text-gray-400 text-sm sm:text-base">Dengarkan musik-musik luar biasa bersemangat tinggi yang mengiringi Kerajaan Sains.</p>
+		  <div class="h-1 w-24 bg-gradient-to-r from-scienceGreen to-scienceGold mx-auto rounded-full"></div>
+		</div>
+
+		<!-- Grid Lagu dengan Efek Shadow-Bottom -->
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+		  <!-- Lagu 1 -->
+		  <div class="relative rounded-2xl overflow-hidden border border-stoneDark-800 bg-stoneDark-900 group shadow-lg hover:border-scienceGreen/40 transition-all duration-300">
+			<div class="relative aspect-video bg-stoneDark-950 overflow-hidden flex items-center justify-center">
+			  <!-- Simbol representasi visual dari lagu -->
+			  <div class="absolute inset-0 bg-gradient-to-tr from-stoneDark-900 to-stoneDark-800 flex items-center justify-center text-6xl text-scienceGreen/20">
+				<i class="fa-solid fa-flask-vial"></i>
+			  </div>
+
+			  <!-- EFEK SHADOW-BOTTOM (Menggelapkan bagian bawah gambar/layer agar teks terbaca) -->
+			  <div class="absolute inset-x-0 bottom-0 h-1/2 shadow-bottom-overlay pointer-events-none"></div>
+
+			  <span class="absolute top-3 right-3 px-2.5 py-1 bg-black/85 rounded text-[10px] font-mono text-gray-300 border border-stoneDark-800">OP 1 - S1</span>
+			</div>
+
+			<!-- Detail Info Musik -->
+			<div class="p-6 space-y-3">
+			  <div class="flex items-center justify-between">
+				<span class="text-xs text-scienceGreen font-bold font-science">BURNOUT SYNDROMES</span>
+				<span class="text-xs text-gray-500 font-mono">03:45</span>
+			  </div>
+			  <h4 class="text-lg font-bold text-white line-clamp-1">Good Morning World!</h4>
+			  <p class="text-xs text-gray-400">Musik tema pembuka perdana yang mengguncang dunia dengan lirik semangat fajar sains.</p>
+			</div>
+		  </div>
+
+		  <!-- Lagu 2 -->
+		  <div class="relative rounded-2xl overflow-hidden border border-stoneDark-800 bg-stoneDark-900 group shadow-lg hover:border-scienceGreen/40 transition-all duration-300">
+			<div class="relative aspect-video bg-stoneDark-950 overflow-hidden flex items-center justify-center">
+			  <div class="absolute inset-0 bg-gradient-to-tr from-stoneDark-900 to-stoneDark-800 flex items-center justify-center text-6xl text-scienceGold/20">
+				<i class="fa-solid fa-vial"></i>
+			  </div>
+			  <!-- EFEK SHADOW-BOTTOM -->
+			  <div class="absolute inset-x-0 bottom-0 h-1/2 shadow-bottom-overlay pointer-events-none"></div>
+			  <span class="absolute top-3 right-3 px-2.5 py-1 bg-black/85 rounded text-[10px] font-mono text-gray-300 border border-stoneDark-800">OP 2 - S1</span>
+			</div>
+
+			<div class="p-6 space-y-3">
+			  <div class="flex items-center justify-between">
+				<span class="text-xs text-scienceGold font-bold font-science">PELICAN FANCLUB</span>
+				<span class="text-xs text-gray-500 font-mono">04:12</span>
+			  </div>
+			  <h4 class="text-lg font-bold text-white line-clamp-1">Sangenshoku</h4>
+			  <p class="text-xs text-gray-400">Lagu pembuka kedua dari musim pertama yang bernuansa ceria, menggambarkan persahabatan.</p>
+			</div>
+		  </div>
+
+		  <!-- Lagu 3 -->
+		  <div class="relative rounded-2xl overflow-hidden border border-stoneDark-800 bg-stoneDark-900 group shadow-lg hover:border-scienceGreen/40 transition-all duration-300">
+			<div class="relative aspect-video bg-stoneDark-950 overflow-hidden flex items-center justify-center">
+			  <div class="absolute inset-0 bg-gradient-to-tr from-stoneDark-900 to-stoneDark-800 flex items-center justify-center text-6xl text-scienceBlue/20">
+				<i class="fa-solid fa-ship"></i>
+			  </div>
+			  <!-- EFEK SHADOW-BOTTOM -->
+			  <div class="absolute inset-x-0 bottom-0 h-1/2 shadow-bottom-overlay pointer-events-none"></div>
+			  <span class="absolute top-3 right-3 px-2.5 py-1 bg-black/85 rounded text-[10px] font-mono text-gray-300 border border-stoneDark-800">OP 1 - S3</span>
+			</div>
+
+			<div class="p-6 space-y-3">
+			  <div class="flex items-center justify-between">
+				<span class="text-xs text-scienceBlue font-bold font-science">HUIS TEN BOSCH</span>
+				<span class="text-xs text-gray-500 font-mono">03:58</span>
+			  </div>
+			  <h4 class="text-lg font-bold text-white line-clamp-1">Paradise</h4>
+			  <p class="text-xs text-gray-400">Lagu petualangan penjelajahan laut bebas menuju kejayaan sains di era New World.</p>
+			</div>
+		  </div>
+
+		</div>
+	  </div>
+    </section>
+
+
+    <!-- 5. EXPLORASI SESSIONS (1, 2, & 3) DENGAN BUTTON WATCH PREMIUM -->
+    <section id="sessions" class="py-24 bg-stoneDark-950 border-t border-stoneDark-900 relative">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+		<!-- Judul Section -->
+		<div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+		  <h2 class="font-science text-xs font-black tracking-widest text-scienceGold uppercase"><i class="fa-solid fa-layer-group mr-2"></i> Eksplorasi Sesi</h2>
+		  <h3 class="text-3xl sm:text-4xl font-extrabold text-white">Eksplorasi Sesi Utama Dr. Stone</h3>
+		  <p class="text-gray-400 text-sm sm:text-base">Mulai tonton petualangan sains di tiap episodenya langsung ke masing-masing halaman session.</p>
+		  <div class="h-1 w-24 bg-gradient-to-r from-scienceGold to-scienceGreen mx-auto rounded-full"></div>
+		</div>
+
+		<!-- Grid Sesi dengan Tombol Watch yang Keren dan Elegan -->
+		<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+		  <!-- Session 1 Card -->
+		  <div class="bg-stoneDark-900 border border-stoneDark-800 hover:border-scienceGreen/40 rounded-2xl overflow-hidden shadow-xl transition-all duration-500 flex flex-col justify-between group hover:-translate-y-2">
+			<div class="p-6 sm:p-8 space-y-6">
+			  <!-- Header Card -->
+			  <div class="flex justify-between items-center">
+				<span class="px-3 py-1 bg-scienceGreen/10 border border-scienceGreen/30 text-scienceGreen rounded text-[11px] font-bold font-science tracking-wider">MUSIM PERTAMA</span>
+				<span class="text-xs text-gray-500 font-mono"><i class="fa-solid fa-tv mr-1"></i> 24 Episode</span>
+			  </div>
+
+			  <div class="space-y-2">
+				<h4 class="text-xl font-bold text-white font-science group-hover:text-scienceGreen transition-colors">Session 1: Kingdom of Science</h4>
+				<p class="text-sm text-gray-400 leading-relaxed">
+				  Season pertama memperkenalkan kebangkitan Senku Ishigami di dunia tanpa teknologi. Dari berburu bahan kimia mentah, bersekutu dengan Desa Ishigami, hingga membuat 'Obat Ajaib' (antibiotik sulfa) untuk menyelamatkan Ruri dari penyakit parah. Season ini diakhiri dengan pembuatan generator listrik dan sistem komunikasi sederhana yang siap digunakan menghadapi ancaman Kerajaan Tsukasa.</p>
+			  </div>
+
+			  <!-- List Fokus Utama -->
+			  <div class="space-y-3">
+				<h4 class="font-semibold text-white">Fokus Teknologi & Sains:</h4>
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-400">
+				  <div id="tech-1" class="flex items-center gap-2"><i class="fa-solid fa-flask text-scienceGreen text-xs"></i> Sabun (Pembersih)</div>
+				  <div id="tech-2" class="flex items-center gap-2"><i class="fa-solid fa-flask text-scienceGreen text-xs"></i> Kaca & Lensa</div>
+				  <div id="tech-3" class="flex items-center gap-2"><i class="fa-solid fa-flask text-scienceGreen text-xs"></i> Antibiotik Sulfa</div>
+				  <div id="tech-4" class="flex items-center gap-2"><i class="fa-solid fa-flask text-scienceGreen text-xs"></i> Pembangkit Listrik</div>
+				</div>
+			  </div>
+			
+			  <!-- Progress Bar Kemajuan Sains -->
+			  <div class="space-y-2">
+				<div class="flex justify-between text-xs font-mono text-gray-500">
+				  <span>KEMAJUAN PERADABAN</span>
+				  <span class="text-scienceGreen">40%</span>
+				</div>
+				<div class="w-full bg-stoneDark-950 h-2 rounded-full overflow-hidden">
+				  <div class="bg-scienceGreen h-full w-[40%] transition-all duration-1000"></div>
+				</div>
+			  </div>
+			</div>
+
+			<!-- Footer Card: Tombol Watch Sesi 1 Premium -->
+			<div class="p-6 sm:p-8 bg-stoneDark-950/40 border-t border-stoneDark-800/60">
+			  <a href="dr-stone-session-1.html" class="relative group/btn w-full inline-flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-emerald-500 to-green-400 text-neutral-950 font-black tracking-widest text-xs rounded-xl shadow-[0_4px_15px_rgba(16,185,129,0.15)] transition-all duration-300 hover:shadow-[0_8px_25px_rgba(16,185,129,0.35)] hover:-translate-y-1 overflow-hidden">
+				<!-- Efek Kilat Cahaya Berjalan -->
+				<span class="absolute inset-0 w-full h-full bg-gradient-to-r from-white/0 via-white/30 to-white/0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 ease-out"></span>
+
+				<span class="flex items-center justify-center w-5 h-5 bg-neutral-950/15 rounded-full">
+				  <svg class="w-2.5 h-2.5 fill-neutral-950 ml-0.5" viewBox="0 0 24 24">
+					<path d="M8 5v14l11-7z"/>
+				  </svg>
+				</span>
+				<span>WATCH SESSION 1</span>
+			  </a>
+			</div>
+		  </div>
+
+		  <!-- Session 2 Card -->
+		  <div class="bg-stoneDark-900 border border-stoneDark-800 hover:border-scienceGold/40 rounded-2xl overflow-hidden shadow-xl transition-all duration-500 flex flex-col justify-between group hover:-translate-y-2">
+			<div class="p-6 sm:p-8 space-y-6">
+			  <!-- Header Card -->
+			  <div class="flex justify-between items-center">
+				<span class="px-3 py-1 bg-scienceGold/10 border border-scienceGold/30 text-scienceGold rounded text-[11px] font-bold font-science tracking-wider">MUSIM KEDUA</span>
+				<span class="text-xs text-gray-500 font-mono"><i class="fa-solid fa-tv mr-1"></i> 11 Episode</span>
+			  </div>
+
+			  <div class="space-y-2">
+				<h4 class="text-xl font-bold text-white font-science group-hover:text-scienceGold transition-colors">Session 2: Stone Wars</h4>
+				<p class="text-sm text-gray-400 leading-relaxed">Season kedua berfokus penuh pada pertempuran sengit (Stone Wars) antara Kerajaan Sains Senku dengan Kekaisaran Kekuatan Tsukasa Shio. Menggunakan strategi komunikasi nirkabel ponsel buatan sendiri dan senjata mengejutkan yaitu bubuk mesiu mesiu dinamis, Senku berusaha keras memenangkan perang tanpa membunuh satu orang pun demi kedamaian dunia baru.</p>
+				
+				<!-- List Fokus Utama -->
+				<div class="space-y-3">
+				  <h4 class="font-semibold text-white">Fokus Teknologi & Sains:</h4>
+				  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-400">
+					<div id="tech-1" class="flex items-center gap-2"><i class="fa-solid fa-flask text-scienceGreen text-xs"></i> Kapal Perseus (Mesin Diesel)</div>
+					<div id="tech-2" class="flex items-center gap-2"><i class="fa-solid fa-flask text-scienceGreen text-xs"></i> Kamera Foto & Drone Udara</div>
+					<div id="tech-3" class="flex items-center gap-2"><i class="fa-solid fa-flask text-scienceGreen text-xs"></i> Aparatus Selam (Tabung Oksigen)</div>
+					<div id="tech-4" class="flex items-center gap-2"><i class="fa-solid fa-flask text-scienceGreen text-xs"></i> Analisis Radar dan Sonar</div>
+				  </div>
+				</div>
+			  </div>
+
+			  <!-- Progress Bar Kemajuan Sains -->
+			  <div class="space-y-2">
+				<div class="flex justify-between text-xs font-mono text-gray-500">
+				  <span>KEMAJUAN PERADABAN</span>
+				  <span class="text-scienceGold">65%</span>
+				</div>
+				<div class="w-full bg-stoneDark-950 h-2 rounded-full overflow-hidden">
+				  <div class="bg-scienceGold h-full w-[65%] transition-all duration-1000"></div>
+				</div>
+			  </div>
+			</div>
+
+			<!-- Footer Card: Tombol Watch Sesi 2 Premium -->
+			<div class="p-6 sm:p-8 bg-stoneDark-950/40 border-t border-stoneDark-800/60">
+			  <a href="dr-stone-session-2.html" class="relative group/btn w-full inline-flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-amber-500 to-yellow-400 text-neutral-950 font-black tracking-widest text-xs rounded-xl shadow-[0_4px_15px_rgba(245,158,11,0.15)] transition-all duration-300 hover:shadow-[0_8px_25px_rgba(245,158,11,0.35)] hover:-translate-y-1 overflow-hidden">
+				<!-- Efek Kilat Cahaya Berjalan -->
+				<span class="absolute inset-0 w-full h-full bg-gradient-to-r from-white/0 via-white/30 to-white/0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 ease-out"></span>
+
+				<span class="flex items-center justify-center w-5 h-5 bg-neutral-950/15 rounded-full">
+				  <svg class="w-2.5 h-2.5 fill-neutral-950 ml-0.5" viewBox="0 0 24 24">
+					<path d="M8 5v14l11-7z"/>
+				  </svg>
+				</span>
+				<span>WATCH SESSION 2</span>
+			  </a>
+			</div>
+		  </div>
+
+		  <!-- Session 3 Card -->
+		  <div class="bg-stoneDark-900 border border-stoneDark-800 hover:border-scienceBlue/40 rounded-2xl overflow-hidden shadow-xl transition-all duration-500 flex flex-col justify-between group hover:-translate-y-2">
+			<div class="p-6 sm:p-8 space-y-6">
+			  <!-- Header Card -->
+			  <div class="flex justify-between items-center">
+				<span class="px-3 py-1 bg-scienceBlue/10 border border-scienceBlue/30 text-scienceBlue rounded text-[11px] font-bold font-science tracking-wider">MUSIM KETIGA</span>
+				<span class="text-xs text-gray-500 font-mono"><i class="fa-solid fa-tv mr-1"></i> 22 Episode</span>
+			  </div>
+
+			  <div class="space-y-2">
+				<h4 class="text-xl font-bold text-white font-science group-hover:text-scienceBlue transition-colors">Session 3: New World</h4>
+				<p class="text-sm text-gray-400 leading-relaxed">
+				  Era penjelajahan samudra demi memecahkan misteri pemecahan global. Kerajaan Sains membangun kapal mesin Perseus dan mengarungi laut bebas ke pulau misterius penyimpan alat pembatuan orisinal.
+				</p>
+				<!-- List Fokus Utama -->
+				<div class="space-y-3">
+				  <h4 class="font-semibold text-white">Fokus Teknologi & Sains:</h4>
+				  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-gray-400">
+					<div id="tech-1" class="flex items-center gap-2"><i class="fa-solid fa-flask text-scienceGreen text-xs"></i> Ponsel Nirkabel (Telepon Seluler)</div>
+					<div id="tech-2" class="flex items-center gap-2"><i class="fa-solid fa-flask text-scienceGreen text-xs"></i> Dinamit (Bahan Peledak)</div>
+					<div id="tech-3" class="flex items-center gap-2"><i class="fa-solid fa-flask text-scienceGreen text-xs"></i> Makanan Kering Instan (Ransum)</div>
+					<div id="tech-4" class="flex items-center gap-2"><i class="fa-solid fa-flask text-scienceGreen text-xs"></i> Mesin Uap Sederhana</div>
+				  </div>
+				</div>
+			  </div>
+
+			  <!-- Progress Bar Kemajuan Sains -->
+			  <div class="space-y-2">
+				<div class="flex justify-between text-xs font-mono text-gray-500">
+				  <span>KEMAJUAN PERADABAN</span>
+				  <span class="text-scienceBlue">85%</span>
+				</div>
+				<div class="w-full bg-stoneDark-950 h-2 rounded-full overflow-hidden">
+				  <div class="bg-scienceBlue h-full w-[85%] transition-all duration-1000"></div>
+				</div>
+			  </div>
+			</div>
+
+			<!-- Footer Card: Tombol Watch Sesi 3 Premium -->
+			<div class="p-6 sm:p-8 bg-stoneDark-950/40 border-t border-stoneDark-800/60">
+			  <a href="dr-stone-session-3.html" class="relative group/btn w-full inline-flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-cyan-500 to-blue-400 text-neutral-950 font-black tracking-widest text-xs rounded-xl shadow-[0_4px_15px_rgba(6,182,212,0.15)] transition-all duration-300 hover:shadow-[0_8px_25px_rgba(6,182,212,0.35)] hover:-translate-y-1 overflow-hidden">
+				<!-- Efek Kilat Cahaya Berjalan -->
+				<span class="absolute inset-0 w-full h-full bg-gradient-to-r from-white/0 via-white/30 to-white/0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 ease-out"></span>
+
+				<span class="flex items-center justify-center w-5 h-5 bg-neutral-950/15 rounded-full">
+				  <svg class="w-2.5 h-2.5 fill-neutral-950 ml-0.5" viewBox="0 0 24 24">
+					<path d="M8 5v14l11-7z"/>
+				  </svg>
+				</span>
+				<span>WATCH SESSION 3</span>
+			  </a>
+			</div>
+		  </div>
+
+		</div>
+	  </div>
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer class="bg-stoneDark-950 border-t border-stoneDark-900 pt-16 pb-8 relative overflow-hidden">
+
+	  <!-- Garis pembatas neon bagian atas -->
+	  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-0.5 bg-gradient-to-r from-transparent via-scienceGreen to-transparent"></div>
+
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="grid grid-cols-1 md:grid-cols-12 gap-12 mb-12">
+
+		  <!-- Kolom 1: Profil Penjelas Website -->
+		  <div class="md:col-span-5 space-y-4 text-center md:text-left">
+			<div class="flex items-center justify-center md:justify-start gap-3">
+			  <div class="w-8 h-8 rounded bg-scienceGreen flex items-center justify-center text-stoneDark-950 font-bold font-science">S</div>
+			  <span class="font-science text-lg font-black tracking-widest text-white">DR.STONE</span>
+			</div>
+			<p class="text-gray-400 text-sm max-w-sm">
+			  Satu portal pusat apresiasi anime fiksi-ilmiah "Dr. Stone". Menampilkan sejarah kebangkitan sains, teknologi, dan eksplorasi dunia baru.
+			</p>
+		  </div>
+
+		  <!-- Kolom 2: Navigasi Internal Pintas -->
+		  <div class="md:col-span-3 text-center md:text-left">
+			<h4 class="font-science text-xs font-black tracking-widest text-scienceGold uppercase mb-4">Navigasi Utama</h4>
+			<ul class="text-sm text-gray-400 space-y-2">
+			  <li><a href="#home" class="hover:text-scienceGreen transition-all">Home</a></li>
+			  <li><a href="#sinopsis" class="hover:text-scienceGreen transition-all">Sinopsis</a></li>
+			  <li><a href="#trailer" class="hover:text-scienceGreen transition-all">Trailer</a></li>
+			  <li><a href="#playlist" class="hover:text-scienceGreen transition-all">Playlist</a></li>
+			</ul>
+		  </div>
+
+		  <!-- Kolom 3: Direktori Sesi Cepat & Tombol -->
+		  <div class="md:col-span-4 text-center md:text-left space-y-4">
+			<h4 class="font-science text-xs font-black tracking-widest text-scienceGreen uppercase mb-4">Akses Langsung Sesi</h4>
+			<div class="flex flex-col gap-2.5">
+			  <a href="dr-stone-session-1.html" class="inline-flex items-center justify-between px-4 py-2 bg-stoneDark-900 hover:bg-stoneDark-800 text-xs text-gray-300 font-semibold rounded-lg border border-stoneDark-800 transition-all">
+				<span>Session 1: Kingdom of Science</span>
+				<i class="fa-solid fa-arrow-up-right-from-square text-scienceGreen"></i>
+			  </a>
+			  <a href="dr-stone-session-2.html" class="inline-flex items-center justify-between px-4 py-2 bg-stoneDark-900 hover:bg-stoneDark-800 text-xs text-gray-300 font-semibold rounded-lg border border-stoneDark-800 transition-all">
+				<span>Session 2: Stone Wars</span>
+				<i class="fa-solid fa-arrow-up-right-from-square text-scienceGold"></i>
+			  </a>
+			  <a href="dr-stone-session-3.html" class="inline-flex items-center justify-between px-4 py-2 bg-stoneDark-900 hover:bg-stoneDark-800 text-xs text-gray-300 font-semibold rounded-lg border border-stoneDark-800 transition-all">
+				<span>Session 3: New World</span>
+				<i class="fa-solid fa-arrow-up-right-from-square text-scienceBlue"></i>
+			  </a>
+			</div>
+		  </div>
+
+		</div>
+
+		<!-- Bagian Hak Cipta & Sosial Media -->
+		<div class="border-t border-stoneDark-900 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
+		  <p>&copy; 2026 Kerajaan Sains. Terinspirasi oleh karya agung Boichi & Riichiro Inagaki.</p>
+		  <div class="flex gap-4">
+			<a href="#" class="hover:text-scienceGreen transition-all text-lg" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+			<a href="#" class="hover:text-scienceGreen transition-all text-lg" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+			<a href="#" class="hover:text-scienceGreen transition-all text-lg" aria-label="Discord"><i class="fa-brands fa-discord"></i></a>
+		  </div>
+		</div>
+	  </div>
+    </footer>
+
+
+    <!-- SCRIPT LOGIC INTERAKTIF -->
+<script>
+        // DOM Elements
+        const btnOpenDrawer = document.getElementById('btn-open-drawer');
+        const btnCloseDrawer = document.getElementById('btn-close-drawer');
+        const drawerMenu = document.getElementById('drawer-menu');
+        const drawerBackdrop = document.getElementById('drawer-backdrop');
+        const drawerLinks = document.querySelectorAll('.drawer-link');
+        const header = document.querySelector('header');
+        const youtubePlayer = document.getElementById('youtube-player');
+
+        // 1. Kontrol Drawer Menu
+        function openDrawer() {
+            drawerMenu.classList.remove('translate-x-full');
+            drawerBackdrop.classList.remove('hidden');
+            setTimeout(() => {
+                drawerBackdrop.classList.add('opacity-100');
+            }, 50);
+        }
+
+        function closeDrawer() {
+            drawerMenu.classList.add('translate-x-full');
+            drawerBackdrop.classList.remove('opacity-100');
+            setTimeout(() => {
+                drawerBackdrop.classList.add('hidden');
+            }, 300);
+        }
+
+        btnOpenDrawer.addEventListener('click', openDrawer);
+        btnCloseDrawer.addEventListener('click', closeDrawer);
+        drawerBackdrop.addEventListener('click', closeDrawer);
+
+        // Menutup drawer setelah memilih salah satu tautan
+        drawerLinks.forEach(link => {
+            link.addEventListener('click', closeDrawer);
+        });
+
+        // 2. Transisi Header Transparan menjadi Gelap saat di-scroll
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 40) {
+                header.classList.add('bg-stoneDark-950', 'py-1', 'shadow-xl');
+                header.classList.remove('bg-stoneDark-950/80', 'py-0');
+            } else {
+                header.classList.remove('bg-stoneDark-950', 'py-1', 'shadow-xl');
+                header.classList.add('bg-stoneDark-950/80');
+            }
+        });
+
+        // 3. Fungsionalitas Ganti Video Trailer
+        function changeTrailer(videoId, button) {
+            youtubePlayer.src = `https://www.youtube.com/embed/${videoId}`;
+            
+            if (button) {
+                // Menghilangkan kelas aktif dari seluruh tombol trailer
+                const buttons = document.querySelectorAll('.trailer-tab-btn');
+                buttons.forEach(btn => {
+                    btn.className = "trailer-tab-btn px-4 py-3 bg-stoneDark-900 hover:bg-stoneDark-800 text-gray-300 font-bold rounded-xl text-xs sm:text-sm tracking-wider transition-all duration-300 border border-stoneDark-800";
+                });
+                
+                // Menambahkan kelas aktif ke tombol yang diklik
+                button.className = "trailer-tab-btn px-4 py-3 bg-scienceGreen text-stoneDark-950 font-black rounded-xl text-xs sm:text-sm tracking-wider transition-all duration-300 shadow-lg shadow-scienceGreen/10";
+            }
+        }
+</script>
+  </body>
+</html>

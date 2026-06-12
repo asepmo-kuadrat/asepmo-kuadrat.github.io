@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Reader Sang Pemberi Rezeki</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans & Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        emeraldTheme: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                            950: '#022c22'
+                        },
+                        goldTheme: {
+                            100: '#fef9c3',
+                            400: '#facc15',
+                            500: '#eab308',
+                            600: '#ca8a04'
+                        }
+                    }
+                }
+            }
+        }
+</script>
+<style>
+        /* Sembunyikan scrollbar bawaan tapi pertahankan fungsionalitas */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Animasi transisi konten */
+        .content-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Custom scrollbar untuk navigasi */
+        .custom-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: rgba(2, 44, 34, 0.05);
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(4, 120, 87, 0.3);
+            border-radius: 99px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: rgba(4, 120, 87, 0.5);
+        }
+
+        /* Animasi ripple lembut untuk tombol Tasbih */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.95); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.3; }
+            100% { transform: scale(1.2); opacity: 0; }
+        }
+        .pulse-effect::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 9999px;
+            background: #059669;
+            animation: pulse-ring 2s infinite;
+            z-index: -1;
+        }
+</style>
+  </head>
+  <body class="bg-emeraldTheme-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-emeraldTheme-700 selection:text-white">
+
+<script>
+        // Data Isi Buku lengkap dengan simulasi konten bacaan berkualitas tinggi
+        const bookData = {
+            "kata-pengantar": {
+                title: "Kata Pengantar",
+                subtitle: "Pintu Masuk Menuju Pemahaman Rezeki",
+                icon: "fa-book-open",
+                content: `
+                    <p class="mb-4"><i>Bismillahirrahmanirrahim.</i></p>
+                    <p class="mb-4">Puji syukur kehadirat Allah SWT, Sang Ar-Razzaq (Maha Pemberi Rezeki), yang tiada henti-hentinya mengucurkan nikmat, kesehatan, serta kelapangan hati bagi hamba-Nya.</p>
+                    <p class="mb-4">Buku <b>"Sang Pemberi Rezeki"</b> ini lahir dari sebuah perenungan mendalam mengenai makna hakiki dari rezeki. Seringkali, kita menyempitkan arti rezeki hanya sebatas nominal angka dalam rekening, tumpukan harta, atau pencapaian karir materialistik.</p>
+                    <div class="border-l-4 border-goldTheme-500 pl-4 py-2 my-6 bg-emeraldTheme-900/30 rounded-r-lg italic">
+                        "Rezeki bukan sekadar apa yang kita dapatkan, melainkan keberkahan di dalam apa yang mengalir masuk dan keluar dalam hidup kita."
+                    </div>
+                    <p class="mb-4">Melalui lembar-lembar buku ini, pembaca diajak untuk menyelami asal-usul rezeki, mengenali hakikat Sang Pemberi Rezeki, serta meniti langkah-langkah spiritual dan praktis untuk mengetuk pintu langit agar rezeki mengalir tiada jeda.</p>
+                    <p class="mb-4">Semoga karya sederhana ini dapat menjadi oase spiritual dan peta penunjuk arah bagi Anda yang sedang berikhtiar menjemput kelimpahan yang berkah. Selamat merenungkan dan mengaplikasikan.</p>
+                    <p class="mt-8 text-right font-serif text-goldTheme-400 font-semibold">— Penulis</p>
+                `
+            },
+            "tentang-rezeki": {
+                title: "1.1. Tentang Rezeki",
+                subtitle: "Bab 1: Awal Dari Sebuah Rezeki",
+                icon: "fa-seedling",
+                content: `
+                    <p class="mb-4">Dalam perspektif spiritual dan bahasa, <b>Rezeki</b> adalah segala sesuatu yang bermanfaat yang diberikan oleh Allah kepada makhluk-Nya, baik berupa materi maupun non-materi.</p>
+                    <p class="mb-4">Rezeki memiliki cakupan yang teramat luas:</p>
+                    <ul class="list-disc pl-6 space-y-2 mb-6">
+                        <li><b>Rezeki Zhahir (Jasmani):</b> Makanan, pakaian, tempat tinggal, kesehatan, fisik yang kuat, dan udara segar.</li>
+                        <li><b>Rezeki Bathin (Rohani):</b> Ilmu pengetahuan, keimanan yang kokoh, rasa tenang (sakinah), rasa syukur, kecerdasan, dan akhlak yang mulia.</li>
+                    </ul>
+                    <p class="mb-4">Setiap makhluk hidup telah dijamin rezekinya sejak dalam kandungan. Namun, jaminan ini menuntut adanya ikhtiar lahiriah dan kepatuhan batiniah agar rezeki tersebut turun dengan penuh berkah.</p>
+                `
+            },
+            "tentang-allah": {
+                title: "1.2. Tentang Sang Pemberi Rezeki",
+                subtitle: "Bab 1: Awal Dari Sebuah Rezeki",
+                icon: "fa-star-and-crescent",
+                content: `
+                    <p class="mb-4">Dialah <b>Ar-Razzaq</b>, Sang Maha Pemberi Rezeki yang tidak pernah merasa kekurangan ketika membagikan karunia-Nya kepada triliunan makhluk di bumi dan alam semesta.</p>
+                    <p class="mb-4">Sifat Ar-Razzaq mengandung arti bahwa Dia terus-menerus memberikan rezeki secara berulang tanpa batas waktu. Bahkan makhluk yang membangkang pun tetap mendapatkan rezeki kehidupan di dunia.</p>
+                    <div class="bg-emeraldTheme-900/40 p-6 rounded-xl border border-emeraldTheme-800 my-6">
+                        <p class="text-center font-serif text-2xl text-goldTheme-400 mb-2">إِنَّ اللَّهَ هُوَ الرَّزَّاقُ ذُو الْقُوَّةِ الْمَتِينُ</p>
+                        <p class="text-sm text-center text-slate-300 italic">"Sesungguhnya Allah Dialah Maha Pemberi Rezeki Yang Mempunyai Kekuatan lagi Sangat Kokoh." (QS. Adz-Dzariyat: 58)</p>
+                    </div>
+                    <p class="mb-4">Mengenal Allah sebagai satu-satunya sumber rezeki akan membebaskan jiwa manusia dari ketergantungan dan ketakutan terhadap sesama makhluk.</p>
+                `
+            },
+            "tentang-bagaimana": {
+                title: "1.3. Cara Meminta Rezeki",
+                subtitle: "Bab 1: Awal Dari Sebuah Rezeki",
+                icon: "fa-hands-holding",
+                content: `
+                    <p class="mb-4">Meminta rezeki kepada Sang Khalik memerlukan etika spiritual yang tinggi. Doa bukan sekadar daftar keinginan, melainkan wujud penghambaan utuh.</p>
+                    <p class="mb-4">Kunci-kunci mustajab dalam meminta rezeki:</p>
+                    <ol class="list-decimal pl-6 space-y-3 mb-6">
+                        <li><b>Memuji Allah & Bershalawat:</b> Mulailah doa dengan asmaul husna (khususnya Ya Razzaq, Ya Wahhab) dan shalawat atas Rasulullah SAW.</li>
+                        <li><b>Mengakui Dosa (Istighfar):</b> Dosa adalah penyumbat aliran rezeki. Istighfar yang tulus meluluhkan penyumbat tersebut.</li>
+                        <li><b>Berdoa di Waktu Mustajab:</b> Sepertiga malam terakhir (Tahajud), waktu antara adzan dan iqamah, serta setelah shalat wajib.</li>
+                    </ol>
+                    <p class="mb-4">Lakukan doa dengan keyakinan penuh bahwa Allah pasti mengabulkan, baik secara instan maupun disimpan di saat yang tepat.</p>
+                `
+            },
+            "tentang-malaikat-dan-iblis": {
+                title: "1.4. Tentang Malaikat Dan Iblis",
+                subtitle: "Bab 1: Awal Dari Sebuah Rezeki",
+                icon: "fa-ghost",
+                content: `
+                    <p class="mb-4">Di balik dinamika rezeki, terdapat dunia metafisika yang aktif mempengaruhi jalannya rezeki manusia.</p>
+                    <p class="mb-4"><b>Malaikat Mikail:</b> Malaikat mulia yang ditugasi khusus mengatur pembagian hujan, tumbuh-tumbuhan, dan mendistribusikan rezeki fisik ke penjuru alam semesta atas perintah Allah.</p>
+                    <p class="mb-4"><b>Iblis dan Bala Tentara:</b> Selalu mengintai untuk menakut-nakuti manusia dengan kemiskinan agar mereka menjadi kikir, curang, dan menghalalkan segala cara dalam mencari rezeki.</p>
+                    <div class="border-l-4 border-rose-500 pl-4 py-2 my-6 bg-rose-950/20 rounded-r-lg italic">
+                        "Setan menjanjikan (menakut-nakuti) kamu dengan kemiskinan dan menyuruh kamu berbuat keji; sedang Allah menjanjikan untukmu ampunan daripada-Nya dan karunia." (QS. Al-Baqarah: 268)
+                    </div>
+                `
+            },
+            "tentang-anbiya": {
+                title: "1.5. Tentang Anbiya",
+                subtitle: "Bab 1: Awal Dari Sebuah Rezeki",
+                icon: "fa-user-tie",
+                content: `
+                    <p class="mb-4">Para Nabi dan Rasul (Anbiya) adalah teladan utama bagaimana menjaga keseimbangan antara tawakal total dan kerja keras dalam menjemput rezeki.</p>
+                    <p class="mb-4">Setiap Nabi memiliki profesi mulia untuk memenuhi kebutuhan hidup mereka:</p>
+                    <ul class="list-disc pl-6 space-y-2 mb-6">
+                        <li><b>Nabi Nuh AS:</b> Seorang ahli perkapalan dan tukang kayu yang luar biasa.</li>
+                        <li><b>Nabi Daud AS:</b> Pandai besi yang mampu melunakkan besi dengan tangan kosong untuk membuat baju zirah.</li>
+                        <li><b>Nabi Muhammad SAW:</b> Saudagar ulung yang dikenal dengan sifat kejujuran (Al-Amin) dalam berdagang sejak usia muda.</li>
+                    </ul>
+                    <p class="mb-4">Mereka mengajarkan bahwa mencari rezeki halal adalah bagian dari ibadah tertinggi kepada Pencipta.</p>
+                `
+            },
+            "tentang-kitab": {
+                title: "1.6. Tentang Kitab Dan Agama Allah",
+                subtitle: "Bab 1: Awal Dari Sebuah Rezeki",
+                icon: "fa-book-quran",
+                content: `
+                    <p class="mb-4">Agama Allah dan kitab suci yang diturunkan senantiasa memuat blueprint atau panduan lengkap mengenai tata cara mengelola harta dan rezeki agar bernilai ibadah.</p>
+                    <p class="mb-4">Di dalam Al-Qur'an, konsep ekonomi diatur secara adil melalui zakat, pelarangan riba, anjuran sedekah, serta kewajiban bersikap jujur dalam timbangan dagang.</p>
+                    <p class="mb-4">Menjalankan panduan syariat dalam berekonomi bukan menghambat kekayaan, melainkan melindungi berkah rezeki agar tidak berujung pada kehancuran moral.</p>
+                `
+            },
+            "tentang-kiamat": {
+                title: "1.7. Tentang Hari Kiamat",
+                subtitle: "Bab 1: Awal Dari Sebuah Rezeki",
+                icon: "fa-hourglass-end",
+                content: `
+                    <p class="mb-4">Kehidupan duniawi hanyalah ladang tempat menanam, sedangkan akhirat adalah lumbung hasil panennya.</p>
+                    <p class="mb-4">Saat Hari Kiamat tiba, seluruh harta kekayaan yang kita kumpulkan di dunia tidak akan berguna lagi, kecuali harta yang disedekahkan dengan ikhlas di jalan Allah.</p>
+                    <p class="mb-4">Pada hari perhitungan, setiap manusia akan ditanya secara detail mengenai dua hal tentang hartanya: <i>Dari mana ia dapatkan, dan ke mana ia belanjakan.</i></p>
+                `
+            },
+            "tentang-qada": {
+                title: "1.8. Tentang Qada Dan Qadhar",
+                subtitle: "Bab 1: Awal Dari Sebuah Rezeki",
+                icon: "fa-compass",
+                content: `
+                    <p class="mb-4">Memahami takdir (Qada dan Qadar) dalam hal rezeki akan memberikan ketenteraman jiwa yang luar biasa.</p>
+                    <p class="mb-4">Jumlah kadar rezeki kita telah tertulis rapi di <i>Lauh Mahfuzh</i> sebelum kita dilahirkan. Tidak ada satu jiwa pun yang akan mati sebelum seluruh jatah rezekinya disempurnakan oleh Allah.</p>
+                    <p class="mb-4"><b>Tawakal Pasif vs Aktif:</b> Tawakal bukan berarti berdiam diri tanpa usaha. Ikhtiar adalah kewajiban fisik (syariat), sementara tawakal adalah kepatuhan batin (hakikat).</p>
+                `
+            },
+            "tentang-kehidupan-akhirat": {
+                title: "1.9. Tentang Kehidupan Akhirat",
+                subtitle: "Bab 1: Awal Dari Sebuah Rezeki",
+                icon: "fa-cloud",
+                content: `
+                    <p class="mb-4">Rezeki tertinggi bukanlah kenikmatan duniawi yang fana, melainkan jaminan keselamatan di kehidupan akhirat.</p>
+                    <p class="mb-4">Surga adalah tempat peristirahatan terakhir di mana rezeki mengalir tanpa putus, tanpa rasa lelah, dan tanpa ada batasan sedikit pun.</p>
+                    <p class="mb-4">Bagi orang beriman, rezeki duniawi digunakan sebagai jembatan emas untuk meraih ridha Allah dan tempat terbaik di akhirat kelak.</p>
+                `
+            },
+            "antarmuka-ilmu": {
+                title: "2.1. Ilmu Pengetahuan, Ampunan Dan Rezeki Yang Mulia",
+                subtitle: "Bab 2: Al-Kisah",
+                icon: "fa-graduation-cap",
+                content: `
+                    <p class="mb-4">Kisah inspiratif para ulama salaf terdahulu yang mengorbankan segalanya demi mengejar ilmu pengetahuan.</p>
+                    <p class="mb-4">Mereka membuktikan bahwa menuntut ilmu adalah salah satu magnet penarik rezeki terbesar. Allah berjanji meninggikan derajat orang berilmu beberapa derajat, dan membuka pintu-pintu kemudahan hidup dari arah yang tidak disangka-sangka.</p>
+                    <p class="mb-4">Di samping itu, taubat dan memohon ampunan (istighfar) secara konsisten diyakini sebagai penurun hujan kemakmuran dan penambah kekuatan dalam hidup.</p>
+                `
+            },
+            "membuat-perahu": {
+                title: "2.2. Membuat Perahu",
+                subtitle: "Bab 2: Al-Kisah",
+                icon: "fa-ship",
+                content: `
+                    <p class="mb-4">Sebuah analogi spiritual tentang persiapan matang dalam menghadapi badai kehidupan ekonomi.</p>
+                    <p class="mb-4">Sama seperti Nabi Nuh AS membangun bahtera raksasa di atas gunung di tengah terik matahari ketika tidak ada tanda-tanda banjir, kita pun harus membangun "perahu keselamatan" kita lewat amal saleh, tabungan darurat yang halal, dan ketergantungan mutlak kepada Allah saat kondisi lapang.</p>
+                    <p class="mb-4">Jangan menunggu badai kesulitan datang baru tergesa-gesa mencari pertolongan spiritual.</p>
+                `
+            },
+            "derajat-tinggi": {
+                title: "2.3. Derajat Yang Tinggi",
+                subtitle: "Bab 2: Al-Kisah",
+                icon: "fa-arrow-up-right-dots",
+                content: `
+                    <p class="mb-4">Kisah hamba Allah yang saleh yang memilih menyembunyikan amal ibadahnya demi menjaga kemurnian niat.</p>
+                    <p class="mb-4">Ketinggian derajat di mata Allah tidak diukur dari popularitas duniawi, melainkan dari kedalaman rasa takut dan ketundukan batiniah kita.</p>
+                    <p class="mb-4">Ketika derajat batin kita naik, dunia dan seisinya akan ditundukkan oleh Allah untuk melayani kebutuhan kita dengan cara-cara yang sangat elegan.</p>
+                `
+            },
+            "kesembuhan": {
+                title: "2.4. Kesembuhan",
+                subtitle: "Bab 2: Al-Kisah",
+                icon: "fa-heart-pulse",
+                content: `
+                    <p class="mb-4">Kesehatan fisik dan ketenangan jiwa adalah bentuk rezeki yang seringkali baru disadari nilainya saat nikmat tersebut dicabut sementara.</p>
+                    <p class="mb-4">Kesembuhan sejati datang dari keyakinan kuat bahwa Allah adalah Asy-Syafi (Maha Penyembuh). Kisah ini menguraikan rahasia sedekah, doa, dan madu/habbatussauda sebagai perantara kesembuhan lahir dan batin.</p>
+                `
+            },
+            "langkah1": {
+                title: "Langkah 1. Mengembangkan Sikap Sabar",
+                subtitle: "Bab 3: Langkah Meminta Rezeki",
+                icon: "fa-hourglass",
+                content: `
+                    <p class="mb-4">Sabar bukanlah ketidakberdayaan yang pasif, melainkan ketahanan jiwa yang aktif menanti pertolongan Allah sambil tetap berbuat baik.</p>
+                    <p class="mb-4">Ketika rezeki terasa mampet atau lambat datang, bersabar adalah respon terbaik yang sangat dicintai oleh Sang Pencipta.</p>
+                    <p class="mb-4">Allah berfirman bahwa Dia beserta orang-orang yang sabar, dan kebersamaan dengan-Nya bernilai jauh lebih besar dari seluruh materi di alam semesta.</p>
+                `
+            },
+            "langkah2": {
+                title: "Langkah 2. Mendirikan Sholat",
+                subtitle: "Bab 3: Langkah Meminta Rezeki",
+                icon: "fa-person-praying",
+                content: `
+                    <p class="mb-4">Shalat adalah tiang agama dan kunci pembuka utama pintu rezeki. Bagaimana kita bisa meminta kelapangan rezeki jika hubungan kita dengan Sang Pemilik Rezeki rusak?</p>
+                    <p class="mb-4">Perbaiki shalat wajib Anda di awal waktu, dan sempurnakan dengan shalat sunnah Duha (shalat penarik rezeki pagi hari) serta shalat Tahajjud di sepertiga malam.</p>
+                    <p class="mb-4">Orang yang mendirikan shalat dengan khusyuk akan dicukupi segala kebutuhan hidupnya tanpa rasa cemas.</p>
+                `
+            },
+            "langkah3": {
+                title: "Langkah 3. Menjalani Ikhtiar",
+                subtitle: "Bab 3: Langkah Meminta Rezeki",
+                icon: "fa-briefcase",
+                content: `
+                    <p class="mb-4">Ikhtiar adalah jembatan wajib yang menghubungkan doa di sajadah dengan pencapaian di dunia nyata.</p>
+                    <p class="mb-4">Kerja keras yang profesional, jujur, dan berintegritas tinggi merupakan cerminan keimanan seseorang. Menjemput rezeki halal dengan cucuran keringat bernilai jihad di jalan Allah.</p>
+                    <p class="mb-4">Ikhtiar fisik dikerjakan maksimal, sedangkan hasil akhir diserahkan sepenuhnya ke hadirat Allah.</p>
+                `
+            },
+            "langkah4": {
+                title: "Langkah 4. Membuat Catatan Harian",
+                subtitle: "Bab 3: Langkah Meminta Rezeki",
+                icon: "fa-pen-to-square",
+                content: `
+                    <p class="mb-4">Mendokumentasikan setiap nikmat, rezeki kecil, maupun pembelajaran hidup ke dalam sebuah jurnal harian.</p>
+                    <p class="mb-4">Praktik mencatat ini membuat kita selalu fokus pada kelimpahan (abundance mindset), bukan pada kekurangan. Saat kita melihat betapa banyaknya kebaikan yang telah kita terima, hati kita akan dipenuhi kedamaian.</p>
+                    <p class="mb-4">Jurnal ini juga berfungsi sebagai saksi bisu betapa seringnya Allah menyelamatkan kita dari masa-masa sulit.</p>
+                `
+            },
+            "langkah5": {
+                title: "Langkah 5. Mensyukuri Nikmat Allah",
+                subtitle: "Bab 3: Langkah Meminta Rezeki",
+                icon: "fa-hands-clapping",
+                content: `
+                    <p class="mb-4">Hukum mutlak penambahan rezeki tertuang jelas dalam janji Ilahi: <i>"Jika kamu bersyukur, niscaya Aku akan menambah (nikmat) kepadamu."</i></p>
+                    <p class="mb-4">Bersyukur dengan hati (mengakui nikmat), bersyukur dengan lisan (mengucapkan Alhamdulillah), dan bersyukur dengan tindakan (memanfaatkan nikmat untuk kebaikan).</p>
+                    <p class="mb-4">Rasa syukur adalah magnet batiniah terkuat yang menarik lebih banyak berkah untuk mendekat kepada kita.</p>
+                `
+            },
+            "langkah6": {
+                title: "Langkah 6. Menafkahkan Sebagian Rezeki",
+                subtitle: "Bab 3: Langkah Meminta Rezeki",
+                icon: "fa-hand-holding-heart",
+                content: `
+                    <p class="mb-4">Sedekah tidak pernah mengurangi harta. Secara matematis spiritual, sedekah adalah investasi dengan imbal hasil berlipat ganda hingga 700 kali lipat.</p>
+                    <p class="mb-4">Sedekah melunakkan murka Allah, menolak bala musibah, dan melonggarkan himpitan ekonomi.</p>
+                    <p class="mb-4">Biasakan memberi di saat lapang maupun sempit. Tangan di atas selalu lebih baik dan mulia daripada tangan di bawah.</p>
+                `
+            },
+            "langkah7": {
+                title: "Langkah 7. Membentuk Tim Sukses",
+                subtitle: "Bab 3: Langkah Meminta Rezeki",
+                icon: "fa-users",
+                content: `
+                    <p class="mb-4">Dalam ranah spiritual, "Tim Sukses" terbaik Anda adalah keluarga dekat, terutama kedua orang tua dan pasangan hidup Anda.</p>
+                    <p class="mb-4">Ridha Allah terletak pada ridha kedua orang tua. Berbakti kepada mereka, menyenangkan hatinya, serta memohon untaian doa tulus dari mereka adalah jalan pintas meruntuhkan tembok penghambat rezeki paling ampuh.</p>
+                    <p class="mb-4">Sinergi kebaikan bersama pasangan yang saleh/salehah akan melipatgandakan energi keberkahan rumah tangga.</p>
+                `
+            },
+            "langkah8": {
+                title: "Langkah 8. Merayakan Hari Kesuksesan",
+                subtitle: "Bab 3: Langkah Meminta Rezeki",
+                icon: "fa-trophy",
+                content: `
+                    <p class="mb-4">Merayakan kesuksesan bukan dengan pesta pora yang melampaui batas atau kesombongan diri.</p>
+                    <p class="mb-4">Cara merayakan kesuksesan sejati adalah dengan bersujud syukur, berbagi hidangan makanan kepada anak yatim dan kaum dhuafa, serta mengembalikan semua pujian hanya kepada Allah Sang Pemberi Keberhasilan.</p>
+                    <p class="mb-4">Perayaan bernilai ibadah ini akan mengunci nikmat agar tidak sirna begitu saja.</p>
+                `
+            },
+            "langkah9": {
+                title: "Langkah 9. Mewariskan Ilmu Dan Kesabaran",
+                subtitle: "Bab 3: Langkah Meminta Rezeki",
+                icon: "fa-arrows-spin",
+                content: `
+                    <p class="mb-4">Rezeki berupa kebijaksanaan, ilmu yang bermanfaat, dan ketabahan harus ditransfer dan diwariskan kepada generasi penerus.</p>
+                    <p class="mb-4">Ketika kita mengajarkan ilmu yang baik kepada orang lain, ilmu tersebut menjadi *amal jariyah* yang pahalanya terus mengalir deras ke kubur kita, layaknya rezeki abadi pasca kematian.</p>
+                `
+            },
+            "langkah10": {
+                title: "Langkah 10. Menjalani Hidup Bahagia Tanpa Jeda",
+                subtitle: "Bab 3: Langkah Meminta Rezeki",
+                icon: "fa-face-smile-beam",
+                content: `
+                    <p class="mb-4">Bahagia adalah sebuah keputusan internal batin, bukan hasil dari terpenuhinya syarat-syarat eksternal.</p>
+                    <p class="mb-4">Orang yang bahagia karena merasa selalu dicukupkan oleh Allah (Qana'ah) adalah orang terkaya di muka bumi yang sesungguhnya.</p>
+                    <p class="mb-4">Mulailah hari Anda dengan senyuman, berbaik sangka kepada ketetapan Allah, dan nikmati setiap detik kehidupan tanpa jeda kecemasan masa depan.</p>
+                `
+            },
+            "langkah11": {
+                title: "Langkah 11. Perjalanan Menuju Kehadirat Allah",
+                subtitle: "Bab 3: Langkah Meminta Rezeki",
+                icon: "fa-mosque",
+                content: `
+                    <p class="mb-4">Inilah puncak dari segala langkah spiritual: kepulangan dan kepatuhan mutlak kepada panggilan Sang Khaliq.</p>
+                    <p class="mb-4">Perjalanan haji, umrah, atau sekadar melangkahkan kaki dengan istiqamah memakmurkan masjid terdekat adalah wujud penghambaan tertinggi.</p>
+                    <p class="mb-4">Barangsiapa melangkah mendekati Allah satu jengkal, niscaya Allah akan mendekatinya satu hasta. Rezeki duniawi akan mengejar orang yang sibuk berjalan mengejar cinta Tuhannya.</p>
+                `
+            },
+            "akhir-rezeki": {
+                title: "4. Akhir Dari Sebuah Awal Rezeki",
+                subtitle: "Pelajaran Akhir & Refleksi",
+                icon: "fa-flag-checkered",
+                content: `
+                    <p class="mb-4">Kita telah sampai pada pengujung bahasan, namun ini sesungguhnya adalah awal baru dari perjalanan menjemput keberkahan Anda.</p>
+                    <p class="mb-4">Pelajaran terbesar yang dapat kita petik adalah bahwa rezeki tidak pernah tertukar, tidak pernah salah alamat, dan tidak akan pernah berkurang selama kita bersandar pada Dzat Yang Maha Hidup.</p>
+                    <p class="mb-4">Terapkan langkah-langkah dalam buku ini secara konsisten, jaga kebersihan hati dari kedengkian, dan nantikan keajaiban demi keajaiban mengetuk pintu rumah Anda.</p>
+                `
+            },
+            "dzikir-rezeki": {
+                title: "5. Dzikir Ar-Razzaq",
+                subtitle: "Amalan Spiritual Harian",
+                icon: "fa-calculator",
+                showTasbih: true,
+                content: `
+                    <p class="mb-4"><b>Asmaul Husna: Ya Razzaq (Maha Pemberi Rezeki)</b></p>
+                    <p class="mb-4">Mengulang-ulang asma mulia ini secara konsisten diyakini sebagai kunci langit terampuh untuk menarik kelimpahan rezeki lahir dan batin, menghilangkan kesempitan hidup, serta melapangkan urusan keuangan.</p>
+                    <p class="mb-4">Para ulama menganjurkan membaca <b>"Ya Razzaq"</b> sebanyak 100 kali atau lebih setiap harinya setelah shalat fardhu atau sebelum matahari terbit.</p>
+                    <p class="mb-4 text-emeraldTheme-100 font-medium">Gunakan alat Tasbih Digital di bawah ini untuk memulai wirid harian Anda:</p>
+                `
+            },
+            "majelis-dzikir-rezeki": {
+                title: "6. Majelis Dzikir Ar-Razzak",
+                subtitle: "Kekuatan Doa Berjamaah",
+                icon: "fa-users-line",
+                showTasbih: true,
+                content: `
+                    <p class="mb-4">Dzikir yang dibaca secara berjamaah dalam sebuah lingkaran majelis memiliki getaran energi dan ijabah yang berkali-kali lipat lebih kuat.</p>
+                    <p class="mb-4">Malaikat turun mengepakkan sayap-sayap mereka, menaungi majelis tersebut dengan rahmat, dan melaporkan nama-nama mereka yang hadir langsung kepada Allah SWT.</p>
+                    <p class="mb-4">Gunakan Tasbih bersama ini untuk menghitung bacaan dzikir dalam majelis Anda:</p>
+                `
+            },
+            "harta-kekayaan": {
+                title: "7. Harta Kekayaan",
+                subtitle: "Pengelolaan & Tanggung Jawab",
+                icon: "fa-coins",
+                content: `
+                    <p class="mb-4">Harta kekayaan adalah amanah, ujian, sekaligus titipan dari Sang Pencipta.</p>
+                    <p class="mb-4">Buku ini menekankan pentingnya menjadi kaya yang berkah: kaya harta namun rendah hati, dermawan, serta menjadikan kekayaan tersebut sebagai sarana pembantu perjuangan dakwah kemanusiaan.</p>
+                    <p class="mb-4">Kekayaan sejati bukanlah kepemilikan mutlak di tangan, melainkan kemerdekaan hati untuk memberi tanpa takut miskin.</p>
+                `
+            },
+            "tentang-penulis": {
+                title: "Tentang Penulis",
+                subtitle: "Biografi Singkat",
+                icon: "fa-user-pen",
+                content: `
+                    <div class="flex flex-col md:flex-row gap-6 items-center mb-6">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" alt="Penulis" class="w-24 h-24 rounded-full object-cover border-4 border-goldTheme-500 shadow-lg" />
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Ustadz M. Ridwan Hakim, M.A.</h3>
+                            <p class="text-sm text-goldTheme-400 font-medium">Pendidik, Penulis, & Konsultan Keuangan Syariah</p>
+                        </div>
+                    </div>
+                    <p class="mb-4">Penulis telah mendedikasikan lebih dari 15 tahun hidupnya untuk mempelajari literatur Islam klasik, tasawuf, dan ekonomi syariah kontemporer.</p>
+                    <p class="mb-4">Beliau aktif memberikan seminar spiritualitas rezeki, mengasuh majelis dzikir, serta menulis berbagai buku panduan rohani praktis untuk umat Islam modern.</p>
+                `
+            },
+            "daftar-pustaka": {
+                title: "Daftar Pustaka",
+                subtitle: "Referensi Utama Penulisan",
+                icon: "fa-bookmark",
+                content: `
+                    <ul class="space-y-4 text-slate-300">
+                        <li class="flex gap-2"><i class="fa-solid fa-book text-goldTheme-500 mt-1"></i> <div><b>Al-Qur'anul Karim</b> - Departemen Agama Republik Indonesia.</div></li>
+                        <li class="flex gap-2"><i class="fa-solid fa-book text-goldTheme-500 mt-1"></i> <div><b>Kitab Ihya Ulumuddin</b> - Imam Al-Ghazali.</div></li>
+                        <li class="flex gap-2"><i class="fa-solid fa-book text-goldTheme-500 mt-1"></i> <div><b>Al-Asma' al-Husna wa Shifatuha al-Ula</b> - Syaikh Muhammad bin Shalih al-Utsaimin.</div></li>
+                        <li class="flex gap-2"><i class="fa-solid fa-book text-goldTheme-500 mt-1"></i> <div><b>Tafsir Ibnu Katsir</b> - Al-Hafiz Imaduddin Ismail bin Katsir.</div></li>
+                    </ul>
+                `
+            },
+            "reference": {
+                title: "Reference",
+                subtitle: "Rujukan Tambahan",
+                icon: "fa-link",
+                content: `
+                    <p class="mb-4">Rujukan tambahan, artikel berkala, serta audio tuntunan dzikir interaktif dapat diakses melalui portal resmi atau studi pustaka kepengurusan majelis dzikir pusat.</p>
+                    <p class="mb-4">Seluruh kutipan dan kisah di dalam buku ini telah dikurasi dan diteliti sanad periwayatannya agar terjaga keshahihannya bagi para pembaca yang budiman.</p>
+                `
+            }
+        };
+</script>
+
+    <!-- Header App -->
+    <header class="bg-gradient-to-r from-emeraldTheme-950 via-emeraldTheme-900 to-emeraldTheme-950 border-b border-emeraldTheme-800/60 sticky top-0 z-50 py-4 px-6 shadow-md">
+	  <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+		<div class="flex items-center gap-3">
+		  <div class="bg-gradient-to-br from-goldTheme-500 to-emeraldTheme-600 p-2.5 rounded-xl shadow-md border border-goldTheme-400/20">
+			<i class="fa-solid fa-star-and-crescent text-emeraldTheme-950 text-xl font-bold"></i>
+		  </div>
+		  <div>
+			<h1 class="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-goldTheme-400">
+			  SANG PEMBERI REZEKI
+			</h1>
+			<p class="text-[10px] text-emeraldTheme-100 tracking-[0.2em] uppercase font-bold">Portal E-Reader & Wirid Digital</p>
+		  </div>
+		</div>
+
+		<!-- Statistics Bar -->
+		<div class="flex items-center gap-4 bg-emeraldTheme-900/40 px-4 py-2 rounded-2xl border border-emeraldTheme-800/80 w-full sm:w-auto justify-between sm:justify-start">
+		  <div class="text-left">
+			<p class="text-[10px] text-slate-400 font-semibold uppercase">Progress Membaca</p>
+			<div class="flex items-center gap-2 mt-0.5">
+			  <div class="w-24 bg-emeraldTheme-950 rounded-full h-1.5 overflow-hidden">
+				<div id="progress-bar" class="bg-gradient-to-r from-emeraldTheme-600 to-goldTheme-500 h-full w-[0%] transition-all duration-500"></div>
+			  </div>
+			  <span id="progress-text" class="text-xs font-bold text-goldTheme-400">0%</span>
+			</div>
+		  </div>
+		  <div class="h-8 w-px bg-emeraldTheme-800"></div>
+		  <div class="text-center relative">
+			<button onclick="toggleBookmarkPanel()" class="hover:text-goldTheme-400 transition-colors flex items-center gap-1.5 py-1 text-slate-300">
+			  <i class="fa-solid fa-bookmark text-goldTheme-500"></i>
+			  <span class="text-xs font-semibold">Bookmarks (<span id="bookmark-count">0</span>)</span>
+			</button>
+			<!-- Floating Bookmarks list -->
+			<div id="bookmark-dropdown" class="hidden absolute right-0 mt-2 w-64 bg-emeraldTheme-900 border border-emeraldTheme-800 rounded-xl shadow-2xl p-4 z-50 text-left">
+			  <h4 class="text-xs font-bold text-goldTheme-400 mb-2 border-b border-emeraldTheme-800 pb-1.5">Penanda Buku Anda</h4>
+			  <ul id="bookmark-list" class="space-y-1.5 max-h-48 overflow-y-auto custom-scroll text-xs">
+				<li class="text-slate-400 italic">Belum ada penanda halaman.</li>
+			  </ul>
+			</div>
+		  </div>
+		</div>
+	  </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+
+	  <!-- Left Pane: Navigation List (ListView) -->
+	  <section class="lg:col-span-5 flex flex-col bg-emeraldTheme-900/20 rounded-3xl border border-emeraldTheme-900/60 p-4 shadow-xl overflow-hidden h-[calc(100vh-140px)] min-h-[500px]">
+
+		<!-- Search & Filter Controls -->
+		<div class="mb-4 relative">
+		  <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-emeraldTheme-600">
+			<i class="fa-solid fa-magnifying-glass"></i>
+		  </span>
+		  <input 
+			type="text" 
+			id="search-input" 
+			placeholder="Cari daftar isi, bab, atau langkah..." 
+			class="w-full pl-10 pr-4 py-2.5 bg-emeraldTheme-950/80 border border-emeraldTheme-800/80 rounded-2xl text-sm text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emeraldTheme-600 focus:border-transparent transition-all"
+			oninput="filterList()"
+		  />
+		  <button 
+			onclick="clearSearch()" 
+			id="clear-search-btn" 
+			class="hidden absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-white"
+		  >
+			<i class="fa-solid fa-circle-xmark"></i>
+		  </button>
+		</div>
+
+		<!-- List View Title -->
+		<div class="flex justify-between items-center bg-emeraldTheme-900/50 p-3 rounded-2xl border border-emeraldTheme-800/50 mb-3">
+		  <span class="text-xs font-bold uppercase text-emeraldTheme-100 tracking-wider flex items-center gap-1.5">
+			<i class="fa-solid fa-list-ol text-goldTheme-400"></i> Struktur Daftar Isi
+		  </span>
+		  <button onclick="expandAll()" class="text-[10px] bg-emeraldTheme-800 hover:bg-emeraldTheme-700 text-slate-200 font-semibold px-2.5 py-1 rounded-lg transition-colors">
+			Expand All
+		  </button>
+		</div>
+
+		<!-- Nested List View -->
+		<div class="flex-1 overflow-y-auto custom-scroll space-y-2 pr-1" id="listview-container">
+
+		  <!-- Kata Pengantar -->
+		  <div class="list-item-node" data-search="kata pengantar">
+			<button onclick="loadChapter('kata-pengantar')" class="w-full flex items-center justify-between p-3 rounded-xl bg-emeraldTheme-900/30 border border-emeraldTheme-800/30 hover:bg-emeraldTheme-800/40 hover:border-emeraldTheme-700/50 text-left transition-all group">
+			  <span class="flex items-center gap-3">
+				<i class="fa-solid fa-book-open text-goldTheme-400 group-hover:scale-110 transition-transform"></i>
+				<span class="text-sm font-semibold text-white">Kata Pengantar</span>
+			  </span>
+			  <i class="fa-solid fa-angle-right text-xs text-slate-400 group-hover:translate-x-1 transition-transform"></i>
+			</button>
+		  </div>
+
+		  <!-- Daftar Isi Parent Node -->
+		  <div class="list-item-node relative" data-search="daftar isi">
+			<button onclick="toggleSection('daftar-isi-submenu', this)" class="w-full flex items-center justify-between p-3 rounded-xl bg-emeraldTheme-900/40 border border-emeraldTheme-800/40 hover:bg-emeraldTheme-800/50 text-left transition-all">
+			  <span class="flex items-center gap-3">
+				<i class="fa-solid fa-folder-open text-goldTheme-400"></i>
+				<span class="text-sm font-bold text-white">Daftar Isi :</span>
+			  </span>
+			  <i class="fa-solid fa-chevron-down text-xs text-slate-300 transition-transform duration-300 transform rotate-180" id="arrow-daftar-isi-submenu"></i>
+			</button>
+
+			<!-- LEVEL 2 SUBMENU -->
+			<div id="daftar-isi-submenu" class="mt-1.5 space-y-2 pl-3 transition-all duration-300">
+
+			  <!-- 1. Awal Dari Sebuah Rezeki Parent -->
+			  <div class="list-item-node" data-search="1 awal dari sebuah rezeki">
+				<button onclick="toggleSection('bab1-submenu', this)" class="w-full flex items-center justify-between p-2.5 rounded-xl bg-emeraldTheme-950/40 border border-emeraldTheme-800/20 hover:bg-emeraldTheme-800/30 text-left text-xs font-semibold transition-all">
+				  <span class="flex items-center gap-2">
+					<i class="fa-solid fa-circle text-[6px] text-emeraldTheme-600"></i>
+					<span class="text-slate-200">1. Awal Dari Sebuah Rezeki</span>
+				  </span>
+				  <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-300" id="arrow-bab1-submenu"></i>
+				</button>
+
+				<!-- LEVEL 3 SUBMENU -->
+				<div id="bab1-submenu" class="hidden mt-1.5 space-y-1.5 pl-4 border-l border-emeraldTheme-800/50">
+				  <button onclick="loadChapter('tentang-rezeki')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="1.1 tentang rezeki">
+					<span>1.1. Tentang Rezeki</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				  <button onclick="loadChapter('tentang-allah')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="1.2 tentang sang pemberi rezeki allah">
+					<span>1.2. Tentang Sang Pemberi Rezeki</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				  <button onclick="loadChapter('tentang-bagaimana')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="1.3 tentang bagaimana cara meminta rezeki kepada sang pemberi rezeki">
+					<span>1.3. Tentang Bagaimana Cara Meminta Rezeki</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				  <button onclick="loadChapter('tentang-malaikat-dan-iblis')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="1.4 tentang malaikat dan iblis">
+					<span>1.4. Tentang Malaikat Dan Iblis</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				  <button onclick="loadChapter('tentang-anbiya')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="1.5 tentang anbiya nabi rasul">
+					<span>1.5. Tentang Anbiya</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				  <button onclick="loadChapter('tentang-kitab')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="1.6 tentang kitab dan agama allah">
+					<span>1.6. Tentang Kitab Dan Agama Allah</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				  <button onclick="loadChapter('tentang-kiamat')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="1.7 tentang hari kiamat">
+					<span>1.7. Tentang Hari Kiamat</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				  <button onclick="loadChapter('tentang-qada')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="1.8 tentang qada dan qadhar takdir">
+					<span>1.8. Tentang Qada Dan Qadhar</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				  <button onclick="loadChapter('tentang-kehidupan-akhirat')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="1.9 tentang kehidupan akhirat">
+					<span>1.9. Tentang Kehidupan Akhirat</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				</div>
+			  </div>
+
+			  <!-- 2. Al-Kisah Parent -->
+			  <div class="list-item-node" data-search="2 al kisah alkisah">
+				<button onclick="toggleSection('bab2-submenu', this)" class="w-full flex items-center justify-between p-2.5 rounded-xl bg-emeraldTheme-950/40 border border-emeraldTheme-800/20 hover:bg-emeraldTheme-800/30 text-left text-xs font-semibold transition-all">
+				  <span class="flex items-center gap-2">
+					<i class="fa-solid fa-circle text-[6px] text-emeraldTheme-600"></i>
+					<span class="text-slate-200">2. Al-Kisah</span>
+				  </span>
+				  <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-300" id="arrow-bab2-submenu"></i>
+				</button>
+
+				<!-- LEVEL 3 SUBMENU -->
+				<div id="bab2-submenu" class="hidden mt-1.5 space-y-1.5 pl-4 border-l border-emeraldTheme-800/50">
+				  <button onclick="loadChapter('antarmuka-ilmu')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="2.1 ilmu pengetahuan ampunan rezeki yang mulia">
+					<span>2.1. Ilmu Pengetahuan, Ampunan & Rezeki</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				  <button onclick="loadChapter('membuat-perahu')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="2.2 membuat perahu nuh">
+					<span>2.2. Membuat Perahu</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				  <button onclick="loadChapter('derajat-tinggi')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="2.3 derajat yang tinggi">
+					<span>2.3. Derajat Yang Tinggi</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				  <button onclick="loadChapter('kesembuhan')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="2.4 kesembuhan obat penyakit">
+					<span>2.4. Kesembuhan</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				</div>
+			  </div>
+
+			  <!-- 3. Langkah Meminta Rezeki Parent -->
+			  <div class="list-item-node" data-search="3 langkah meminta rezeki kepada allah sang pemberi rezeki">
+				<button onclick="toggleSection('bab3-submenu', this)" class="w-full flex items-center justify-between p-2.5 rounded-xl bg-emeraldTheme-950/40 border border-emeraldTheme-800/20 hover:bg-emeraldTheme-800/30 text-left text-xs font-semibold transition-all">
+				  <span class="flex items-center gap-2">
+					<i class="fa-solid fa-circle text-[6px] text-emeraldTheme-600"></i>
+					<span class="text-slate-200">3. Langkah Meminta Rezeki...</span>
+				  </span>
+				  <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-300" id="arrow-bab3-submenu"></i>
+				</button>
+
+				<!-- LEVEL 3 SUBMENU -->
+				<div id="bab3-submenu" class="hidden mt-1.5 space-y-1.5 pl-4 border-l border-emeraldTheme-800/50">
+				  <button onclick="loadChapter('langkah1')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="langkah 1 mengembangkan sikap sabar">
+					<span>Langkah 1. Mengembangkan Sikap Sabar</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				  <button onclick="loadChapter('langkah2')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="langkah 2 mendirikan sholat">
+					<span>Langkah 2. Mendirikan Sholat</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				  <button onclick="loadChapter('langkah3')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="langkah 3 menjalani ikhtiar usaha kerja">
+					<span>Langkah 3. Menjalani Ikhtiar</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				  <button onclick="loadChapter('langkah4')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="langkah 4 membuat catatan harian jurnal">
+					<span>Langkah 4. Membuat Catatan Harian</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				  <button onclick="loadChapter('langkah5')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="langkah 5 mensyukuri nikmat allah syukur">
+					<span>Langkah 5. Mensyukuri Nikmat Allah</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				  <button onclick="loadChapter('langkah6')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="langkah 6 menafkahkan sebagian rezeki di jalan allah sedekah">
+					<span>Langkah 6. Menafkahkan Sebagian Rezeki</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				  <button onclick="loadChapter('langkah7')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="langkah 7 membentuk tim sukses orang tua istri">
+					<span>Langkah 7. Membentuk Tim Sukses</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				  <button onclick="loadChapter('langkah8')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="langkah 8 merayakan hari kesuksesan">
+					<span>Langkah 8. Merayakan Hari Kesuksesan</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				  <button onclick="loadChapter('langkah9')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="langkah 9 mewariskan ilmu dan kesabaran">
+					<span>Langkah 9. Mewariskan Ilmu & Kesabaran</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				  <button onclick="loadChapter('langkah10')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="langkah 10 menjalani hidup bahagia tanpa jeda">
+					<span>Langkah 10. Menjalani Hidup Bahagia</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				  <button onclick="loadChapter('langkah11')" class="sub-item-btn w-full text-left p-2 rounded-lg text-xs text-slate-400 hover:text-white hover:bg-emeraldTheme-900/40 flex justify-between items-center" data-search="langkah 11 menempuh perjalanan menuju kehadirat allah haji umrah">
+					<span>Langkah 11. Menempuh Perjalanan</span>
+					<i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				  </button>
+				</div>
+			  </div>
+
+			  <!-- 4. Akhir Dari Sebuah Awal Rezeki -->
+			  <div class="list-item-node" data-search="4 akhir dari sebuah awal rezeki">
+				<button onclick="loadChapter('akhir-rezeki')" class="w-full text-left p-2.5 rounded-xl bg-emeraldTheme-950/30 hover:bg-emeraldTheme-800/30 text-xs font-semibold text-slate-300 flex justify-between items-center">
+				  <span>4. Akhir Dari Sebuah Awal Rezeki</span>
+				  <i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				</button>
+			  </div>
+
+			  <!-- 5. Dzikir Ar-Razzaq -->
+			  <div class="list-item-node" data-search="5 dzikir ar razzaq ar-razzaq">
+				<button onclick="loadChapter('dzikir-rezeki')" class="w-full text-left p-2.5 rounded-xl bg-emeraldTheme-950/30 hover:bg-emeraldTheme-800/30 text-xs font-semibold text-slate-300 flex justify-between items-center">
+				  <span class="flex items-center gap-2 text-goldTheme-400">
+					<i class="fa-solid fa-calculator"></i> 5. Dzikir Ar-Razzaq
+				  </span>
+				  <i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				</button>
+			  </div>
+
+			  <!-- 6. Majelis Dzikir Ar-Razzak -->
+			  <div class="list-item-node" data-search="6 majelis dzikir ar razzak ar-razzak">
+				<button onclick="loadChapter('majelis-dzikir-rezeki')" class="w-full text-left p-2.5 rounded-xl bg-emeraldTheme-950/30 hover:bg-emeraldTheme-800/30 text-xs font-semibold text-slate-300 flex justify-between items-center">
+				  <span class="flex items-center gap-2">
+					<i class="fa-solid fa-users-line"></i> 6. Majelis Dzikir Ar-Razzak
+				  </span>
+				  <i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				</button>
+			  </div>
+
+			  <!-- 7. Harta Kekayaan -->
+			  <div class="list-item-node" data-search="7 harta kekayaan">
+				<button onclick="loadChapter('harta-kekayaan')" class="w-full text-left p-2.5 rounded-xl bg-emeraldTheme-950/30 hover:bg-emeraldTheme-800/30 text-xs font-semibold text-slate-300 flex justify-between items-center">
+				  <span>7. Harta Kekayaan</span>
+				  <i class="fa-regular fa-circle-check text-xs text-emeraldTheme-700"></i>
+				</button>
+			  </div>
+
+			</div>
+		  </div>
+
+		  <!-- Tentang Penulis -->
+		  <div class="list-item-node" data-search="tentang penulis">
+			<button onclick="loadChapter('tentang-penulis')" class="w-full flex items-center justify-between p-3 rounded-xl bg-emeraldTheme-900/30 border border-emeraldTheme-800/30 hover:bg-emeraldTheme-800/40 hover:border-emeraldTheme-700/50 text-left transition-all group">
+			  <span class="flex items-center gap-3">
+				<i class="fa-solid fa-user-pen text-goldTheme-400 group-hover:scale-110 transition-transform"></i>
+				<span class="text-sm font-semibold text-white">Tentang Penulis</span>
+			  </span>
+			  <i class="fa-solid fa-angle-right text-xs text-slate-400 group-hover:translate-x-1 transition-transform"></i>
+			</button>
+		  </div>
+
+		  <!-- Daftar Pustaka -->
+		  <div class="list-item-node" data-search="daftar pustaka">
+			<button onclick="loadChapter('daftar-pustaka')" class="w-full flex items-center justify-between p-3 rounded-xl bg-emeraldTheme-900/30 border border-emeraldTheme-800/30 hover:bg-emeraldTheme-800/40 hover:border-emeraldTheme-700/50 text-left transition-all group">
+			  <span class="flex items-center gap-3">
+				<i class="fa-solid fa-bookmark text-goldTheme-400 group-hover:scale-110 transition-transform"></i>
+				<span class="text-sm font-semibold text-white">Daftar Pustaka :</span>
+			  </span>
+			  <i class="fa-solid fa-angle-right text-xs text-slate-400 group-hover:translate-x-1 transition-transform"></i>
+			</button>
+		  </div>
+
+		  <!-- Reference -->
+		  <div class="list-item-node" data-search="reference rujukan">
+			<button onclick="loadChapter('reference')" class="w-full flex items-center justify-between p-3 rounded-xl bg-emeraldTheme-900/30 border border-emeraldTheme-800/30 hover:bg-emeraldTheme-800/40 hover:border-emeraldTheme-700/50 text-left transition-all group">
+			  <span class="flex items-center gap-3">
+				<i class="fa-solid fa-link text-goldTheme-400 group-hover:scale-110 transition-transform"></i>
+				<span class="text-sm font-semibold text-white">Reference :</span>
+			  </span>
+			  <i class="fa-solid fa-angle-right text-xs text-slate-400 group-hover:translate-x-1 transition-transform"></i>
+			</button>
+		  </div>
+
+		</div>
+	  </section>
+
+	  <!-- Right Pane: Reading & Utility Pane -->
+	  <section class="lg:col-span-7 flex flex-col bg-emeraldTheme-900/10 rounded-3xl border border-emeraldTheme-900/50 shadow-xl overflow-hidden h-[calc(100vh-140px)] min-h-[500px]">
+
+		<!-- Reading Header Actions -->
+		<div class="bg-emeraldTheme-950/80 px-6 py-4 border-b border-emeraldTheme-800/60 flex items-center justify-between flex-shrink-0 gap-4">
+		  <div class="flex items-center gap-3 overflow-hidden">
+			<div class="w-10 h-10 rounded-xl bg-emeraldTheme-900/80 border border-emeraldTheme-800 flex items-center justify-center text-goldTheme-400 flex-shrink-0">
+			  <i id="header-chapter-icon" class="fa-solid fa-book-open text-base"></i>
+			</div>
+			<div class="overflow-hidden">
+			  <p id="header-chapter-subtitle" class="text-[10px] text-emeraldTheme-100 uppercase tracking-widest font-bold truncate">Pintu Masuk Menuju Pemahaman Rezeki</p>
+			  <h2 id="header-chapter-title" class="text-base font-bold text-white truncate">Kata Pengantar</h2>
+			</div>
+		  </div>
+
+		  <!-- Action Buttons -->
+		  <div class="flex items-center gap-2 flex-shrink-0">
+			<button onclick="toggleBookmarkCurrent()" id="bookmark-btn" class="w-9 h-9 rounded-xl bg-emeraldTheme-900/40 border border-emeraldTheme-800 text-slate-400 hover:text-goldTheme-400 hover:border-goldTheme-500/30 flex items-center justify-center transition-all" title="Bookmark bab ini">
+			  <i class="fa-solid fa-bookmark text-sm"></i>
+			</button>
+			<button onclick="toggleCurrentReadStatus()" id="read-status-btn" class="px-3.5 py-1.5 rounded-xl bg-emeraldTheme-900/40 border border-emeraldTheme-800 text-slate-400 hover:text-emeraldTheme-100 hover:border-emeraldTheme-700/50 flex items-center gap-2 text-xs font-semibold transition-all" title="Tandai Selesai Dibaca">
+			  <i class="fa-solid fa-check text-[10px]"></i> <span id="read-btn-text">Tandai Selesai</span>
+			</button>
+		  </div>
+		</div>
+
+		<!-- Reading Body & Tasbih (Scrollable Area) -->
+		<div class="flex-1 overflow-y-auto custom-scroll p-6 md:p-8 bg-gradient-to-b from-emeraldTheme-950/20 to-emeraldTheme-950/60 flex flex-col justify-between">
+
+		  <!-- Dynamic Content Container -->
+		  <div id="reading-content" class="prose prose-invert max-w-none text-slate-300 text-sm md:text-base leading-relaxed content-transition">
+			<!-- Loaded via JavaScript -->
+		  </div>
+
+		  <!-- Tasbih Digital Section (Will show dynamically) -->
+		  <div id="tasbih-container" class="hidden mt-8 p-6 bg-emeraldTheme-900/30 rounded-2xl border border-emeraldTheme-800/80 shadow-inner flex flex-col items-center justify-center text-center animate-fade-in">
+			<p class="text-xs uppercase tracking-widest font-bold text-goldTheme-400 mb-2">Penghitung Dzikir Digital</p>
+			<p class="text-xs text-slate-400 mb-4 max-w-xs">Tekan tombol melingkar di bawah atau tekan tombol <kbd class="px-1.5 py-0.5 bg-emeraldTheme-950 rounded text-slate-300">Spacebar</kbd> untuk berdzikir.</p>
+
+			<!-- Live Counter View -->
+			<div class="relative flex items-center justify-center mb-6">
+			  <div class="w-36 h-36 rounded-full bg-emeraldTheme-950 border-4 border-emeraldTheme-800/80 flex flex-col items-center justify-center shadow-2xl relative overflow-hidden group">
+				<!-- Tap Wave Effect Layer -->
+				<div id="tasbih-wave" class="absolute inset-0 bg-emeraldTheme-700/10 opacity-0 transition-opacity duration-150"></div>
+
+				<span id="tasbih-number" class="text-4xl font-extrabold text-goldTheme-400 font-mono tracking-tight group-hover:scale-105 transition-transform">0</span>
+				<span class="text-[9px] text-slate-500 uppercase font-semibold tracking-wider mt-1">Recitations</span>
+			  </div>
+			</div>
+
+			<!-- Tasbih Controls -->
+			<div class="flex items-center gap-4">
+			  <button onclick="resetTasbih()" class="px-4 py-2 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs font-semibold text-slate-300 transition-colors flex items-center gap-1.5 shadow-md">
+				<i class="fa-solid fa-arrow-rotate-right"></i> Reset
+			  </button>
+			  <button onclick="incrementTasbih()" class="pulse-effect px-8 py-3.5 bg-emeraldTheme-700 hover:bg-emeraldTheme-600 border border-emeraldTheme-500 text-white font-bold text-sm rounded-xl transition-all shadow-lg flex items-center gap-2">
+				<i class="fa-solid fa-fingerprint"></i> TEKAN
+			  </button>
+			</div>
+		  </div>
+
+		</div>
+
+		<!-- Reading Footer Navigation -->
+		<div class="bg-emeraldTheme-950/40 px-6 py-4 border-t border-emeraldTheme-800/60 flex items-center justify-between flex-shrink-0">
+		  <button onclick="navigateChapter(-1)" id="prev-chapter-btn" class="flex items-center gap-2 text-xs text-slate-400 hover:text-white font-semibold transition-colors disabled:opacity-30 disabled:pointer-events-none">
+			<i class="fa-solid fa-arrow-left"></i> Bab Sebelumnya
+		  </button>
+		  <span id="reading-position-indicator" class="text-[10px] text-slate-400 font-mono">1 / 28</span>
+		  <button onclick="navigateChapter(1)" id="next-chapter-btn" class="flex items-center gap-2 text-xs text-slate-400 hover:text-white font-semibold transition-colors disabled:opacity-30 disabled:pointer-events-none">
+			Bab Selanjutnya <i class="fa-solid fa-arrow-right"></i>
+		  </button>
+		</div>
+
+	  </section>
+
+    </main>
+
+    <!-- Footer Copyright -->
+    <footer class="bg-emeraldTheme-950/80 border-t border-emeraldTheme-900 py-4 px-6 text-center text-xs text-slate-500 tracking-wide">
+	  <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+		<p>&copy; 2026 Majelis Dzikir Sang Pemberi Rezeki. Hak Cipta Terpelihara.</p>
+		<div class="flex space-x-6">
+		  <a href="#" class="hover:text-slate-300 transition-colors">Panduan Aplikasi</a>
+		  <a href="#" class="hover:text-slate-300 transition-colors">Hubungi Admin</a>
+		  <a href="#" class="hover:text-slate-300 transition-colors">Donasi Syiar</a>
+		</div>
+	  </div>
+    </footer>
+
+<script>
+        // State variables
+        let currentChapterKey = 'kata-pengantar';
+        let readChapters = JSON.parse(localStorage.getItem('rezeki_read_chapters')) || [];
+        let bookmarkedChapters = JSON.parse(localStorage.getItem('rezeki_bookmarked_chapters')) || [];
+        let tasbihCount = 0;
+
+        // Mendapatkan kunci bab yang berurutan untuk fungsi navigasi
+        const chapterSequence = Object.keys(bookData);
+
+        window.onload = function() {
+            // Memuat bab default
+            loadChapter(currentChapterKey);
+            
+            // Render tanda centang pada bab-bab yang telah dibaca sebelumnya
+            updateCheckmarkIndicators();
+            updateProgress();
+            renderBookmarks();
+
+            // Dengarkan penekanan tombol spacebar untuk tasbih digital
+            document.addEventListener('keydown', function(event) {
+                if (event.code === 'Space') {
+                    // Hanya memicu tasbih jika kontainer tasbih terlihat di layar
+                    const tasbihContainer = document.getElementById('tasbih-container');
+                    if (tasbihContainer && !tasbihContainer.classList.contains('hidden')) {
+                        event.preventDefault(); // Mencegah scrolling halaman ke bawah saat menekan spasi
+                        incrementTasbih();
+                    }
+                }
+            });
+        };
+
+        // Memuat konten bab ke Reading Pane
+        function loadChapter(key) {
+            if (!bookData[key]) return;
+
+            currentChapterKey = key;
+            const chapter = bookData[key];
+
+            // Animasi transisi konten keluar
+            const contentDiv = document.getElementById('reading-content');
+            contentDiv.style.opacity = 0;
+            contentDiv.style.transform = 'translateY(10px)';
+
+            setTimeout(() => {
+                // Update Reading Pane Header
+                document.getElementById('header-chapter-title').textContent = chapter.title;
+                document.getElementById('header-chapter-subtitle').textContent = chapter.subtitle;
+                
+                const iconElement = document.getElementById('header-chapter-icon');
+                iconElement.className = `fa-solid ${chapter.icon} text-base`;
+
+                // Update Reading Pane Body
+                contentDiv.innerHTML = chapter.content;
+
+                // Tampilkan atau sembunyikan Alat Tasbih Digital
+                const tasbihContainer = document.getElementById('tasbih-container');
+                if (chapter.showTasbih) {
+                    tasbihContainer.classList.remove('hidden');
+                    resetTasbih(); // Atur ulang hitungan dzikir setiap masuk ke bab dzikir
+                } else {
+                    tasbihContainer.classList.add('hidden');
+                }
+
+                // Update bookmark icon state
+                updateBookmarkButtonState();
+
+                // Update Read Status button state
+                updateReadStatusButtonState();
+
+                // Update navigasi & indikator halaman
+                const currentIndex = chapterSequence.indexOf(currentChapterKey);
+                document.getElementById('reading-position-indicator').textContent = `${currentIndex + 1} / ${chapterSequence.length}`;
+                
+                document.getElementById('prev-chapter-btn').disabled = currentIndex === 0;
+                document.getElementById('next-chapter-btn').disabled = currentIndex === chapterSequence.length - 1;
+
+                // Soroti item aktif di listview
+                highlightActiveListViewItem(key);
+
+                // Animasi transisi konten masuk kembali
+                contentDiv.style.opacity = 1;
+                contentDiv.style.transform = 'translateY(0)';
+            }, 250);
+        }
+
+        // Toggles untuk collapsible sections
+        function toggleSection(id, btnElement) {
+            const element = document.getElementById(id);
+            const arrow = document.getElementById(`arrow-${id}`);
+            
+            if (element.classList.contains('hidden')) {
+                element.classList.remove('hidden');
+                if (arrow) arrow.classList.add('rotate-180');
+            } else {
+                element.classList.add('hidden');
+                if (arrow) arrow.classList.remove('rotate-180');
+            }
+        }
+
+        // Memaksa perluas semua sub-menu bab
+        function expandAll() {
+            const submenus = ['daftar-isi-submenu', 'bab1-submenu', 'bab2-submenu', 'bab3-submenu'];
+            submenus.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.classList.remove('hidden');
+                }
+                const arrow = document.getElementById(`arrow-${id}`);
+                if (arrow) {
+                    arrow.classList.add('rotate-180');
+                }
+            });
+        }
+
+        // Soroti item daftar isi yang sedang dibaca
+        function highlightActiveListViewItem(key) {
+            // Reset semua latar belakang navigasi list item
+            document.querySelectorAll('.sub-item-btn').forEach(btn => {
+                btn.classList.remove('bg-emeraldTheme-800/60', 'text-white', 'border-l-4', 'border-goldTheme-500', 'pl-3');
+                btn.classList.add('text-slate-400');
+            });
+
+            // Cari tombol navigasi spesifik yang memicu loading bab ini
+            const activeButtons = document.querySelectorAll(`[onclick="loadChapter('${key}')"]`);
+            activeButtons.forEach(btn => {
+                if (btn.classList.contains('sub-item-btn')) {
+                    btn.classList.add('bg-emeraldTheme-800/60', 'text-white', 'border-l-4', 'border-goldTheme-500', 'pl-3');
+                    btn.classList.remove('text-slate-400');
+                }
+            });
+        }
+
+        // Fungsi navigasi halaman (Sebelumnya / Selanjutnya)
+        function navigateChapter(direction) {
+            const currentIndex = chapterSequence.indexOf(currentChapterKey);
+            const targetIndex = currentIndex + direction;
+
+            if (targetIndex >= 0 && targetIndex < chapterSequence.length) {
+                const targetKey = chapterSequence[targetIndex];
+                
+                // Pastikan sub-menu bab tujuan otomatis diperluas jika bab tersembunyi
+                autoExpandParentForChapter(targetKey);
+                
+                loadChapter(targetKey);
+            }
+        }
+
+        // Otomatis memperluas kontainer parent jika bab yang dituju berada di dalam submenu tersembunyi
+        function autoExpandParentForChapter(key) {
+            if (key.startsWith('tentang-')) {
+                document.getElementById('daftar-isi-submenu').classList.remove('hidden');
+                document.getElementById('bab1-submenu').classList.remove('hidden');
+                document.getElementById('arrow-bab1-submenu').classList.add('rotate-180');
+            } else if (key === 'antarmuka-ilmu' || key === 'membuat-perahu' || key === 'derajat-tinggi' || key === 'kesembuhan') {
+                document.getElementById('daftar-isi-submenu').classList.remove('hidden');
+                document.getElementById('bab2-submenu').classList.remove('hidden');
+                document.getElementById('arrow-bab2-submenu').classList.add('rotate-180');
+            } else if (key.startsWith('langkah')) {
+                document.getElementById('daftar-isi-submenu').classList.remove('hidden');
+                document.getElementById('bab3-submenu').classList.remove('hidden');
+                document.getElementById('arrow-bab3-submenu').classList.add('rotate-180');
+            }
+        }
+
+        // Filter / Pencarian di ListView
+        function filterList() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            const nodes = document.querySelectorAll('.list-item-node');
+            const clearBtn = document.getElementById('clear-search-btn');
+
+            if (query === "") {
+                clearBtn.classList.add('hidden');
+                // Kembalikan tampilan default (tampilkan semua node)
+                nodes.forEach(node => {
+                    node.style.display = 'block';
+                });
+                return;
+            }
+
+            clearBtn.classList.remove('hidden');
+            expandAll(); // Perluas semua submenu secara otomatis saat mencari
+
+            nodes.forEach(node => {
+                const searchText = node.getAttribute('data-search') || "";
+                
+                // Cari juga kecocokan di dalam sub-item (anak-anak tombol)
+                const nestedTexts = [];
+                node.querySelectorAll('[data-search]').forEach(sub => {
+                    nestedTexts.push(sub.getAttribute('data-search').toLowerCase());
+                });
+
+                const matchesParent = searchText.includes(query);
+                const matchesChild = nestedTexts.some(text => text.includes(query));
+
+                if (matchesParent || matchesChild) {
+                    node.style.display = 'block';
+                    
+                    // Filter sub-item internal secara spesifik jika ada
+                    node.querySelectorAll('.sub-item-btn').forEach(subBtn => {
+                        const subSearch = subBtn.getAttribute('data-search') || "";
+                        if (subSearch.includes(query)) {
+                            subBtn.style.display = 'flex';
+                        } else {
+                            subBtn.style.display = 'none';
+                        }
+                    });
+                } else {
+                    node.style.display = 'none';
+                }
+            });
+        }
+
+        function clearSearch() {
+            document.getElementById('search-input').value = "";
+            document.getElementById('clear-search-btn').classList.add('hidden');
+            
+            // Kembalikan semua tombol sub-item ke tampilan default
+            document.querySelectorAll('.sub-item-btn').forEach(subBtn => {
+                subBtn.style.display = 'flex';
+            });
+            
+            filterList();
+        }
+
+        // Tasbih Digital Counter Logic
+        function incrementTasbih() {
+            tasbihCount++;
+            const numElement = document.getElementById('tasbih-number');
+            const waveElement = document.getElementById('tasbih-wave');
+
+            numElement.textContent = tasbihCount;
+            
+            // Efek gelombang ketukan kilat
+            waveElement.classList.remove('opacity-0');
+            waveElement.classList.add('opacity-100');
+            setTimeout(() => {
+                waveElement.classList.remove('opacity-100');
+                waveElement.classList.add('opacity-0');
+            }, 100);
+
+            // Audio haptic click simulation
+            try {
+                if (window.navigator && window.navigator.vibrate) {
+                    window.navigator.vibrate(40); // Getaran singkat pada HP pendukung
+                }
+            } catch (e) {}
+        }
+
+        function resetTasbih() {
+            tasbihCount = 0;
+            document.getElementById('tasbih-number').textContent = "0";
+        }
+
+        // Progress Tracking & Read Status Logic
+        function toggleCurrentReadStatus() {
+            const index = readChapters.indexOf(currentChapterKey);
+            if (index === -1) {
+                readChapters.push(currentChapterKey);
+            } else {
+                readChapters.splice(index, 1);
+            }
+
+            localStorage.setItem('rezeki_read_chapters', JSON.stringify(readChapters));
+            
+            updateCheckmarkIndicators();
+            updateProgress();
+            updateReadStatusButtonState();
+        }
+
+        function updateCheckmarkIndicators() {
+            // Perbarui tanda centang hijau di dalam sidebar listview
+            chapterSequence.forEach(key => {
+                const buttons = document.querySelectorAll(`[onclick="loadChapter('${key}')"]`);
+                buttons.forEach(btn => {
+                    const checkIcon = btn.querySelector('.fa-circle-check');
+                    if (checkIcon) {
+                        if (readChapters.includes(key)) {
+                            checkIcon.className = "fa-solid fa-circle-check text-xs text-emeraldTheme-600";
+                        } else {
+                            checkIcon.className = "fa-regular fa-circle text-xs text-slate-600";
+                        }
+                    }
+                });
+            });
+        }
+
+        function updateReadStatusButtonState() {
+            const btn = document.getElementById('read-status-btn');
+            const text = document.getElementById('read-btn-text');
+            
+            if (readChapters.includes(currentChapterKey)) {
+                btn.className = "px-3.5 py-1.5 rounded-xl bg-emeraldTheme-600 border border-emeraldTheme-500 text-white flex items-center gap-2 text-xs font-bold transition-all shadow-md";
+                text.textContent = "Selesai Dibaca";
+            } else {
+                btn.className = "px-3.5 py-1.5 rounded-xl bg-emeraldTheme-900/40 border border-emeraldTheme-800 text-slate-400 hover:text-emeraldTheme-100 hover:border-emeraldTheme-700/50 flex items-center gap-2 text-xs font-semibold transition-all";
+                text.textContent = "Tandai Selesai";
+            }
+        }
+
+        function updateProgress() {
+            const total = chapterSequence.length;
+            const completed = readChapters.length;
+            const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+            document.getElementById('progress-text').textContent = `${percentage}%`;
+        }
+
+        // Bookmark Logic
+        function toggleBookmarkCurrent() {
+            const index = bookmarkedChapters.indexOf(currentChapterKey);
+            if (index === -1) {
+                bookmarkedChapters.push(currentChapterKey);
+            } else {
+                bookmarkedChapters.splice(index, 1);
+            }
+
+            localStorage.setItem('rezeki_bookmarked_chapters', JSON.stringify(bookmarkedChapters));
+            
+            updateBookmarkButtonState();
+            renderBookmarks();
+        }
+
+        function updateBookmarkButtonState() {
+            const btn = document.getElementById('bookmark-btn');
+            if (bookmarkedChapters.includes(currentChapterKey)) {
+                btn.className = "w-9 h-9 rounded-xl bg-goldTheme-500 border border-goldTheme-400 text-emeraldTheme-950 flex items-center justify-center transition-all shadow-md";
+            } else {
+                btn.className = "w-9 h-9 rounded-xl bg-emeraldTheme-900/40 border border-emeraldTheme-800 text-slate-400 hover:text-goldTheme-400 hover:border-goldTheme-500/30 flex items-center justify-center transition-all";
+            }
+        }
+
+        function toggleBookmarkPanel() {
+            const panel = document.getElementById('bookmark-dropdown');
+            panel.classList.toggle('hidden');
+        }
+
+        function renderBookmarks() {
+            const countSpan = document.getElementById('bookmark-count');
+            const listContainer = document.getElementById('bookmark-list');
+            
+            countSpan.textContent = bookmarkedChapters.length;
+            listContainer.innerHTML = "";
+
+            if (bookmarkedChapters.length === 0) {
+                listContainer.innerHTML = '<li class="text-slate-500 italic text-center py-2">Belum ada penanda halaman.</li>';
+                return;
+            }
+
+            bookmarkedChapters.forEach(key => {
+                if (bookData[key]) {
+                    const li = document.createElement('li');
+                    li.className = "flex items-center justify-between gap-2 p-1.5 rounded bg-emeraldTheme-950/40 hover:bg-emeraldTheme-950/80 transition-colors border border-emeraldTheme-800/30";
+                    li.innerHTML = `
+                        <button onclick="loadChapter('${key}'); toggleBookmarkPanel();" class="text-left font-medium text-slate-200 hover:text-goldTheme-400 truncate flex-1 pr-1">
+                            ${bookData[key].title}
+                        </button>
+                        <button onclick="deleteBookmark('${key}', event)" class="text-slate-500 hover:text-rose-400 px-1" title="Hapus">
+                            <i class="fa-solid fa-trash-can text-[10px]"></i>
+                        </button>
+                    `;
+                    listContainer.appendChild(li);
+                }
+            });
+        }
+
+        function deleteBookmark(key, event) {
+            event.stopPropagation(); // Mencegah terbukanya bab secara tidak sengaja
+            bookmarkedChapters = bookmarkedChapters.filter(item => item !== key);
+            localStorage.setItem('rezeki_bookmarked_chapters', JSON.stringify(bookmarkedChapters));
+            
+            if (key === currentChapterKey) {
+                updateBookmarkButtonState();
+            }
+            renderBookmarks();
+        }
+
+        // Menutup popup dropdown jika pengguna mengklik di luar area bookmarks
+        window.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('bookmark-dropdown');
+            const bookmarkBtn = dropdown.previousElementSibling;
+            
+            if (!dropdown.contains(e.target) && !bookmarkBtn.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+</script>
+  </body>
+</html>

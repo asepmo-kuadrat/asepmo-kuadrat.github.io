@@ -1,27 +1,24 @@
-#!/bin/bash
-
-# Menghentikan script jika terjadi error pada salah satu perintah
-set -e
-
-clear
-echo "================================================="
-echo "   START: Memulai Proses Push To Github Repo"
-echo "================================================="
+#!/support/busybox sh
 # Shell Script to add all files, commit them with a commit message from user and then push them to remote GitHub repo
+#Bashcolor
+blue='\e[1;34m' 
+green='\e[1;32m' 
+purple='\e[1;35m' 
+cyan='\e[1;36m' 
+red='\e[1;31m' 
+white='\e[1;37m' 
+echo -e $green "*** Automating Git Add, Commit and Push ***"
 
-# 1. Automating Git Add, Commit and Push
-echo -e "\n[1/5] 🔄 Automating Git Add, Commit and Push..."
+#Ask for User Github's Personal Access Token
 
-# 2. Check If Repository
-echo -e "\n[2/5] 🔄 Check If Repository Exists At GitHub..."
+# Check if repository exists at GitHub
 curl "https://api.github.com/repos/asepmo-kuadrat/asepmo-kuadrat.github.io.git"
+# If repository exits then
 
-# 3. If repository exits then
-echo -e "\n[3/5] 🔄 If Repository Exits Then..."
 if [ $? -eq 0 ]; then
     # Display unstaged files
     git status
-    git remote set-url origin https://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@github.com/asepmo-kuadrat/asepmo-kuadrat.github.io.git
+    git remote set-url origin https://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@github.com/asepmo-kuadrat/asepmo-kuadrat.github.io.git
     # If there are any uncommited and unstatged files, ask user to commit them
     if [ "$(git status --porcelain)" ]; then
         echo -e $green "There are uncommited and unstatged files. Commit them before pushing"

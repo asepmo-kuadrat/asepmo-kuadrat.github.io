@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- AsepMo Web AI Gemini Creator-->
+	<title>AsepMo - Modern Settings Dashboard</title>
+	<meta name="generator" content="Gemini Canvas Pro"/>
+	<meta property="og:title" content="AsepMo"/>
+	<meta property="og:locale" content="en_US"/>
+	<meta name="description" content="AsepMo, Sang Pengusaha Yang Sedang Mengembangkan Usahanya Di Bidang Arsitektur Rumah Mewah Minimalis."/>
+	<meta property="og:description" content="AsepMo, Sang Pengusaha Yang Sedang Mengembangkan Usahanya Di Bidang Arsitektur Rumah Mewah Minimalis."/>
+	<meta property="og:url" content="https://asepmo-kuadrat.github.io/"/>
+	<meta property="og:site_name" content="AsepMo"/>
+    <link rel="canonical" href="https://asepmo-kuadrat.github.io/"/>
+    <link rel="shortcut icon" href="favicon.ico"/>
+	
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+<script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+</script>
+
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        /* Custom Scrollbar for elegant horizontal playlist */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+</style>
+  </head>
+  <body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+
+    <!-- App Wrapper -->
+    <div id="app" class="flex flex-col min-h-screen relative overflow-x-hidden">
+
+	  <!-- ==================== HEADER ==================== -->
+	  <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+
+		  <!-- Left: Burger & Title -->
+		  <div class="flex items-center gap-4">
+			<button id="btnOpenDrawer" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition" aria-label="Buka Menu">
+			  <i class="fa-solid fa-bars-staggered text-xl"></i>
+			</button>
+			<div class="flex items-center gap-2">
+			  <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+				<span class="font-extrabold text-lg">A</span>
+			  </div>
+			  <span class="font-bold text-xl tracking-tight bg-gradient-to-r from-brand-600 to-indigo-600 dark:from-brand-400 dark:to-indigo-400 bg-clip-text text-transparent">AsepMo</span>
+			</div>
+		  </div>
+
+		  <!-- Right: Header Icons & Dropdown Options -->
+		  <div class="flex items-center gap-2">
+			<!-- Website Link -->
+			<a href="https://asepmo.com" target="_blank" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition" title="Kunjungi Website">
+			  <i class="fa-solid fa-globe text-lg"></i>
+			</a>
+
+			<!-- Download Button -->
+			<button id="btnDownload" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition" title="Unduh Konfigurasi">
+			  <i class="fa-solid fa-cloud-arrow-down text-lg"></i>
+			</button>
+
+			<!-- Options Dropdown Menu -->
+			<div class="relative">
+			  <button id="btnDropdown" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition">
+				<i class="fa-solid fa-ellipsis-vertical text-lg"></i>
+			  </button>
+			  <!-- Dropdown Card -->
+			  <div id="headerDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl py-1 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+				<a href="https://www.android.com" target="_blank" class="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+				  <i class="fa-brands fa-android text-emerald-500 w-5"></i> Android
+				</a>
+				<a href="https://google.com" target="_blank" class="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+				  <i class="fa-brands fa-google text-red-500 w-5"></i> Google
+				</a>
+				<a href="https://github.com" target="_blank" class="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+				  <i class="fa-brands fa-github text-slate-900 dark:text-white w-5"></i> GitHub
+				</a>
+				<a href="https://wikipedia.org" target="_blank" class="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+				  <i class="fa-solid fa-book-open text-blue-500 w-5"></i> Wikipedia
+				</a>
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  </header>
+
+	  <!-- ==================== DRAWER MENU (Sidebar) ==================== -->
+	  <div id="drawerOverlay" class="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-50 hidden transition-opacity duration-300"></div>
+	  <aside id="drawer" class="fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out shadow-2xl flex flex-col">
+		<!-- Drawer Header -->
+		<div class="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+		  <div class="flex items-center gap-2">
+			<div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white">
+			  <span class="font-extrabold text-sm">A</span>
+			</div>
+			<span class="font-bold text-lg dark:text-white">Navigasi AsepMo</span>
+		  </div>
+		  <button id="btnCloseDrawer" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 transition">
+			<i class="fa-solid fa-xmark text-lg"></i>
+		  </button>
+		</div>
+
+		<!-- Drawer Body Menu List -->
+		<nav class="flex-1 overflow-y-auto p-4 space-y-1.5" id="drawerMenu">
+		  <!-- Links will trigger simulated pages/tabs -->
+		  <button data-target="home" class="menu-item flex items-center gap-4 w-full px-4 py-3 rounded-xl text-left font-medium transition text-brand-600 bg-brand-50 dark:bg-brand-950/50 dark:text-brand-400">
+			<i class="fa-solid fa-house text-lg w-6 text-center"></i> Home
+		  </button>
+		  <button data-target="settings" class="menu-item flex items-center gap-4 w-full px-4 py-3 rounded-xl text-left font-medium transition text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
+			<i class="fa-solid fa-gear text-lg w-6 text-center"></i> Settings
+		  </button>
+		  <div class="h-px bg-slate-100 dark:bg-slate-800 my-2"></div>
+		  <!-- Interactive Placeholders -->
+		  <button data-target="about" class="menu-item flex items-center gap-4 w-full px-4 py-3 rounded-xl text-left font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+			<i class="fa-solid fa-circle-info text-lg w-6 text-center"></i> About
+		  </button>
+		  <button data-target="gallery" class="menu-item flex items-center gap-4 w-full px-4 py-3 rounded-xl text-left font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+			<i class="fa-solid fa-images text-lg w-6 text-center"></i> Gallery
+		  </button>
+		  <button data-target="service" class="menu-item flex items-center gap-4 w-full px-4 py-3 rounded-xl text-left font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+			<i class="fa-solid fa-handshake-angle text-lg w-6 text-center"></i> Service
+		  </button>
+		  <button data-target="blog" class="menu-item flex items-center gap-4 w-full px-4 py-3 rounded-xl text-left font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+			<i class="fa-solid fa-newspaper text-lg w-6 text-center"></i> Blog
+		  </button>
+		  <button data-target="contact" class="menu-item flex items-center gap-4 w-full px-4 py-3 rounded-xl text-left font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+			<i class="fa-solid fa-envelope text-lg w-6 text-center"></i> Contact
+		  </button>
+		  <button data-target="aitools" class="menu-item flex items-center gap-4 w-full px-4 py-3 rounded-xl text-left font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+			<i class="fa-solid fa-robot text-lg w-6 text-center text-indigo-500"></i> AI Tools
+		  </button>
+		  <button data-target="filetree" class="menu-item flex items-center gap-4 w-full px-4 py-3 rounded-xl text-left font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+			<i class="fa-solid fa-folder-tree text-lg w-6 text-center"></i> File Tree
+		  </button>
+		  <div class="h-px bg-slate-100 dark:bg-slate-800 my-2"></div>
+		  <button id="btnAuth" class="flex items-center gap-4 w-full px-4 py-3 rounded-xl text-left font-medium text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 transition">
+			<i class="fa-solid fa-right-to-bracket text-lg w-6 text-center"></i> <span id="authText">Login Sesi</span>
+		  </button>
+		</nav>
+
+		<!-- Drawer Footer -->
+		<div class="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-xs text-center text-slate-400">
+		  AsepMo Dashboard &copy; 2026
+		</div>
+	  </aside>
+
+	  <!-- ==================== MAIN CONTENT AREA ==================== -->
+	  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+		<!-- Firebase Connection Status Badge -->
+		<div class="mb-6 flex justify-end">
+		  <div id="firebaseBadge" class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-500 border border-amber-500/20">
+			<span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+			Menghubungkan ke Firebase...
+		  </div>
+		</div>
+
+		<!-- ==================== VIEW 1: HOME PAGE ==================== -->
+		<section id="view-home" class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
+		  <!-- Hero Dashboard Banner -->
+		  <div class="bg-gradient-to-r from-brand-600 to-indigo-700 rounded-3xl p-6 sm:p-10 text-white shadow-xl relative overflow-hidden">
+			<div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+			<div class="absolute -left-10 -bottom-10 w-40 h-40 bg-brand-400/20 rounded-full blur-2xl"></div>
+
+			<div class="relative z-10 max-w-xl">
+			  <span class="bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Dashboard Aktif</span>
+			  <h1 class="text-3xl sm:text-4xl font-extrabold mt-3 tracking-tight">Selamat Datang di AsepMo</h1>
+			  <p class="text-sky-100 mt-2 text-sm sm:text-base">Seluruh parameter API, Firebase, dan konfigurasi tema di bawah ini tersinkronisasi secara langsung menggunakan database lokal dan cloud.</p>
+			  <div class="mt-6 flex flex-wrap gap-3">
+				<button onclick="switchView('settings')" class="px-5 py-2.5 bg-white text-brand-700 font-bold rounded-xl shadow-lg hover:bg-sky-50 transition transform hover:-translate-y-0.5 active:translate-y-0">
+				  <i class="fa-solid fa-sliders mr-2"></i> Buka Pengaturan
+				</button>
+			  </div>
+			</div>
+		  </div>
+
+		  <!-- API Status Cards Grid (Calling/Displaying saved values) -->
+		  <div>
+			<h2 class="text-xl font-bold tracking-tight mb-4 flex items-center gap-2">
+			  <i class="fa-solid fa-database text-brand-500"></i> Integrasi Layanan Aktif
+			</h2>
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+			  <!-- Theme Card -->
+			  <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+				<div class="flex justify-between items-start">
+				  <div>
+					<span class="text-xs font-semibold text-slate-400 uppercase">Tampilan Utama</span>
+					<h3 class="text-lg font-bold mt-1">Tema Sistem</h3>
+				  </div>
+				  <span class="p-3 bg-brand-50 dark:bg-brand-950/50 rounded-xl text-brand-600 dark:text-brand-400">
+					<i id="themeIcon" class="fa-solid fa-moon text-xl"></i>
+				  </span>
+				</div>
+				<div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex justify-between items-center text-sm">
+				  <span class="text-slate-500">Status Tema saat ini:</span>
+				  <span id="lblThemeStatus" class="font-bold capitalize text-brand-600 dark:text-brand-400">Dark Mode</span>
+				</div>
+			  </div>
+
+			  <!-- Flickr Card -->
+			  <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+				<div class="flex justify-between items-start">
+				  <div>
+					<span class="text-xs font-semibold text-slate-400 uppercase">Flickr Integration</span>
+					<h3 class="text-lg font-bold mt-1">Flickr API</h3>
+				  </div>
+				  <span class="p-3 bg-pink-50 dark:bg-pink-950/20 rounded-xl text-pink-600 dark:text-pink-400">
+					<i class="fa-brands fa-flickr text-xl"></i>
+				  </span>
+				</div>
+				<div class="mt-4">
+				  <span class="text-xs text-slate-400 block">Flickr API Key</span>
+				  <code id="dispFlickrKey" class="text-xs font-mono break-all text-slate-600 dark:text-slate-300 block bg-slate-50 dark:bg-slate-950 p-2 rounded border border-slate-100 dark:border-slate-800/50 mt-1">Belum diatur</code>
+				</div>
+			  </div>
+
+			  <!-- Blogger Card -->
+			  <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+				<div class="flex justify-between items-start">
+				  <div>
+					<span class="text-xs font-semibold text-slate-400 uppercase">Blogger API v3</span>
+					<h3 class="text-lg font-bold mt-1">Blogger Details</h3>
+				  </div>
+				  <span class="p-3 bg-orange-50 dark:bg-orange-950/20 rounded-xl text-orange-600 dark:text-orange-400">
+					<i class="fa-brands fa-blogger text-xl"></i>
+				  </span>
+				</div>
+				<div class="mt-4 space-y-2">
+				  <div>
+					<span class="text-xs text-slate-400 block">Blogger API Key</span>
+					<code id="dispBloggerKey" class="text-xs font-mono break-all text-slate-600 dark:text-slate-300 block truncate">Belum diatur</code>
+				  </div>
+				  <div>
+					<span class="text-xs text-slate-400 block">Blog ID</span>
+					<span id="dispBlogId" class="text-sm font-semibold text-slate-700 dark:text-slate-200">Belum diatur</span>
+				  </div>
+				</div>
+			  </div>
+
+			  <!-- Google Drive Card -->
+			  <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+				<div class="flex justify-between items-start">
+				  <div>
+					<span class="text-xs font-semibold text-slate-400 uppercase">Cloud Storage</span>
+					<h3 class="text-lg font-bold mt-1">Google Drive</h3>
+				  </div>
+				  <span class="p-3 bg-emerald-50 dark:bg-emerald-950/20 rounded-xl text-emerald-600 dark:text-emerald-400">
+					<i class="fa-brands fa-google-drive text-xl"></i>
+				  </span>
+				</div>
+				<div class="mt-4 space-y-2">
+				  <div>
+					<span class="text-xs text-slate-400 block">Drive API Key</span>
+					<code id="dispDriveKey" class="text-xs font-mono break-all text-slate-600 dark:text-slate-300 block truncate">Belum diatur</code>
+				  </div>
+				  <div>
+					<span class="text-xs text-slate-400 block">File ID</span>
+					<span id="dispDriveFileId" class="text-sm font-semibold text-slate-700 dark:text-slate-200">Belum diatur</span>
+				  </div>
+				</div>
+			  </div>
+
+			  <!-- YouTube Integration Card -->
+			  <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+				<div class="flex justify-between items-start">
+				  <div>
+					<span class="text-xs font-semibold text-slate-400 uppercase">Video Platform</span>
+					<h3 class="text-lg font-bold mt-1">YouTube Suite</h3>
+				  </div>
+				  <span class="p-3 bg-red-50 dark:bg-red-950/20 rounded-xl text-red-600 dark:text-red-400">
+					<i class="fa-brands fa-youtube text-xl"></i>
+				  </span>
+				</div>
+				<div class="mt-4 grid grid-cols-2 gap-2 text-xs">
+				  <div>
+					<span class="text-slate-400 block">API Key</span>
+					<span id="dispYtKey" class="font-semibold text-slate-700 dark:text-slate-300 truncate block">Belum diatur</span>
+				  </div>
+				  <div>
+					<span class="text-slate-400 block">Channel ID</span>
+					<span id="dispYtChannel" class="font-semibold text-slate-700 dark:text-slate-300 truncate block">Belum diatur</span>
+				  </div>
+				  <div class="col-span-2 border-t border-slate-100 dark:border-slate-800 pt-1.5 mt-1">
+					<span class="text-slate-400 block">Playlist ID</span>
+					<span id="dispYtPlaylist" class="font-semibold text-slate-700 dark:text-slate-300 truncate block">Belum diatur</span>
+				  </div>
+				</div>
+			  </div>
+
+			  <!-- Gemini AI Card -->
+			  <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+				<div class="flex justify-between items-start">
+				  <div>
+					<span class="text-xs font-semibold text-slate-400 uppercase">Generative AI</span>
+					<h3 class="text-lg font-bold mt-1">Gemini AI Model</h3>
+				  </div>
+				  <span class="p-3 bg-indigo-50 dark:bg-indigo-950/20 rounded-xl text-indigo-600 dark:text-indigo-400">
+					<i class="fa-solid fa-sparkles text-xl"></i>
+				  </span>
+				</div>
+				<div class="mt-4">
+				  <span class="text-xs text-slate-400 block">Gemini API Key</span>
+				  <code id="dispGeminiKey" class="text-xs font-mono break-all text-slate-600 dark:text-slate-300 block bg-slate-50 dark:bg-slate-950 p-2 rounded border border-slate-100 dark:border-slate-800/50 mt-1">Belum diatur</code>
+				</div>
+			  </div>
+
+			  <!-- Firebase Configuration Card -->
+			  <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between md:col-span-2 lg:col-span-3">
+				<div class="flex justify-between items-start">
+				  <div>
+					<span class="text-xs font-semibold text-slate-400 uppercase">Cloud Integration</span>
+					<h3 class="text-lg font-bold mt-1">Firebase Configuration Object</h3>
+				  </div>
+				  <span class="p-3 bg-amber-50 dark:bg-amber-950/20 rounded-xl text-amber-600 dark:text-amber-400">
+					<i class="fa-solid fa-fire text-xl"></i>
+				  </span>
+				</div>
+				<div class="mt-4">
+				  <pre id="dispFirebaseConfig" class="text-xs font-mono bg-slate-50 dark:bg-slate-950 p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 overflow-x-auto max-h-36">Belum dikonfigurasi</pre>
+				</div>
+			  </div>
+
+			</div>
+		  </div>
+		</section>
+
+		<!-- ==================== VIEW 2: SETTINGS PAGE ==================== -->
+		<section id="view-settings" class="hidden space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+		  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-5">
+			<div>
+			  <h1 class="text-2xl font-bold tracking-tight">Pusat Pengaturan</h1>
+			  <p class="text-sm text-slate-500">Konfigurasi seluruh modul dan kunci API terintegrasi.</p>
+			</div>
+			<div class="flex items-center gap-2">
+			  <button id="btnResetSettings" class="px-4 py-2 border border-rose-200 dark:border-rose-900/30 text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/20 rounded-xl text-sm font-semibold transition flex items-center gap-2">
+				<i class="fa-solid fa-trash-can"></i> Reset Semua
+			  </button>
+			  <button id="btnSaveSettings" class="px-5 py-2 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold rounded-xl text-sm shadow-md transition flex items-center gap-2">
+				<i class="fa-solid fa-floppy-disk"></i> Simpan Setelan
+			  </button>
+			</div>
+		  </div>
+
+		  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+			<!-- Left Column: Navigation Quick links to settings sections -->
+			<div class="lg:col-span-1 space-y-3">
+			  <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm sticky top-24">
+				<p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 px-2">Daftar Kategori</p>
+				<div class="space-y-1">
+				  <a href="#sec-theme" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition text-sm font-medium">
+					<span class="flex items-center gap-3"><i class="fa-solid fa-palette text-slate-400"></i> Themes</span>
+					<i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+				  </a>
+				  <a href="#sec-flickr" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition text-sm font-medium">
+					<span class="flex items-center gap-3"><i class="fa-brands fa-flickr text-slate-400"></i> Flickr API</span>
+					<i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+				  </a>
+				  <a href="#sec-blogger" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition text-sm font-medium">
+					<span class="flex items-center gap-3"><i class="fa-brands fa-blogger text-slate-400"></i> Blogger API</span>
+					<i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+				  </a>
+				  <a href="#sec-drive" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition text-sm font-medium">
+					<span class="flex items-center gap-3"><i class="fa-brands fa-google-drive text-slate-400"></i> Drive API</span>
+					<i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+				  </a>
+				  <a href="#sec-youtube" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition text-sm font-medium">
+					<span class="flex items-center gap-3"><i class="fa-brands fa-youtube text-slate-400"></i> YouTube Suite</span>
+					<i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+				  </a>
+				  <a href="#sec-gemini" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition text-sm font-medium">
+					<span class="flex items-center gap-3"><i class="fa-solid fa-wand-magic-sparkles text-slate-400"></i> Gemini AI</span>
+					<i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+				  </a>
+				  <a href="#sec-firebase" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition text-sm font-medium">
+					<span class="flex items-center gap-3"><i class="fa-solid fa-fire text-slate-400"></i> Firebase Config</span>
+					<i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+				  </a>
+				</div>
+			  </div>
+			</div>
+
+			<!-- Right Column: Settings Forms -->
+			<div class="lg:col-span-2 space-y-6">
+
+			  <!-- 1. Themes Settings -->
+			  <div id="sec-theme" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm scroll-mt-24">
+				<div class="flex items-center gap-3 mb-4">
+				  <div class="w-10 h-10 rounded-xl bg-brand-500/10 text-brand-600 flex items-center justify-center">
+					<i class="fa-solid fa-palette text-lg"></i>
+				  </div>
+				  <div>
+					<h3 class="text-lg font-bold">1. Themes</h3>
+					<p class="text-xs text-slate-400">Atur preferensi tampilan skema warna aplikasi.</p>
+				  </div>
+				</div>
+				<div class="flex items-center justify-between py-3 border-t border-slate-100 dark:border-slate-800/80">
+				  <div>
+					<span class="font-medium text-slate-700 dark:text-slate-200 block text-sm">Mode Gelap (Dark Mode)</span>
+					<span class="text-xs text-slate-400">Ubah tampilan layar utama menjadi gelap malam.</span>
+				  </div>
+				  <!-- Elegant iOS Style Switch Button -->
+				  <label class="relative inline-flex items-center cursor-pointer">
+					<input type="checkbox" id="themeSwitch" class="sr-only peer">
+					<div class="w-14 h-7 bg-slate-200 dark:bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-brand-500 peer-checked:to-indigo-500 shadow-inner"></div>
+				  </label>
+				</div>
+			  </div>
+
+			  <!-- 2. Flickr Settings -->
+			  <div id="sec-flickr" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm scroll-mt-24">
+				<div class="flex items-center gap-3 mb-4">
+				  <div class="w-10 h-10 rounded-xl bg-pink-500/10 text-pink-600 flex items-center justify-center">
+					<i class="fa-brands fa-flickr text-lg"></i>
+				  </div>
+				  <div>
+					<h3 class="text-lg font-bold">2. Flickr Integration</h3>
+					<p class="text-xs text-slate-400">Integrasikan galeri eksternal Flickr.</p>
+				  </div>
+				</div>
+				<div class="space-y-4 border-t border-slate-100 dark:border-slate-800/80 pt-4">
+				  <div>
+					<label for="flickrApiKey" class="block text-xs font-semibold uppercase text-slate-400 mb-1.5">Flickr API Key</label>
+					<input type="password" id="flickrApiKey" placeholder="Masukkan Flickr API Key" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-2 focus:ring-brand-500 outline-none text-sm font-mono text-slate-800 dark:text-slate-100">
+				  </div>
+				</div>
+			  </div>
+
+			  <!-- 3. Blogger Settings -->
+			  <div id="sec-blogger" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm scroll-mt-24">
+				<div class="flex items-center gap-3 mb-4">
+				  <div class="w-10 h-10 rounded-xl bg-orange-500/10 text-orange-600 flex items-center justify-center">
+					<i class="fa-brands fa-blogger text-lg"></i>
+				  </div>
+				  <div>
+					<h3 class="text-lg font-bold">3. Blogger API</h3>
+					<p class="text-xs text-slate-400">Atur kredensial sinkronisasi artikel Blog.</p>
+				  </div>
+				</div>
+				<div class="space-y-4 border-t border-slate-100 dark:border-slate-800/80 pt-4">
+				  <div>
+					<label for="bloggerApiKey" class="block text-xs font-semibold uppercase text-slate-400 mb-1.5">Blogger API Key</label>
+					<input type="password" id="bloggerApiKey" placeholder="Masukkan Blogger API Key" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-2 focus:ring-brand-500 outline-none text-sm font-mono">
+				  </div>
+				  <div>
+					<label for="bloggerBlogId" class="block text-xs font-semibold uppercase text-slate-400 mb-1.5">Blog ID</label>
+					<input type="text" id="bloggerBlogId" placeholder="Masukkan ID Blog Anda" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-2 focus:ring-brand-500 outline-none text-sm">
+				  </div>
+				</div>
+			  </div>
+
+			  <!-- 4. Drive Settings -->
+			  <div id="sec-drive" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm scroll-mt-24">
+				<div class="flex items-center gap-3 mb-4">
+				  <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
+					<i class="fa-brands fa-google-drive text-lg"></i>
+				  </div>
+				  <div>
+					<h3 class="text-lg font-bold">4. Drive API</h3>
+					<p class="text-xs text-slate-400">Konfigurasi Google Drive Cloud Reader.</p>
+				  </div>
+				</div>
+				<div class="space-y-4 border-t border-slate-100 dark:border-slate-800/80 pt-4">
+				  <div>
+					<label for="driveApiKey" class="block text-xs font-semibold uppercase text-slate-400 mb-1.5">Drive API Key</label>
+					<input type="password" id="driveApiKey" placeholder="Masukkan Drive API Key" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-2 focus:ring-brand-500 outline-none text-sm font-mono">
+				  </div>
+				  <div>
+					<label for="driveFileId" class="block text-xs font-semibold uppercase text-slate-400 mb-1.5">File ID</label>
+					<input type="text" id="driveFileId" placeholder="Masukkan ID File Drive" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-2 focus:ring-brand-500 outline-none text-sm">
+				  </div>
+				</div>
+			  </div>
+
+			  <!-- 5. YouTube Settings -->
+			  <div id="sec-youtube" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm scroll-mt-24">
+				<div class="flex items-center gap-3 mb-4">
+				  <div class="w-10 h-10 rounded-xl bg-red-500/10 text-red-600 flex items-center justify-center">
+					<i class="fa-brands fa-youtube text-lg"></i>
+				  </div>
+				  <div>
+					<h3 class="text-lg font-bold">5. YouTube Suite</h3>
+					<p class="text-xs text-slate-400">Integrasikan Media Streaming YouTube v3.</p>
+				  </div>
+				</div>
+				<div class="space-y-4 border-t border-slate-100 dark:border-slate-800/80 pt-4">
+				  <div>
+					<label for="ytApiKey" class="block text-xs font-semibold uppercase text-slate-400 mb-1.5">YouTube API Key</label>
+					<input type="password" id="ytApiKey" placeholder="Masukkan YouTube API Key v3" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-2 focus:ring-brand-500 outline-none text-sm font-mono">
+				  </div>
+				  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+					<div>
+					  <label for="ytChannelId" class="block text-xs font-semibold uppercase text-slate-400 mb-1.5">Channel ID</label>
+					  <input type="text" id="ytChannelId" placeholder="Channel ID" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-2 focus:ring-brand-500 outline-none text-sm">
+					</div>
+					<div>
+					  <label for="ytPlaylistId" class="block text-xs font-semibold uppercase text-slate-400 mb-1.5">Playlist ID</label>
+					  <input type="text" id="ytPlaylistId" placeholder="Playlist ID" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-2 focus:ring-brand-500 outline-none text-sm">
+					</div>
+					<div>
+					  <label for="ytVideoId" class="block text-xs font-semibold uppercase text-slate-400 mb-1.5">Video ID</label>
+					  <input type="text" id="ytVideoId" placeholder="Video ID" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-2 focus:ring-brand-500 outline-none text-sm">
+					</div>
+				  </div>
+				</div>
+			  </div>
+
+			  <!-- 6. Gemini AI Settings -->
+			  <div id="sec-gemini" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm scroll-mt-24">
+				<div class="flex items-center gap-3 mb-4">
+				  <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center">
+					<i class="fa-solid fa-sparkles text-lg"></i>
+				  </div>
+				  <div>
+					<h3 class="text-lg font-bold">6. Gemini AI</h3>
+					<p class="text-xs text-slate-400">Atur kunci kecerdasan buatan Gemini AI.</p>
+				  </div>
+				</div>
+				<div class="space-y-4 border-t border-slate-100 dark:border-slate-800/80 pt-4">
+				  <div>
+					<label for="geminiApiKey" class="block text-xs font-semibold uppercase text-slate-400 mb-1.5">Gemini AI API Key</label>
+					<input type="password" id="geminiApiKey" placeholder="Masukkan Gemini API Key" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-2 focus:ring-brand-500 outline-none text-sm font-mono">
+				  </div>
+				</div>
+			  </div>
+
+			  <!-- 7. Firebase Settings -->
+			  <div id="sec-firebase" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm scroll-mt-24">
+				<div class="flex items-center gap-3 mb-4">
+				  <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center">
+					<i class="fa-solid fa-fire text-lg"></i>
+				  </div>
+				  <div>
+					<h3 class="text-lg font-bold">7. Firebase Config</h3>
+					<p class="text-xs text-slate-400">Masukkan payload konfigurasi Firebase Anda dalam format JSON.</p>
+				  </div>
+				</div>
+				<div class="space-y-4 border-t border-slate-100 dark:border-slate-800/80 pt-4">
+				  <div>
+					<label for="firebaseConfigText" class="block text-xs font-semibold uppercase text-slate-400 mb-1.5">JSON Config</label>
+					<textarea id="firebaseConfigText" rows="6" placeholder='{&#10;  "apiKey": "AIzaSy...",&#10;  "authDomain": "...",&#10;  "projectId": "...",&#10;  "storageBucket": "...",&#10;  "messagingSenderId": "...",&#10;  "appId": "..."&#10;}' class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:ring-2 focus:ring-brand-500 outline-none text-xs font-mono text-slate-800 dark:text-slate-100"></textarea>
+				  </div>
+				</div>
+			  </div>
+
+			</div>
+		  </div>
+		</section>
+
+		<!-- ==================== VIEW 3: PLACEHOLDERS ==================== -->
+		<section id="view-placeholder" class="hidden min-h-[450px] flex flex-col items-center justify-center text-center animate-in fade-in duration-200">
+		  <div class="w-20 h-20 bg-brand-500/10 text-brand-600 rounded-3xl flex items-center justify-center mb-6">
+			<i id="placeholderIcon" class="fa-solid fa-circle-question text-3xl"></i>
+		  </div>
+		  <h1 id="placeholderTitle" class="text-3xl font-extrabold tracking-tight">Modul Kustom</h1>
+		  <p id="placeholderDesc" class="text-slate-500 mt-2 max-w-md">Laman ini siap untuk dikembangkan dan disesuaikan.</p>
+		  <button onclick="switchView('home')" class="mt-6 px-5 py-2.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 font-semibold rounded-xl text-sm transition">
+			<i class="fa-solid fa-arrow-left mr-2"></i> Kembali ke Beranda
+		  </button>
+		</section>
+
+	  </main>
+
+	  <!-- ==================== FOOTER: HORIZONTAL PLAYLIST ==================== -->
+	  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 transition-colors py-6 mt-12">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+		  <!-- Playlist Header -->
+		  <div class="flex items-center justify-between mb-4">
+			<div class="flex items-center gap-2">
+			  <i class="fa-brands fa-youtube text-red-600 text-2xl animate-pulse"></i>
+			  <h4 class="font-bold text-sm sm:text-base tracking-tight text-slate-900 dark:text-white">YouTube Playlist Player (v3 API)</h4>
+			</div>
+			<span id="ytBadgeStatus" class="text-xs font-medium text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-full">Fallback Playlist</span>
+		  </div>
+
+		  <!-- Horizontal Slide Playlist Listview -->
+		  <div id="playlistContainer" class="flex gap-4 overflow-x-auto pb-4 hide-scrollbar snap-x snap-mandatory">
+			<!-- Dynamic Video Cards or Placeholders render here -->
+			<div class="flex items-center justify-center w-full py-8 text-slate-400 text-sm">
+			  <i class="fa-solid fa-circle-notch animate-spin mr-2"></i> Memuat Konten Video...
+			</div>
+		  </div>
+
+		</div>
+	  </footer>
+
+    </div>
+
+    <!-- ==================== MODAL: VIDEO PLAYER ==================== -->
+    <div id="videoModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm hidden animate-in fade-in duration-200">
+	  <div class="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-3xl p-4 sm:p-6 mx-4 relative overflow-hidden shadow-2xl">
+		<button id="btnCloseVideo" class="absolute top-4 right-4 bg-slate-100 dark:bg-slate-800 hover:bg-rose-500 hover:text-white p-2 rounded-xl text-slate-500 transition duration-150">
+		  <i class="fa-solid fa-xmark text-lg"></i>
+		</button>
+		<h3 id="videoModalTitle" class="text-lg font-bold mb-4 pr-10 text-slate-950 dark:text-white truncate">Memutar Video</h3>
+		<div class="aspect-video w-full rounded-2xl overflow-hidden bg-black shadow-inner">
+		  <iframe id="videoIframe" class="w-full h-full border-0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+		</div>
+	  </div>
+    </div>
+
+    <!-- ==================== CUSTOM TOAST NOTIFICATION SYSTEM ==================== -->
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- ==================== JS AND FIREBASE SCRIPT ==================== -->
+<script type="module">
+        // Import Firebase dari CDN Terpercaya
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // State Global & Fallbacks
+        let db = null;
+        let auth = null;
+        let user = null;
+        let activeTheme = 'dark'; // default theme
+
+        // Default Configurations Model
+        const defaultSettings = {
+            theme: 'dark',
+            flickrApiKey: '77ac26a174a292ddc1184b1f31f53a3e',
+            bloggerApiKey: 'AIzaSyBX2qsFdm1xcd-sR-oscut3n-916MRud-M',
+            bloggerBlogId: '8759801514278165118',
+            driveApiKey: 'AIzaSyCkw4LgC1Ti7N5HUr6DLKirjT0jUIM0tc8',
+            driveFileId: '1-1yQp2XVgylIFtZ6EIHiUbQX_aYd5u-S',
+            ytApiKey: 'AIzaSyDH3naOGPlOL175VfhVaRrzr0438MymNxM',
+            ytChannelId: 'UC2H7DyQrnr2RA4RSMF0B4ZA',
+            ytPlaylistId: 'PLxSscENEp7Ji_fy47KAfWelg9Hh1PxiBY',
+            ytVideoId: 'dQw4w9WgXcQ',
+            geminiApiKey: 'AQ.Ab8RN6LjzSUEnaAFrR-WR3yfMpo1gWyZ5iCZaGqham0Ol0GTfQ',
+            firebaseConfigText: '{"apiKey": "AIzaSyAIZwCXKW-tL3e6oDGOLLbrU9pD6lgrA6c","authDomain": "asepmo-article.firebaseapp.com", "projectId": "asepmo-article", "storageBucket": "asepmo-article.appspot.com","messagingSenderId": "622595990822", "appId": "1:622595990822:web:514b840a8cfb503dd34de7","measurementId": "G-HQV0SR7132"}'
+        };
+
+        // DOM Elements Configuration
+        const els = {
+            btnOpenDrawer: document.getElementById('btnOpenDrawer'),
+            btnCloseDrawer: document.getElementById('btnCloseDrawer'),
+            drawer: document.getElementById('drawer'),
+            drawerOverlay: document.getElementById('drawerOverlay'),
+            btnDropdown: document.getElementById('btnDropdown'),
+            headerDropdown: document.getElementById('headerDropdown'),
+            btnDownload: document.getElementById('btnDownload'),
+            drawerMenu: document.getElementById('drawerMenu'),
+            btnAuth: document.getElementById('btnAuth'),
+            authText: document.getElementById('authText'),
+            firebaseBadge: document.getElementById('firebaseBadge'),
+            toastContainer: document.getElementById('toastContainer'),
+            
+            // View Switcher Elements
+            viewHome: document.getElementById('view-home'),
+            viewSettings: document.getElementById('view-settings'),
+            viewPlaceholder: document.getElementById('view-placeholder'),
+            
+            // Form Elements
+            themeSwitch: document.getElementById('themeSwitch'),
+            flickrApiKey: document.getElementById('flickrApiKey'),
+            bloggerApiKey: document.getElementById('bloggerApiKey'),
+            bloggerBlogId: document.getElementById('bloggerBlogId'),
+            driveApiKey: document.getElementById('driveApiKey'),
+            driveFileId: document.getElementById('driveFileId'),
+            ytApiKey: document.getElementById('ytApiKey'),
+            ytChannelId: document.getElementById('ytChannelId'),
+            ytPlaylistId: document.getElementById('ytPlaylistId'),
+            ytVideoId: document.getElementById('ytVideoId'),
+            geminiApiKey: document.getElementById('geminiApiKey'),
+            firebaseConfigText: document.getElementById('firebaseConfigText'),
+            
+            // Actions
+            btnSaveSettings: document.getElementById('btnSaveSettings'),
+            btnResetSettings: document.getElementById('btnResetSettings'),
+
+            // Display Labels (Home page)
+            themeIcon: document.getElementById('themeIcon'),
+            lblThemeStatus: document.getElementById('lblThemeStatus'),
+            dispFlickrKey: document.getElementById('dispFlickrKey'),
+            dispBloggerKey: document.getElementById('dispBloggerKey'),
+            dispBlogId: document.getElementById('dispBlogId'),
+            dispDriveKey: document.getElementById('dispDriveKey'),
+            dispDriveFileId: document.getElementById('dispDriveFileId'),
+            dispYtKey: document.getElementById('dispYtKey'),
+            dispYtChannel: document.getElementById('dispYtChannel'),
+            dispYtPlaylist: document.getElementById('dispYtPlaylist'),
+            dispGeminiKey: document.getElementById('dispGeminiKey'),
+            dispFirebaseConfig: document.getElementById('dispFirebaseConfig'),
+
+            // Footer Playlist Elements
+            playlistContainer: document.getElementById('playlistContainer'),
+            ytBadgeStatus: document.getElementById('ytBadgeStatus'),
+
+            // Modal Video Elements
+            videoModal: document.getElementById('videoModal'),
+            btnCloseVideo: document.getElementById('btnCloseVideo'),
+            videoModalTitle: document.getElementById('videoModalTitle'),
+            videoIframe: document.getElementById('videoIframe'),
+        };
+
+        // --- TOAST NOTIFICATION SYSTEM ---
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `p-4 rounded-2xl shadow-xl flex items-center justify-between border text-sm pointer-events-auto transition duration-300 transform scale-90 opacity-0 translate-y-2`;
+            
+            let colorClasses = '';
+            let icon = '';
+            
+            if (type === 'success') {
+                colorClasses = 'bg-emerald-50 border-emerald-200 text-emerald-800 dark:bg-emerald-950/90 dark:border-emerald-800/50 dark:text-emerald-200';
+                icon = '<i class="fa-solid fa-circle-check text-emerald-500 mr-2"></i>';
+            } else if (type === 'error') {
+                colorClasses = 'bg-rose-50 border-rose-200 text-rose-800 dark:bg-rose-950/90 dark:border-rose-800/50 dark:text-rose-200';
+                icon = '<i class="fa-solid fa-circle-xmark text-rose-500 mr-2"></i>';
+            } else {
+                colorClasses = 'bg-brand-50 border-brand-200 text-brand-800 dark:bg-slate-900/90 dark:border-brand-800/50 dark:text-brand-200';
+                icon = '<i class="fa-solid fa-info-circle text-brand-500 mr-2"></i>';
+            }
+
+            toast.innerHTML = `
+                <div class="flex items-center">
+                    ${icon}
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            els.toastContainer.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => {
+                toast.classList.remove('scale-90', 'opacity-0', 'translate-y-2');
+                toast.classList.add('scale-100', 'opacity-100', 'translate-y-0');
+            }, 10);
+
+            // Auto Close after 4s
+            setTimeout(() => {
+                toast.classList.add('scale-90', 'opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // --- DRAWER ACTIONS ---
+        function toggleDrawer(isOpen) {
+            if (isOpen) {
+                els.drawer.classList.remove('-translate-x-full');
+                els.drawerOverlay.classList.remove('hidden');
+                setTimeout(() => {
+                    els.drawerOverlay.classList.remove('opacity-0');
+                    els.drawerOverlay.classList.add('opacity-100');
+                }, 10);
+            } else {
+                els.drawer.classList.add('-translate-x-full');
+                els.drawerOverlay.classList.remove('opacity-100');
+                els.drawerOverlay.classList.add('opacity-0');
+                setTimeout(() => {
+                    els.drawerOverlay.classList.add('hidden');
+                }, 300);
+            }
+        }
+
+        els.btnOpenDrawer.addEventListener('click', () => toggleDrawer(true));
+        els.btnCloseDrawer.addEventListener('click', () => toggleDrawer(false));
+        els.drawerOverlay.addEventListener('click', () => toggleDrawer(false));
+
+        // --- OPTIONS DROPDOWN ---
+        els.btnDropdown.addEventListener('click', (e) => {
+            e.stopPropagation();
+            els.headerDropdown.classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', () => {
+            els.headerDropdown.classList.add('hidden');
+        });
+
+        // --- VIEW SWITCHER & NAVIGATION ---
+        function switchView(target) {
+            const menuItems = document.querySelectorAll('.menu-item');
+            
+            // Reset active styles on drawer
+            menuItems.forEach(item => {
+                const targetAttr = item.getAttribute('data-target');
+                if (targetAttr === target) {
+                    item.className = "menu-item flex items-center gap-4 w-full px-4 py-3 rounded-xl text-left font-medium transition text-brand-600 bg-brand-50 dark:bg-brand-950/50 dark:text-brand-400";
+                } else {
+                    item.className = "menu-item flex items-center gap-4 w-full px-4 py-3 rounded-xl text-left font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition";
+                }
+            });
+
+            // Toggle view panels
+            els.viewHome.classList.add('hidden');
+            els.viewSettings.classList.add('hidden');
+            els.viewPlaceholder.classList.add('hidden');
+
+            if (target === 'home') {
+                els.viewHome.classList.remove('hidden');
+            } else if (target === 'settings') {
+                els.viewSettings.classList.remove('hidden');
+            } else {
+                // Set Up Simulated Pages
+                els.viewPlaceholder.classList.remove('hidden');
+                
+                const formatTitle = target.charAt(0).toUpperCase() + target.slice(1);
+                document.getElementById('placeholderTitle').innerText = formatTitle;
+                
+                let iconClass = 'fa-circle-question';
+                let desc = 'Seksi ini sedang dalam perancangan. Seluruh parameter konfigurasi yang Anda ubah akan terintegrasi langsung di sini.';
+                
+                switch(target) {
+                    case 'about':
+                        iconClass = 'fa-circle-info';
+                        desc = 'AsepMo Settings Dashboard v2.6. Platform pengatur database dinamis.';
+                        break;
+                    case 'gallery':
+                        iconClass = 'fa-images';
+                        desc = 'Menghubungkan visualisasi Flickr Media Engine milik Anda.';
+                        break;
+                    case 'service':
+                        iconClass = 'fa-handshake-angle';
+                        desc = 'Uraian layanan mikro API, integrasi server lokal dan awan.';
+                        break;
+                    case 'blog':
+                        iconClass = 'fa-newspaper';
+                        desc = 'Berita & Artikel dinamis terintegrasi API Blogger.';
+                        break;
+                    case 'contact':
+                        iconClass = 'fa-envelope';
+                        desc = 'Kirim feedback, pesan terintegrasi firebase langsung.';
+                        break;
+                    case 'aitools':
+                        iconClass = 'fa-robot';
+                        desc = 'Gunakan Model Gemini AI Anda untuk meluncurkan asisten virtual pribadi.';
+                        break;
+                    case 'filetree':
+                        iconClass = 'fa-folder-tree';
+                        desc = 'Eksplorasi hierarki direktori Google Drive secara visual.';
+                        break;
+                }
+                
+                document.getElementById('placeholderIcon').className = `fa-solid ${iconClass} text-3xl`;
+                document.getElementById('placeholderDesc').innerText = desc;
+            }
+            toggleDrawer(false);
+        }
+
+        // Attach event listeners to all menu elements
+        document.querySelectorAll('[data-target]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const target = btn.getAttribute('data-target');
+                switchView(target);
+            });
+        });
+
+        // Window level bind so onclick inline attributes function
+        window.switchView = switchView;
+
+        // --- CONFIGURATION MANAGEMENT (LOCAL STORAGE & FIREBASE) ---
+        
+        // 1. Theme Dark/Light Management
+        function applyTheme(theme) {
+            activeTheme = theme;
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                els.themeSwitch.checked = true;
+                els.themeIcon.className = "fa-solid fa-moon text-xl text-indigo-400";
+                els.lblThemeStatus.innerText = "Dark Mode";
+            } else {
+                document.documentElement.classList.remove('dark');
+                els.themeSwitch.checked = false;
+                els.themeIcon.className = "fa-solid fa-sun text-xl text-amber-500";
+                els.lblThemeStatus.innerText = "Light Mode";
+            }
+        }
+
+        els.themeSwitch.addEventListener('change', (e) => {
+            const desiredTheme = e.target.checked ? 'dark' : 'light';
+            applyTheme(desiredTheme);
+            saveSingleSetting('theme', desiredTheme);
+        });
+
+        // Load Settings from LocalStorage
+        function loadLocalSettings() {
+            try {
+                const raw = localStorage.getItem('asepmo_settings');
+                if (raw) {
+                    return JSON.parse(raw);
+                }
+            } catch (err) {
+                console.error("Gagal membaca LocalStorage: ", err);
+            }
+            return defaultSettings;
+        }
+
+        // Save settings locally
+        function saveLocalSettings(settings) {
+            localStorage.setItem('asepmo_settings', JSON.stringify(settings));
+        }
+
+        // Apply visual updates to DOM
+        function renderSettingsToUI(settings) {
+            // Apply Theme
+            applyTheme(settings.theme || 'dark');
+
+            // Fill inputs on Settings Page
+            els.flickrApiKey.value = settings.flickrApiKey || '';
+            els.bloggerApiKey.value = settings.bloggerApiKey || '';
+            els.bloggerBlogId.value = settings.bloggerBlogId || '';
+            els.driveApiKey.value = settings.driveApiKey || '';
+            els.driveFileId = settings.driveFileId || ''; // set value
+            if (document.getElementById('driveFileId')) {
+                document.getElementById('driveFileId').value = settings.driveFileId || '';
+            }
+            els.ytApiKey.value = settings.ytApiKey || '';
+            els.ytChannelId.value = settings.ytChannelId || '';
+            els.ytPlaylistId.value = settings.ytPlaylistId || '';
+            els.ytVideoId.value = settings.ytVideoId || '';
+            els.geminiApiKey.value = settings.geminiApiKey || '';
+            els.firebaseConfigText.value = settings.firebaseConfigText || '';
+
+            // Update Home Page Labels (Masked security for passwords)
+            els.dispFlickrKey.innerText = settings.flickrApiKey ? '• • • • • • • • • • • •' : 'Belum diatur';
+            els.dispBloggerKey.innerText = settings.bloggerApiKey ? '• • • • • • • • • • • •' : 'Belum diatur';
+            els.dispBlogId.innerText = settings.bloggerBlogId || 'Belum diatur';
+            els.dispDriveKey.innerText = settings.driveApiKey ? '• • • • • • • • • • • •' : 'Belum diatur';
+            els.dispDriveFileId.innerText = settings.driveFileId || 'Belum diatur';
+            els.dispYtKey.innerText = settings.ytApiKey ? '• • • • • • • •' : 'Belum diatur';
+            els.dispYtChannel.innerText = settings.ytChannelId || 'Belum diatur';
+            els.dispYtPlaylist.innerText = settings.ytPlaylistId || 'Belum diatur';
+            els.dispGeminiKey.innerText = settings.geminiApiKey ? '• • • • • • • • • • • •' : 'Belum diatur';
+            els.dispFirebaseConfig.innerText = settings.firebaseConfigText ? settings.firebaseConfigText : 'Belum dikonfigurasi';
+
+            // Re-render YouTube playlist with new configurations
+            renderYoutubePlaylist(settings);
+        }
+
+        // Save all settings at once (From user save click)
+        async function handleSaveSettings() {
+            const currentLocal = loadLocalSettings();
+            
+            const updated = {
+                theme: activeTheme,
+                flickrApiKey: els.flickrApiKey.value.trim(),
+                bloggerApiKey: els.bloggerApiKey.value.trim(),
+                bloggerBlogId: els.bloggerBlogId.value.trim(),
+                driveApiKey: els.driveApiKey.value.trim(),
+                driveFileId: document.getElementById('driveFileId') ? document.getElementById('driveFileId').value.trim() : '',
+                ytApiKey: els.ytApiKey.value.trim(),
+                ytChannelId: els.ytChannelId.value.trim(),
+                ytPlaylistId: els.ytPlaylistId.value.trim(),
+                ytVideoId: els.ytVideoId.value.trim(),
+                geminiApiKey: els.geminiApiKey.value.trim(),
+                firebaseConfigText: els.firebaseConfigText.value.trim()
+            };
+
+            // Save to LocalStorage
+            saveLocalSettings(updated);
+            renderSettingsToUI(updated);
+            showToast("Setelan disimpan di Local Storage!", "success");
+
+            // Save to Firebase Firestore if connected
+            if (db && user) {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : '1:622595990822:web:514b840a8cfb503dd34de7';
+                try {
+                    // RULE 1: /artifacts/{appId}/users/{userId}/{collectionName}
+                    const userConfigDoc = doc(db, 'artifacts', appId, 'users', user.uid, 'settings', 'config');
+                    await setDoc(userConfigDoc, updated, { merge: true });
+                    showToast("Setelan berhasil disinkronkan ke Firebase!", "success");
+                } catch (err) {
+                    console.error("Gagal menyinkronkan ke Firebase: ", err);
+                    showToast("Gagal sinkronisasi cloud: " + err.message, "error");
+                }
+            } else {
+                showToast("Setelan hanya disimpan lokal (Koneksi Firebase Belum Siap)", "info");
+            }
+        }
+
+        // Quick save single setting (like theme toggle)
+        async function saveSingleSetting(key, val) {
+            const current = loadLocalSettings();
+            current[key] = val;
+            saveLocalSettings(current);
+            
+            // Mask updates to home UI labels
+            if (key === 'theme') {
+                els.lblThemeStatus.innerText = val === 'dark' ? "Dark Mode" : "Light Mode";
+            }
+
+            if (db && user) {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : '1:622595990822:web:514b840a8cfb503dd34de7';
+                try {
+                    const userConfigDoc = doc(db, 'artifacts', appId, 'users', user.uid, 'settings', 'config');
+                    await setDoc(userConfigDoc, { [key]: val }, { merge: true });
+                } catch (err) {
+                    console.error("Sinkronisasi cloud gagal: ", err);
+                }
+            }
+        }
+
+        // Reset Settings to Defaults
+        async function handleResetSettings() {
+            if (confirm("Apakah Anda yakin ingin menghapus semua konfigurasi?")) {
+                saveLocalSettings(defaultSettings);
+                renderSettingsToUI(defaultSettings);
+                showToast("Pengaturan berhasil di-reset!", "success");
+
+                if (db && user) {
+                    const appId = typeof __app_id !== 'undefined' ? __app_id : '1:622595990822:web:514b840a8cfb503dd34de7';
+                    try {
+                        const userConfigDoc = doc(db, 'artifacts', appId, 'users', user.uid, 'settings', 'config');
+                        await setDoc(userConfigDoc, defaultSettings);
+                        showToast("Koneksi Cloud di-reset!", "success");
+                    } catch (err) {
+                        console.error("Gagal mereset Cloud: ", err);
+                    }
+                }
+            }
+        }
+
+        els.btnSaveSettings.addEventListener('click', handleSaveSettings);
+        els.btnResetSettings.addEventListener('click', handleResetSettings);
+
+        // Download Config File
+        els.btnDownload.addEventListener('click', () => {
+            const settings = loadLocalSettings();
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(settings, null, 2));
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href",     dataStr);
+            dlAnchorElem.setAttribute("download", "asepmo_settings_config.json");
+            dlAnchorElem.click();
+            showToast("Konfigurasi diunduh ke gawai Anda", "success");
+        });
+
+        // --- YOUTUBE PLAYLIST COMPONENT (FOOTER LISTVIEW) ---
+        const dummyPlaylist = [
+            { id: "M7lc1UVf-VE", title: "YouTube Developer Platform Introduction", channel: "Google Developers", thumb: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&auto=format&fit=crop&q=60" },
+            { id: "dQw4w9WgXcQ", title: "Rick Astley - Never Gonna Give You Up (Official Video)", channel: "Rick Astley", thumb: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&auto=format&fit=crop&q=60" },
+            { id: "tgbNymZ7vqY", title: "Queen - Bohemian Rhapsody (Official Video)", channel: "Queen", thumb: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500&auto=format&fit=crop&q=60" },
+            { id: "9bZkp7q19f0", title: "PSY - GANGNAM STYLE(강남스타일) M/V", channel: "officialpsy", thumb: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=500&auto=format&fit=crop&q=60" }
+        ];
+
+        async function renderYoutubePlaylist(settings) {
+            const hasAPI = settings.ytApiKey && settings.ytPlaylistId;
+            els.playlistContainer.innerHTML = '';
+
+            if (hasAPI) {
+                try {
+                    els.ytBadgeStatus.innerText = "Live API Terkoneksi";
+                    els.ytBadgeStatus.className = "text-xs font-semibold text-emerald-500 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20";
+                    
+                    const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=8&playlistId=${settings.ytPlaylistId}&key=${settings.ytApiKey}`;
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error("Gagal mengambil data playlist dari Google API.");
+                    
+                    const data = await res.json();
+                    
+                    if (data.items && data.items.length > 0) {
+                        data.items.forEach(item => {
+                            const snippet = item.snippet;
+                            const videoId = snippet.resourceId.videoId;
+                            const title = snippet.title;
+                            const channel = snippet.channelTitle;
+                            const thumb = snippet.thumbnails?.medium?.url || snippet.thumbnails?.high?.url || 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500';
+                            
+                            createVideoCard(videoId, title, channel, thumb);
+                        });
+                        return;
+                    }
+                } catch (e) {
+                    console.warn("YouTube API error, falling back to offline dummy items: ", e);
+                }
+            }
+
+            // Fallback rendering
+            els.ytBadgeStatus.innerText = "Offline Playlist (Fallback)";
+            els.ytBadgeStatus.className = "text-xs font-semibold text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20";
+            
+            dummyPlaylist.forEach(vid => {
+                createVideoCard(vid.id, vid.title, vid.channel, vid.thumb);
+            });
+        }
+
+        function createVideoCard(id, title, channel, thumb) {
+            const card = document.createElement('div');
+            card.className = "min-w-[260px] sm:min-w-[320px] w-[260px] sm:w-[320px] snap-start bg-slate-50 dark:bg-slate-950 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm cursor-pointer hover:shadow-md transition group duration-200 flex flex-col";
+            card.onclick = () => openVideoPlayer(id, title);
+
+            card.innerHTML = `
+                <div class="aspect-video w-full relative overflow-hidden bg-slate-900">
+                    <img src="${thumb}" alt="${title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-200">
+                        <div class="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center text-white text-lg shadow-lg">
+                            <i class="fa-solid fa-play"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-3.5 flex-1 flex flex-col justify-between">
+                    <h5 class="font-bold text-xs sm:text-sm line-clamp-2 leading-snug text-slate-800 dark:text-white group-hover:text-brand-500 transition duration-150">${title}</h5>
+                    <p class="text-[11px] text-slate-400 mt-2 flex items-center gap-1.5 font-medium">
+                        <i class="fa-solid fa-circle-user text-slate-400"></i> ${channel}
+                    </p>
+                </div>
+            `;
+            els.playlistContainer.appendChild(card);
+        }
+
+        // --- VIDEO PLAYER MODAL ---
+        function openVideoPlayer(id, title) {
+            els.videoModalTitle.innerText = title;
+            els.videoIframe.src = `https://www.youtube.com/embed/${id}?autoplay=1`;
+            els.videoModal.classList.remove('hidden');
+        }
+
+        function closeVideoPlayer() {
+            els.videoIframe.src = '';
+            els.videoModal.classList.add('hidden');
+        }
+
+        els.btnCloseVideo.addEventListener('click', closeVideoPlayer);
+        els.videoModal.addEventListener('click', (e) => {
+            if (e.target === els.videoModal) closeVideoPlayer();
+        });
+
+        // --- INITIAL FIREBASE SETUP ---
+        async function setupFirebase() {
+            // Cek ketersediaan Firebase Config global
+            let config = null;
+            if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                try {
+                    config = JSON.parse(__firebase_config);
+                } catch (e) {
+                    console.error("Gagal parse global config: ", e);
+                }
+            }
+
+            // Jika global config tidak ada, coba baca dari LocalStorage yang diinput user
+            if (!config) {
+                const settings = loadLocalSettings();
+                if (settings.firebaseConfigText) {
+                    try {
+                        config = JSON.parse(settings.firebaseConfigText);
+                    } catch (e) {
+                        console.warn("User input Firebase Config tidak valid JSON: ", e);
+                    }
+                }
+            }
+
+            if (!config) {
+                // Informasikan Firebase dalam mode fallback lokal
+                els.firebaseBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500"></span> Firebase Offline`;
+                els.firebaseBadge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-500 border border-rose-500/20";
+                
+                // Load Local Settings saja
+                const settings = loadLocalSettings();
+                renderSettingsToUI(settings);
+                return;
+            }
+
+            try {
+                const app = initializeApp(config);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                // RULE 3: Otorisasi sebelum melakukan query
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                // Set up auth state change listener
+                onAuthStateChanged(auth, (loggedUser) => {
+                    user = loggedUser;
+                    if (user) {
+                        els.firebaseBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Firebase Online`;
+                        els.firebaseBadge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20";
+                        els.authText.innerText = "Logout (" + user.uid.substring(0, 6) + "...)";
+                        
+                        // Tarik data dari Firestore secara real-time
+                        subscribeToFirebaseSettings();
+                    } else {
+                        els.firebaseBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> Tamu (Anonim)`;
+                        els.authText.innerText = "Login Sesi";
+                    }
+                });
+
+            } catch (err) {
+                console.error("Kesalahan inisialisasi Firebase: ", err);
+                els.firebaseBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500"></span> Koneksi Error`;
+                els.firebaseBadge.className = "inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-500 border border-rose-500/20";
+                
+                const settings = loadLocalSettings();
+                renderSettingsToUI(settings);
+            }
+        }
+
+        // Ambil Data Firestore (RULE 1 & RULE 2)
+        function subscribeToFirebaseSettings() {
+            if (!db || !user) return;
+            const appId = typeof __app_id !== 'undefined' ? __app_id : '1:622595990822:web:514b840a8cfb503dd34de7';
+            
+            // Menggunakan path terstruktur user private (RULE 1)
+            const configDocRef = doc(db, 'artifacts', appId, 'users', user.uid, 'settings', 'config');
+
+            onSnapshot(configDocRef, (snap) => {
+                if (snap.exists()) {
+                    const cloudData = snap.data();
+                    // Merge local dengan cloud data
+                    const merged = { ...loadLocalSettings(), ...cloudData };
+                    saveLocalSettings(merged);
+                    renderSettingsToUI(merged);
+                } else {
+                    // Dokumen belum ada di cloud, kirim data lokal ke cloud
+                    const settings = loadLocalSettings();
+                    setDoc(configDocRef, settings);
+                    renderSettingsToUI(settings);
+                }
+            }, (error) => {
+                console.error("Gagal mendengarkan snapshot Firebase: ", error);
+            });
+        }
+
+        // Inisialisasi awal aplikasi saat window termuat
+        window.onload = function() {
+            // Load Local config terlebih dahulu agar user tidak melihat lag/kedipan layar kosong
+            const current = loadLocalSettings();
+            renderSettingsToUI(current);
+            
+            // Hubungkan dengan Firebase (Lokal / Awan)
+            setupFirebase();
+        }
+
+        // Login Sesi Toggle
+        els.btnAuth.addEventListener('click', async () => {
+            if (auth && user) {
+                await auth.signOut();
+                showToast("Sesi dinonaktifkan. Data disimpan lokal.", "info");
+            } else if (auth) {
+                try {
+                    await signInAnonymously(auth);
+                    showToast("Login Sesi Anonim Berhasil!", "success");
+                } catch (e) {
+                    showToast("Gagal Login Sesi: " + e.message, "error");
+                }
+            } else {
+                showToast("Firebase Offline. Gunakan Local Storage saja.", "info");
+            }
+        });
+
+</script>
+  </body>
+</html>
