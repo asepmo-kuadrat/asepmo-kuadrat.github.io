@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Halaman Utama</title>
+</head>
+<body>
+    <h2>Daftar Video</h2>
+    <a href="player.html?videoId=V_001&title=Tutorial JavaScript">Tonton Tutorial JS</a><br><br>
+
+    <button onclick="bukaPlayer('V_002', 'Belajar HTML')">Tonton Belajar HTML</button>
+
+    <script>
+        function bukaPlayer(id, judul) {
+            // Encode URI komponen agar spasi atau karakter khusus aman di URL
+            const url = `player.html?videoId=${id}&title=${encodeURIComponent(judul)}`;
+            // Pindah ke halaman player
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html>
