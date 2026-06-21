@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Video Player</title>
+</head>
+<body>
+    <h2>Video Player</h2>
+    <p><strong>ID Video:</strong> <span id="tampilId"></span></p>
+    <p><strong>Judul:</strong> <span id="tampilJudul"></span></p>
+
+    <script>
+    // 1. Cek apakah query string ada di URL
+    //alert("URL saat ini adalah: " + window.location.search);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const videoId = urlParams.get('videoId');
+    const judulVideo = urlParams.get('title');
+
+    // 2. Cek apakah variabel berhasil diambil
+    //alert("Video ID yang ditangkap: " + videoId + "\nJudul yang ditangkap: " + judulVideo);
+
+    // 3. Coba masukkan ke HTML
+    if (videoId && judulVideo) {
+        const elemenId = document.getElementById('tampilId');
+        const elemenJudul = document.getElementById('tampilJudul');
+
+        if (elemenId && elemenJudul) {
+            elemenId.innerText = videoId;
+            elemenJudul.innerText = judulVideo;
+            //alert("Berhasil dimasukkan ke HTML!");
+        } else {
+            alert("ERROR: Elemen dengan ID 'tampilId' atau 'tampilJudul' tidak ditemukan di HTML!");
+        }
+    } else {
+        alert("Data dari URL kosong. Pastikan link di index.html sudah benar.");
+    }
+</script>
+</body>
+</html>
