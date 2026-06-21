@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethereal | Merangkul Kehidupan Abnormal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        'brand-dark': '#1a1a1a',
+                        'brand-light': '#fdfbf7',
+                        'brand-accent': '#8b7355',
+                        'brand-gray': '#e5e5e5'
+                    }
+                }
+            }
+        }
+</script>
+<style>
+        body {
+            background-color: #fdfbf7;
+            color: #1a1a1a;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .drop-cap::first-letter {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            line-height: 1;
+            float: left;
+            margin-right: 0.15em;
+            margin-top: -0.1em;
+            color: #8b7355;
+            font-weight: 700;
+        }
+
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+		
+		/* Custom scrollbar for the playlist (Dark Mode) */
+        .playlist-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .playlist-scroll::-webkit-scrollbar-track {
+            background: #1f2937; /* Tailwind gray-800 */
+            border-radius: 4px;
+        }
+        .playlist-scroll::-webkit-scrollbar-thumb {
+            background: #4b5563; /* Tailwind gray-600 */
+            border-radius: 4px;
+        }
+        .playlist-scroll::-webkit-scrollbar-thumb:hover {
+            background: #6b7280; /* Tailwind gray-500 */
+        }
+        
+        /* Active item style (Dark Mode) */
+        .playlist-item.active {
+            background-color: #374151; /* Tailwind gray-700 */
+            border-left: 4px solid #ef4444; /* Tailwind red-500 */
+        }
+</style>
+  </head>
+  <body class="font-sans font-light leading-relaxed">
+
+    <nav class="fixed w-full z-50 transition-all duration-300" id="navbar">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="flex justify-between items-center h-20">
+		  <div class="flex-shrink-0">
+			<a id="title" href="#" class="font-serif text-2xl font-bold tracking-widest text-white">ETHEREAL<span class="text-brand-accent">.</span></a>
+		  </div>
+		  
+		  <div class="md:hidden flex items-center">
+			<button id="mobile-menu-btn" class="text-white focus:outline-none">
+			  <i data-lucide="home" class="w-6 h-6"></i>
+			</button>
+		  </div>
+		</div>
+	  </div>
+    </nav>
+
+    <header class="relative h-screen flex items-center justify-center overflow-hidden">
+	  <!-- Background Image Fallback -->
+	  <div class="absolute inset-0 z-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');">
+		<div class="absolute inset-0 bg-brand-light bg-opacity-30 backdrop-blur-sm"></div>
+	  </div>
+
+	  <div class="relative z-10 text-center px-4 max-w-4xl mx-auto fade-in">
+		<p class="text-sm md:text-base uppercase tracking-[0.3em] mb-4 text-white font-semibold">Editorial Eksklusif</p>
+		<h1 class="text-5xl md:text-7xl font-serif text-white mb-6 leading-tight">Estetika Dalam <br> Ketidaklaziman</h1>
+		<p class="text-lg md:text-xl font-light max-w-2xl mx-auto mb-10 text-slate-200">Mendefinisikan ulang makna kehidupan yang 'normal' dan menemukan keindahan dalam ritme yang berbeda.</p>
+		<a href="#article" class="inline-block border border-white text-white px-8 py-3 text-sm uppercase tracking-widest hover:bg-brand-dark hover:text-white transition-all duration-300">Baca Selengkapnya</a>
+	  </div>
+
+	  <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce z-10">
+		<a href="#article" class="text-white opacity-50 hover:opacity-100 transition-opacity">
+		  <i data-lucide="chevron-down" class="w-8 h-8"></i>
+		</a>
+	  </div>
+    </header>
+
+    <main id="article" class="py-24 bg-brand-light">
+	  <article class="max-w-3xl mx-auto px-6 sm:px-8 lg:px-0">
+
+		<header class="text-center mb-16 fade-in">
+		  <div class="flex items-center justify-center space-x-4 mb-6 text-sm text-gray-500 uppercase tracking-widest">
+			<span>Gaya Hidup</span>
+			<span class="w-1 h-1 bg-brand-accent rounded-full"></span>
+			<span>21 Juni 2026</span>
+		  </div>
+		  <h2 class="text-4xl md:text-5xl font-serif font-bold mb-8">Romantisasi Kehidupan Abnormal: Seni Merangkul Sisi Absurd Realitas</h2>
+		  <div class="flex items-center justify-center space-x-3">
+			<img src="https://ui-avatars.com/api/?name=E+T&background=8b7355&color=fff&rounded=true" alt="Penulis" class="w-10 h-10 rounded-full">
+			<div class="text-left">
+			  <p class="font-semibold text-sm">Oleh Tim Redaksi Ethereal</p>
+			  <p class="text-xs text-gray-500">Waktu baca: 8 menit</p>
+			</div>
+		  </div>
+		</header>
+
+		<div class="prose prose-lg max-w-none text-gray-800 leading-loose fade-in">
+		  <p class="drop-cap">Dalam lanskap sosial yang terobsesi dengan keseragaman, kata "abnormal" sering kali dilontarkan sebagai sebuah celaan. Ia menjadi label yang disematkan pada mereka yang menyimpang dari garis lurus yang telah ditarik secara arbiter oleh masyarakat. Namun, jika kita menelisik lebih dalam, bukankah gagasan tentang 'kenormalan' itu sendiri hanyalah ilusi statistik? Sebuah ilusi yang dirancang untuk menjaga ketertiban, namun seringkali mengorbankan individualitas.</p>
+		  <p class="mt-8">Kehidupan yang dianggap normal—sekolah, bekerja jam 9 hingga 5, menikah, memiliki rumah berpagar putih, dan pensiun—adalah cetak biru yang tidak lagi sesuai untuk semua orang. Di era modern ini, kita menyaksikan pergeseran paradigma yang elegan menuju apa yang mungkin disebut sebagian orang sebagai <em>"kehidupan abnormal"</em>. Ini bukan tentang kekacauan atau patologi, melainkan tentang penolakan sadar terhadap rutinitas yang monoton dan keberanian untuk merancang kehidupan sesuai syarat kita sendiri.</p>
+
+		  <blockquote class="my-12 border-l-4 border-brand-accent pl-6 italic font-serif text-2xl text-gray-600">"Mereka yang menari dianggap gila oleh mereka yang tidak bisa mendengar musiknya." 
+			<footer class="text-sm font-sans font-normal mt-2 text-gray-400">— Friedrich Nietzsche</footer>
+		  </blockquote>
+
+		  <h3 class="text-3xl font-serif font-bold mt-12 mb-6">Mendefinisikan Ulang Makna 'Sukses'</h3>
+		  <p>Langkah pertama dalam merangkul gaya hidup abnormal adalah membongkar definisi tradisional tentang kesuksesan. Sukses tidak lagi diukur secara eksklusif dari jabatan di perusahaan multinasional atau saldo di rekening bank. Bagi pelaku gaya hidup ini, kesuksesan diukur dari tingkat otonomi, kedalaman pengalaman, dan kesejahteraan mental.</p>
+		  <p class="mt-6">Mereka adalah para nomaden digital yang menukar kantor bersekat dengan kedai kopi pinggir pantai di Bali atau pegunungan Alpen. Mereka adalah seniman yang memilih untuk hidup minimalis di van yang dimodifikasi demi mengejar karya tanpa batas. Mereka adalah pasangan yang memutuskan untuk tidak memiliki anak (childfree) untuk mendedikasikan hidup pada filantropi atau penjelajahan dunia. Secara statistik, mereka adalah anomali, namun secara eksistensial, mereka mungkin adalah orang-orang yang paling 'hidup'.</p>
+
+		  <div class="mt-6"> 
+		     <figure class="my-16 -mx-6 sm:-mx-12 lg:-mx-24">
+			   <div class="h-96 w-full parallax-bg" style="background-image: url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80');"></div>
+			   <figcaption class="text-center text-sm text-gray-500 mt-4 italic">Menemukan kebebasan di luar batas-batas konvensional. Kehidupan adalah kanvas kosong, <br/>bukan naskah yang sudah ditulis.</figcaption>
+		     </figure>
+		  </div>
+		  <h3 class="text-3xl font-serif font-bold mt-12 mb-6">Estetika dalam Kesendirian dan Eksentrisitas</h3>
+		  <p>Gaya hidup abnormal sering kali melibatkan tingkat isolasi sukarela atau setidaknya, penarikan diri dari hiruk-pikuk komunal yang dangkal. Dalam kesendirian ini, terdapat estetika yang mendalam. Sebuah ruang untuk introspeksi tanpa filter ekspektasi orang lain.</p>
+		  <p class="mt-6">Orang-orang dengan gaya hidup ini sering kali mengembangkan minat atau kebiasaan yang eksentrik. Mungkin itu obsesi pada pengumpulan artefak kuno, mendalami filsafat stoikisme di tengah era hedonisme, atau memilih cara berpakaian yang menentang tren demi ekspresi diri murni. Keeksentrikan ini bukan untuk mencari perhatian, melainkan manifestasi dari keaslian (authenticity). Dalam dunia di mana segala sesuatu diproduksi secara massal, menjadi 'aneh' secara autentik adalah kemewahan tertinggi.</p>
+		  <h3 class="text-3xl font-serif font-bold mt-12 mb-6">Tantangan: Harga Sebuah Kebebasan</h3>
+
+		  <p>Tentu saja, kehidupan abnormal tidak selalu berjalan di atas karpet merah. Ia menuntut harga yang harus dibayar: kesalahpahaman, alienasi sesaat, dan terkadang ketidakstabilan. Keluarga mungkin tidak memahami pilihan Anda, teman lama mungkin menjauh karena tidak lagi memiliki resonansi yang sama.</p>
+		  <p class="mt-6">Namun, bagi mereka yang telah merasakan udara segar di luar zona 'kenormalan', harga tersebut sangat sepadan. Menjalani hidup yang abnormal berarti Anda adalah kurator utama dari eksistensi Anda sendiri. Anda menyeleksi siapa yang masuk ke dalam lingkaran Anda, pengalaman apa yang Anda konsumsi, dan nilai apa yang Anda yakini, bukan karena masyarakat mendiktekannya, melainkan karena hal itu selaras dengan jiwa Anda.</p>
+
+		  <div class="mt-16 pt-8 border-t border-brand-gray text-center">
+			<h4 class="font-serif text-2xl italic mb-4">"Normalitas adalah jalan aspal: nyaman untuk berjalan, tetapi tidak ada bunga yang tumbuh di atasnya."</h4>
+			<p class="text-sm font-semibold tracking-widest uppercase">— Vincent van Gogh</p>
+		  </div>
+		</div>
+
+		<div class="mt-12 flex flex-col md:flex-row justify-between items-center fade-in">
+		  <div class="flex space-x-2 mb-4 md:mb-0">
+			<span class="px-3 py-1 bg-gray-100 text-xs uppercase tracking-wider text-gray-600 rounded-full">Gaya Hidup</span>
+			<span class="px-3 py-1 bg-gray-100 text-xs uppercase tracking-wider text-gray-600 rounded-full">Filosofi</span>
+			<span class="px-3 py-1 bg-gray-100 text-xs uppercase tracking-wider text-gray-600 rounded-full">Eksistensialisme</span>
+		  </div>
+		  <div class="flex items-center space-x-4">
+			<span class="text-sm uppercase tracking-widest text-gray-500">Bagikan:</span>
+			<a href="#" class="text-gray-400 hover:text-brand-dark transition-colors"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+			<a href="#" class="text-gray-400 hover:text-brand-dark transition-colors"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+			<a href="#" class="text-gray-400 hover:text-brand-dark transition-colors"><i data-lucide="link" class="w-5 h-5"></i></a>
+		  </div>
+		</div>
+	  </article>
+    </main>
+
+    <!--<section class="py-24 bg-brand-dark text-white text-center px-4">
+	  <div class="max-w-2xl mx-auto fade-in">
+		<h2 class="text-3xl md:text-4xl font-serif mb-4">Bergabung dalam Kurasi Ethereal</h2>
+		<p class="font-light text-gray-400 mb-8">Dapatkan inspirasi gaya hidup eksklusif, esai mendalam, dan undangan acara tertutup langsung di kotak masuk Anda seminggu sekali.</p>
+		<form class="flex flex-col sm:flex-row justify-center max-w-md mx-auto">
+		  <input type="email" placeholder="Alamat Email Anda" class="px-4 py-3 bg-transparent border border-gray-600 focus:outline-none focus:border-brand-accent text-white flex-grow mb-4 sm:mb-0 sm:mr-2" required>
+		  <button type="submit" class="px-8 py-3 bg-brand-accent text-white uppercase tracking-widest text-sm hover:bg-opacity-90 transition-colors">Berlangganan</button>
+		</form>
+	  </div>
+    </section>-->
+
+    <footer class="bg-[#111111] text-gray-400 py-12 border-t border-gray-800">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">		
+		<!--<div class="w-full max-w-4xl mx-auto p-4">
+		  <iframe class="w-full aspect-video rounded-xl shadow-xl border border-gray-200" src="https://www.youtube.com/embed/videoseries?list=PLiKkX4KV1eFKBUbzyeaZzHA-u3mm25Imb" title="Ethereal Playlist" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin"allowfullscreen>
+		  </iframe>
+		</div>-->	
+		<div class="max-w-6xl w-full bg-gray-800 rounded-xl shadow-2xl overflow-hidden flex flex-col md:flex-row border border-gray-700">
+		  <!-- Left Column: Video Player and Info -->
+		  <div class="w-full md:w-2/3 p-4 flex flex-col">
+			<!-- Container for YouTube IFrame -->
+			<div class="relative w-full aspect-video bg-black rounded-lg overflow-hidden shadow-inner" id="player-container">
+			  <div id="youtube-player"></div>
+			</div>
+
+			<!-- Video Info Section -->
+			<div class="mt-4 p-4 bg-gray-700 rounded-lg shadow-sm border border-gray-600">
+			  <h2 id="video-title" class="text-xl md:text-2xl font-bold text-white mb-2 truncate" title="Memuat Judul...">Memuat Judul...</h2>
+			  <div class="flex items-center justify-between text-sm text-gray-400 mb-4 border-b border-gray-600 pb-2">
+				<span id="video-author" class="font-medium text-gray-300">Channel Name</span>
+				<span id="video-date">Tanggal Rilis</span>
+			  </div>
+			  <div class="h-24 overflow-y-auto pr-2 text-gray-300 text-sm leading-relaxed playlist-scroll" id="video-description">
+				Memuat deskripsi video...
+			  </div>
+			</div>
+		  </div>
+
+		  <!-- Right Column: Playlist -->
+		  <div class="w-full md:w-1/3 bg-gray-800 border-l border-gray-700 flex flex-col h-[500px] md:h-auto">
+			<div class="p-4 bg-gray-800 border-b border-gray-700 sticky top-0 z-10 flex justify-between items-center shadow-sm">
+			  <h3 class="text-lg font-bold text-white flex items-center gap-2">
+				<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+				  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+				</svg>
+				Playlist
+			  </h3>
+			  <span class="text-xs font-semibold bg-gray-700 text-gray-300 px-2 py-1 rounded-full" id="playlist-count">Memuat...</span>
+			</div>
+
+			<!-- Playlist Items Container -->
+			<div class="flex-1 overflow-y-auto playlist-scroll p-2 space-y-2" id="playlist-container">
+			  <div class="text-center text-gray-400 text-sm mt-10">Mengambil data dari YouTube API...</div>
+			</div>
+		  </div>
+		</div>
+		
+		<div class="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center text-xs font-light">
+		  <p>&copy; 2026 Ethereal Lifestyle. Seluruh hak cipta dilindungi.</p>
+		  <div class="flex space-x-4 mt-4 md:mt-0">
+			<a href="#" class="hover:text-white">ID</a>
+			<span class="text-gray-700">|</span>
+			<a href="#" class="hover:text-white">EN</a>
+		  </div>
+		</div>
+	  </div>
+    </footer>
+
+	<script>
+        // Inisialisasi ikon Lucide
+        lucide.createIcons();
+
+        // Logika untuk Navbar berubah gaya saat di-scroll
+        const navbar = document.getElementById('navbar');
+		const title = document.getElementById('title');
+        const home = document.getElementById('mobile-menu-btn');
+        home.addEventListener('click', () => {
+             window.location.href = "../index.html";
+		});
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-brand-light', 'bg-opacity-90', 'backdrop-blur-md', 'shadow-sm');
+                navbar.classList.remove('bg-transparent', 'py-2');
+				title.classList.add('text-slate-700');
+                title.classList.remove('text-white');
+				home.classList.add('text-slate-700');
+                home.classList.remove('text-white');
+            } else {
+                navbar.classList.remove('bg-brand-light', 'bg-opacity-90', 'backdrop-blur-md', 'shadow-sm');
+                navbar.classList.add('bg-transparent', 'py-2');
+				title.classList.add('text-white');
+                title.classList.remove('text-slate-700');
+				home.classList.add('text-white');
+                home.classList.remove('text-slate-700');
+            }
+        });
+
+        // Intersection Observer untuk animasi Fade-in
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target); // Hanya animasi sekali
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach((el) => {
+            observer.observe(el);
+        });
+     </script>
+     <script>
+        // 1. Konfigurasi YouTube Data API v3
+        // PERHATIAN: Masukkan API Key Anda di bawah ini
+        const API_KEY = 'AIzaSyDH3naOGPlOL175VfhVaRrzr0438MymNxM'; 
+        // ID Playlist (Contoh menggunakan playlist ID, bisa diganti milik Anda)
+        const PLAYLIST_ID = 'PLiKkX4KV1eFKBUbzyeaZzHA-u3mm25Imb'; 
+
+        let playlistData = [];
+        let player;
+        let currentVideoIndex = 0;
+        let isApiReady = false;
+        let isDataReady = false;
+
+        // 2. Fungsi Asinkron untuk mengambil data dari YouTube Data API v3
+        async function fetchPlaylistData() {
+            try {
+                if (API_KEY === 'API_KEY' || API_KEY === '') {
+                    throw new Error('API Key belum diatur. Menggunakan data fallback.');
+                }
+                
+                const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=15&playlistId=${PLAYLIST_ID}&key=${API_KEY}`;
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Filter item yang tidak ada videoId-nya (biasanya video private/deleted)
+                const validItems = data.items.filter(item => item.snippet.resourceId.videoId);
+                
+                playlistData = validItems.map(item => {
+                    const snippet = item.snippet;
+                    return {
+                        id: snippet.resourceId.videoId,
+                        title: snippet.title,
+                        author: snippet.videoOwnerChannelTitle || 'Unknown Channel',
+                        date: new Date(snippet.publishedAt).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }),
+                        description: snippet.description || 'Tidak ada deskripsi.',
+                        thumbnail: snippet.thumbnails.medium ? snippet.thumbnails.medium.url : (snippet.thumbnails.default ? snippet.thumbnails.default.url : '')
+                    };
+                });
+
+            } catch (error) {
+                console.warn(error.message);
+                // Fallback Dummy Data jika API gagal/tidak ada API key (untuk demo)
+                playlistData = [
+                    {
+                        id: 'dQw4w9WgXcQ',
+                        title: 'Data Mock: Masukkan API Key YouTube v3 Anda',
+                        author: 'Rick Astley',
+                        date: '24 Okt 2009',
+                        description: 'Untuk mengambil playlist nyata, Anda harus mengganti variabel API_KEY dengan key valid dari Google Cloud Console.',
+                        thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg'
+                    },
+                    {
+                        id: '9bZkp7q19f0',
+                        title: 'PSY - GANGNAM STYLE(강남스타일) M/V',
+                        author: 'officialpsy',
+                        date: '15 Jul 2012',
+                        description: 'Pastikan Anda mendaftar di Google Cloud Console untuk mendapatkan YouTube Data API v3 Key untuk fetch playlist dinamis.',
+                        thumbnail: 'https://img.youtube.com/vi/9bZkp7q19f0/mqdefault.jpg'
+                    }
+                ];
+            }
+
+            isDataReady = true;
+            tryInitPlayer(); // Coba init player jika iframe api juga sudah siap
+        }
+
+        // 3. Muat YouTube IFrame API secara Asinkron (untuk pemutarnya)
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        // 4. Dipanggil oleh YouTube IFrame API setelah script siap
+        function onYouTubeIframeAPIReady() {
+            isApiReady = true;
+            tryInitPlayer();
+        }
+
+        // 5. Inisialisasi Player (Hanya jalan jika Data & IFrame API siap)
+        function tryInitPlayer() {
+            if (isApiReady && isDataReady && playlistData.length > 0) {
+                player = new YT.Player('youtube-player', {
+                    height: '100%',
+                    width: '100%',
+                    videoId: playlistData[0].id,
+                    playerVars: {
+                        'playsinline': 1,
+                        'rel': 0,
+                        'modestbranding': 1
+                    },
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange
+                    }
+                });
+            }
+        }
+
+        function onPlayerReady(event) {
+            updateVideoInfo(currentVideoIndex);
+            renderPlaylist();
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.ENDED) {
+                playNextVideo();
+            }
+        }
+
+        function playNextVideo() {
+            currentVideoIndex++;
+            if (currentVideoIndex >= playlistData.length) {
+                currentVideoIndex = 0;
+            }
+            loadVideo(currentVideoIndex);
+        }
+
+        function loadVideo(index) {
+            currentVideoIndex = index;
+            const videoId = playlistData[index].id;
+            
+            if(player && player.loadVideoById) {
+                player.loadVideoById(videoId);
+            }
+
+            updateVideoInfo(index);
+            updatePlaylistUI();
+        }
+
+        function updateVideoInfo(index) {
+            const video = playlistData[index];
+            document.getElementById('video-title').textContent = video.title;
+            document.getElementById('video-title').title = video.title;
+            document.getElementById('video-author').textContent = video.author;
+            document.getElementById('video-date').textContent = video.date;
+            
+            const formattedDesc = video.description.replace(/\n/g, '<br>');
+            document.getElementById('video-description').innerHTML = formattedDesc;
+        }
+
+        function renderPlaylist() {
+            const container = document.getElementById('playlist-container');
+            container.innerHTML = ''; 
+            
+            document.getElementById('playlist-count').textContent = `${playlistData.length} Video`;
+
+            playlistData.forEach((video, index) => {
+                const isActive = index === currentVideoIndex ? 'active' : '';
+                
+                const itemHTML = `
+                    <div class="playlist-item ${isActive} flex gap-3 p-2 rounded-lg cursor-pointer hover:bg-gray-700 transition-colors duration-200 border border-transparent" 
+                         onclick="loadVideo(${index})">
+                        
+                        <div class="relative w-28 h-16 flex-shrink-0 bg-gray-800 rounded overflow-hidden">
+                            <img src="${video.thumbnail}" alt="Thumbnail" class="w-full h-full object-cover">
+                            ${index === currentVideoIndex ? 
+                                `<div class="absolute inset-0 bg-black/60 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>` 
+                            : ''}
+                        </div>
+
+                        <div class="flex-1 min-w-0 flex flex-col justify-center">
+                            <h4 class="text-sm font-semibold text-gray-100 line-clamp-2 leading-tight mb-1">${video.title}</h4>
+                            <p class="text-xs text-gray-400 truncate">${video.author}</p>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', itemHTML);
+            });
+            
+            scrollToActiveItem();
+        }
+
+        function updatePlaylistUI() {
+            renderPlaylist();
+        }
+
+        function scrollToActiveItem() {
+            setTimeout(() => {
+                const activeItem = document.querySelector('.playlist-item.active');
+                const container = document.getElementById('playlist-container');
+                if (activeItem && container) {
+                    const containerRect = container.getBoundingClientRect();
+                    const itemRect = activeItem.getBoundingClientRect();
+
+                    if (itemRect.top < containerRect.top || itemRect.bottom > containerRect.bottom) {
+                         activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
+                }
+            }, 100);
+        }
+
+        // Mulai ambil data saat halaman dimuat
+        fetchPlaylistData();
+</script>
+  </body>
+</html>
