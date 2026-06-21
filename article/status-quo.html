@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AsepMo | Gaya Hidup & Status Sosial</title>
+    <meta name="generator" content="Gemini Canvas Pro"/>
+	<meta property="og:title" content="AsepMo"/>
+	<meta property="og:locale" content="en_US"/>
+	<meta name="description" content="AsepMo, Sang Pengusaha Yang Sedang Mengembangkan Usahanya Di Bidang Arsitektur Rumah Mewah Minimalis."/>
+	<meta property="og:description" content="AsepMo, Sang Pengusaha Yang Sedang Mengembangkan Usahanya Di Bidang Arsitektur Rumah Mewah Minimalis."/>
+	<meta property="og:url" content="https://asepmo-kuadrat.github.io/"/>
+	<meta property="og:site_name" content="AsepMo"/>
+    <link rel="canonical" href="https://asepmo-kuadrat.github.io/"/>
+    <link rel="shortcut icon" href="favicon.ico"/>
+	
+	<script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+	
+	<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        gold: {
+                            400: '#FBBF24',
+                            500: '#D97706',
+                            600: '#B45309',
+                        },
+                        saudagar: {
+                            dark: '#0a0a0c',
+                            card: '#141418',
+                            border: '#2a2a32'
+                        }
+                    }
+                }
+            }
+        };
+</script>
+<style>
+        body {
+            background-color: #0a0a0c;
+            color: #e5e7eb;
+        }
+        ::selection {
+            background-color: #D97706;
+            color: white;
+        }
+        .prose p {
+            margin-bottom: 1.5em;
+            line-height: 1.8;
+            color: #d1d5db;
+        }
+        .prose h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: #f3f4f6;
+            margin-top: 2em;
+            margin-bottom: 0.75em;
+            font-weight: 600;
+        }
+        .gold-gradient-text {
+            background: linear-gradient(to right, #FBBF24, #D97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+		
+		 .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .drop-cap::first-letter {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem;
+            line-height: 1;
+            float: left;
+            margin-right: 0.15em;
+            margin-top: -0.1em;
+            color: #8b7355;
+            font-weight: 700;
+        }
+
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+		
+		/* Custom scrollbar for the playlist (Dark Mode) */
+        .playlist-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .playlist-scroll::-webkit-scrollbar-track {
+            background: #1f2937; /* Tailwind gray-800 */
+            border-radius: 4px;
+        }
+        .playlist-scroll::-webkit-scrollbar-thumb {
+            background: #4b5563; /* Tailwind gray-600 */
+            border-radius: 4px;
+        }
+        .playlist-scroll::-webkit-scrollbar-thumb:hover {
+            background: #6b7280; /* Tailwind gray-500 */
+        }
+        
+        /* Active item style (Dark Mode) */
+        .playlist-item.active {
+            background-color: #374151; /* Tailwind gray-700 */
+            border-left: 4px solid #ef4444; /* Tailwind red-500 */
+        }
+</style>
+  </head>
+  <body class="antialiased selection:bg-gold-500 selection:text-white">
+
+    <nav id="navbar" class="fixed w-full z-50 bg-saudagar-dark/80 backdrop-blur-md border-b border-saudagar-border transition-all duration-300">
+	  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="flex justify-between items-center h-20">
+		  <div class="flex-shrink-0 flex items-center cursor-pointer">
+			<span class="font-serif text-2xl tracking-widest text-white uppercase font-bold">Status<span class="text-gold-500">Quo</span></span>
+		  </div>
+		  
+		  <!-- Mobile menu button -->
+		  <div class="md:hidden flex items-center">
+			<button id="mobile-menu-btn" class="text-gray-300 hover:text-white focus:outline-none">
+			  <i data-lucide="home" class="h-6 w-6"></i>
+			</button>
+		  </div>
+		</div>
+	  </div>
+    </nav>
+
+    <header class="pt-32 pb-16 md:pt-40 md:pb-24 px-4 text-center">
+	  <div class="max-w-3xl mx-auto">
+		<p class="text-gold-500 font-sans tracking-[0.2em] text-xs uppercase mb-4">Jurnal Eksklusif Saudagar</p>
+		<h1 class="font-serif text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white mb-6">
+		  Seni <span class="italic font-light text-gray-300">Mempertahankan</span> Status Sosial di Era Modern
+		</h1>
+		<div class="flex items-center justify-center space-x-4 text-sm text-gray-400 font-sans">
+		  <span class="flex items-center">
+			<span class="w-8 h-[1px] bg-gold-500 mr-3"></span>
+			Oleh <span class="text-gray-200 ml-1">Redaksi</span>
+		  </span>
+		  <span>&bull;</span>
+		  <span class="text-gray-200 ml-1 text-xs">21/06/2026</span>
+		  <span>&bull;</span>
+		  <span class="text-gray-200 ml-1 text-xs">7 Menit</span>
+		</div>
+	  </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+	  <article class="bg-saudagar-card border border-saudagar-border rounded-lg shadow-2xl p-6 md:p-12">
+
+		<div class="prose max-w-none font-sans text-lg">
+		  <p class="lead text-xl text-gray-300 font-serif italic border-l-4 border-gold-500 pl-6 mb-8">
+			Menjadi berada adalah sebuah pencapaian, namun mempertahankan kehormatan dan status di tengah dinamika sosial yang cepat berubah adalah sebuah seni tingkat tinggi.
+		  </p>
+
+		  <p>
+			Dalam masyarakat modern, status sosial tidak lagi semata-mata diukur dari saldo rekening atau seberapa besar mansion yang Anda miliki. Era keterbukaan informasi telah menggeser paradigma eksklusivitas. Saat ini, status sosial yang sejati didefinisikan oleh keanggunan (grace), kecerdasan intelektual, jejaring yang autentik, dan rekam jejak digital yang tak ternilai harganya.
+		  </p>
+
+		  <p>
+			Banyak orang kaya baru (<em>nouveau riche</em>) yang kehilangan pamornya dalam sekejap karena gagal memahami aturan tak tertulis dari kalangan atas. Oleh karena itu, bagi seorang saudagar sejati, mempertahankan status sosial membutuhkan manuver yang elegan. Berikut adalah prinsip-prinsip utamanya:
+		  </p>
+
+		  <figure class="my-12">
+			<img src="../gallery/image/tukang-gorengan.png" alt="Platform Digital dan Gaya Hidup Modern" class="w-full rounded-xl shadow-lg border border-gray-800 transition-transform duration-500 hover:scale-[1.02]">
+			<figcaption class="text-center text-sm text-gray-500 mt-4 font-sans italic">
+			  Kurasi konsumsi digital dan presensi media sangat menentukan bagaimana kelas sosial Anda dipersepsikan oleh publik.
+			</figcaption>
+		  </figure>
+
+		  <h3>1. Kurasi Etalase Digital Anda (Digital Presence)</h3>
+		  <p>
+			Seperti yang terlihat pada ilustrasi di atas, platform media dan konten yang Anda konsumsi serta bagikan ke dunia luar membentuk persona Anda. Kalangan berkelas tidak membagikan keluh kesah atau pamer kekayaan secara vulgar di media sosial. Mereka mengkurasi pengalaman visual yang menginspirasi—seperti perjalanan ke Pegunungan Alpen, apresiasi seni, atau wawasan bisnis yang berharga. <strong>Diam adalah kemewahan baru.</strong> Biarkan karya, pencapaian, dan selera estetika Anda yang berbicara, bukan ucapan Anda sendiri.
+		  </p>
+
+		  <h3>2. Kecerdasan Emosional di Atas Harta Benda</h3>
+		  <p>
+			Uang bisa membeli jam tangan miliaran rupiah, tetapi tidak bisa membeli tata krama. Kemampuan untuk mengendalikan emosi di depan publik, memperlakukan semua orang (termasuk pramusaji) dengan rasa hormat yang sama, dan menunjukkan empati adalah penanda kasta tertinggi. Sikap arogan adalah ciri khas mereka yang merasa tidak aman dengan statusnya sendiri.
+		  </p>
+
+		  <h3>3. Jaringan Intelektual (The Authentic Network)</h3>
+		  <p>
+			Status sosial dipertahankan dengan siapa Anda duduk di satu meja. Hindari berada di lingkungan yang hanya berpusat pada transaksi dan uang semata. Berinvestasilah pada hubungan yang dibangun di atas pertukaran gagasan, filantropi, dan visi masa depan. Komunitas yang kuat akan bertindak sebagai benteng perlindungan reputasi Anda ketika krisis melanda.
+		  </p>
+
+		  <h3>4. Kapital Budaya (Cultural Capital)</h3>
+		  <p>
+			Mengetahui cara berinvestasi saham memang penting, namun memiliki pengetahuan tentang lukisan pasca-impresionis, sejarah geopolitik, atau sekadar seni mencicipi wine, akan membuka pintu ke ruangan-ruangan di mana uang saja tidak cukup untuk menjadi tiket masuk. Teruslah membaca, bepergian (seperti <em>nomadic journeys</em> yang mengasah jiwa), dan perluas horizon intelektual Anda.
+		  </p>
+
+		  <h3>5. Filantropi yang Sunyi</h3>
+		  <p>
+			Puncak dari kekuasaan dan status sosial adalah kemampuan untuk memberi tanpa perlu mendapatkan pengakuan. Ketika Anda mendanai beasiswa pendidikan atau membangun fasilitas kesehatan secara anonim, Anda tidak lagi sekadar mencari validasi sosial; Anda sedang membangun warisan (<em>legacy</em>) abadi yang resonansinya jauh melampaui usia Anda.
+		  </p>
+
+		  <div class="mt-12 pt-8 border-t border-saudagar-border">
+			<p class="font-serif text-lg italic text-gray-400 text-center">
+			  "Eksklusivitas bukanlah tentang menutup pintu bagi orang lain, melainkan tentang menjaga standar kualitas hidup, integritas, dan kehormatan di setiap langkah yang kita ambil."
+			</p>
+		  </div>
+		</div>
+
+		<!-- Tags and Sharing -->
+		<div class="mt-10 flex flex-col md:flex-row items-center justify-between gap-4">
+		  <div class="flex flex-wrap gap-2">
+			<span class="px-3 py-1 bg-saudagar-dark border border-gray-800 rounded text-xs text-gray-400 hover:border-gold-500 hover:text-gold-500 cursor-pointer transition-colors">Lifestyle</span>
+			<span class="px-3 py-1 bg-saudagar-dark border border-gray-800 rounded text-xs text-gray-400 hover:border-gold-500 hover:text-gold-500 cursor-pointer transition-colors">Etika</span>
+			<span class="px-3 py-1 bg-saudagar-dark border border-gray-800 rounded text-xs text-gray-400 hover:border-gold-500 hover:text-gold-500 cursor-pointer transition-colors">Eksklusif</span>
+		  </div>
+		  <div class="flex space-x-3">
+			<button class="p-2 bg-saudagar-dark rounded-full text-gray-400 hover:text-white hover:bg-gray-800 transition-colors" title="Bagikan">
+			  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+			</button>
+			<button class="p-2 bg-saudagar-dark rounded-full text-gray-400 hover:text-gold-500 hover:bg-gray-800 transition-colors" title="Simpan">
+			  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>
+			</button>
+		  </div>
+		</div>
+	  </article>
+    </main>
+
+    <footer class="bg-black border-t border-saudagar-border py-12">
+	  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+		<div class="mb-6 md:mb-0">
+		  <span class="font-serif text-2xl tracking-widest text-white uppercase font-bold">Sau<span class="text-gold-500">da</span>gar</span>
+		  <p class="text-sm text-gray-500 mt-2">Menyajikan perspektif elegan untuk kalangan eksekutif.</p>
+		</div>
+		<div class="flex space-x-6 text-sm text-gray-400">
+		  <a href="#" class="hover:text-gold-400 transition-colors">Tentang Kami</a>
+		  <a href="#" class="hover:text-gold-400 transition-colors">Privasi</a>
+		  <a href="#" class="hover:text-gold-400 transition-colors">Ketentuan</a>
+		  <a href="#" class="hover:text-gold-400 transition-colors">Kontak</a>
+		</div>
+	  </div>
+	  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 text-center text-xs text-gray-600">
+		&copy; 2026 Saudagar Journal. Seluruh Hak Cipta Dilindungi.
+	  </div>
+    </footer>
+
+	  <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+		// Logika untuk Navbar berubah gaya saat di-scroll
+        const navbar = document.getElementById('navbar');
+		const title = document.getElementById('title');
+        const home = document.getElementById('mobile-menu-btn');
+        home.addEventListener('click', () => {
+             window.location.href = "https://asepmo-kuadrat.github.io";
+		});
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-brand-light', 'bg-opacity-90', 'backdrop-blur-md', 'shadow-sm');
+                navbar.classList.remove('bg-transparent', 'py-2');
+				title.classList.add('text-slate-700');
+                title.classList.remove('text-white');
+				home.classList.add('text-slate-700');
+                home.classList.remove('text-white');
+            } else {
+                navbar.classList.remove('bg-brand-light', 'bg-opacity-90', 'backdrop-blur-md', 'shadow-sm');
+                navbar.classList.add('bg-transparent', 'py-2');
+				title.classList.add('text-white');
+                title.classList.remove('text-slate-700');
+				home.classList.add('text-white');
+                home.classList.remove('text-slate-700');
+            }
+        });
+
+        // Intersection Observer untuk animasi Fade-in
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target); // Hanya animasi sekali
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach((el) => {
+            observer.observe(el);
+        })
+	 </script>
+  </body>
+</html>
