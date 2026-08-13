@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexisCore - Elegant Management Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Plus Jakarta Sans (Sangat Elegan untuk UI Modern) -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- ApexCharts for Stunning Visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+<script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        darkBg: '#090d16',
+                        darkCard: 'rgba(15, 22, 42, 0.65)',
+                        darkBorder: 'rgba(255, 255, 255, 0.06)',
+                    }
+                }
+            }
+        }
+</script>
+<style>
+        /* Custom Styling for Scrollbars & Premium Glassmorphism */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        body {
+            background-color: #090d16;
+            color: #f1f5f9;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(15, 22, 42, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        /* Dynamic Accent Styles mapping to JS Config */
+        :root {
+            --accent: 139, 92, 246; /* Default Violet */
+            --accent-glow: rgba(139, 92, 246, 0.15);
+        }
+        .accent-bg { background-color: rgb(var(--accent)); }
+        .accent-text { color: rgb(var(--accent)); }
+        .accent-border { border-color: rgb(var(--accent)); }
+        .accent-ring:focus { --tw-ring-color: rgb(var(--accent)); }
+        .accent-hover:hover { background-color: rgba(var(--accent), 0.1); }
+        .accent-glow-shadow {
+            box-shadow: 0 0 20px 0 var(--accent-glow);
+        }
+        /* Active Navigation Line */
+        .nav-active {
+            background: linear-gradient(90deg, rgba(var(--accent), 0.15) 0%, rgba(var(--accent), 0) 100%);
+            border-left: 3px solid rgb(var(--accent));
+            color: rgb(var(--accent)) !important;
+        }
+</style>
+  </head>
+  <body class="font-sans antialiased text-slate-200">
+
+    <!-- App Container -->
+    <div class="flex h-screen overflow-hidden">
+
+	  <!-- Sidebar Navigation -->
+	  <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 lg:static lg:flex flex-col h-full bg-[#070a12]/95 border-r border-white/5 transition-all duration-300 transform -translate-x-full lg:translate-x-0">
+		<!-- Sidebar Header -->
+		<div class="h-16 flex items-center justify-between px-6 border-b border-white/5">
+		  <div class="flex items-center gap-3">
+			<div class="w-8 h-8 rounded-lg accent-bg flex items-center justify-center text-black font-extrabold text-lg shadow-lg accent-glow-shadow">
+			  N
+			</div>
+			<div>
+			  <span class="text-lg font-bold tracking-wider text-white">Nexis<span class="accent-text">Core</span></span>
+			  <p class="text-[10px] text-slate-500 tracking-widest uppercase">Web Console</p>
+			</div>
+		  </div>
+		  <!-- Close sidebar on mobile -->
+		  <button onclick="toggleSidebar()" class="lg:hidden text-slate-400 hover:text-white focus:outline-none p-1">
+			<i class="fa-solid fa-xmark text-lg"></i>
+		  </button>
+		</div>
+
+		<!-- Sidebar Body: Navigation Links -->
+		<nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
+		  <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Main Menu</p>
+
+		  <button onclick="switchTab('overview')" id="nav-overview" class="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-200 nav-active">
+			<div class="flex items-center gap-3">
+			  <i class="fa-solid fa-chart-pie text-base"></i>
+			  <span>Dashboard Overview</span>
+			</div>
+			<span class="accent-bg text-black text-[10px] font-bold px-2 py-0.5 rounded-full">Live</span>
+		  </button>
+
+		  <button onclick="switchTab('content')" id="nav-content" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-200">
+			<i class="fa-solid fa-newspaper text-base"></i>
+			<span>Content Manager</span>
+		  </button>
+
+		  <button onclick="switchTab('system')" id="nav-system" class="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-200">
+			<div class="flex items-center gap-3">
+			  <i class="fa-solid fa-server text-base"></i>
+			  <span>System Status</span>
+			</div>
+			<span id="system-indicator-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+		  </button>
+
+		  <button onclick="switchTab('settings')" id="nav-settings" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-200">
+			<i class="fa-solid fa-sliders text-base"></i>
+			<span>Core Settings</span>
+		  </button>
+
+		  <div class="h-px bg-white/5 my-6"></div>
+
+		  <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Quick Actions</p>
+
+		  <button onclick="openAddPostModal()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-200">
+			<i class="fa-solid fa-circle-plus text-base text-emerald-400"></i>
+			<span>Create New Post</span>
+		  </button>
+
+		  <button onclick="triggerToast('Clearing website cache memory...', 'info')" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-200">
+			<i class="fa-solid fa-broom text-base text-amber-400"></i>
+			<span>Purge Site Cache</span>
+		  </button>
+		</nav>
+
+		<!-- Sidebar Footer: Profile Widget -->
+		<div class="p-4 border-t border-white/5 bg-[#05080e]/50">
+		  <div class="flex items-center justify-between gap-3 bg-white/5 p-3 rounded-xl border border-white/5">
+			<div class="flex items-center gap-3">
+			  <div class="relative">
+				<img src="https://placehold.co/80x80/1a1f36/ffffff?text=AD" alt="Admin Profile Picture" class="w-10 h-10 rounded-full border border-white/10" onerror="this.src='https://placehold.co/80x80/1e293b/ffffff?text=Admin'">
+				<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border border-[#090d16]"></span>
+			  </div>
+			  <div>
+				<p class="text-xs font-bold text-white leading-tight">Admin Nexis</p>
+				<p class="text-[10px] text-slate-400">Administrator</p>
+			  </div>
+			</div>
+			<button onclick="triggerToast('Signing out sequence bypassed for safety.', 'warning')" class="text-slate-400 hover:text-rose-400 p-1.5 transition-colors" title="Log Out">
+			  <i class="fa-solid fa-right-from-bracket"></i>
+			</button>
+		  </div>
+		</div>
+	  </aside>
+
+	  <!-- Main Workspace Frame -->
+	  <div class="flex-1 flex flex-col h-full overflow-hidden bg-darkBg">
+
+		<!-- Workspace Header / Toolbar -->
+		<header class="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-[#070a12]/70 backdrop-blur-md z-30">
+		  <!-- Left Hand Tools -->
+		  <div class="flex items-center gap-4">
+			<button onclick="toggleSidebar()" class="lg:hidden text-slate-300 hover:text-white focus:outline-none p-1.5 rounded-lg hover:bg-white/5">
+			  <i class="fa-solid fa-bars text-lg"></i>
+			</button>
+			<!-- Search Input -->
+			<div class="relative hidden md:block w-72">
+			  <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-500 text-sm">
+				<i class="fa-solid fa-magnifying-glass"></i>
+			  </span>
+			  <input type="text" placeholder="Search parameters, logs, or posts..." class="w-full bg-[#0d1222]/80 text-xs rounded-xl pl-10 pr-4 py-2 border border-white/5 focus:border-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-700 text-slate-200 placeholder-slate-500 transition-all">
+			</div>
+		  </div>
+
+		  <!-- Right Hand Tools -->
+		  <div class="flex items-center gap-3">
+
+			<!-- Quick Accent Shift Tool -->
+			<div class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/5 border border-white/5">
+			  <span class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold mr-1">Accent:</span>
+			  <button onclick="setThemeAccent('violet')" class="w-3.5 h-3.5 rounded-full bg-violet-500 ring-2 ring-transparent hover:ring-white transition-all" title="Violet Theme"></button>
+			  <button onclick="setThemeAccent('emerald')" class="w-3.5 h-3.5 rounded-full bg-emerald-500 ring-2 ring-transparent hover:ring-white transition-all" title="Emerald Theme"></button>
+			  <button onclick="setThemeAccent('amber')" class="w-3.5 h-3.5 rounded-full bg-amber-500 ring-2 ring-transparent hover:ring-white transition-all" title="Amber Theme"></button>
+			  <button onclick="setThemeAccent('sky')" class="w-3.5 h-3.5 rounded-full bg-sky-500 ring-2 ring-transparent hover:ring-white transition-all" title="Sky Theme"></button>
+			</div>
+
+			<!-- Connection Stats -->
+			<div class="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-semibold px-3 py-1.5 rounded-xl">
+			  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+			  <span class="hidden lg:inline">Server Ping:</span> <span id="ping-text">24ms</span>
+			</div>
+
+			<!-- Notifications Dropdown -->
+			<div class="relative">
+			  <button onclick="toggleNotificationMenu(event)" class="relative p-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-all">
+				<i class="fa-regular fa-bell text-sm"></i>
+				<span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-500"></span>
+			  </button>
+			  <!-- Dynamic Popover Panel -->
+			  <div id="notification-menu" class="hidden absolute right-0 mt-3 w-80 rounded-2xl bg-[#0f162a] border border-white/10 shadow-2xl overflow-hidden z-50">
+				<div class="p-4 border-b border-white/5 flex items-center justify-between">
+				  <span class="font-bold text-xs uppercase tracking-wider text-slate-300">Live Alerts</span>
+				  <button onclick="clearNotifications()" class="text-[10px] accent-text hover:underline focus:outline-none">Mark all read</button>
+				</div>
+				<div id="notification-list" class="max-h-64 overflow-y-auto divide-y divide-white/5 text-xs text-slate-300">
+				  <div class="p-3.5 hover:bg-white/5 transition-colors">
+					<p class="font-semibold text-white">Database Backup Complete</p>
+					<p class="text-[10px] text-slate-500 mt-1">Automatic backups stored to AWS S3 storage.</p>
+				  </div>
+				  <div class="p-3.5 hover:bg-white/5 transition-colors">
+					<p class="font-semibold text-white">New user registered: bobby_99</p>
+					<p class="text-[10px] text-slate-500 mt-1">Email verification completed successfully.</p>
+				  </div>
+				  <div class="p-3.5 hover:bg-white/5 transition-colors">
+					<p class="font-semibold text-amber-400">Peak Connection Threshold</p>
+					<p class="text-[10px] text-slate-500 mt-1">System reached 12.4k parallel active sockets.</p>
+				  </div>
+				</div>
+			  </div>
+			</div>
+
+			<!-- Core System Time Widget -->
+			<div class="hidden lg:block bg-white/5 px-4 py-1.5 border border-white/5 rounded-xl text-center">
+			  <span id="current-clock" class="text-xs font-mono font-semibold tracking-wider text-slate-300">12:00:00 AM</span>
+			</div>
+
+		  </div>
+		</header>
+
+		<!-- Workspace Main Content Body -->
+		<main class="flex-1 overflow-y-auto p-6 space-y-6">
+
+		  <!-- TAB SECTION 1: OVERVIEW -->
+		  <section id="section-overview" class="tab-content space-y-6">
+
+			<!-- Top Page Title -->
+			<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+			  <div>
+				<h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white font-serif italic">Console Overview</h1>
+				<p class="text-xs text-slate-400 mt-1">Live monitoring, aggregate metrics, analytics, and instant administration triggers.</p>
+			  </div>
+			  <div class="flex gap-2.5">
+				<button onclick="regenerateChartData()" class="px-4 py-2 text-xs font-semibold bg-white/5 border border-white/10 hover:border-slate-600 rounded-xl transition-all flex items-center gap-1.5">
+				  <i class="fa-solid fa-rotate text-[10px]"></i> Refresh Metrics
+				</button>
+				<button onclick="openAddPostModal()" class="px-4 py-2 text-xs font-semibold rounded-xl accent-bg text-black hover:opacity-95 transition-all shadow-lg accent-glow-shadow flex items-center gap-1.5">
+				  <i class="fa-solid fa-plus text-[10px]"></i> Quick Publish
+				</button>
+			  </div>
+			</div>
+
+			<!-- Quick Stats Grid -->
+			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+
+			  <!-- Metric Card 1: Visitors -->
+			  <div class="glass-card rounded-2xl p-5 relative overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-white/10">
+				<div class="flex justify-between items-start">
+				  <div>
+					<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Active Visitors</p>
+					<h3 class="text-3xl font-extrabold text-white mt-1.5" id="metric-visitors">4,812</h3>
+				  </div>
+				  <div class="w-9 h-9 rounded-xl bg-violet-500/10 border border-violet-500/20 text-violet-400 flex items-center justify-center text-sm">
+					<i class="fa-solid fa-users"></i>
+				  </div>
+				</div>
+				<div class="flex items-center gap-1.5 mt-4 text-[11px]">
+				  <span class="text-emerald-400 font-bold flex items-center gap-0.5"><i class="fa-solid fa-arrow-trend-up"></i> +14.2%</span>
+				  <span class="text-slate-500">than yesterday</span>
+				</div>
+				<!-- Subtle Background Glow -->
+				<div class="absolute -bottom-10 -right-10 w-24 h-24 rounded-full bg-violet-500/5 blur-xl"></div>
+			  </div>
+
+			  <!-- Metric Card 2: Revenue -->
+			  <div class="glass-card rounded-2xl p-5 relative overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-white/10">
+				<div class="flex justify-between items-start">
+				  <div>
+					<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Monthly Sales</p>
+					<h3 class="text-3xl font-extrabold text-white mt-1.5" id="metric-sales">$18,491</h3>
+				  </div>
+				  <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm">
+					<i class="fa-solid fa-money-bill-wave"></i>
+				  </div>
+				</div>
+				<div class="flex items-center gap-1.5 mt-4 text-[11px]">
+				  <span class="text-emerald-400 font-bold flex items-center gap-0.5"><i class="fa-solid fa-arrow-trend-up"></i> +8.6%</span>
+				  <span class="text-slate-500">since last week</span>
+				</div>
+				<div class="absolute -bottom-10 -right-10 w-24 h-24 rounded-full bg-emerald-500/5 blur-xl"></div>
+			  </div>
+
+			  <!-- Metric Card 3: Cache Hit -->
+			  <div class="glass-card rounded-2xl p-5 relative overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-white/10">
+				<div class="flex justify-between items-start">
+				  <div>
+					<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">CDN Cache Ratio</p>
+					<h3 class="text-3xl font-extrabold text-white mt-1.5" id="metric-cache">94.8%</h3>
+				  </div>
+				  <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-sm">
+					<i class="fa-solid fa-bolt"></i>
+				  </div>
+				</div>
+				<div class="flex items-center gap-1.5 mt-4 text-[11px]">
+				  <span class="text-emerald-400 font-bold flex items-center gap-0.5"><i class="fa-solid fa-arrow-trend-up"></i> +0.4%</span>
+				  <span class="text-slate-500">optimized query hits</span>
+				</div>
+				<div class="absolute -bottom-10 -right-10 w-24 h-24 rounded-full bg-amber-500/5 blur-xl"></div>
+			  </div>
+
+			  <!-- Metric Card 4: Load Status -->
+			  <div class="glass-card rounded-2xl p-5 relative overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:border-white/10">
+				<div class="flex justify-between items-start">
+				  <div>
+					<p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Average Load</p>
+					<h3 class="text-3xl font-extrabold text-white mt-1.5" id="metric-load">0.32s</h3>
+				  </div>
+				  <div class="w-9 h-9 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center text-sm">
+					<i class="fa-solid fa-gauge-high"></i>
+				  </div>
+				</div>
+				<div class="flex items-center gap-1.5 mt-4 text-[11px]">
+				  <span class="text-emerald-400 font-bold flex items-center gap-0.5"><i class="fa-solid fa-arrow-trend-down"></i> -11.5%</span>
+				  <span class="text-slate-500">lower latency</span>
+				</div>
+				<div class="absolute -bottom-10 -right-10 w-24 h-24 rounded-full bg-rose-500/5 blur-xl"></div>
+			  </div>
+
+			</div>
+
+			<!-- Charts & Insights Row -->
+			<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+			  <!-- Large Metric Area Chart -->
+			  <div class="glass-card rounded-2xl p-6 lg:col-span-2 space-y-4">
+				<div class="flex justify-between items-center border-b border-white/5 pb-4">
+				  <div>
+					<h3 class="text-base font-bold text-white tracking-wide">Real-Time Traffic Performance</h3>
+					<p class="text-xs text-slate-500">Aggregated tracking of total hits and distinct API requests.</p>
+				  </div>
+				  <div class="flex items-center gap-2">
+					<span class="inline-block w-2.5 h-2.5 rounded-full accent-bg"></span>
+					<span class="text-[11px] text-slate-400 font-semibold tracking-wider uppercase">Active Traffic</span>
+				  </div>
+				</div>
+				<!-- Canvas Chart Container -->
+				<div id="traffic-area-chart" class="min-h-[300px]"></div>
+			  </div>
+
+			  <!-- Sidebar Info Card & Quick Control Actions -->
+			  <div class="flex flex-col gap-6">
+
+				<!-- Mini Circular Progress / Storage Tracker -->
+				<div class="glass-card rounded-2xl p-6 flex flex-col justify-between h-full">
+				  <div>
+					<h3 class="text-base font-bold text-white tracking-wide border-b border-white/5 pb-3">Storage Allocation</h3>
+					<p class="text-xs text-slate-500 mt-1">AWS Storage usage statistics.</p>
+				  </div>
+				  <div class="py-6 flex items-center justify-center">
+					<div id="storage-radial-chart"></div>
+				  </div>
+				  <div class="flex justify-between items-center text-xs text-slate-400 border-t border-white/5 pt-3">
+					<span>Total Allocated: 500GB</span>
+					<span class="font-bold text-white">72% Used</span>
+				  </div>
+				</div>
+
+			  </div>
+
+			</div>
+
+			<!-- Recent Events Table & Activity Feed -->
+			<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+			  <!-- Content Quick Table -->
+			  <div class="glass-card rounded-2xl p-6 lg:col-span-2 space-y-4">
+				<div class="flex items-center justify-between border-b border-white/5 pb-3">
+				  <h3 class="text-base font-bold text-white tracking-wide">Critical System Activities</h3>
+				  <span class="text-[10px] bg-slate-800 text-slate-300 font-semibold px-2 py-0.5 rounded-full border border-white/5">Auto Logs</span>
+				</div>
+				<div class="overflow-x-auto">
+				  <table class="w-full text-left text-xs text-slate-400">
+					<thead>
+					  <tr class="border-b border-white/5 text-slate-300 font-bold">
+						<th class="py-3 px-2">Operation Type</th>
+						<th class="py-3 px-2">User Target</th>
+						<th class="py-3 px-2">Assigned Node</th>
+						<th class="py-3 px-2 text-right">Processing Status</th>
+					  </tr>
+					</thead>
+					<tbody id="quick-activity-table-body">
+					  <!-- Mocked content entries -->
+					</tbody>
+				  </table>
+				</div>
+			  </div>
+
+			  <!-- Side Activity List -->
+			  <div class="glass-card rounded-2xl p-6 space-y-4">
+				<h3 class="text-base font-bold text-white tracking-wide border-b border-white/5 pb-3">Operations Audit Log</h3>
+				<div class="space-y-4 max-h-[250px] overflow-y-auto pr-1">
+				  <div class="flex gap-3">
+					<div class="w-2 h-2 rounded-full bg-violet-400 mt-1.5 flex-shrink-0"></div>
+					<div>
+					  <p class="text-xs font-semibold text-slate-200">Karina verified new system user profile.</p>
+					  <p class="text-[10px] text-slate-500">10 mins ago</p>
+					</div>
+				  </div>
+				  <div class="flex gap-3">
+					<div class="w-2 h-2 rounded-full bg-emerald-400 mt-1.5 flex-shrink-0"></div>
+					<div>
+					  <p class="text-xs font-semibold text-slate-200">SSL Certificate automatically renewed.</p>
+					  <p class="text-[10px] text-slate-500">32 mins ago</p>
+					</div>
+				  </div>
+				  <div class="flex gap-3">
+					<div class="w-2 h-2 rounded-full bg-amber-400 mt-1.5 flex-shrink-0"></div>
+					<div>
+					  <p class="text-xs font-semibold text-slate-200">Security group protocol upgraded to TLS 1.3.</p>
+					  <p class="text-[10px] text-slate-500">1 hour ago</p>
+					</div>
+				  </div>
+				</div>
+			  </div>
+
+			</div>
+
+		  </section>
+
+
+		  <!-- TAB SECTION 2: CONTENT MANAGER -->
+		  <section id="section-content" class="tab-content space-y-6 hidden">
+
+			<!-- Title Bar -->
+			<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+			  <div>
+				<h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white font-serif italic">Content Manager</h1>
+				<p class="text-xs text-slate-400 mt-1">Add, filter, modify, and delete your website's primary content pages and records.</p>
+			  </div>
+			  <button onclick="openAddPostModal()" class="px-5 py-2.5 text-xs font-semibold rounded-xl accent-bg text-black hover:opacity-95 transition-all shadow-lg accent-glow-shadow flex items-center gap-1.5">
+				<i class="fa-solid fa-plus text-[10px]"></i> Create New Post
+			  </button>
+			</div>
+
+			<!-- Table Action Bar -->
+			<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+			  <!-- Search Box -->
+			  <div class="relative">
+				<span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500 text-xs">
+				  <i class="fa-solid fa-magnifying-glass"></i>
+				</span>
+				<input type="text" id="content-search" oninput="filterPosts()" placeholder="Search posts..." class="w-full bg-[#0d1222] text-xs rounded-xl pl-9 pr-4 py-2.5 border border-white/5 focus:border-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-700 placeholder-slate-500 text-slate-200 transition-all">
+			  </div>
+			  <!-- Status Filter -->
+			  <div class="relative">
+				<select id="content-status-filter" onchange="filterPosts()" class="w-full bg-[#0d1222] text-xs rounded-xl px-4 py-2.5 border border-white/5 focus:border-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-700 text-slate-300 cursor-pointer appearance-none">
+				  <option value="all">All Status Badges</option>
+				  <option value="Published">Published</option>
+				  <option value="Draft">Draft</option>
+				  <option value="Scheduled">Scheduled</option>
+				</select>
+				<span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-500 text-[10px]">
+				  <i class="fa-solid fa-chevron-down"></i>
+				</span>
+			  </div>
+			  <!-- Record Counter -->
+			  <div class="flex items-center justify-end px-3 text-xs text-slate-400">
+				Total Records: <span id="content-count-badge" class="ml-1.5 px-2 py-0.5 rounded-full bg-white/5 border border-white/5 text-white font-bold">5 entries</span>
+			  </div>
+			</div>
+
+			<!-- Main Content Datatable -->
+			<div class="glass-card rounded-2xl overflow-hidden">
+			  <div class="overflow-x-auto">
+				<table class="w-full text-left border-collapse text-xs">
+				  <thead>
+					<tr class="border-b border-white/5 bg-white/[0.02] text-slate-300 font-bold">
+					  <th class="py-4 px-6">Content Title</th>
+					  <th class="py-4 px-6">Publisher / Author</th>
+					  <th class="py-4 px-6">Post Category</th>
+					  <th class="py-4 px-6">Date Stamp</th>
+					  <th class="py-4 px-6">Status Badge</th>
+					  <th class="py-4 px-6 text-right">Operations Menu</th>
+					</tr>
+				  </thead>
+				  <tbody id="content-table-body" class="divide-y divide-white/5 text-slate-300">
+					<!-- Dynamic content items injected by Javascript Engine -->
+				  </tbody>
+				</table>
+			  </div>
+			  <div id="content-table-empty" class="hidden p-12 text-center text-slate-500 space-y-2">
+				<i class="fa-regular fa-folder-open text-4xl accent-text opacity-70"></i>
+				<p class="text-sm font-semibold">No records matches search filters.</p>
+			  </div>
+			</div>
+
+		  </section>
+
+
+		  <!-- TAB SECTION 3: SYSTEM STATUS -->
+		  <section id="section-system" class="tab-content space-y-6 hidden">
+
+			<!-- Title Bar -->
+			<div>
+			  <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white font-serif italic">System Monitor</h1>
+			  <p class="text-xs text-slate-400 mt-1">Live core system performance, diagnostics logging, CPU/RAM utilization and memory state.</p>
+			</div>
+
+			<!-- Dynamic Diagnostic Metrics -->
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+			  <!-- CPU Radial Gauge -->
+			  <div class="glass-card rounded-2xl p-6 flex flex-col justify-between items-center text-center">
+				<div class="w-full text-left">
+				  <h3 class="text-sm font-bold text-white tracking-wide border-b border-white/5 pb-2">Core Processor Load</h3>
+				</div>
+				<div class="my-4">
+				  <div id="cpu-radial-gauge"></div>
+				</div>
+				<div class="text-xs text-slate-400">
+				  Average Frequency: <span class="text-white font-semibold">4.8 GHz</span>
+				</div>
+			  </div>
+
+			  <!-- Memory (RAM) Radial Gauge -->
+			  <div class="glass-card rounded-2xl p-6 flex flex-col justify-between items-center text-center">
+				<div class="w-full text-left">
+				  <h3 class="text-sm font-bold text-white tracking-wide border-b border-white/5 pb-2">RAM (Memory) Allocated</h3>
+				</div>
+				<div class="my-4">
+				  <div id="ram-radial-gauge"></div>
+				</div>
+				<div class="text-xs text-slate-400">
+				  Allocated: <span class="text-white font-semibold" id="ram-text-allocated">11.4 GB / 16.0 GB</span>
+				</div>
+			  </div>
+
+			  <!-- Bandwidth Metrics -->
+			  <div class="glass-card rounded-2xl p-6 flex flex-col justify-between">
+				<h3 class="text-sm font-bold text-white tracking-wide border-b border-white/5 pb-2">Network Inbound/Outbound</h3>
+				<div class="space-y-4 py-4">
+				  <div class="flex items-center justify-between text-xs">
+					<div class="flex items-center gap-2">
+					  <i class="fa-solid fa-cloud-arrow-down text-sky-400"></i>
+					  <span class="text-slate-400">Inbound Traffic</span>
+					</div>
+					<span class="font-bold text-white" id="network-inbound">12.4 MB/s</span>
+				  </div>
+				  <div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
+					<div class="accent-bg h-full rounded-full transition-all duration-300" style="width: 65%;"></div>
+				  </div>
+
+				  <div class="flex items-center justify-between text-xs">
+					<div class="flex items-center gap-2">
+					  <i class="fa-solid fa-cloud-arrow-up text-amber-400"></i>
+					  <span class="text-slate-400">Outbound Traffic</span>
+					</div>
+					<span class="font-bold text-white" id="network-outbound">82.1 MB/s</span>
+				  </div>
+				  <div class="w-full bg-white/5 h-1.5 rounded-full overflow-hidden">
+					<div class="accent-bg h-full rounded-full transition-all duration-300" style="width: 85%;"></div>
+				  </div>
+				</div>
+				<div class="text-xs text-slate-400 text-center">
+				  Peak performance load is monitored.
+				</div>
+			  </div>
+
+			</div>
+
+			<!-- Real-Time Logging Terminal -->
+			<div class="glass-card rounded-2xl p-6 space-y-4">
+			  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-white/5 pb-4">
+				<div>
+				  <h3 class="text-base font-bold text-white tracking-wide">Live Diagnostics Terminal Log</h3>
+				  <p class="text-xs text-slate-500 mt-1">Real-time compilation tracking from operational core nodes.</p>
+				</div>
+				<div class="flex gap-2">
+				  <button onclick="pauseLogTerminal()" id="btn-pause-logs" class="px-3.5 py-1.5 text-xs bg-slate-800 text-slate-300 rounded-xl hover:bg-slate-700 border border-white/5 transition-all">
+					<i class="fa-solid fa-pause mr-1"></i> Pause Output
+				  </button>
+				  <button onclick="clearLogTerminal()" class="px-3.5 py-1.5 text-xs bg-rose-950/20 text-rose-300 rounded-xl hover:bg-rose-950/40 border border-rose-500/10 transition-all">
+					<i class="fa-solid fa-trash-can mr-1"></i> Clear Logs
+				  </button>
+				</div>
+			  </div>
+			  <!-- Simulated Command Line Panel -->
+			  <div class="relative rounded-xl overflow-hidden border border-white/5 shadow-inner">
+				<div class="absolute top-3 left-4 flex gap-1.5">
+				  <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+				  <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+				  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+				</div>
+				<div class="bg-black/20 text-slate-400 py-3.5 text-center text-[10px] font-mono tracking-widest uppercase border-b border-white/5">
+				  dynamic-diagnostics-console.log
+				</div>
+				<div id="terminal-screen" class="bg-[#05070c] p-5 font-mono text-[11px] leading-relaxed space-y-2 h-72 overflow-y-auto">
+				  <!-- Stream entries loaded by script -->
+				</div>
+			  </div>
+			</div>
+
+		  </section>
+
+
+		  <!-- TAB SECTION 4: SETTINGS -->
+		  <section id="section-settings" class="tab-content space-y-6 hidden">
+
+			<!-- Title Bar -->
+			<div>
+			  <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white font-serif italic">Core Settings</h1>
+			  <p class="text-xs text-slate-400 mt-1">Configure your portal deployment structures, styling, security and performance features.</p>
+			</div>
+
+			<!-- Configurations Grid -->
+			<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+			  <!-- Accent & Styling Selector -->
+			  <div class="glass-card rounded-2xl p-6 space-y-4">
+				<h3 class="text-base font-bold text-white border-b border-white/5 pb-3">Website Appearance</h3>
+
+				<div class="space-y-4">
+				  <p class="text-xs text-slate-400">Select the master theme accent highlighting core features across charts and active parameters.</p>
+				  <div class="grid grid-cols-2 gap-3 pt-2">
+					<button onclick="setThemeAccent('violet')" class="flex items-center gap-2 p-3 bg-white/5 rounded-xl border border-white/5 hover:border-violet-500 hover:bg-violet-500/5 text-xs text-left transition-all">
+					  <span class="w-3.5 h-3.5 rounded-full bg-violet-500"></span>
+					  <span>Neon Violet</span>
+					</button>
+					<button onclick="setThemeAccent('emerald')" class="flex items-center gap-2 p-3 bg-white/5 rounded-xl border border-white/5 hover:border-emerald-500 hover:bg-emerald-500/5 text-xs text-left transition-all">
+					  <span class="w-3.5 h-3.5 rounded-full bg-emerald-500"></span>
+					  <span>Emerald Mint</span>
+					</button>
+					<button onclick="setThemeAccent('amber')" class="flex items-center gap-2 p-3 bg-white/5 rounded-xl border border-white/5 hover:border-amber-500 hover:bg-amber-500/5 text-xs text-left transition-all">
+					  <span class="w-3.5 h-3.5 rounded-full bg-amber-500"></span>
+					  <span>Sunset Amber</span>
+					</button>
+					<button onclick="setThemeAccent('sky')" class="flex items-center gap-2 p-3 bg-white/5 rounded-xl border border-white/5 hover:border-sky-500 hover:bg-sky-500/5 text-xs text-left transition-all">
+					  <span class="w-3.5 h-3.5 rounded-full bg-sky-500"></span>
+					  <span>Ocean Sky</span>
+					</button>
+				  </div>
+				</div>
+			  </div>
+
+			  <!-- Optimization Settings -->
+			  <div class="glass-card rounded-2xl p-6 space-y-4">
+				<h3 class="text-base font-bold text-white border-b border-white/5 pb-3">Performance & Cache</h3>
+				<div class="space-y-4">
+				  <!-- Option 1 -->
+				  <div class="flex items-center justify-between">
+					<div>
+					  <p class="text-xs font-bold text-white">Enable CDN Pre-fetching</p>
+					  <p class="text-[10px] text-slate-500 mt-0.5">Increases asset delivery speeds.</p>
+					</div>
+					<label class="relative inline-flex items-center cursor-pointer">
+					  <input type="checkbox" checked class="sr-only peer" onchange="triggerToast('CDN pre-fetching parameters updated.', 'info')">
+					  <div class="w-9 h-5 bg-slate-800 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+					</label>
+				  </div>
+				  <!-- Option 2 -->
+				  <div class="flex items-center justify-between">
+					<div>
+					  <p class="text-xs font-bold text-white">Maintenance Mode</p>
+					  <p class="text-[10px] text-slate-500 mt-0.5">Restricts public website entry.</p>
+					</div>
+					<label class="relative inline-flex items-center cursor-pointer">
+					  <input type="checkbox" class="sr-only peer" onchange="triggerToast('Maintenance protocol status altered.', 'warning')">
+					  <div class="w-9 h-5 bg-slate-800 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+					</label>
+				  </div>
+				  <!-- Option 3 -->
+				  <div class="flex items-center justify-between">
+					<div>
+					  <p class="text-xs font-bold text-white">Compress Content GZip</p>
+					  <p class="text-[10px] text-slate-500 mt-0.5">Automates compression on loading assets.</p>
+					</div>
+					<label class="relative inline-flex items-center cursor-pointer">
+					  <input type="checkbox" checked class="sr-only peer" onchange="triggerToast('GZip network structures altered.', 'info')">
+					  <div class="w-9 h-5 bg-slate-800 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+					</label>
+				  </div>
+				</div>
+			  </div>
+
+			  <!-- System Backup Config -->
+			  <div class="glass-card rounded-2xl p-6 space-y-4">
+				<h3 class="text-base font-bold text-white border-b border-white/5 pb-3">Database Backup Nodes</h3>
+				<div class="space-y-4">
+				  <p class="text-xs text-slate-400">Configure core server databases to push direct binary backups to primary remote clouds.</p>
+				  <button onclick="triggerToast('Executing custom database backup protocol...', 'info')" class="w-full py-2.5 bg-white/5 border border-white/5 hover:border-slate-700 rounded-xl text-xs font-bold text-slate-300 hover:text-white transition-all flex items-center justify-center gap-1.5">
+					<i class="fa-solid fa-cloud-arrow-up"></i> Backup Database to AWS Now
+				  </button>
+				  <div class="p-3 bg-white/5 rounded-xl border border-white/5 text-[11px] text-slate-400">
+					Last backup execution completed: <span class="font-semibold text-white">Today at 12:45 PM</span>
+				  </div>
+				</div>
+			  </div>
+
+			</div>
+
+		  </section>
+
+		</main>
+
+		<!-- Workspace Footer -->
+		<footer class="h-12 border-t border-white/5 flex items-center justify-between px-6 bg-[#070a12]/50 text-[10px] text-slate-500">
+		  <p>&copy; 2026 NexisCore Enterprise. All Rights Reserved.</p>
+		  <p>Designed with premium dark elements for system managers.</p>
+		</footer>
+
+	  </div>
+
+    </div>
+
+    <!-- OVERLAY: Add Content Modal Form -->
+    <div id="add-post-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black/75 backdrop-blur-md transition-all">
+	  <div class="glass-card rounded-2xl w-full max-w-lg mx-4 overflow-hidden border border-white/10 animate-scaleUp">
+		<!-- Modal Header -->
+		<div class="px-6 py-4 border-b border-white/5 flex justify-between items-center bg-white/[0.01]">
+		  <h3 class="text-sm font-bold uppercase tracking-wider text-white">Publish Website Record</h3>
+		  <button onclick="closeAddPostModal()" class="text-slate-400 hover:text-white focus:outline-none p-1">
+			<i class="fa-solid fa-xmark text-lg"></i>
+		  </button>
+		</div>
+		<!-- Modal Body Form -->
+		<form onsubmit="savePost(event)" class="p-6 space-y-4 text-xs text-slate-300">
+		  <!-- Title -->
+		  <div class="space-y-1.5">
+			<label for="post-title" class="font-bold text-slate-400">Content Title</label>
+			<input type="text" id="post-title" required placeholder="Enter content header..." class="w-full bg-[#0d1222] rounded-xl px-4 py-2.5 border border-white/5 focus:border-slate-700 focus:outline-none text-slate-200 placeholder-slate-600 transition-all">
+		  </div>
+		  <!-- Dual Rows -->
+		  <div class="grid grid-cols-2 gap-4">
+			<!-- Category -->
+			<div class="space-y-1.5">
+			  <label for="post-category" class="font-bold text-slate-400">Content Category</label>
+			  <select id="post-category" class="w-full bg-[#0d1222] rounded-xl px-4 py-2.5 border border-white/5 focus:border-slate-700 focus:outline-none text-slate-300 cursor-pointer">
+				<option value="Tech News">Tech News</option>
+				<option value="Tutorials">Tutorials</option>
+				<option value="Business">Business</option>
+				<option value="Cybersec">Cybersec</option>
+			  </select>
+			</div>
+			<!-- Status -->
+			<div class="space-y-1.5">
+			  <label for="post-status" class="font-bold text-slate-400">Publication Status</label>
+			  <select id="post-status" class="w-full bg-[#0d1222] rounded-xl px-4 py-2.5 border border-white/5 focus:border-slate-700 focus:outline-none text-slate-300 cursor-pointer">
+				<option value="Published">Published</option>
+				<option value="Draft">Draft</option>
+				<option value="Scheduled">Scheduled</option>
+			  </select>
+			</div>
+		  </div>
+		  <!-- Author -->
+		  <div class="space-y-1.5">
+			<label for="post-author" class="font-bold text-slate-400">Publisher Name</label>
+			<input type="text" id="post-author" required placeholder="e.g. Winter" class="w-full bg-[#0d1222] rounded-xl px-4 py-2.5 border border-white/5 focus:border-slate-700 focus:outline-none text-slate-200 placeholder-slate-600 transition-all">
+		  </div>
+		  <!-- Controls -->
+		  <div class="flex justify-end gap-3 pt-4 border-t border-white/5">
+			<button type="button" onclick="closeAddPostModal()" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 font-semibold transition-all">Cancel</button>
+			<button type="submit" class="px-5 py-2 rounded-xl accent-bg text-black font-semibold hover:opacity-95 transition-all accent-glow-shadow">Publish Page</button>
+		  </div>
+		</form>
+	  </div>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 space-y-3 pointer-events-none max-w-sm w-full">
+	  <!-- Toast elements automatically injected by logic -->
+    </div>
+
+
+    <!-- Script Operations Section -->
+<script>
+        
+        // --- CORE APPLICATION STATE ---
+        const appState = {
+            accent: 'violet', // default accent colors config
+            activeTab: 'overview',
+            logsPaused: false,
+            // Mock Records Content Datatable
+            posts: [
+                { id: 1, title: 'Optimizing Website Latency for Global Users', author: 'Karina', category: 'Tech News', date: '06/09/2026', status: 'Published' },
+                { id: 2, title: 'Beginners Guide to Web Development in 2026', author: 'Ningning', category: 'Tutorials', date: '06/08/2026', status: 'Published' },
+                { id: 3, title: 'How to Build an Indestructible Core Server', author: 'Winter', category: 'Cybersec', date: '06/05/2026', status: 'Scheduled' },
+                { id: 4, title: 'Corporate Branding Strategies in Post-Web3 Era', author: 'Giselle', category: 'Business', date: '06/02/2026', status: 'Draft' },
+                { id: 5, title: 'Integrating Tailwind CSS with Advanced Web Frameworks', author: 'Admin Nexis', category: 'Tutorials', date: '05/28/2026', status: 'Published' }
+            ],
+            // Logs Terminal Array
+            diagnosticsLogs: [
+                "[SYSTEM] Initializing core diagnostics node connection.",
+                "[INFO] Checking firewall integrity rules... OK",
+                "[INFO] Cache load threshold optimal: 94.8% hit ratio.",
+                "[SYSTEM] Remote backup node AWS S3 storage synchronized successfully."
+            ]
+        };
+
+        // UI Charts reference holders to allow redraw updates on demand
+        let trafficAreaChartRef = null;
+        let storageRadialChartRef = null;
+        let cpuGaugeRef = null;
+        let ramGaugeRef = null;
+
+        // Theme Accent color hex maps
+        const themesConfig = {
+            violet: { r: 139, g: 92, b: 246, hex: '#8b5cf6' },
+            emerald: { r: 16, g: 185, b: 129, hex: '#10b981' },
+            amber: { r: 245, g: 158, b: 11, hex: '#f59e0b' },
+            sky: { r: 14, g: 165, b: 233, hex: '#0ea5e9' }
+        };
+
+        // --- THEME ACCENT MANAGER ---
+        function setThemeAccent(themeKey) {
+            if (!themesConfig[themeKey]) return;
+            appState.accent = themeKey;
+            
+            const config = themesConfig[themeKey];
+            document.documentElement.style.setProperty('--accent', `${config.r}, ${config.g}, ${config.b}`);
+            document.documentElement.style.setProperty('--accent-glow', `rgba(${config.r}, ${config.g}, ${config.b}, 0.15)`);
+            
+            // Re-render components relying on accents
+            initializeCharts();
+            triggerToast(`Core theme accent changed to ${themeKey.toUpperCase()} successfully.`, 'info');
+        }
+
+        // --- SIDEBAR SWITCH NAVIGATION ---
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
+        function switchTab(tabId) {
+            // Un-active all nav lines
+            document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('nav-active'));
+            
+            // Set clicked active
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) activeNav.classList.add('nav-active');
+
+            // Hide all sections
+            document.querySelectorAll('.tab-content').forEach(section => section.classList.add('hidden'));
+
+            // Show target
+            const activeSection = document.getElementById(`section-${tabId}`);
+            if (activeSection) {
+                activeSection.classList.remove('hidden');
+                appState.activeTab = tabId;
+            }
+
+            // Close responsive drawer
+            const sidebar = document.getElementById('sidebar');
+            if (!sidebar.classList.contains('-translate-x-full') && window.innerWidth < 1024) {
+                toggleSidebar();
+            }
+
+            // Re-render elements inside tabs
+            if (tabId === 'content') {
+                renderPostsTable();
+            } else if (tabId === 'system') {
+                initializeSystemGauges();
+            } else if (tabId === 'overview') {
+                initializeCharts();
+                renderOverviewTable();
+            }
+        }
+
+        // --- CUSTOM TOAST NOTIFICATION UTILITIES (Replaces standard alert) ---
+        function triggerToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toastId = Date.now();
+
+            const iconMap = {
+                success: '<i class="fa-solid fa-circle-check text-emerald-400"></i>',
+                info: '<i class="fa-solid fa-circle-info text-sky-400"></i>',
+                warning: '<i class="fa-solid fa-triangle-exclamation text-amber-400"></i>',
+                danger: '<i class="fa-solid fa-circle-xmark text-rose-400"></i>'
+            };
+
+            const borderMap = {
+                success: 'border-emerald-500/20 bg-[#0d161c]',
+                info: 'border-sky-500/20 bg-[#0c1622]',
+                warning: 'border-amber-500/20 bg-[#161213]',
+                danger: 'border-rose-500/20 bg-[#170e13]'
+            };
+
+            const toastHTML = `
+                <div id="toast-${toastId}" class="glass-card ${borderMap[type]} border p-4 rounded-xl flex gap-3 shadow-2xl pointer-events-auto transform transition-all duration-300 translate-y-2 opacity-0">
+                    <div class="text-base flex-shrink-0 mt-0.5">
+                        ${iconMap[type]}
+                    </div>
+                    <div class="flex-1 text-xs">
+                        <p class="font-bold text-white uppercase tracking-wider">${type} alert</p>
+                        <p class="text-slate-300 mt-1 leading-relaxed">${message}</p>
+                    </div>
+                    <button onclick="dismissToast(${toastId})" class="text-slate-500 hover:text-white self-start">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            `;
+
+            container.insertAdjacentHTML('beforeend', toastHTML);
+            
+            // Trigger animation frame delay
+            setTimeout(() => {
+                const element = document.getElementById(`toast-${toastId}`);
+                if (element) {
+                    element.classList.remove('translate-y-2', 'opacity-0');
+                }
+            }, 50);
+
+            // Auto purge toast after 4s
+            setTimeout(() => {
+                dismissToast(toastId);
+            }, 4000);
+        }
+
+        function dismissToast(id) {
+            const element = document.getElementById(`toast-${id}`);
+            if (element) {
+                element.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => element.remove(), 300);
+            }
+        }
+
+        // --- POPOVER ALERTS WIDGET ---
+        function toggleNotificationMenu(event) {
+            event.stopPropagation();
+            const menu = document.getElementById('notification-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function clearNotifications() {
+            document.getElementById('notification-list').innerHTML = `
+                <div class="p-6 text-center text-slate-500 space-y-1">
+                    <i class="fa-regular fa-bell-slash text-2xl accent-text"></i>
+                    <p class="text-[11px] font-semibold">No critical warnings.</p>
+                </div>
+            `;
+            triggerToast('Notifications cleared successfully.', 'success');
+        }
+
+        // Close dropdown when clicking body anywhere
+        document.addEventListener('click', () => {
+            const menu = document.getElementById('notification-menu');
+            if (menu && !menu.classList.contains('hidden')) {
+                menu.classList.add('hidden');
+            }
+        });
+
+
+        // --- ADD / MANAGE POST FORM ACTION ---
+        function openAddPostModal() {
+            document.getElementById('add-post-modal').classList.remove('hidden');
+        }
+
+        function closeAddPostModal() {
+            document.getElementById('add-post-modal').classList.add('hidden');
+            // Reset fields
+            document.getElementById('post-title').value = '';
+            document.getElementById('post-author').value = '';
+        }
+
+        function savePost(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('post-title').value;
+            const category = document.getElementById('post-category').value;
+            const status = document.getElementById('post-status').value;
+            const author = document.getElementById('post-author').value;
+            
+            const newPost = {
+                id: Date.now(),
+                title: title,
+                author: author,
+                category: category,
+                date: new Date().toLocaleDateString('id-ID'),
+                status: status
+            };
+
+            appState.posts.unshift(newPost);
+            
+            // Refresh visuals
+            if (appState.activeTab === 'content') {
+                renderPostsTable();
+            } else if (appState.activeTab === 'overview') {
+                renderOverviewTable();
+            }
+
+            closeAddPostModal();
+            triggerToast(`"${title.slice(0, 30)}..." record successfully published.`, 'success');
+        }
+
+        function deletePost(id) {
+            const targetPost = appState.posts.find(p => p.id === id);
+            appState.posts = appState.posts.filter(p => p.id !== id);
+            
+            // Refresh visuals
+            if (appState.activeTab === 'content') {
+                renderPostsTable();
+            } else if (appState.activeTab === 'overview') {
+                renderOverviewTable();
+            }
+
+            triggerToast(`Post "${targetPost ? targetPost.title.slice(0, 25) : ''}" record dropped.`, 'warning');
+        }
+
+
+        // --- CONTENT DATATABLE BUILDERS ---
+        function renderPostsTable(filteredList = appState.posts) {
+            const container = document.getElementById('content-table-body');
+            const emptyState = document.getElementById('content-table-empty');
+            const countBadge = document.getElementById('content-count-badge');
+            
+            countBadge.innerText = `${filteredList.length} records`;
+            container.innerHTML = '';
+
+            if (filteredList.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            filteredList.forEach(post => {
+                const badgeColor = {
+                    Published: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+                    Draft: 'bg-slate-800 text-slate-300 border-white/5',
+                    Scheduled: 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                }[post.status] || 'bg-slate-800 text-slate-300';
+
+                const rowHTML = `
+                    <tr class="hover:bg-white/[0.01] transition-colors">
+                        <td class="py-4 px-6 font-semibold text-white max-w-xs truncate">${post.title}</td>
+                        <td class="py-4 px-6 text-slate-400">${post.author}</td>
+                        <td class="py-4 px-6">
+                            <span class="px-2 py-1 rounded bg-[#0d1222] border border-white/5 text-slate-400 text-[10px] font-semibold">${post.category}</span>
+                        </td>
+                        <td class="py-4 px-6 text-slate-500">${post.date}</td>
+                        <td class="py-4 px-6">
+                            <span class="px-2.5 py-1 rounded-full border text-[10px] font-bold tracking-wider uppercase ${badgeColor}">${post.status}</span>
+                        </td>
+                        <td class="py-4 px-6 text-right">
+                            <div class="flex items-center justify-end gap-1.5">
+                                <button onclick="triggerToast('Record edit sequence bypass mode.', 'info')" class="p-2 bg-white/5 rounded-xl border border-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-all" title="Edit post"><i class="fa-solid fa-pen-to-square text-[11px]"></i></button>
+                                <button onclick="deletePost(${post.id})" class="p-2 bg-rose-950/20 border border-rose-500/10 rounded-xl text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 transition-all" title="Delete post"><i class="fa-solid fa-trash-can text-[11px]"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                container.insertAdjacentHTML('beforeend', rowHTML);
+            });
+        }
+
+        function filterPosts() {
+            const query = document.getElementById('content-search').value.toLowerCase();
+            const status = document.getElementById('content-status-filter').value;
+
+            const filtered = appState.posts.filter(post => {
+                const matchesSearch = post.title.toLowerCase().includes(query) || post.author.toLowerCase().includes(query);
+                const matchesStatus = (status === 'all') || (post.status === status);
+                return matchesSearch && matchesStatus;
+            });
+
+            renderPostsTable(filtered);
+        }
+
+        // Render minimal table on overview screen
+        function renderOverviewTable() {
+            const container = document.getElementById('quick-activity-table-body');
+            container.innerHTML = '';
+            
+            // Slice top 3 recent items
+            const subset = appState.posts.slice(0, 3);
+            subset.forEach(post => {
+                const badgeColor = {
+                    Published: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+                    Draft: 'bg-slate-800 text-slate-300 border-white/5',
+                    Scheduled: 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                }[post.status] || 'bg-slate-800 text-slate-300';
+
+                const row = `
+                    <tr class="border-b border-white/5">
+                        <td class="py-3 px-2 font-medium text-white max-w-xs truncate">${post.title}</td>
+                        <td class="py-3 px-2 text-slate-400">${post.author}</td>
+                        <td class="py-3 px-2"><span class="px-2 py-0.5 rounded bg-white/5 border border-white/5 text-slate-400 text-[10px]">${post.category}</span></td>
+                        <td class="py-3 px-2 text-right">
+                            <span class="px-2 py-0.5 rounded-full border text-[9px] font-bold ${badgeColor}">${post.status}</span>
+                        </td>
+                    </tr>
+                `;
+                container.insertAdjacentHTML('beforeend', row);
+            });
+        }
+
+
+        // --- SYSTEM LOGGER TERMINAL SYSTEM ---
+        function generateLiveLogs() {
+            if (appState.logsPaused) return;
+
+            const components = ["API_GATEWAY", "CDN_PROXY", "AUTH_SVC", "MONGO_DB", "JOBS_ENGINE"];
+            const actions = [
+                "GET /v1/overview_metrics processed successfully",
+                "Purged static web components from cache buffer",
+                "Authentication token validated in 8ms",
+                "Writing collection operations trace files to core database node",
+                "Backup node heartbeat check - STATUS: OPERATIONAL"
+            ];
+
+            const randComp = components[Math.floor(Math.random() * components.length)];
+            const randAct = actions[Math.floor(Math.random() * actions.length)];
+            const time = new Date().toLocaleTimeString();
+
+            const entryHTML = `<p class="transition-opacity duration-300 opacity-0"><span class="text-slate-600">[${time}]</span> <span class="accent-text font-bold">[${randComp}]</span> ${randAct}</p>`;
+            
+            const screen = document.getElementById('terminal-screen');
+            if (screen) {
+                screen.insertAdjacentHTML('beforeend', entryHTML);
+                
+                // Animate entry in
+                const newChild = screen.lastElementChild;
+                setTimeout(() => newChild.classList.remove('opacity-0'), 10);
+
+                // Auto-scroll inside terminal log
+                screen.scrollTop = screen.scrollHeight;
+
+                // Keep terminal memory safe (restrict lines above 50)
+                if (screen.childElementCount > 50) {
+                    screen.firstElementChild.remove();
+                }
+            }
+        }
+
+        function pauseLogTerminal() {
+            appState.logsPaused = !appState.logsPaused;
+            const btn = document.getElementById('btn-pause-logs');
+            if (appState.logsPaused) {
+                btn.innerHTML = `<i class="fa-solid fa-play mr-1"></i> Resume Output`;
+                btn.classList.add('border-emerald-500/10', 'text-emerald-400');
+            } else {
+                btn.innerHTML = `<i class="fa-solid fa-pause mr-1"></i> Pause Output`;
+                btn.classList.remove('border-emerald-500/10', 'text-emerald-400');
+            }
+        }
+
+        function clearLogTerminal() {
+            document.getElementById('terminal-screen').innerHTML = `
+                <p class="text-slate-500">// Terminal log memory cleared. Running processes active.</p>
+            `;
+            triggerToast('Terminal log entries purged successfully.', 'info');
+        }
+
+
+        // --- STUNNING HIGH-END DATA VISUALIZATION ENGINE ---
+        function initializeCharts() {
+            const accentHex = themesConfig[appState.accent].hex;
+
+            // 1. Core Area Traffic Chart
+            const areaOptions = {
+                chart: {
+                    type: 'area',
+                    height: 310,
+                    toolbar: { show: false },
+                    background: 'transparent',
+                    sparkline: { enabled: false },
+                    animations: { enabled: true, easing: 'easeinout', speed: 800 }
+                },
+                grid: {
+                    borderColor: 'rgba(255, 255, 255, 0.05)',
+                    strokeDashArray: 4,
+                    xaxis: { lines: { show: false } },
+                    yaxis: { lines: { show: true } }
+                },
+                colors: [accentHex, '#10b981'],
+                dataLabels: { enabled: false },
+                stroke: { curve: 'smooth', width: 3, lineCap: 'round' },
+                series: [{
+                    name: 'Page Hits',
+                    data: [12000, 19000, 15000, 27000, 22000, 36000, 31000]
+                }, {
+                    name: 'API Calls',
+                    data: [4000, 7500, 6000, 14000, 9500, 18000, 14200]
+                }],
+                xaxis: {
+                    categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    axisBorder: { show: false },
+                    axisTicks: { show: false },
+                    labels: { style: { colors: '#64748b', fontSize: '11px' } }
+                },
+                yaxis: {
+                    labels: { style: { colors: '#64748b', fontSize: '11px' } }
+                },
+                fill: {
+                    type: 'gradient',
+                    gradient: {
+                        shadeIntensity: 1,
+                        opacityFrom: 0.22,
+                        opacityTo: 0.01,
+                        stops: [0, 90, 100]
+                    }
+                },
+                legend: { show: false },
+                tooltip: { theme: 'dark' }
+            };
+
+            if (trafficAreaChartRef) {
+                trafficAreaChartRef.destroy();
+            }
+            const trafficChartEl = document.getElementById('traffic-area-chart');
+            if (trafficChartEl) {
+                trafficAreaChartRef = new ApexCharts(trafficChartEl, areaOptions);
+                trafficAreaChartRef.render();
+            }
+
+            // 2. Storage Allocation Radial Progress Bar Chart
+            const radialOptions = {
+                chart: {
+                    type: 'radialBar',
+                    height: 220,
+                    sparkline: { enabled: true }
+                },
+                colors: [accentHex],
+                plotOptions: {
+                    radialBar: {
+                        hollow: { size: '68%', background: 'transparent' },
+                        track: { background: 'rgba(255,255,255,0.05)', strokeWidth: '100%' },
+                        dataLabels: {
+                            name: { show: false },
+                            value: {
+                                color: '#fff',
+                                fontSize: '26px',
+                                fontWeight: '800',
+                                show: true,
+                                offsetY: 10
+                            }
+                        }
+                    }
+                },
+                series: [72],
+                stroke: { lineCap: 'round' }
+            };
+
+            if (storageRadialChartRef) {
+                storageRadialChartRef.destroy();
+            }
+            const storageChartEl = document.getElementById('storage-radial-chart');
+            if (storageChartEl) {
+                storageRadialChartRef = new ApexCharts(storageChartEl, radialOptions);
+                storageRadialChartRef.render();
+            }
+        }
+
+        // Generate and update with fancy random metrics to simulate real-time systems
+        function regenerateChartData() {
+            if (!trafficAreaChartRef) return;
+            
+            const randSeries1 = Array.from({ length: 7 }, () => Math.floor(Math.random() * 30000) + 10000);
+            const randSeries2 = Array.from({ length: 7 }, () => Math.floor(Math.random() * 15000) + 3000);
+            
+            trafficAreaChartRef.updateSeries([{
+                name: 'Page Hits',
+                data: randSeries1
+            }, {
+                name: 'API Calls',
+                data: randSeries2
+            }]);
+
+            // Randomize metric badges slightly
+            document.getElementById('metric-visitors').innerText = Math.floor(Math.random() * 1500 + 4000).toLocaleString();
+            document.getElementById('metric-sales').innerText = '$' + Math.floor(Math.random() * 3000 + 17000).toLocaleString();
+            document.getElementById('metric-load').innerText = (Math.random() * 0.2 + 0.2).toFixed(2) + 's';
+
+            triggerToast('Database tracking records synchronized successfully.', 'success');
+        }
+
+
+        // --- CPU & RAM DIAGNOSTIC RADIAL GAUGES ---
+        function initializeSystemGauges() {
+            const accentHex = themesConfig[appState.accent].hex;
+
+            // 1. CPU Load Gauge
+            const cpuOptions = {
+                chart: { type: 'radialBar', height: 180, sparkline: { enabled: true } },
+                colors: [accentHex],
+                plotOptions: {
+                    radialBar: {
+                        startAngle: -90,
+                        endAngle: 90,
+                        track: { background: 'rgba(255,255,255,0.05)', strokeWidth: '100%' },
+                        dataLabels: {
+                            name: { show: false },
+                            value: { offsetY: -5, fontSize: '18px', fontWeight: 'bold', color: '#fff' }
+                        }
+                    }
+                },
+                series: [42],
+                stroke: { lineCap: 'round' }
+            };
+
+            if (cpuGaugeRef) { cpuGaugeRef.destroy(); }
+            const cpuEl = document.getElementById('cpu-radial-gauge');
+            if (cpuEl) {
+                cpuGaugeRef = new ApexCharts(cpuEl, cpuOptions);
+                cpuGaugeRef.render();
+            }
+
+            // 2. Memory Load Gauge
+            const ramOptions = {
+                chart: { type: 'radialBar', height: 180, sparkline: { enabled: true } },
+                colors: ['#10b981'],
+                plotOptions: {
+                    radialBar: {
+                        startAngle: -90,
+                        endAngle: 90,
+                        track: { background: 'rgba(255,255,255,0.05)', strokeWidth: '100%' },
+                        dataLabels: {
+                            name: { show: false },
+                            value: { offsetY: -5, fontSize: '18px', fontWeight: 'bold', color: '#fff' }
+                        }
+                    }
+                },
+                series: [71],
+                stroke: { lineCap: 'round' }
+            };
+
+            if (ramGaugeRef) { ramGaugeRef.destroy(); }
+            const ramEl = document.getElementById('ram-radial-gauge');
+            if (ramEl) {
+                ramGaugeRef = new ApexCharts(ramEl, ramOptions);
+                ramGaugeRef.render();
+            }
+        }
+
+        // Simulates dynamic oscillations on Server Monitors
+        function runServerMonitorLoop() {
+            setInterval(() => {
+                // Keep ping text dynamic
+                const ping = Math.floor(Math.random() * 12) + 18;
+                const pingText = document.getElementById('ping-text');
+                if (pingText) pingText.innerText = `${ping}ms`;
+
+                if (appState.activeTab === 'system') {
+                    // CPU Gauge Oscillation
+                    if (cpuGaugeRef) {
+                        const newCpu = Math.floor(Math.random() * 25) + 30; // oscillates between 30% and 55%
+                        cpuGaugeRef.updateSeries([newCpu]);
+                    }
+
+                    // RAM Gauge Oscillation
+                    if (ramGaugeRef) {
+                        const newRamPct = Math.floor(Math.random() * 4) + 69; // oscillates between 69% and 73%
+                        ramGaugeRef.updateSeries([newRamPct]);
+
+                        // RAM textual display updates
+                        const allocGb = ((newRamPct / 100) * 16.0).toFixed(1);
+                        document.getElementById('ram-text-allocated').innerText = `${allocGb} GB / 16.0 GB`;
+                    }
+
+                    // Network Oscillation
+                    const netIn = (Math.random() * 4 + 10).toFixed(1);
+                    const netOut = (Math.random() * 15 + 75).toFixed(1);
+                    document.getElementById('network-inbound').innerText = `${netIn} MB/s`;
+                    document.getElementById('network-outbound').innerText = `${netOut} MB/s`;
+                }
+            }, 3000);
+        }
+
+
+        // --- APPLICATION INITIALIZATION BOOT ---
+        window.onload = function() {
+            // Clock Timer Loop
+            setInterval(() => {
+                const clock = document.getElementById('current-clock');
+                if (clock) clock.innerText = new Date().toLocaleTimeString('en-US');
+            }, 1000);
+
+            // Log Generator Loop
+            setInterval(generateLiveLogs, 3000);
+
+            // Setup default visual assets
+            renderOverviewTable();
+            initializeCharts();
+            runServerMonitorLoop();
+
+            // Populate system logs panel with dummy log items initially
+            const term = document.getElementById('terminal-screen');
+            if (term) {
+                appState.diagnosticsLogs.forEach(log => {
+                    const time = new Date().toLocaleTimeString();
+                    term.insertAdjacentHTML('beforeend', `<p><span class="text-slate-600">[${time}]</span> ${log}</p>`);
+                });
+            }
+
+            // Warm greeting toast
+            setTimeout(() => {
+                triggerToast("Welcome back, Admin! Cloud cluster operations are active.", "success");
+            }, 1000);
+        }
+
+</script>
+  </body>
+</html>
