@@ -1,0 +1,46 @@
+#!/support/busybox sh
+# Shell Script to add all files, commit them with a commit message from user and then push them to remote GitHub repo
+#Bashcolor
+blue='\e[1;34m' 
+green='\e[1;32m' 
+purple='\e[1;35m' 
+cyan='\e[1;36m' 
+red='\e[1;31m' 
+white='\e[1;37m' 
+echo -e $green "*** Automating Git Add, Commit and Push ***"
+
+#Ask for User Github's Personal Access Token
+
+# Check if repository exists at GitHub
+curl "https://api.github.com/repos/asepmo-kuadrat/asepmo-kuadrat.github.io.git"
+# If repository exits then
+
+if [ $? -eq 0 ]; then
+    # Display unstaged files
+    git status
+    git remote set-url origin https://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@github.com/asepmo-kuadrat/asepmo-kuadrat.github.io.git
+    # If there are any uncommited and unstatged files, ask user to commit them
+    if [ "$(git status --porcelain)" ]; then
+        echo -e $green "There are uncommited and unstatged files. Commit them before pushing"
+        echo -e $green "Enter commit message"
+        read commitMessage
+        git add .
+        git commit -m "$commitMessage"
+        git push
+        echo -e $green "Files pushed to GitHub"
+        # else push all commited and staged files to remote repo
+    else
+        git push
+        echo -e $green "Files pushed to GitHub"
+        
+    fi
+    #Echo message if there is no files to commit, stage or push
+    if [ "$(git status --porcelain)" ]; then
+        echo -e $green "There are no files to commit, stage or push"
+    fi
+else
+    echo -e $green "Repository does not exist"
+fi
+
+
+# End of script
