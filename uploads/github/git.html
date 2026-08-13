@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitLab-esque GitHub Dashboard</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts: Playfair Display & Inter for code -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        playfair: ['"Playfair Display"', 'serif'],
+                        inter: ['"Inter"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+</script>
+<style>
+        body {
+            font-family: 'Playfair Display', serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .font-sans {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #16a34a; 
+            border-radius: 4px;
+        }
+        .drawer-open {
+            transform: translateX(0);
+        }
+        .drawer-closed {
+            transform: translateX(-100%);
+        }
+        
+        /* Code Editor styles */
+        #code-editor {
+            font-family: monospace;
+            tab-size: 4;
+            white-space: pre;
+        }
+</style>
+  </head>
+
+  <body class="bg-white text-brand-800 dark:bg-gray-900 dark:text-brand-400 min-h-screen flex flex-col overflow-x-hidden">
+
+    <!-- Top Navbar -->
+    <nav class="bg-white dark:bg-gray-900 border-b border-brand-100 dark:border-gray-800 sticky top-0 z-40 transition-colors">
+	  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="flex justify-between h-16">
+		  <div class="flex items-center">
+			<button id="menu-btn" class="p-2 rounded-md text-brand-600 hover:text-brand-800 hover:bg-brand-50 dark:hover:bg-gray-800 focus:outline-none hidden">
+			  <i class="fa-solid fa-bars text-xl"></i>
+			</button>
+			<div class="flex-shrink-0 flex items-center ml-2 sm:ml-4 cursor-pointer" id="nav-brand-logo">
+			  <i class="fa-brands fa-gitlab text-3xl text-brand-600 mr-2"></i>
+			  <span class="font-bold text-xl tracking-wide hidden sm:block">GitDashboard</span>
+			</div>
+		  </div>
+		  <div class="flex items-center space-x-4">
+			<!-- Notification Toast -->
+			<div id="toast" class="hidden items-center px-4 py-2 rounded-lg text-sm font-sans transition-all fixed bottom-5 right-5 z-50 shadow-lg transform translate-y-10 opacity-0">
+			  <span id="toast-message">Notifikasi</span>
+			</div>
+
+			<!-- Theme Toggle -->
+			<button id="theme-toggle" class="p-2 rounded-full text-brand-600 hover:bg-brand-50 dark:hover:bg-gray-800 transition-colors" title="Toggle Theme">
+			  <i class="fa-solid fa-moon text-xl" id="theme-icon"></i>
+			</button>
+
+			<!-- Logout Button -->
+			<button id="logout-btn" class="hidden flex items-center space-x-2 bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg shadow-sm transition-colors text-sm font-sans">
+			  <i class="fa-solid fa-right-from-bracket"></i>
+			  <span class="hidden sm:inline">Logout</span>
+			</button>
+		  </div>
+		</div>
+	  </div>
+    </nav>
+
+    <!-- Drawer / Sidebar Profile -->
+    <div id="drawer-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden transition-opacity"></div>
+    <aside id="drawer" class="fixed inset-y-0 left-0 w-80 bg-white dark:bg-gray-900 border-r border-brand-100 dark:border-gray-800 z-50 drawer-closed transition-transform duration-300 ease-in-out flex flex-col shadow-2xl font-sans">
+	  <div class="p-4 border-b border-brand-100 dark:border-gray-800 flex justify-between items-center">
+		<h2 class="text-xl font-bold text-brand-700 dark:text-brand-400 font-playfair">GitHub Profile</h2>
+		<button id="close-drawer-btn" class="p-2 text-brand-500 hover:bg-brand-50 dark:hover:bg-gray-800 rounded-full">
+		  <i class="fa-solid fa-times text-lg"></i>
+		</button>
+	  </div>
+
+	  <div class="p-6 flex-1 overflow-y-auto" id="profile-content">
+		<!-- Loading State -->
+		<div id="profile-loading" class="text-center py-10 hidden">
+		  <i class="fa-solid fa-circle-notch fa-spin text-4xl text-brand-500 mb-4"></i>
+		  <p>Memuat profil...</p>
+		</div>
+
+		<!-- Actual Profile Data -->
+		<div id="profile-data" class="hidden flex flex-col items-center text-center">
+		  <img id="prof-avatar" src="https://placehold.co/150x150/16a34a/white?text=User" alt="Avatar" class="w-32 h-32 rounded-full border-4 border-brand-200 dark:border-brand-900 mb-4 shadow-lg object-cover">
+		  <h3 id="prof-name" class="text-2xl font-bold mb-1 font-playfair">Nama Pengguna</h3>
+		  <p id="prof-login" class="text-brand-600 dark:text-brand-500 mb-4">@username</p>
+		  <p id="prof-bio" class="text-sm text-gray-600 dark:text-gray-400 mb-6 italic">Ini adalah bio pengguna yang diambil dari GitHub.</p>
+
+		  <div class="grid grid-cols-2 gap-4 w-full mb-6">
+			<div class="bg-brand-50 dark:bg-gray-800 p-3 rounded-lg border border-brand-100 dark:border-gray-700">
+			  <i class="fa-solid fa-users text-brand-600 mb-2 text-xl"></i>
+			  <p class="text-xs text-gray-500 dark:text-gray-400">Followers</p>
+			  <p id="prof-followers" class="text-lg font-bold">0</p>
+			</div>
+			<div class="bg-brand-50 dark:bg-gray-800 p-3 rounded-lg border border-brand-100 dark:border-gray-700">
+			  <i class="fa-solid fa-user-plus text-brand-600 mb-2 text-xl"></i>
+			  <p class="text-xs text-gray-500 dark:text-gray-400">Following</p>
+			  <p id="prof-following" class="text-lg font-bold">0</p>
+			</div>
+		  </div>
+
+		  <a id="prof-url" href="#" target="_blank" class="mt-4 w-full block bg-brand-50 border border-brand-200 dark:bg-gray-800 dark:border-gray-700 hover:bg-brand-100 dark:hover:bg-gray-700 text-brand-700 dark:text-brand-300 font-bold py-2 px-4 rounded-lg transition-colors text-center shadow-sm">
+			<i class="fa-brands fa-github mr-2"></i> Lihat di GitHub
+		  </a>
+		</div>
+
+		<!-- Error State -->
+		<div id="profile-error" class="hidden text-center py-10">
+		  <i class="fa-solid fa-triangle-exclamation text-4xl text-red-500 mb-4"></i>
+		  <p class="text-red-500 mb-2">Gagal memuat profil</p>
+		</div>
+	  </div>
+    </aside>
+
+    <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 font-sans">
+
+	  <!-- VIEW: Login -->
+	  <section id="view-login" class="flex flex-col items-center justify-center min-h-[70vh]">
+		<div class="bg-white dark:bg-gray-800 border border-brand-100 dark:border-gray-700 rounded-2xl shadow-xl w-full max-w-md p-8">
+		  <div class="text-center mb-8">
+			<i class="fa-brands fa-gitlab text-5xl text-brand-600 mb-4"></i>
+			<h1 class="text-3xl font-bold text-brand-800 dark:text-brand-400 font-playfair">Selamat Datang</h1>
+			<p class="text-gray-500 dark:text-gray-400 mt-2 text-sm">Masuk untuk mengelola repositori GitHub kamu.</p>
+		  </div>
+
+		  <div id="firebase-warning" class="hidden mb-6 p-4 bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg text-sm">
+			<i class="fa-solid fa-circle-exclamation mr-1"></i> <strong>Firebase belum dikonfigurasi!</strong>
+		  </div>
+
+		  <div class="space-y-4">
+			<!-- GitHub OAuth Only for simplicity in this flow, as API needs token -->
+			<button id="btn-login-github" class="w-full bg-gray-900 hover:bg-black dark:bg-gray-700 dark:hover:bg-gray-600 text-white py-3 rounded-lg shadow-lg transition-colors font-bold flex items-center justify-center space-x-3 group">
+			  <i class="fa-brands fa-github text-xl group-hover:scale-110 transition-transform"></i>
+			  <span>Masuk dengan GitHub</span>
+			</button>
+            <p class="text-xs text-center text-gray-400 mt-4">Akses Repositori diperlukan untuk menggunakan fitur aplikasi ini.</p>
+		  </div>
+		</div>
+	  </section>
+
+	  <!-- VIEW: Dashboard (Repositories List) -->
+	  <section id="view-dashboard" class="hidden">
+		<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 border-b border-brand-100 dark:border-gray-800 pb-6">
+		  <div>
+			<h1 class="text-3xl font-bold text-brand-800 dark:text-brand-400 flex items-center font-playfair">
+			  <i class="fa-solid fa-book-bookmark mr-3 text-brand-600"></i> Repositori Saya
+			</h1>
+		  </div>
+
+		  <div class="flex space-x-3 w-full md:w-auto">
+			<div class="relative w-full">
+			  <input type="text" id="search-repo" placeholder="Cari repositori..." class="pl-10 pr-4 py-2 w-full md:w-64 bg-white dark:bg-gray-800 border border-brand-200 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-brand-500 outline-none text-sm dark:text-white">
+			  <i class="fa-solid fa-search absolute left-3 top-2.5 text-gray-400"></i>
+			</div>
+		  </div>
+		</div>
+
+		<div id="repos-loading" class="text-center py-20">
+		  <i class="fa-solid fa-circle-notch fa-spin text-5xl text-brand-500 mb-4"></i>
+		  <h2 class="text-xl">Menyelaraskan dengan GitHub...</h2>
+		</div>
+
+		<div id="repos-error" class="hidden text-center py-20">
+		  <i class="fa-brands fa-github-alt text-5xl text-gray-400 mb-4"></i>
+		  <h2 class="text-xl font-bold mb-2">Akses Ditolak</h2>
+		  <button id="btn-relogin-github" class="mt-4 bg-brand-600 hover:bg-brand-700 text-white px-6 py-2 rounded-lg shadow-md transition-colors">Login Ulang</button>
+		</div>
+
+		<div id="repos-grid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+		  <!-- Repo Cards Injected Here -->
+		</div>
+	  </section>
+
+      <!-- VIEW: Repository Detail (Browser, Editor, Upload) -->
+      <section id="view-repo-detail" class="hidden">
+
+        <!-- Repo Header & Breadcrumbs -->
+        <div class="mb-6 bg-white dark:bg-gray-800 p-4 rounded-xl border border-brand-100 dark:border-gray-700 shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+		  <div>
+			<button id="btn-back-repos" class="text-sm text-gray-500 hover:text-brand-600 mb-2 flex items-center transition-colors">
+			  <i class="fa-solid fa-arrow-left mr-2"></i> Kembali ke Repositori
+			</button>
+			<h2 class="text-2xl font-bold text-brand-800 dark:text-brand-400 flex items-center" id="current-repo-title">
+			  <i class="fa-solid fa-book-journal-whills mr-2 text-brand-600"></i> <span>RepoName</span>
+			</h2>
+			<div class="flex items-center text-sm text-gray-500 mt-2 bg-gray-50 dark:bg-gray-900 py-1 px-3 rounded-md border border-gray-200 dark:border-gray-700 inline-block overflow-x-auto max-w-full">
+			  <i class="fa-solid fa-code-branch mr-2"></i>
+			  <span id="current-repo-branch" class="font-semibold mr-2">main</span> 
+			  <span class="mx-2 text-gray-300">|</span>
+			  <i class="fa-solid fa-folder-tree mr-2"></i>
+			  <span id="breadcrumb-path" class="flex whitespace-nowrap">
+				<!-- Breadcrumbs injected here -->
+			  </span>
+			</div>
+		  </div>
+
+		  <!-- Context Actions -->
+		  <div class="flex flex-wrap gap-2" id="repo-actions-container">
+			<button id="btn-upload-view" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center shadow-sm">
+			  <i class="fa-solid fa-cloud-arrow-up mr-2"></i> Upload
+			</button>
+			<!-- Add new file button could go here -->
+		  </div>
+        </div>
+
+        <!-- Main Workspace Area -->
+        <div class="bg-white dark:bg-gray-800 border border-brand-100 dark:border-gray-700 rounded-xl shadow-sm overflow-hidden min-h-[500px] flex flex-col relative">
+
+		  <!-- Loading Overlay for Workspace -->
+		  <div id="workspace-loading" class="absolute inset-0 bg-white/80 dark:bg-gray-800/80 z-10 flex flex-col items-center justify-center hidden backdrop-blur-sm">
+			<i class="fa-solid fa-circle-notch fa-spin text-4xl text-brand-500 mb-2"></i>
+			<span id="workspace-loading-text">Memuat...</span>
+		  </div>
+
+		  <!-- PANEL: File Browser -->
+		  <div id="panel-file-browser" class="flex-1 w-full flex flex-col hidden">
+			<div class="bg-gray-50 dark:bg-gray-900 border-b border-brand-100 dark:border-gray-700 p-3 flex justify-between text-xs font-semibold text-gray-500 uppercase">
+			  <div class="w-7/12 sm:w-1/2 pl-2">Nama</div>
+			  <div class="w-3/12 sm:w-1/4 text-right pr-4">Ukuran</div>
+			  <div class="w-2/12 sm:w-1/4 text-center">Aksi</div>
+			</div>
+			<div id="file-list-container" class="flex-1 overflow-y-auto">
+			  <!-- File rows injected here -->
+			</div>
+			<div id="file-list-empty" class="hidden flex-1 flex flex-col items-center justify-center py-10 text-gray-400">
+			  <i class="fa-regular fa-folder-open text-4xl mb-2"></i>
+			  <p>Folder ini kosong.</p>
+			</div>
+		  </div>
+
+		  <!-- PANEL: File Viewer -->
+		  <div id="panel-file-viewer" class="flex-1 w-full flex flex-col hidden">
+			<div class="bg-gray-50 dark:bg-gray-900 border-b border-brand-100 dark:border-gray-700 p-3 flex justify-between items-center">
+			  <div class="font-semibold text-brand-700 dark:text-brand-300 flex items-center truncate pr-4">
+				<i class="fa-regular fa-file-lines mr-2"></i> <span id="viewer-filename">filename.txt</span>
+			  </div>
+			  <div class="flex space-x-2">
+				<button id="btn-edit-file" class="bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300 px-3 py-1.5 rounded text-sm transition-colors">
+				  <i class="fa-solid fa-pen mr-1"></i> Edit
+				</button>
+				<button id="btn-download-file" class="bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 px-3 py-1.5 rounded text-sm transition-colors">
+				  <i class="fa-solid fa-download mr-1"></i>
+				</button>
+				<button id="btn-close-viewer" class="bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 px-3 py-1.5 rounded text-sm transition-colors">
+				  <i class="fa-solid fa-times"></i>
+				</button>
+			  </div>
+			</div>
+			<div class="flex-1 overflow-auto bg-white dark:bg-gray-950 p-4">
+			  <pre><code id="viewer-content" class="text-sm text-gray-800 dark:text-gray-300 whitespace-pre-wrap break-words"></code></pre>
+			</div>
+		  </div>
+
+		  <!-- PANEL: File Editor -->
+		  <div id="panel-file-editor" class="flex-1 w-full flex flex-col hidden">
+			<div class="bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-800 p-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+			  <div class="font-semibold text-yellow-800 dark:text-yellow-500 flex items-center w-full sm:w-auto">
+				<i class="fa-solid fa-pen-to-square mr-2"></i> Mengedit: <span id="editor-filename" class="ml-1 truncate">file</span>
+			  </div>
+			  <div class="flex space-x-2 w-full sm:w-auto">
+				<input type="text" id="editor-commit-msg" placeholder="Pesan commit..." class="flex-1 sm:w-48 px-2 py-1 text-sm border rounded dark:bg-gray-800 dark:border-gray-600 outline-none focus:ring-1 focus:ring-yellow-500">
+				<button id="btn-save-file" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-1.5 rounded text-sm font-semibold transition-colors whitespace-nowrap">
+				  <i class="fa-solid fa-save mr-1"></i> Simpan
+				</button>
+				<button id="btn-cancel-edit" class="bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 px-3 py-1.5 rounded text-sm transition-colors">
+				  Batal
+				</button>
+			  </div>
+			</div>
+			<textarea id="code-editor" class="flex-1 w-full bg-gray-50 dark:bg-gray-950 text-sm text-gray-800 dark:text-gray-200 p-4 outline-none resize-none" spellcheck="false"></textarea>
+		  </div>
+
+		  <!-- PANEL: Upload Page -->
+		  <div id="panel-upload-view" class="flex-1 w-full flex flex-col hidden bg-gray-50 dark:bg-gray-900/50">
+			<div class="border-b border-brand-100 dark:border-gray-700 p-3 flex justify-between items-center bg-white dark:bg-gray-800">
+			  <div class="font-semibold text-brand-700 dark:text-brand-300 flex items-center">
+				<i class="fa-solid fa-cloud-arrow-up mr-2"></i> Unggah File/Folder
+			  </div>
+			  <button id="btn-cancel-upload" class="text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 transition-colors">
+				<i class="fa-solid fa-times text-lg"></i>
+			  </button>
+			</div>
+
+			<div class="flex-1 p-6 flex flex-col max-w-3xl mx-auto w-full">
+
+			  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+				<!-- Upload Files Button -->
+				<div class="border-2 border-dashed border-brand-300 dark:border-gray-600 rounded-xl p-6 text-center hover:bg-brand-50 dark:hover:bg-gray-800 transition-colors relative cursor-pointer group">
+				  <i class="fa-regular fa-file-image text-4xl text-brand-500 mb-3 group-hover:scale-110 transition-transform"></i>
+				  <h3 class="font-semibold text-gray-700 dark:text-gray-300">Pilih File</h3>
+				  <p class="text-xs text-gray-500 mt-1">Pilih satu atau beberapa file</p>
+				  <input type="file" id="input-upload-files" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+				</div>
+
+				<!-- Upload Folder Button -->
+				<div class="border-2 border-dashed border-brand-300 dark:border-gray-600 rounded-xl p-6 text-center hover:bg-brand-50 dark:hover:bg-gray-800 transition-colors relative cursor-pointer group">
+				  <i class="fa-solid fa-folder-tree text-4xl text-brand-500 mb-3 group-hover:scale-110 transition-transform"></i>
+				  <h3 class="font-semibold text-gray-700 dark:text-gray-300">Pilih Folder</h3>
+				  <p class="text-xs text-gray-500 mt-1">Unggah seluruh isi folder</p>
+				  <input type="file" id="input-upload-folder" webkitdirectory directory multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+				</div>
+			  </div>
+
+			  <!-- Selected Files List -->
+			  <div class="flex-1 bg-white dark:bg-gray-800 rounded-lg border border-brand-100 dark:border-gray-700 flex flex-col mb-4 overflow-hidden shadow-sm">
+				<div class="bg-gray-100 dark:bg-gray-900 px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-sm font-semibold flex justify-between">
+				  <span>File Terpilih (<span id="upload-count">0</span>)</span>
+				  <button id="btn-clear-upload" class="text-red-500 hover:text-red-700 text-xs hidden">Hapus Semua</button>
+				</div>
+				<div id="upload-preview-list" class="flex-1 overflow-y-auto p-2 space-y-1 max-h-48">
+				  <div class="text-center py-6 text-gray-400 text-sm italic" id="upload-empty-msg">Belum ada file dipilih</div>
+				</div>
+			  </div>
+
+			  <!-- Commit Message & Submit -->
+			  <div class="flex flex-col sm:flex-row gap-3">
+				<input type="text" id="upload-commit-msg" placeholder="Pesan commit (opsional)..." class="flex-1 px-4 py-2 border border-brand-200 dark:border-gray-600 rounded-lg outline-none focus:ring-2 focus:ring-brand-500 dark:bg-gray-800">
+				<button id="btn-execute-upload" disabled class="bg-brand-600 hover:bg-brand-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-6 py-2 rounded-lg font-semibold transition-colors shadow-md">
+				  Mulai Unggah
+				</button>
+			  </div>
+			  <div id="upload-progress-container" class="w-full bg-gray-200 rounded-full h-2.5 mt-4 hidden dark:bg-gray-700">
+				<div id="upload-progress-bar" class="bg-brand-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+			  </div>
+			  <p id="upload-status-text" class="text-xs text-center mt-2 text-gray-500 hidden"></p>
+
+			</div>
+		  </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Modal Konfirmasi Hapus -->
+    <div id="modal-delete" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center backdrop-blur-sm">
+	  <div class="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl font-sans">
+		<h3 class="text-xl font-bold text-red-600 mb-2 flex items-center"><i class="fa-solid fa-triangle-exclamation mr-2"></i> Hapus File</h3>
+		<p class="text-gray-600 dark:text-gray-300 mb-4">Apakah Anda yakin ingin menghapus <strong id="delete-filename-display">file</strong>?</p>
+		<input type="text" id="delete-commit-msg" placeholder="Pesan commit (opsional)" class="w-full px-3 py-2 border rounded-lg mb-4 dark:bg-gray-900 dark:border-gray-700 outline-none text-sm">
+		<div class="flex justify-end space-x-3">
+		  <button id="btn-cancel-delete" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors">Batal</button>
+		  <button id="btn-confirm-delete" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-semibold shadow-md">Hapus</button>
+		</div>
+	  </div>
+    </div>
+
+<script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithPopup, 
+            GithubAuthProvider, 
+            onAuthStateChanged,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+        // Konfigurasi Firebase standar
+        let firebaseConfig = {
+            apiKey: "AIzaSyDg3dCe_gNgOhHGNgtfZUorwOr0su9Y_yE",
+            authDomain: "asepmo-lite.firebaseapp.com",
+            databaseURL: "https://asepmo-lite-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "asepmo-lite",
+            storageBucket: "asepmo-lite.firebasestorage.app",
+            messagingSenderId: "333018337164",
+            appId: "1:333018337164:web:b62539601f50e6ec76d0a9"
+        };
+        if (typeof __firebase_config !== 'undefined') {
+            try { firebaseConfig = JSON.parse(__firebase_config); } catch(e){}
+        }
+
+        let app, auth;
+        try {
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+        } catch (error) {
+            document.getElementById('firebase-warning').classList.remove('hidden');
+        }
+
+        // ==========================================
+        // STATE VARIABLES
+        // ==========================================
+        let githubAccessToken = sessionStorage.getItem('gh_token') || null;
+        let allRepositories = [];
+        
+        // Repo State
+        let currentRepo = null; // { owner, name, defaultBranch }
+        let currentPath = "";   // path relative to root
+        let currentFiles = [];
+        let currentViewingFile = null; // { sha, path, content, name }
+        
+        // Upload State
+        let pendingUploadFiles = []; // { fileObj, relativePath }
+
+        // DOM Elements - Views
+        const viewLogin = document.getElementById('view-login');
+        const viewDashboard = document.getElementById('view-dashboard');
+        const viewRepoDetail = document.getElementById('view-repo-detail');
+        
+        // DOM Elements - Panels
+        const panelBrowser = document.getElementById('panel-file-browser');
+        const panelViewer = document.getElementById('panel-file-viewer');
+        const panelEditor = document.getElementById('panel-file-editor');
+        const panelUpload = document.getElementById('panel-upload-view');
+
+        // ==========================================
+        // UI HELPERS & NAVIGATION
+        // ==========================================
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = message;
+            toast.className = `fixed bottom-5 right-5 z-50 px-4 py-2 rounded-lg text-sm font-sans shadow-lg transition-all duration-300 transform flex items-center ${isError ? 'bg-red-500 text-white' : 'bg-brand-600 text-white'}`;
+            
+            // Trigger animation
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            });
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+            }, 3000);
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.classList.replace('fa-sun', 'fa-moon');
+            } else {
+                html.classList.add('dark');
+                icon.classList.replace('fa-moon', 'fa-sun');
+            }
+        }
+        document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+
+        function toggleDrawer(forceClose = false) {
+            const drawer = document.getElementById('drawer');
+            const overlay = document.getElementById('drawer-overlay');
+            if (forceClose || drawer.classList.contains('drawer-open')) {
+                drawer.classList.remove('drawer-open');
+                drawer.classList.add('drawer-closed');
+                overlay.classList.add('hidden');
+            } else {
+                drawer.classList.remove('drawer-closed');
+                drawer.classList.add('drawer-open');
+                overlay.classList.remove('hidden');
+                if (githubAccessToken) fetchGitHubProfile();
+            }
+        }
+        document.getElementById('menu-btn').addEventListener('click', () => toggleDrawer());
+        document.getElementById('close-drawer-btn').addEventListener('click', () => toggleDrawer(true));
+        document.getElementById('drawer-overlay').addEventListener('click', () => toggleDrawer(true));
+
+        function showView(viewName) {
+            viewLogin.classList.add('hidden');
+            viewDashboard.classList.add('hidden');
+            viewRepoDetail.classList.add('hidden');
+            
+            const btnLogout = document.getElementById('logout-btn');
+            const btnMenu = document.getElementById('menu-btn');
+
+            if (viewName === 'dashboard') {
+                viewDashboard.classList.remove('hidden');
+                btnLogout.classList.remove('hidden');
+                btnMenu.classList.remove('hidden');
+                if(githubAccessToken) fetchGitHubRepos();
+            } else if (viewName === 'repo') {
+                viewRepoDetail.classList.remove('hidden');
+                btnLogout.classList.remove('hidden');
+                btnMenu.classList.remove('hidden');
+            } else {
+                viewLogin.classList.remove('hidden');
+                btnLogout.classList.add('hidden');
+                btnMenu.classList.add('hidden');
+                toggleDrawer(true);
+            }
+        }
+
+        function showPanel(panelId) {
+            panelBrowser.classList.add('hidden');
+            panelViewer.classList.add('hidden');
+            panelEditor.classList.add('hidden');
+            panelUpload.classList.add('hidden');
+            document.getElementById(panelId).classList.remove('hidden');
+        }
+
+        function showWorkspaceLoading(text = "Memuat...", show = true) {
+            const loader = document.getElementById('workspace-loading');
+            document.getElementById('workspace-loading-text').innerText = text;
+            if(show === 'true'){
+			  loader.classList.remove('hidden');
+            } else {
+			  loader.classList.add('hidden');
+			}
+        }
+
+        document.getElementById('nav-brand-logo').addEventListener('click', () => {
+            if(githubAccessToken) showView('dashboard');
+        });
+
+        // ==========================================
+        // AUTHENTICATION
+        // ==========================================
+        if(auth) {
+            onAuthStateChanged(auth, (user) => {
+                if (user && githubAccessToken) {
+                    showView('dashboard');
+                } else {
+                    showView('login');
+                    sessionStorage.removeItem('gh_token');
+                    githubAccessToken = null;
+                }
+            });
+        }
+
+        async function handleGithubLogin() {
+            if(!auth) return showToast("Firebase error", true);
+            const provider = new GithubAuthProvider();
+            provider.addScope('repo'); 
+            provider.addScope('read:user'); 
+            
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const credential = GithubAuthProvider.credentialFromResult(result);
+                if (credential && credential.accessToken) {
+                    githubAccessToken = credential.accessToken;
+                    sessionStorage.setItem('gh_token', githubAccessToken);
+                    showToast("Berhasil login!");
+                    showView('dashboard'); 
+                } else throw new Error("Gagal mendapat token GitHub.");
+            } catch (error) {
+                showToast(error.message, true);
+            }
+        }
+        document.getElementById('btn-login-github').addEventListener('click', handleGithubLogin);
+        document.getElementById('btn-relogin-github').addEventListener('click', handleGithubLogin);
+        
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            if(auth) await signOut(auth);
+            sessionStorage.removeItem('gh_token');
+            githubAccessToken = null;
+            showView('login');
+        });
+
+        // ==========================================
+        // GITHUB API HELPERS
+        // ==========================================
+        async function ghApi(endpoint, options = {}) {
+            if (!githubAccessToken) throw new Error("Token tidak ada");
+            const url = endpoint.startsWith('http') ? endpoint : `https://api.github.com${endpoint}`;
+            const res = await fetch(url, {
+                ...options,
+                headers: {
+                    'Authorization': `Bearer ${githubAccessToken}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json',
+                    ...(options.headers || {})
+                }
+            });
+            
+            if(!res.ok) {
+                let msg = `Error ${res.status}`;
+                try {
+                    const errObj = await res.json();
+                    msg = errObj.message;
+                } catch(e){}
+                throw new Error(msg);
+            }
+            // Return empty object for 204 No Content
+            if (res.status === 204) return {}; 
+            return res.json();
+        }
+
+        function formatBytes(bytes, decimals = 2) {
+            if (!+bytes) return '0 Bytes';
+            const k = 1024, dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+        }
+
+        // ==========================================
+        // DASHBOARD & PROFILE
+        // ==========================================
+        async function fetchGitHubProfile() {
+            try {
+                const user = await ghApi('/user');
+                document.getElementById('prof-avatar').src = user.avatar_url;
+                document.getElementById('prof-name').innerText = user.name || user.login;
+                document.getElementById('prof-login').innerText = `@${user.login}`;
+                document.getElementById('prof-bio').innerText = user.bio || '-';
+                document.getElementById('prof-followers').innerText = user.followers;
+                document.getElementById('prof-following').innerText = user.following;
+                document.getElementById('prof-url').href = user.html_url;
+                
+                document.getElementById('profile-loading').classList.add('hidden');
+                document.getElementById('profile-data').classList.remove('hidden');
+            } catch (error) {
+                document.getElementById('profile-loading').classList.add('hidden');
+                document.getElementById('profile-error').classList.remove('hidden');
+            }
+        }
+
+        async function fetchGitHubRepos() {
+            const loading = document.getElementById('repos-loading');
+            const grid = document.getElementById('repos-grid');
+            loading.classList.remove('hidden');
+            grid.classList.add('hidden');
+            try {
+                allRepositories = await ghApi('/user/repos?sort=updated&per_page=100&type=owner');
+                loading.classList.add('hidden');
+                renderRepos(allRepositories);
+            } catch (error) {
+                loading.classList.add('hidden');
+                document.getElementById('repos-error').classList.remove('hidden');
+            }
+        }
+
+        function renderRepos(repos) {
+            const grid = document.getElementById('repos-grid');
+            grid.innerHTML = '';
+            grid.classList.remove('hidden');
+            
+            repos.forEach(repo => {
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-gray-800 border border-brand-100 dark:border-gray-700 rounded-xl p-5 hover:shadow-lg transition-all hover:border-brand-300 flex flex-col justify-between h-full cursor-pointer group";
+                // Add click listener to open repo
+                card.onclick = () => openRepo(repo);
+                
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-lg font-bold text-brand-700 dark:text-brand-400 group-hover:text-brand-500 flex items-center gap-2 truncate pr-2">
+                                <i class="fa-solid ${repo.private ? 'fa-lock text-yellow-500' : 'fa-book text-brand-500'} flex-shrink-0"></i>
+                                <span class="truncate" title="${repo.name}">${repo.name}</span>
+                            </h3>
+                        </div>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2 min-h-[2.5rem]">
+                            ${repo.description || '<span class="italic text-gray-400 text-xs">Tanpa deskripsi</span>'}
+                        </p>
+                    </div>
+                    <div class="flex items-center space-x-4 text-xs text-gray-500 dark:text-gray-400 mt-4 pt-3 border-t border-gray-100 dark:border-gray-700">
+                        ${repo.language ? `<span><i class="fa-solid fa-code mr-1"></i>${repo.language}</span>` : ''}
+                        <span><i class="fa-solid fa-clock mr-1"></i>${new Date(repo.updated_at).toLocaleDateString()}</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+        
+        document.getElementById('search-repo').addEventListener('input', (e) => {
+            const t = e.target.value.toLowerCase();
+            renderRepos(allRepositories.filter(r => r.name.toLowerCase().includes(t)));
+        });
+
+        // ==========================================
+        // REPOSITORY DETAILS & FILE BROWSER
+        // ==========================================
+        
+        document.getElementById('btn-back-repos').addEventListener('click', () => {
+            showView('dashboard');
+        });
+
+        async function openRepo(repoObj) {
+            currentRepo = {
+                owner: repoObj.owner.login,
+                name: repoObj.name,
+                defaultBranch: repoObj.default_branch || 'main'
+            };
+            currentPath = ""; // root
+            
+            document.getElementById('current-repo-title').innerHTML = `<i class="fa-solid fa-book-journal-whills mr-2 text-brand-600"></i> ${currentRepo.name}`;
+            document.getElementById('current-repo-branch').innerText = currentRepo.defaultBranch;
+            
+            showView('repo');
+            await loadPath(currentPath);
+        }
+
+        async function loadPath(path) {
+            currentPath = path;
+            renderBreadcrumbs();
+            showPanel('panel-file-browser');
+            showWorkspaceLoading("Memuat isi folder...");
+            document.getElementById('file-list-empty').classList.add('hidden');
+            
+            try {
+                // Fetch contents
+                const endpoint = `/repos/${currentRepo.owner}/${currentRepo.name}/contents/${currentPath}?ref=${currentRepo.defaultBranch}`;
+                const contents = await ghApi(endpoint);
+                
+                // GitHub API returns array for folder, object for file.
+                if (Array.isArray(contents)) {
+                    currentFiles = contents;
+                    renderFileList(contents);
+                } else {
+                    // It's a file, redirect to view
+                    viewFile(contents);
+                }
+            } catch (error) {
+                showToast("Gagal memuat: " + error.message, true);
+                if(currentPath !== "") {
+                    // Go up one level on error
+                    let parts = currentPath.split('/');
+                    parts.pop();
+                    loadPath(parts.join('/'));
+                }
+            } finally {
+                showWorkspaceLoading(false);
+            }
+        }
+
+        function renderBreadcrumbs() {
+            const container = document.getElementById('breadcrumb-path');
+            container.innerHTML = '';
+            
+            const rootLink = document.createElement('span');
+            rootLink.className = "cursor-pointer hover:text-brand-600 hover:underline transition-colors";
+            rootLink.innerText = currentRepo.name;
+            rootLink.onclick = () => loadPath("");
+            container.appendChild(rootLink);
+
+            if (!currentPath) return;
+
+            const parts = currentPath.split('/').filter(p => p);
+            let cumulativePath = "";
+            
+            parts.forEach((part, index) => {
+                const sep = document.createElement('span');
+                sep.className = "mx-1 text-gray-400";
+                sep.innerText = "/";
+                container.appendChild(sep);
+                
+                cumulativePath += (index === 0 ? "" : "/") + part;
+                const link = document.createElement('span');
+                link.className = "cursor-pointer hover:text-brand-600 hover:underline transition-colors";
+                link.innerText = part;
+                const pathStr = cumulativePath; // closure
+                link.onclick = () => loadPath(pathStr);
+                
+                if (index === parts.length - 1) {
+                    link.classList.add('text-brand-700', 'dark:text-brand-400', 'font-semibold');
+                    link.classList.remove('cursor-pointer', 'hover:underline');
+                    link.onclick = null;
+                }
+                container.appendChild(link);
+            });
+        }
+
+        function renderFileList(files) {
+            const container = document.getElementById('file-list-container');
+            container.innerHTML = '';
+            
+            if (files.length === 0) {
+                document.getElementById('file-list-empty').classList.remove('hidden');
+                return;
+            }
+
+            // Sort: directories first, then files alphabetically
+            files.sort((a, b) => {
+                if (a.type === b.type) return a.name.localeCompare(b.name);
+                return a.type === 'dir' ? -1 : 1;
+            });
+
+            files.forEach(file => {
+                const row = document.createElement('div');
+                row.className = "flex justify-between items-center p-3 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors text-sm text-gray-700 dark:text-gray-300";
+                
+                const isDir = file.type === 'dir';
+                const iconClass = isDir ? "fa-solid fa-folder text-blue-400" : "fa-regular fa-file-lines text-gray-400";
+                
+                row.innerHTML = `
+                    <div class="w-7/12 sm:w-1/2 pl-2 flex items-center cursor-pointer hover:text-brand-600 truncate file-name-click" title="${file.name}">
+                        <i class="${iconClass} mr-3 text-lg w-5 text-center"></i>
+                        <span class="truncate">${file.name}</span>
+                    </div>
+                    <div class="w-3/12 sm:w-1/4 text-right pr-4 text-gray-400 text-xs">
+                        ${isDir ? '-' : formatBytes(file.size)}
+                    </div>
+                    <div class="w-2/12 sm:w-1/4 flex justify-end space-x-2">
+                        ${!isDir ? `<button class="p-1.5 text-gray-400 hover:text-brand-600 rounded btn-dl-file" title="Download"><i class="fa-solid fa-download"></i></button>` : ''}
+                        <button class="p-1.5 text-gray-400 hover:text-red-600 rounded btn-del-file" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                
+                // Event Listeners
+                row.querySelector('.file-name-click').onclick = () => {
+                    if (isDir) loadPath(file.path);
+                    else viewFile(file);
+                };
+                
+                if(!isDir) {
+                    row.querySelector('.btn-dl-file').onclick = () => triggerDownload(file);
+                }
+                
+                row.querySelector('.btn-del-file').onclick = () => confirmDeleteFile(file);
+                
+                container.appendChild(row);
+            });
+        }
+
+        // ==========================================
+        // FILE VIEWER & EDITOR & DELETE
+        // ==========================================
+        
+        async function viewFile(fileObj) {
+            showWorkspaceLoading("Membuka file...");
+            try {
+                // We need to fetch the raw content, especially if it's large
+                // GitHub API contents endpoint limits base64, raw is better.
+                let rawContent = "";
+                
+                if (fileObj.download_url) {
+                     const res = await fetch(fileObj.download_url, {
+                         headers: {'Authorization': `Bearer ${githubAccessToken}`}
+                     });
+                     if(!res.ok) throw new Error("Gagal mengambil raw content");
+                     rawContent = await res.text();
+                } else if (fileObj.content) {
+                     // small files might have content directly via base64
+                     rawContent = decodeURIComponent(escape(atob(fileObj.content)));
+                } else {
+                     // If opened via URL path instead of obj, fetch it first
+                     const freshFile = await ghApi(`/repos/${currentRepo.owner}/${currentRepo.name}/contents/${fileObj.path}?ref=${currentRepo.defaultBranch}`);
+                     fileObj = freshFile;
+                     rawContent = decodeURIComponent(escape(atob(fileObj.content.replace(/\n/g, ''))));
+                }
+
+                currentViewingFile = {
+                    sha: fileObj.sha,
+                    path: fileObj.path,
+                    name: fileObj.name,
+                    content: rawContent
+                };
+
+                document.getElementById('viewer-filename').innerText = fileObj.name;
+                document.getElementById('viewer-content').textContent = rawContent;
+                
+                showPanel('panel-file-viewer');
+            } catch (error) {
+                showToast(error.message, true);
+                loadPath(currentPath); // revert
+            } finally {
+                showWorkspaceLoading(false);
+            }
+        }
+
+        document.getElementById('btn-close-viewer').onclick = () => {
+            // go back to directory
+            let parts = currentViewingFile.path.split('/');
+            parts.pop();
+            loadPath(parts.join('/'));
+        };
+
+        // Editor
+        document.getElementById('btn-edit-file').onclick = () => {
+            if(!currentViewingFile) return;
+            document.getElementById('editor-filename').innerText = currentViewingFile.name;
+            document.getElementById('code-editor').value = currentViewingFile.content;
+            document.getElementById('editor-commit-msg').value = `Update ${currentViewingFile.name}`;
+            showPanel('panel-file-editor');
+        };
+
+        document.getElementById('btn-cancel-edit').onclick = () => {
+            showPanel('panel-file-viewer');
+        };
+
+        document.getElementById('btn-save-file').onclick = async () => {
+            const newContent = document.getElementById('code-editor').value;
+            const message = document.getElementById('editor-commit-msg').value || `Update ${currentViewingFile.name}`;
+            
+            showWorkspaceLoading("Menyimpan perubahan...");
+            try {
+                // Base64 encode handling unicode
+                const base64Content = btoa(unescape(encodeURIComponent(newContent)));
+                
+                const payload = {
+                    message: message,
+                    content: base64Content,
+                    sha: currentViewingFile.sha,
+                    branch: currentRepo.defaultBranch
+                };
+
+                const res = await ghApi(`/repos/${currentRepo.owner}/${currentRepo.name}/contents/${currentViewingFile.path}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(payload)
+                });
+
+                showToast("File berhasil disimpan");
+                // Refresh folder to get new SHA and content
+                let parts = currentViewingFile.path.split('/');
+                parts.pop();
+                loadPath(parts.join('/')); 
+            } catch (error) {
+                showToast("Gagal menyimpan: " + error.message, true);
+            } finally {
+                showWorkspaceLoading(false);
+            }
+        };
+
+        // Delete File
+        let fileToDelete = null;
+        function confirmDeleteFile(fileObj) {
+            fileToDelete = fileObj;
+            document.getElementById('delete-filename-display').innerText = fileObj.name;
+            document.getElementById('delete-commit-msg').value = `Delete ${fileObj.name}`;
+            document.getElementById('modal-delete').classList.remove('hidden');
+        }
+
+        document.getElementById('btn-cancel-delete').onclick = () => {
+            document.getElementById('modal-delete').classList.add('hidden');
+            fileToDelete = null;
+        };
+
+        document.getElementById('btn-confirm-delete').onclick = async () => {
+            if(!fileToDelete) return;
+            document.getElementById('modal-delete').classList.add('hidden');
+            showWorkspaceLoading(`Menghapus ${fileToDelete.name}...`);
+            
+            const message = document.getElementById('delete-commit-msg').value || `Delete ${fileToDelete.name}`;
+            
+            try {
+                const payload = {
+                    message: message,
+                    sha: fileToDelete.sha,
+                    branch: currentRepo.defaultBranch
+                };
+
+                await ghApi(`/repos/${currentRepo.owner}/${currentRepo.name}/contents/${fileToDelete.path}`, {
+                    method: 'DELETE',
+                    body: JSON.stringify(payload)
+                });
+
+                showToast(`${fileToDelete.name} dihapus.`);
+                loadPath(currentPath); // refresh current folder
+            } catch (error) {
+                showToast("Gagal menghapus: " + error.message, true);
+                showWorkspaceLoading(false);
+            }
+        };
+
+        // Download File
+        function triggerDownload(fileObj) {
+            if(fileObj.download_url) {
+                // Fetch and create object URL to force download instead of opening in new tab
+                showToast(`Memulai unduhan ${fileObj.name}...`);
+                fetch(fileObj.download_url, {
+                    headers: {'Authorization': `Bearer ${githubAccessToken}`}
+                })
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = fileObj.name;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                })
+                .catch(() => window.open(fileObj.download_url, '_blank')); // fallback
+            }
+        }
+        
+        // viewer DL button
+        document.getElementById('btn-download-file').onclick = () => {
+            if(currentViewingFile) {
+                // Re-construct light fileObj
+                triggerDownload({
+                    name: currentViewingFile.name, 
+                    download_url: `https://raw.githubusercontent.com/${currentRepo.owner}/${currentRepo.name}/${currentRepo.defaultBranch}/${currentViewingFile.path}`
+                });
+            }
+        };
+
+        // ==========================================
+        // UPLOAD FEATURE (FILES & FOLDERS)
+        // ==========================================
+        
+        document.getElementById('btn-upload-view').onclick = () => {
+            pendingUploadFiles = [];
+            updateUploadUI();
+            document.getElementById('upload-commit-msg').value = `Add files via GitDashboard`;
+            showPanel('panel-upload-view');
+        };
+
+        document.getElementById('btn-cancel-upload').onclick = () => {
+            loadPath(currentPath); // back to browser
+        };
+
+        const inputFiles = document.getElementById('input-upload-files');
+        const inputFolder = document.getElementById('input-upload-folder');
+
+        function handleFileSelection(e) {
+            const files = e.target.files;
+            if(!files.length) return;
+            
+            for(let i=0; i<files.length; i++) {
+                const f = files[i];
+                // webkitRelativePath contains folder structure if uploaded via folder picker
+                const relPath = f.webkitRelativePath || f.name; 
+                pendingUploadFiles.push({
+                    file: f,
+                    path: relPath
+                });
+            }
+            updateUploadUI();
+            e.target.value = ''; // reset
+        }
+
+        inputFiles.addEventListener('change', handleFileSelection);
+        inputFolder.addEventListener('change', handleFileSelection);
+
+        function updateUploadUI() {
+            const listEl = document.getElementById('upload-preview-list');
+            const countEl = document.getElementById('upload-count');
+            const btnExecute = document.getElementById('btn-execute-upload');
+            const btnClear = document.getElementById('btn-clear-upload');
+            const emptyMsg = document.getElementById('upload-empty-msg');
+            
+            countEl.innerText = pendingUploadFiles.length;
+            
+            if(pendingUploadFiles.length === 0) {
+                listEl.innerHTML = '';
+                listEl.appendChild(emptyMsg);
+                emptyMsg.classList.remove('hidden');
+                btnExecute.disabled = true;
+                btnClear.classList.add('hidden');
+                return;
+            }
+
+            emptyMsg.classList.add('hidden');
+            btnExecute.disabled = false;
+            btnClear.classList.remove('hidden');
+            listEl.innerHTML = '';
+
+            pendingUploadFiles.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = "flex justify-between items-center bg-gray-50 dark:bg-gray-800 p-2 rounded text-sm text-gray-700 dark:text-gray-300 border border-gray-100 dark:border-gray-700";
+                div.innerHTML = `
+                    <div class="truncate pr-2 flex-1" title="${item.path}">
+                        <i class="fa-regular fa-file mr-2 text-brand-500"></i>${item.path}
+                    </div>
+                    <div class="text-xs text-gray-400 mr-3 flex-shrink-0">${formatBytes(item.file.size)}</div>
+                    <button class="text-red-500 hover:text-red-700 btn-remove-upload p-1 flex-shrink-0" data-idx="${index}">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                `;
+                listEl.appendChild(div);
+            });
+
+            // Re-attach listeners
+            document.querySelectorAll('.btn-remove-upload').forEach(btn => {
+                btn.onclick = (e) => {
+                    const idx = e.currentTarget.getAttribute('data-idx');
+                    pendingUploadFiles.splice(idx, 1);
+                    updateUploadUI();
+                };
+            });
+        }
+
+        document.getElementById('btn-clear-upload').onclick = () => {
+            pendingUploadFiles = [];
+            updateUploadUI();
+        };
+
+        // Base64 encode File object using FileReader
+        function getBase64(file) {
+           return new Promise((resolve, reject) => {
+             const reader = new FileReader();
+             reader.readAsDataURL(file);
+             reader.onload = () => {
+                 // readAsDataURL returns format: data:[<mediatype>][;base64],<data>
+                 // We only need the <data> part for GitHub API
+                 let encoded = reader.result.toString().replace(/^data:(.*,)?/, '');
+                 if ((encoded.length % 4) > 0) {
+                     encoded += '='.repeat(4 - (encoded.length % 4));
+                 }
+                 resolve(encoded);
+             };
+             reader.onerror = error => reject(error);
+           });
+        }
+
+        document.getElementById('btn-execute-upload').onclick = async () => {
+            if(pendingUploadFiles.length === 0) return;
+            
+            const btnEx = document.getElementById('btn-execute-upload');
+            const progBar = document.getElementById('upload-progress-bar');
+            const progCont = document.getElementById('upload-progress-container');
+            const statusTxt = document.getElementById('upload-status-text');
+            const message = document.getElementById('upload-commit-msg').value || 'Upload files';
+            
+            // UI setup for uploading
+            btnEx.disabled = true;
+            btnEx.innerText = "Mengunggah...";
+            progCont.classList.remove('hidden');
+            statusTxt.classList.remove('hidden');
+            document.getElementById('btn-clear-upload').classList.add('hidden');
+            document.querySelectorAll('.btn-remove-upload').forEach(b => b.classList.add('hidden')); // disable remove
+
+            let successCount = 0;
+            let failCount = 0;
+
+            // Process sequentially to avoid API rate limits and tree lock issues
+            for(let i=0; i < pendingUploadFiles.length; i++) {
+                const item = pendingUploadFiles[i];
+                // Target path = currentPath + / + item.path
+                let targetPath = currentPath ? `${currentPath}/${item.path}` : item.path;
+                targetPath = targetPath.replace(/\/\//g, '/'); // remove double slashes
+                
+                statusTxt.innerText = `Mengunggah ${i+1}/${pendingUploadFiles.length}: ${item.path}...`;
+                progBar.style.width = `${((i) / pendingUploadFiles.length) * 100}%`;
+
+                try {
+                    const base64Data = await getBase64(item.file);
+                    
+                    // Check if file exists to get SHA (for updating)
+                    let existingSha = undefined;
+                    try {
+                        const checkRes = await ghApi(`/repos/${currentRepo.owner}/${currentRepo.name}/contents/${targetPath}?ref=${currentRepo.defaultBranch}`);
+                        if(checkRes && checkRes.sha) existingSha = checkRes.sha;
+                    } catch(e) {
+                        // 404 is expected for new files
+                    }
+
+                    const payload = {
+                        message: message,
+                        content: base64Data,
+                        branch: currentRepo.defaultBranch
+                    };
+                    if(existingSha) payload.sha = existingSha;
+
+                    await ghApi(`/repos/${currentRepo.owner}/${currentRepo.name}/contents/${targetPath}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    successCount++;
+                } catch(error) {
+                    console.error(`Gagal upload ${item.path}:`, error);
+                    failCount++;
+                }
+            }
+
+            progBar.style.width = `100%`;
+            statusTxt.innerText = `Selesai. Berhasil: ${successCount}, Gagal: ${failCount}`;
+            
+            setTimeout(() => {
+                showToast(`Unggahan selesai. ${successCount} file ditambahkan.`);
+                // Reset UI & Reload folder
+                btnEx.innerText = "Mulai Unggah";
+                progCont.classList.add('hidden');
+                statusTxt.classList.add('hidden');
+                pendingUploadFiles = [];
+                updateUploadUI();
+                loadPath(currentPath);
+            }, 1500);
+        };
+
+</script>
+  </body>
+</html>
